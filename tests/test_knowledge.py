@@ -57,6 +57,11 @@ class KnowledgeTests(unittest.TestCase):
         knowledge.import_document(self.document(), self.database)
         self.assertEqual(knowledge.retrieve('" OR * NOT ()', self.database), [])
 
+    def test_isolated_overlap_is_not_enough_for_multiple_terms(self):
+        knowledge.import_document(self.document(text='Tratamento de assunto fictício.'), self.database)
+        self.assertEqual(knowledge.retrieve('Tratamento diabetes', self.database), [])
+        self.assertEqual(len(knowledge.retrieve('Tratamento assunto', self.database)), 1)
+
     def test_chunks_bounded_and_complete(self):
         text = 'vacinação exemplo ' * 600
         knowledge.import_document(self.document(text=text), self.database)
