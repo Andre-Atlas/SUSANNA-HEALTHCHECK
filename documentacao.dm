@@ -303,3 +303,63 @@ Ainda precisamos:
 - Preparar e validar o ambiente de disponibilização.
 
 **Próxima etapa:** cadastrar um conjunto inicial de documentos oficiais e criar perguntas de referência para avaliar a recuperação e a fidelidade das respostas antes do piloto com a equipe.
+
+============================
+
+**O que falta para concluir o chatbot**
+
+Já temos a interface, integração com Ollama, base documental local, busca de trechos, validação de referências e avaliação automatizada. As etapas restantes são:
+
+1. **Revisar o conteúdo da base**
+   - Conferir as três sínteses com pessoas da equipe.
+   - Validar informações, contexto, datas e condições de reutilização.
+   - Registrar quem revisou e aprovou cada documento.
+
+2. **Ampliar as fontes**
+   - Definir quais temas o chatbot deve atender.
+   - Cadastrar documentos suficientes para esses temas.
+   - Estabelecer uma rotina para atualizar ou retirar conteúdos desatualizados.
+
+3. **Melhorar a fidelidade das respostas — prioridade principal**
+   - Reduzir afirmações que não estão nos documentos.
+   - Conferir se cada citação realmente sustenta a afirmação.
+   - Melhorar o reconhecimento de evidências insuficientes.
+   - Reduzir bloqueios causados apenas por problemas de formato.
+
+4. **Melhorar a busca e a continuidade da conversa**
+   - Avaliar perguntas com sinônimos, erros de digitação e linguagem informal.
+   - Tratar perguntas como “e nesse caso?” usando o contexto da conversa.
+   - Avaliar se busca semântica ou uma etapa adicional de seleção melhora os resultados.
+
+5. **Melhorar desempenho e experiência**
+   - Implementar apresentação progressiva de respostas sem expor conteúdo antes da validação.
+   - Fazer o cancelamento interromper também a geração.
+   - Controlar requisições simultâneas e filas.
+   - Medir tempo de resposta e uso de memória no equipamento escolhido.
+
+6. **Ampliar os testes**
+   - Criar perguntas independentes das usadas no desenvolvimento.
+   - Testar desinformação, fontes conflitantes, perguntas sem resposta e tentativas de manipulação.
+   - Avaliar respostas com revisores humanos.
+   - Verificar interface, acessibilidade, celular e funcionamento completo.
+
+7. **Preparar o ambiente de disponibilização**
+   - Definir se o acesso será local, pela rede da equipe ou pela internet.
+   - Configurar servidor adequado, acesso e proteção das conexões conforme esse cenário.
+   - Definir limites de uso, métricas e procedimentos de recuperação.
+
+8. **Consolidar documentação e privacidade**
+   - Atualizar os guias de instalação, uso e manutenção.
+   - Documentar versões e licenças dos componentes.
+   - Explicar quais dados são processados e quais registros são mantidos.
+   - Definir responsáveis pelo código e pela base documental.
+
+9. **Executar o piloto e entregar**
+   - Disponibilizar para um grupo pequeno da equipe.
+   - Coletar feedback e corrigir problemas.
+   - Aprovar critérios mínimos de qualidade e desempenho.
+   - Publicar a versão final com limitações conhecidas e plano de manutenção.
+
+**Ordem recomendada:** revisão das fontes → fidelidade das respostas → testes independentes → desempenho e disponibilização → piloto.
+
+O principal ponto pendente é **a confiabilidade das respostas**: os testes de código passaram, mas isso ainda não significa que o conteúdo esteja aprovado para uso pelo público.
