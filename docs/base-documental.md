@@ -23,7 +23,7 @@ Crie um arquivo JSON UTF-8 fora da pasta pública com estes campos:
 ```
 
 O exemplo é apenas um formato: não é uma fonte real e não deve ser importado.
-`reviewed_at` é a data da revisão pela equipe, não a data de publicação.
+`reviewed_at` registra a data de conferência documental, não a data de publicação nem aprovação clínica. No conjunto inicial essa conferência foi feita por IA; a revisão humana está pendente e declarada nos JSONs.
 
 ```bash
 python3 knowledge.py /caminho/para/documento.json
@@ -37,7 +37,7 @@ Novas importações ficam disponíveis sem reiniciar o servidor.
 ## Como funciona
 
 1. A pergunta atual é pesquisada no índice lexical FTS5.
-2. Até três trechos são selecionados por ranking BM25.
+2. Até 30 candidatos são ordenados por BM25. Para perguntas com vários termos, exigem-se pelo menos duas coincidências distintas; até três trechos são selecionados. Esse filtro é heurístico e não mede confiança factual.
 3. O servidor ajusta histórico e trechos a um orçamento conservador de contexto.
 4. O Ollama recebe as instruções, os trechos e a conversa restante.
 5. A interface apresenta os trechos efetivamente enviados e seus links.
@@ -53,13 +53,12 @@ a resistência à injeção de prompt ainda precisa de avaliação adversarial.
 
 ## Limitações e próximas entregas
 
-- A base começa vazia; a equipe precisa selecionar e revisar as primeiras fontes.
+- O conjunto inicial contém três sínteses experimentais: carregue com `python3 seed_knowledge.py`. A revisão humana permanece pendente.
 - Resultados lexicais podem ser irrelevantes. Não existe limiar calibrado de relevância.
 - Links vêm dos registros locais; citações no texto ainda são geradas pelo modelo.
 - Não existe validação automática de que uma afirmação é sustentada por uma fonte.
 - Não há atualização automática, extração de PDFs, busca semântica ou reranking.
-- Antes do piloto: selecionar documentos, criar perguntas de referência, avaliar
-  recuperação e fidelidade das respostas e registrar datas/versões de publicação.
+- Antes do piloto: revisar as sínteses e ampliar o conjunto de perguntas com casos independentes. Os metadados de publicação, autoria e revisão humana estão nos JSONs versionados; o índice atual mantém somente título, texto, URL e data de conferência.
 
 Referências técnicas: [SQLite FTS5](https://www.sqlite.org/fts5.html) e
 [API do Ollama](https://docs.ollama.com/api/chat).
@@ -71,3 +70,5 @@ python3 -m unittest discover -s tests -v
 ```
 
 Os testes usam documentos sintéticos temporários e não alimentam a base real.
+
+A avaliação do conjunto real está descrita em [avaliação inicial](avaliacao-inicial.md).
