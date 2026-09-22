@@ -3,7 +3,7 @@ const input = document.querySelector('#question');
 const form = document.querySelector('#chat-form');
 const status = document.querySelector('#model-status');
 const controls = [...form.querySelectorAll('button'), ...document.querySelectorAll('.suggestions button')];
-const welcome = 'Olá! Sou o InspectorFakeNews. Posso ajudar a analisar uma mensagem e identificar o que precisa ser conferido. Uso uma IA local, sem consulta à internet: minhas respostas podem conter erros e não são uma verificação de fatos. Qual é sua dúvida?';
+const welcome = 'Olá! Sou o InspectorFakeNews. Posso ajudar a analisar uma mensagem e identificar o que precisa ser conferido. Consulto documentos locais cadastrados pela equipe, quando disponíveis, sem pesquisa na internet ao vivo. Posso cometer erros; uma resposta não equivale a uma checagem de fatos. Qual é sua dúvida?';
 let history = [];
 let activeRequest = null;
 
@@ -24,6 +24,33 @@ function setBusy(busy) {
   controls.forEach(button => { button.disabled = busy; });
   input.disabled = busy;
   form.setAttribute('aria-busy', String(busy));
+}
+
+function addSources(bubble, sources) {
+  const section = document.createElement('div');
+  section.className = 'sources';
+  const heading = document.createElement('p');
+  heading.textContent = sources.length
+    ? 'Trechos fornecidos ao modelo — confira se sustentam a resposta:'
+    : 'Nenhuma fonte local foi fornecida ao modelo para esta resposta.';
+  section.append(heading);
+  sources.forEach((source, index) => {
+    const details = document.createElement('details');
+    const summary = document.createElement('summary');
+    summary.textContent = `[${index + 1}] ${source.title}`;
+    const excerpt = document.createElement('p');
+    excerpt.textContent = source.text;
+    const link = document.createElement('a');
+    const url = new URL(source.url);
+    if (url.protocol !== 'https:') return;
+    link.href = url.href;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    link.textContent = `Abrir fonte · revisão da equipe: ${source.reviewed_at}`;
+    details.append(summary, excerpt, link);
+    section.append(details);
+  });
+  bubble.append(section);
 }
 
 async function checkHealth() {
@@ -58,6 +85,7 @@ async function send(text) {
     if (typeof data.message !== 'string' || !data.message.trim()) throw new Error('Resposta vazia do modelo.');
     if (activeRequest !== controller) return;
     pending.content.textContent = data.message;
+    addSources(pending.bubble, Array.isArray(data.sources) ? data.sources : []);
     history = [...pendingHistory, { role: 'assistant', content: data.message }];
     status.textContent = `Local · ${data.model}`;
   } catch (error) {
