@@ -1,0 +1,73 @@
+# Base documental local — primeira versão
+
+Esta etapa usa Python, SQLite FTS5 e Ollama. Não requer serviço pago,
+embeddings ou novos pacotes pip. O Python precisa ter SQLite com FTS5 habilitado.
+Busca por palavras não compreende todos os sinônimos nem resolve perguntas
+de continuidade como “e ela?”. A consulta considera a pergunta atual.
+
+## Cadastrar uma fonte
+
+A equipe deve selecionar e revisar o texto original e suas condições de uso.
+Priorize documentos institucionais e registre a URL da página específica.
+Não inclua dados pessoais. O cadastro não certifica a veracidade do documento.
+
+Crie um arquivo JSON UTF-8 fora da pasta pública com estes campos:
+
+```json
+{
+  "title": "Título real do documento",
+  "url": "https://instituicao.example/documento",
+  "reviewed_at": "2026-09-22",
+  "text": "Texto real revisado pela equipe, preservando o contexto da fonte."
+}
+```
+
+O exemplo é apenas um formato: não é uma fonte real e não deve ser importado.
+`reviewed_at` é a data da revisão pela equipe, não a data de publicação.
+
+```bash
+python3 knowledge.py /caminho/para/documento.json
+```
+
+A importação divide o texto em trechos de até 1.200 caracteres e atualiza
+atomicamente o documento identificado pela mesma URL. O índice fica em
+`data/knowledge.sqlite3`, ignorado pelo Git. A URL não é baixada automaticamente.
+Novas importações ficam disponíveis sem reiniciar o servidor.
+
+## Como funciona
+
+1. A pergunta atual é pesquisada no índice lexical FTS5.
+2. Até três trechos são selecionados por ranking BM25.
+3. O servidor ajusta histórico e trechos a um orçamento conservador de contexto.
+4. O Ollama recebe as instruções, os trechos e a conversa restante.
+5. A interface apresenta os trechos efetivamente enviados e seus links.
+
+O orçamento usa bytes UTF-8 como estimativa conservadora para o Qwen padrão,
+com reserva para resposta e template. Não é uma contagem exata de tokens.
+Remove pares antigos de conversa e depois trechos, mantendo a pergunta atual.
+Perguntas que sozinhas excedem o orçamento são recusadas com uma mensagem clara.
+
+Sem base ou sem resultados, a interface informa a ausência de fontes. Uma base
+corrompida gera erro explícito. Os documentos são dados, não instruções;
+a resistência à injeção de prompt ainda precisa de avaliação adversarial.
+
+## Limitações e próximas entregas
+
+- A base começa vazia; a equipe precisa selecionar e revisar as primeiras fontes.
+- Resultados lexicais podem ser irrelevantes. Não existe limiar calibrado de relevância.
+- Links vêm dos registros locais; citações no texto ainda são geradas pelo modelo.
+- Não existe validação automática de que uma afirmação é sustentada por uma fonte.
+- Não há atualização automática, extração de PDFs, busca semântica ou reranking.
+- Antes do piloto: selecionar documentos, criar perguntas de referência, avaliar
+  recuperação e fidelidade das respostas e registrar datas/versões de publicação.
+
+Referências técnicas: [SQLite FTS5](https://www.sqlite.org/fts5.html) e
+[API do Ollama](https://docs.ollama.com/api/chat).
+
+## Testes
+
+```bash
+python3 -m unittest discover -s tests -v
+```
+
+Os testes usam documentos sintéticos temporários e não alimentam a base real.
