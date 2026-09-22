@@ -46,7 +46,7 @@ function addSources(bubble, sources) {
     link.href = url.href;
     link.target = '_blank';
     link.rel = 'noopener noreferrer';
-    link.textContent = `Abrir fonte · revisão da equipe: ${source.reviewed_at}`;
+    link.textContent = `Abrir fonte · consulta documental: ${source.reviewed_at}`;
     details.append(summary, excerpt, link);
     section.append(details);
   });
