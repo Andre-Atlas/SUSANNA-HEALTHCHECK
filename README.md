@@ -28,11 +28,15 @@ Outro modelo local instalado: `OLLAMA_MODEL=nome:tag python3 server.py`.
 - `app.js`: conversa, histórico, espera e tratamento de falhas.
 - `server.py`: arquivos públicos e API local que conversa com o Ollama.
 
-A conversa existe apenas em memória. O navegador envia as últimas seis trocas e a nova pergunta ao servidor local. Limpar ou recarregar reinicia o histórico. Limpar cancela a espera no navegador; o Ollama pode continuar a geração já iniciada até concluir. O servidor não salva as mensagens. Os logs HTTP registram rotas e códigos, não o corpo das conversas.
+A conversa existe apenas em memória. O navegador envia até as últimas seis trocas e a nova pergunta ao servidor local. O servidor pode remover trocas antigas para respeitar seu orçamento conservador de contexto. Limpar ou recarregar reinicia o histórico. Limpar cancela a espera no navegador; o Ollama pode continuar a geração já iniciada até concluir. O servidor não salva as mensagens. Os logs HTTP registram rotas e códigos, não o corpo das conversas.
 
 ## Limites desta etapa
 
-O modelo gera respostas, mas não consulta a internet nem uma base documental. Não se deve apresentar suas respostas como checagem factual ou orientação médica. O próximo passo para checagens com evidências é integrar fontes verificáveis e exibir as referências realmente consultadas.
+O chatbot consulta uma base documental local usando SQLite FTS5. A base começa vazia e precisa receber documentos revisados pela equipe. Veja [como cadastrar fontes e testar](docs/base-documental.md).
+
+Os trechos enviados ao modelo são apresentados com suas referências. A busca inicial é lexical; recuperar um trecho não comprova uma alegação. Ainda precisamos avaliar relevância, fidelidade das respostas e citações. Não se deve apresentar as respostas como checagem factual ou orientação médica.
+
+Depois de atualizar o código, reinicie `python3 server.py` e recarregue a página. Importar novos documentos não exige reinício.
 
 ## Referências técnicas
 
