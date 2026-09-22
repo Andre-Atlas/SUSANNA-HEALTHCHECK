@@ -32,11 +32,22 @@ A conversa existe apenas em memória. O navegador envia até as últimas seis tr
 
 ## Limites desta etapa
 
-O chatbot consulta uma base documental local usando SQLite FTS5. A base começa vazia e precisa receber documentos revisados pela equipe. Veja [como cadastrar fontes e testar](docs/base-documental.md).
+O chatbot consulta uma base documental local usando SQLite FTS5. O repositório inclui três sínteses experimentais de fontes oficiais em `sources/`, com revisão humana pendente. Para carregar esse conjunto em uma nova instalação, execute `python3 seed_knowledge.py`. Veja [como cadastrar fontes e testar](docs/base-documental.md).
 
 Os trechos enviados ao modelo são apresentados com suas referências. A busca inicial é lexical; recuperar um trecho não comprova uma alegação. Ainda precisamos avaliar relevância, fidelidade das respostas e citações. Não se deve apresentar as respostas como checagem factual ou orientação médica.
 
 Depois de atualizar o código, reinicie `python3 server.py` e recarregue a página. Importar novos documentos não exige reinício.
+
+## Avaliar a base inicial
+
+```bash
+python3 -m unittest discover -s tests -v
+python3 evaluate.py
+# Opcional: também gerar respostas com o Ollama local
+python3 evaluate.py --llm --output evaluation/llm.json
+```
+
+A avaliação usa uma base temporária com o conjunto versionado, sem alterar seus documentos locais. Veja [fontes e critérios de avaliação](docs/avaliacao-inicial.md).
 
 ## Referências técnicas
 
