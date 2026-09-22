@@ -8,7 +8,7 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 from knowledge import import_document, retrieve
-from server import MODEL, build_prompt, ollama
+from server import MODEL, build_prompt, generate_answer
 
 ROOT = Path(__file__).resolve().parent
 
@@ -34,12 +34,14 @@ def evaluate(use_llm=False):
             if use_llm:
                 start = time.monotonic()
                 try:
-                    result = ollama('/api/chat', {'model': MODEL, 'messages': prompt,
-                                    'stream': False, 'options': {'temperature': 0.2, 'num_predict': 700, 'num_ctx': 8192}})
-                    answer = result.get('message', {}).get('content', '')
+                    result = generate_answer(prompt, supplied)
+                    answer = result['message']
                     if not isinstance(answer, str) or not answer.strip():
                         raise ValueError('Resposta vazia ou inválida')
                     row['answer'] = answer
+                    row['answer_status'] = result['answer_status']
+                    row['llm_called'] = result['llm_called']
+                    row['validation_errors'] = result['validation_errors']
                     refs = [int(ref) for ref in re.findall(r'\[(\d+)\]', answer)]
                     row['citation_ids_in_range'] = all(1 <= ref <= len(supplied) for ref in refs)
                     row['has_citation'] = bool(refs)
@@ -52,6 +54,8 @@ def evaluate(use_llm=False):
             print(f"{case['id']}: recuperação {'OK' if row['retrieval_pass'] else 'FALHOU'}", flush=True)
     return {'created_at': datetime.now(timezone.utc).isoformat(), 'model': MODEL if use_llm else None,
             'corpus_sha256': {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in files},
+            'code_sha256': {name: hashlib.sha256((ROOT / name).read_bytes()).hexdigest()
+                            for name in ('server.py', 'knowledge.py', 'answer_policy.py', 'evaluate.py')},
             'retrieval_passed': sum(r['retrieval_pass'] for r in results), 'total': len(results),
             'note': 'Conjunto pequeno de desenvolvimento; não é validação clínica nem teste independente.',
             'results': results}
