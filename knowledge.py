@@ -13,6 +13,13 @@ DATABASE = Path(__file__).resolve().parent / 'data' / 'knowledge.sqlite3'
 STOPWORDS = set('a o as os um uma de da do das dos em no na nos nas e ou que se para por com como qual quais onde quando porque sobre isso isto esse essa ser sao foi tem pode nao mais uma'.split())
 
 
+def search_terms(text):
+    normalized = ''.join(c for c in unicodedata.normalize('NFD', text.lower())
+                         if unicodedata.category(c) != 'Mn')
+    return list(dict.fromkeys(word for word in re.findall(r'\w+', normalized)
+                             if len(word) > 2 and word not in STOPWORDS))
+
+
 def initialize(connection):
     connection.execute('''CREATE VIRTUAL TABLE IF NOT EXISTS chunks USING fts5(
         title, text, url UNINDEXED, reviewed_at UNINDEXED,
@@ -61,18 +68,20 @@ def retrieve(question, database=DATABASE):
     """Busca lexical na pergunta atual; resultados não significam confirmação factual."""
     if not Path(database).exists():
         return []
-    normalized = ''.join(c for c in unicodedata.normalize('NFD', question.lower())
-                         if unicodedata.category(c) != 'Mn')
-    terms = list(dict.fromkeys(word for word in re.findall(r'\w+', normalized)
-                              if len(word) > 2 and word not in STOPWORDS))[:32]
+    terms = search_terms(question)[:32]
     if not terms:
         return []
     expression = ' OR '.join(f'"{term}"' for term in terms)
     with closing(sqlite3.connect(Path(database).resolve().as_uri() + '?mode=ro', uri=True)) as connection:
         connection.row_factory = sqlite3.Row
         rows = connection.execute('''SELECT title, text, url, reviewed_at FROM chunks
-            WHERE chunks MATCH ? ORDER BY bm25(chunks), rowid LIMIT 3''', (expression,)).fetchall()
-    return [dict(row) for row in rows]
+            WHERE chunks MATCH ? ORDER BY bm25(chunks), rowid LIMIT 30''', (expression,)).fetchall()
+    # Evita aceitar só uma coincidência isolada em uma pergunta com vários termos.
+    # Heurística lexical, não confiança factual; pode reduzir a recuperação por sinônimos.
+    required = min(2, len(terms))
+    matches = [dict(row) for row in rows
+               if len(set(terms) & set(search_terms(row['title'] + ' ' + row['text']))) >= required]
+    return matches[:3]
 
 
 if __name__ == '__main__':
