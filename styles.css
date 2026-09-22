@@ -9,3 +9,4 @@
 #chat-form{align-items:flex-end}#question{font:inherit;font-size:13px;line-height:1.5;flex:1;min-width:0;max-height:220px;resize:vertical;border:0;background:transparent;color:#e7f1fa;padding:8px}#question::placeholder{color:#acbdca}#question:focus-visible{outline:2px solid #dfaa25;outline-offset:1px}#chat-form button{flex-shrink:0}
 
 button:disabled{opacity:.5;cursor:wait}.bubble.error{border:1px solid #d69e61;background:#453628;color:#ffe0ba}#model-status{display:block;max-width:280px;overflow-wrap:anywhere}
+.sources{margin-top:12px;padding-top:8px;border-top:1px solid #536875;font-size:12px;overflow-wrap:anywhere}.sources p{margin:6px 0}.sources details{margin:8px 0}.sources summary{cursor:pointer}.sources a{color:#b9e5e7}
