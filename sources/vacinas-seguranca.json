@@ -1,0 +1,25 @@
+{
+    "title":  "Segurança das vacinas — testes e reações",
+    "url":  "https://www.gov.br/saude/pt-br/vacinacao/faq/vacinas/as-vacinas-sao-seguras",
+    "reviewed_at":  "2026-09-24",
+    "publisher":  "Ministério da Saúde",
+    "published_at":  "2023-10-05",
+    "source_updated_at":  "2023-10-05",
+    "content_type":  "Síntese produzida por IA a partir da fonte; não é transcrição oficial",
+    "documentary_check":  {
+                              "checked_at":  "2026-09-24",
+                              "checked_by":  "Codex (IA)",
+                              "report":  "docs/escopo-fontes.md",
+                              "source_section":  "Resposta",
+                              "reuse_assessment":  "Pendente de decisão da equipe",
+                              "review_status":  "Revisado por IA"
+                          },
+    "source_license_notice":  "Rodapé: CC BY-ND 3.0. Condições de reutilização da síntese pendentes; ver docs/revisao-fontes.md.",
+    "next_review_at":  "2026-10-24",
+    "coverage_questions":  [
+                               "Como a segurança das vacinas é avaliada?",
+                               "As reações das vacinas são sempre graves?"
+                           ],
+    "text":  "Síntese do Ministério da Saúde: a segurança e a qualidade das vacinas são avaliadas por testes, incluindo estudos clínicos, antes de sua aprovação. Em geral, as reações são leves e passageiras, como dor e vermelhidão onde a vacina foi aplicada. Reações graves são muito raras e passam por monitoramento e investigação.",
+    "review_status":  "Revisado por IA"
+}
