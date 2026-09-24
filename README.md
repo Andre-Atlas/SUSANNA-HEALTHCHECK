@@ -1,4 +1,4 @@
-# InspectorFakeNews — projeto acadêmico
+# SUSANNA-HEALTHCHECK — projeto acadêmico
 
 Chatbot educativo sobre desinformação em saúde. Interface independente, sem vínculo oficial com o SUS. Desenvolvido para apresentação na Eldorado.
 
