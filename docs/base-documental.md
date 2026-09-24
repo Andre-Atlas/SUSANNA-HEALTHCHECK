@@ -7,7 +7,7 @@ de continuidade como “e ela?”. A consulta considera a pergunta atual.
 
 ## Cadastrar uma fonte
 
-Para as três sínteses iniciais, consulte o [relatório e registro de revisão](revisao-fontes.md). Ele separa a conferência por IA da aprovação humana e registra as pendências de reutilização.
+Para as três sínteses iniciais, consulte o [relatório e registro de revisão](revisao-fontes.md). Ele registra a conferência por IA, sem atribuir aprovação humana e registra as pendências de reutilização.
 
 A equipe deve selecionar e revisar o texto original e suas condições de uso.
 Priorize documentos institucionais e registre a URL da página específica.
@@ -25,7 +25,7 @@ Crie um arquivo JSON UTF-8 fora da pasta pública com estes campos:
 ```
 
 O exemplo é apenas um formato: não é uma fonte real e não deve ser importado.
-`reviewed_at` registra a data de conferência documental, não a data de publicação nem aprovação clínica. No conjunto inicial essa conferência foi feita por IA; a revisão humana está pendente e declarada nos JSONs.
+`reviewed_at` registra a data de conferência documental, não a data de publicação nem aprovação clínica. No conjunto inicial essa conferência foi feita por IA; o status Revisado por IA está registrado nos JSONs.
 
 ```bash
 python3 knowledge.py /caminho/para/documento.json
@@ -37,6 +37,8 @@ atomicamente o documento identificado pela mesma URL. O índice fica em
 Novas importações ficam disponíveis sem reiniciar o servidor.
 
 ## Como funciona
+
+O conjunto ampliado contém seis sínteses. Consulte [temas, cobertura e manutenção](escopo-fontes.md), incluindo o procedimento de retirada por `python knowledge.py --remove-url "URL"`.
 
 1. A pergunta atual é pesquisada no índice lexical FTS5.
 2. Até 30 candidatos são ordenados por BM25. Para perguntas com vários termos, exigem-se pelo menos duas coincidências distintas; até três trechos são selecionados. Esse filtro é heurístico e não mede confiança factual.
@@ -55,12 +57,12 @@ a resistência à injeção de prompt ainda precisa de avaliação adversarial.
 
 ## Limitações e próximas entregas
 
-- O conjunto inicial contém três sínteses experimentais: carregue com `python3 seed_knowledge.py`. A revisão humana permanece pendente.
+- O conjunto ampliado contém seis sínteses experimentais: carregue com `python3 seed_knowledge.py`. Status: Revisado por IA.
 - Resultados lexicais podem ser irrelevantes. Não existe limiar calibrado de relevância.
 - Links vêm dos registros locais; citações no texto ainda são geradas pelo modelo.
 - Não existe validação automática de que uma afirmação é sustentada por uma fonte.
 - Não há atualização automática, extração de PDFs, busca semântica ou reranking.
-- Antes do piloto: revisar as sínteses e ampliar o conjunto de perguntas com casos independentes. Os metadados de publicação, autoria e revisão humana estão nos JSONs versionados; o índice atual mantém somente título, texto, URL e data de conferência.
+- Antes do piloto: revisar as sínteses e ampliar o conjunto de perguntas com casos independentes. Os metadados de publicação, autoria e revisão por IA estão nos JSONs versionados; o índice atual mantém somente título, texto, URL e data de conferência.
 
 Referências técnicas: [SQLite FTS5](https://www.sqlite.org/fts5.html) e
 [API do Ollama](https://docs.ollama.com/api/chat).
