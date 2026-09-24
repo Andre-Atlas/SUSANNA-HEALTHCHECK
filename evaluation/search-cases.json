@@ -1,0 +1,22 @@
+[
+  {"id":"sinonimo-imunizantes","category":"sinonimos","question":"Imunizantes são seguros?","expected_source":"vacinas-seguranca.json"},
+  {"id":"sinonimo-boatos","category":"sinonimos","question":"Como reconhecer boatos?","expected_source":"identificar-boatos.json"},
+  {"id":"sinonimo-dividir","category":"sinonimos","question":"Posso dividir sobra de antimicrobiano?","expected_source":"antimicrobianos-cuidados.json"},
+  {"id":"sinonimo-prevencao","category":"sinonimos","question":"Como evitar dengue?","expected_source":"dengue.json"},
+  {"id":"erro-vacinas","category":"digitacao","question":"Vacnias são seguras?","expected_source":"vacinas-seguranca.json"},
+  {"id":"erro-antibiotico","category":"digitacao","question":"Antiboticos combatem virus?","expected_source":"antibioticos.json"},
+  {"id":"erro-dengue","category":"digitacao","question":"Como ocorre a transmisao da dengu?","expected_source":"dengue.json"},
+  {"id":"informal-pega","category":"informal","question":"Como a gente pega dengue?","expected_source":"dengue.json"},
+  {"id":"informal-vacina","category":"informal","question":"Queria saber se vacina é segura mesmo","expected_source":"vacinas-seguranca.json"},
+  {"id":"informal-boato","category":"informal","question":"Como eu faço pra checar um boato?","expected_source":"identificar-boatos.json"},
+  {"id":"continua-caso","category":"continuidade","history":["Antibióticos combatem vírus?"],"question":"e nesse caso?","expected_source":"antibioticos.json"},
+  {"id":"continua-reacoes","category":"continuidade","history":["Como a segurança das vacinas é avaliada?"],"question":"e as reações?","expected_source":"vacinas-seguranca.json"},
+  {"id":"continua-cadeia","category":"continuidade","history":["Como a segurança das vacinas é avaliada?","e as reações?"],"question":"pode explicar melhor?","expected_source":"vacinas-seguranca.json"},
+  {"id":"troca-tema","category":"continuidade","history":["Como prevenir dengue?"],"question":"Antibióticos combatem vírus?","expected_source":"antibioticos.json"},
+  {"id":"troca-fora","category":"negativos","history":["Como prevenir dengue?"],"question":"E diabetes?","expected_source":null},
+  {"id":"troca-ancora","category":"negativos","history":["Como prevenir dengue?","Qual tratamento cura diabetes?"],"question":"e nesse caso?","expected_source":null},
+  {"id":"sem-antecedente","category":"negativos","question":"e nesse caso?","expected_source":null,"needs_clarification":true},
+  {"id":"dna-sinonimo","category":"negativos","question":"Imunizantes alteram DNA?","expected_source":null},
+  {"id":"cura-sinonimo","category":"negativos","question":"Imunização cura diabetes?","expected_source":null},
+  {"id":"fora-informal","category":"negativos","question":"Queria saber como investir dinheiro","expected_source":null}
+]
