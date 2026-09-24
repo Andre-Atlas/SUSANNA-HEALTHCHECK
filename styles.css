@@ -12,3 +12,11 @@ button:disabled{opacity:.5;cursor:wait}.bubble.error{border:1px solid #d69e61;ba
 .sources{margin-top:12px;padding-top:8px;border-top:1px solid #536875;font-size:12px;overflow-wrap:anywhere}.sources p{margin:6px 0}.sources details{margin:8px 0}.sources summary{cursor:pointer}.sources a{color:#b9e5e7}
 
 #cancel[hidden]{display:none}#cancel{border:1px solid #8ca9ba;border-radius:6px;padding:4px 8px;flex-shrink:0}.chat-top{flex-wrap:wrap}.chat-top>div{min-width:0}
+
+/* Acesso por teclado e alvos de toque; conferir também em navegador real. */
+.skip-link{position:fixed;top:8px;left:8px;z-index:20;transform:translateY(-200%);padding:12px 18px;background:#fff;color:#17304b;border-radius:6px}
+.skip-link:focus{transform:translateY(0)}
+.messages:focus-visible,.sources summary:focus-visible{outline:3px solid #dfaa25;outline-offset:-3px}
+#cancel,#clear,.suggestions button,#chat-form button{min-height:44px;min-width:44px}
+.chat,.chat-section>*,.hero>*{min-width:0}
+@media(max-width:760px){#question{font-size:16px}.chat-top{padding:14px}.chat-top h3{overflow-wrap:anywhere}.suggestions button{max-width:100%;white-space:normal}.profile{max-width:100%}}
