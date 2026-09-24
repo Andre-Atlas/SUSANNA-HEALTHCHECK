@@ -1,0 +1,25 @@
+{
+    "title":  "Como identificar fake news — cuidados ao analisar informações",
+    "url":  "https://www.gov.br/anvisa/pt-br/assuntos/noticias-anvisa/desinformacao",
+    "reviewed_at":  "2026-09-24",
+    "publisher":  "Anvisa",
+    "published_at":  null,
+    "source_updated_at":  null,
+    "content_type":  "Síntese produzida por IA a partir da fonte; não é transcrição oficial",
+    "documentary_check":  {
+                              "checked_at":  "2026-09-24",
+                              "checked_by":  "Codex (IA)",
+                              "report":  "docs/escopo-fontes.md",
+                              "source_section":  "Como identificar",
+                              "reuse_assessment":  "Pendente de decisão da equipe",
+                              "review_status":  "Revisado por IA"
+                          },
+    "source_license_notice":  "Rodapé: CC BY-ND 3.0. Condições de reutilização da síntese pendentes; ver docs/revisao-fontes.md.",
+    "next_review_at":  "2026-10-24",
+    "coverage_questions":  [
+                               "Como identificar fake news?",
+                               "Como conferir a fonte e a data de uma notícia?"
+                           ],
+    "text":  "Síntese educativa da Anvisa sobre como identificar desinformação e analisar notícias: examine títulos sensacionalistas, confira a fonte da informação e a data da publicação. Observe possíveis problemas no texto e nas imagens. Busque confirmação em outros canais confiáveis.",
+    "review_status":  "Revisado por IA"
+}
