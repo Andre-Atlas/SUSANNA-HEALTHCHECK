@@ -130,6 +130,9 @@ DETALHES DO PASSO A PASSO, TOPICO A TOPICO DO PROJETO
 
 **Atualização do projeto — primeira versão da base documental do chatbot**
 
+Registro histórico da primeira versão. Para o funcionamento atual, consulte
+[busca e continuidade](docs/busca-conversa.md) e [desempenho e experiência](docs/desempenho-experiencia.md).
+
 Implementamos a estrutura inicial para o chatbot consultar documentos locais antes de responder. Essa abordagem é chamada de **RAG**, ou geração aumentada por recuperação: o sistema procura informações na base e entrega os trechos encontrados à LLM para apoiar a resposta.
 
 A implementação continua usando **Python, SQLite e Ollama**, sem API paga e sem novos pacotes `pip`. O Python precisa ter suporte à extensão FTS5 do SQLite.
@@ -330,15 +333,17 @@ Já temos a interface, integração com Ollama, base documental local, busca de 
    - Reduzir bloqueios causados apenas por problemas de formato.
 
 4. **Melhorar a busca e a continuidade da conversa**
-   - Avaliar perguntas com sinônimos, erros de digitação e linguagem informal.
-   - Tratar perguntas como “e nesse caso?” usando o contexto da conversa.
-   - Avaliar se busca semântica ou uma etapa adicional de seleção melhora os resultados.
+   - Implementadas expansão controlada de termos, correção conservadora de digitação e remoção de expressões informais comuns.
+   - Perguntas reconhecidas, como “e nesse caso?” e “e as reações?”, usam até três perguntas anteriores. Sem antecedente, o chatbot pede esclarecimento.
+   - Comparação de 38 casos: busca original 27/38; expansão 36/38; expansão com contexto 38/38. A reordenação adicional não trouxe ganho e permanece desativada por padrão. Embeddings ainda não foram medidos.
+   - Veja [implementação, avaliação e limitações](docs/busca-conversa.md). Próximo passo: perguntas independentes e avaliação de conversas completas com a LLM.
 
 5. **Melhorar desempenho e experiência**
-   - Implementar apresentação progressiva de respostas sem expor conteúdo antes da validação.
-   - Fazer o cancelamento interromper também a geração.
-   - Controlar requisições simultâneas e filas.
-   - Medir tempo de resposta e uso de memória no equipamento escolhido.
+   - Implementados estados de progresso e apresentação gradual do texto somente após a validação completa.
+   - Cancelar e Limpar removem pedidos da fila ou fecham a conexão com o Ollama durante geração/revisão. Pedidos sem acompanhamento expiram.
+   - Implementada fila FIFO limitada: uma execução e três pedidos em espera por padrão, configuráveis. Fila cheia retorna HTTP 429.
+   - Medição real no Apple M4 com 24 GiB: respostas em 12,22 s e 16,66 s na rodada registrada; pico amostrado do Python 35,47 MiB e alocação do modelo informada pelo Ollama 5,08 GiB. São medidas distintas, não devem ser somadas.
+   - Veja [implementação, reprodução e limites](docs/desempenho-experiencia.md). Verificação visual no navegador e testes prolongados de carga continuam pendentes.
 
 6. **Ampliar os testes**
    - Criar perguntas independentes das usadas no desenvolvimento.
@@ -366,3 +371,79 @@ Já temos a interface, integração com Ollama, base documental local, busca de 
 **Ordem recomendada:** revisão das fontes → fidelidade das respostas → testes independentes → desempenho e disponibilização → piloto.
 
 O principal ponto pendente é **a confiabilidade das respostas**: os testes de código passaram, mas isso ainda não significa que o conteúdo esteja aprovado para uso pelo público.
+
+==============================
+
+Seu projeto é o **InspectorFakeNews**, um chatbot educativo sobre desinformação em saúde. Ele recebe perguntas pelo navegador, consulta documentos armazenados no computador e usa uma IA local para tentar responder com base nesses documentos.
+
+**O fluxo principal é este:**
+
+```text
+Você escreve uma pergunta
+          ↓
+JavaScript envia ao servidor Python
+          ↓
+Python busca trechos na base SQLite
+          ↓
+IA local elabora uma resposta usando esses trechos
+          ↓
+Código confere citações e IA revisa o apoio documental
+          ↓
+Navegador mostra a resposta e as fontes
+```
+
+Se não encontrar trechos, o sistema pula a IA e mostra uma mensagem pronta de falta de evidências.
+
+**O papel de cada arquivo:**
+
+| Arquivo | Responsabilidade |
+|---|---|
+| `index.html` | Estrutura da página, campo de pergunta e chat. |
+| `styles.css` | Cores, tamanhos, posicionamento e adaptação às telas. |
+| `app.js` | Envia perguntas, mostra respostas e controla o histórico. |
+| `server.py` | Recebe requisições e coordena busca, geração e revisão. |
+| `knowledge.py` | Importa documentos e pesquisa na base SQLite. |
+| `answer_policy.py` | Confere referências e o resultado da revisão por IA. |
+| `sources/` | Documentos JSON disponíveis para importação. |
+| `seed_knowledge.py` | Carrega esses documentos no banco. |
+
+**Acompanhando uma pergunta, passo a passo:**
+
+1. **Você envia a mensagem.**  
+   No [app.js](/Users/aluno2/Desktop/saude-gov-br/app.js), a função `send()` recebe o texto, mostra sua pergunta na tela e cria um pedido com `POST /api/jobs`. Junto, envia até seis pares anteriores de pergunta e resposta. Enquanto espera, acompanha o estado do pedido, desativa os controles de envio e mantém Cancelar e Limpar disponíveis.
+
+2. **O servidor valida a entrada.**  
+   No [server.py](/Users/aluno2/Desktop/saude-gov-br/server.py), `validate_messages()` verifica o formato do histórico, a ordem das mensagens e os limites de tamanho. Cada pergunta pode ter até 3.000 caracteres.
+
+3. **O sistema procura documentos relacionados.**  
+   A função `retrieve()`, em [knowledge.py](/Users/aluno2/Desktop/saude-gov-br/knowledge.py), pesquisa em `data/knowledge.sqlite3`. Ela remove acentos, desconsidera palavras comuns e busca coincidências em títulos e textos usando SQLite FTS5.
+
+   Retorna **até três trechos**. Essa busca é por palavras, com expansão controlada e correção simples de digitação: não usa embeddings nem pesquisa a internet. Formas reconhecidas de continuidade usam perguntas anteriores por meio de `conversation.py`; o mesmo contexto chega à geração e à revisão.
+
+4. **O Python prepara as instruções para a IA.**  
+   `build_prompt()` junta as regras do assistente, os trechos encontrados e a conversa. Se ficar grande demais, remove primeiro mensagens antigas e depois trechos.
+
+   A IA é instruída a responder em português, usar apenas o material fornecido e citar os trechos com números como `[1]`.
+
+5. **O Ollama gera a resposta.**  
+   O servidor chama o Ollama local em `127.0.0.1:11434`. O modelo padrão é `qwen2.5:7b`. O Python organiza o trabalho; quem produz o texto é esse modelo.
+
+6. **A resposta passa por verificações.**  
+   Primeiro, o código verifica se há citações válidas, se cada parágrafo termina com uma referência e se a IA inventou links.
+
+   Depois, faz **uma segunda chamada ao mesmo modelo**, agora como revisor. Ele avalia se as fontes citadas sustentam a resposta. O código também confere se as evidências textuais apresentadas pelo revisor realmente existem nos documentos.
+
+   Se alguma etapa reprovar, o texto gerado é substituído por uma mensagem de insuficiência de evidências ou falha na validação.
+
+7. **A resposta aparece na tela.**  
+   Após a validação completa, o JavaScript apresenta a mensagem progressivamente e mostra os trechos utilizados, com links para as fontes. O usuário pode expandi-los para conferir o conteúdo.
+
+**Alguns detalhes importantes para entender o comportamento atual:**
+
+- Os documentos de `sources/` só entram no banco quando você executa `python3 seed_knowledge.py`. Alterar um JSON não atualiza automaticamente o SQLite.
+- Esses documentos são sínteses experimentais produzidas por IA, com referências a páginas oficiais; não são cópias integrais dessas páginas.
+- O histórico fica na memória do navegador. Recarregar a página ou clicar em limpar apaga a conversa.
+- A revisão usa IA e pode errar; passar pelas verificações não comprova que a resposta é verdadeira.
+- `tests/` e os scripts `evaluate.py` e `evaluate_grounding.py` servem para testar a recuperação de documentos e as verificações.
+
+Essa explicação descreve o caminho implementado no código. Não executei o chatbot nem os testes nesta leitura.
