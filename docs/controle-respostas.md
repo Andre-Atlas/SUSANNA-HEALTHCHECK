@@ -70,13 +70,14 @@ correlacionados e aceitação indevida continuam possíveis. A existência liter
 uma evidência não prova que ela sustenta a afirmação; esse julgamento é da IA.
 O modelo é instruído a avaliar todas as frases de cada parágrafo, mas pode omitir
 uma falha. Conflitos com documentos não citados não são avaliados nessa etapa.
-A revisão considera a pergunta atual, sem resolver referências ambíguas
-ao histórico. Citações sem número não são reconstruídas. A segunda inferência
+A revisão recebe a pergunta atual e, nas formas de continuidade reconhecidas,
+o mesmo contexto de perguntas anteriores usado pela geração. Isso não resolve
+toda ambiguidade conversacional. Citações sem número não são reconstruídas. A segunda inferência
 aumenta latência e usa contexto de até 16.384 tokens, com limite conservador por
-bytes (incluindo o schema) e 2.000 tokens de saída. Ainda não há cancelamento ou fila de geração.
-Cada chamada ao Ollama mantém timeout de 180 segundos; a interface espera até
-370 segundos para comportar geração e revisão. O cancelamento no navegador
-continua sem interromper a inferência local.
+bytes (incluindo o schema) e 2.000 tokens de saída. Geração e revisão agora
+compartilham uma fila limitada e conexão cancelável; tokens permanecem privados
+até a validação completa. Veja [desempenho e experiência](desempenho-experiencia.md)
+para timeouts, cancelamento, apresentação progressiva e medições.
 
 O controle conservador pode rejeitar uma resposta útil por formato. Não inserimos
 citações automaticamente, pois isso atribuiria evidência sem verificar a relação.
