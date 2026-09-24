@@ -1,10 +1,14 @@
 // DOM e rede simulados: testes de estado, sem substituir verificação visual.
 class Element {
-  constructor() { this.textContent = ''; this.children = []; this.value = ''; this.listeners = {}; this.classList = {add() {}}; }
+  constructor() { this.writes = []; this.textContent = ''; this.children = []; this.value = ''; this.listeners = {}; this.attrs = {}; this.classList = {add() {}}; this.submissions = 0; }
+  set textContent(value) {this.text = value; this.children = []; this.writes?.push(value);}
+  get textContent() {return this.text;}
+  set innerHTML(value) {throw new Error('HTML não deve ser interpretado no chat');}
   append(...items) { this.children.push(...items); }
   replaceChildren(...items) { this.children = items; }
-  setAttribute() {}
-  removeAttribute() {}
+  setAttribute(name, value) {this.attrs[name] = value;}
+  removeAttribute(name) {delete this.attrs[name];}
+  requestSubmit() {this.submissions++;}
   focus() {}
   addEventListener(name, fn) { this.listeners[name] = fn; }
   querySelectorAll() { return []; }
