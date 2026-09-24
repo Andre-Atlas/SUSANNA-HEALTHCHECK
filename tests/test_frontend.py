@@ -96,3 +96,75 @@ class FrontendTests(unittest.TestCase):
           assert(messages.children.at(-1).children[1].textContent === 'Pedido cancelado.', 'Cancelamento não exibido');
           assert(history.length === 0, 'Falha ou cancelamento entrou no histórico');
         ''')
+
+    def test_keyboard_enter_shift_and_ime(self):
+        self.run_case('''
+          let prevented = 0;
+          for (const event of [
+            {key:'Enter', shiftKey:false, isComposing:false},
+            {key:'Enter', shiftKey:true, isComposing:false},
+            {key:'Enter', shiftKey:false, isComposing:true},
+            {key:'a', shiftKey:false, isComposing:false},
+          ]) input.listeners.keydown({...event, preventDefault(){prevented++;}});
+          assert(form.submissions === 1 && prevented === 1, 'Enter, Shift+Enter ou IME incorreto');
+        ''')
+
+    def test_plain_text_and_safe_source_links(self):
+        self.run_case('''
+          const attack = '<img src=x onerror=alert(1)>';
+          const pending = addMessage(attack);
+          assert(pending.content.textContent === attack && pending.content.children.length === 0, 'HTML interpretado');
+          addSources(pending.bubble, [
+            {title:attack, text:attack, url:'https://example.org/test', reviewed_at:'2026-01-01'},
+            {title:'Insegura', text:attack, url:'javascript:alert(1)', reviewed_at:'2026-01-01'},
+          ]);
+          const section = pending.bubble.children.at(-1);
+          assert(section.children.length === 2, 'Link inseguro inserido');
+          const details = section.children[1];
+          assert(details.children[0].textContent.includes(attack), 'Título não preservado como texto');
+          const link = details.children[2];
+          assert(link.rel === 'noopener noreferrer' && link.target === '_blank', 'Link sem proteção');
+        ''')
+
+    def test_progress_announces_stage_changes_not_clock_ticks(self):
+        self.run_case('''
+          const stages = ['generation','generation','review','done'];
+          route = async (url, options) => {
+            if (options.method === 'POST') return response({id:'x',state:'queued'});
+            const stage = stages.shift();
+            return response(stage === 'done'
+              ? {id:'x',state:'done',result:{message:'Texto final.',sources:[],model:'test'}}
+              : {id:'x',state:'running',stage,elapsed_seconds:10-stages.length});
+          };
+          await send('Pergunta');
+          assert(progressStatus.writes.filter(text => text.startsWith('Preparando')).length === 1, 'Anúncio repetitivo');
+          assert(progressStatus.textContent.startsWith('Resposta pronta'), 'Conclusão não anunciada');
+          assert(!('aria-busy' in messages.children.at(-1).attrs), 'Resposta permaneceu ocupada');
+        ''')
+
+    def test_reduced_motion_and_duplicate_submission(self):
+        self.run_case('''
+          window.matchMedia = () => ({matches:true});
+          const originalTimeout = setTimeout;
+          globalThis.setTimeout = (fn, ms) => {assert(ms !== 35, 'Animação em movimento reduzido'); return originalTimeout(fn, ms);};
+          let finish;
+          route = async () => new Promise(resolve => {finish=resolve;});
+          const first = send('Primeira');
+          await send('Duplicada');
+          assert(requests.filter(r=>r.method==='POST').length === 1, 'Envio duplicado');
+          finish(response({id:'x',state:'done',result:{message:'Texto final.',sources:[],model:'test'}}));
+          await first;
+          assert(history[0].content === 'Primeira', 'Histórico errado');
+        ''')
+
+    def test_network_failure_cancels_job_and_restores_question(self):
+        self.run_case('''
+          route = async (url, options) => {
+            if (options.method === 'POST') return response({id:'offline',state:'running',stage:'review'});
+            throw new TypeError('network failed');
+          };
+          await send('Pergunta preservada');
+          assert(requests.some(r=>r.method==='DELETE' && r.url.endsWith('/offline')), 'Job abandonado');
+          assert(input.value === 'Pergunta preservada' && history.length === 0, 'Perda de pergunta ou histórico inválido');
+          assert(!input.disabled && !activeRequest, 'Controles bloqueados');
+        ''')
