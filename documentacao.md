@@ -311,12 +311,13 @@ Ainda precisamos:
 Já temos a interface, integração com Ollama, base documental local, busca de trechos, validação de referências e avaliação automatizada. As etapas restantes são:
 
 1. **Revisar o conteúdo da base**
-   - Conferência documental por IA registrada em 24/09/2026: [evidências, pendências e registro de revisão humana](docs/revisao-fontes.md). Etapa ainda pendente de revisão e aprovação pela equipe.
-   - Conferir as três sínteses com pessoas da equipe.
+   - Conferência documental por IA registrada em 24/09/2026: [evidências e registro de revisão por IA](docs/revisao-fontes.md). Status dos seis documentos: Revisado por IA.
+   - Conferência documental das seis sínteses realizada por IA.
    - Validar informações, contexto, datas e condições de reutilização.
-   - Registrar quem revisou e aprovou cada documento.
+   - Registrar responsável, data e resultado da revisão por IA.
 
 2. **Ampliar as fontes**
+   - Escopo inicial e seis documentos cadastrados: [cobertura e rotina de manutenção](docs/escopo-fontes.md). Documentos revisados por IA; suficiência para o piloto ainda em avaliação.
    - Definir quais temas o chatbot deve atender.
    - Cadastrar documentos suficientes para esses temas.
    - Estabelecer uma rotina para atualizar ou retirar conteúdos desatualizados.
