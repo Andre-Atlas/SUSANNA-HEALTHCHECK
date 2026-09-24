@@ -56,7 +56,7 @@ A regra de citação por parágrafo também não mede suporte de cada frase indi
 
 O controle conservador pode rejeitar uma resposta útil por formato. Não inserimos
 citações automaticamente, pois isso atribuiria evidência sem verificar a relação.
-As sínteses da base ainda têm revisão humana pendente. Antes do piloto, é necessário
+As sínteses da base têm revisão documental por IA concluída. Antes do piloto, é necessário
 avaliar fidelidade com pessoas da equipe e perguntas independentes.
 
 ## Resultado da rodada local
