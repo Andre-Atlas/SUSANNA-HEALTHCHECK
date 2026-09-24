@@ -114,6 +114,7 @@ class PromptTests(unittest.TestCase):
              patch.object(server, 'ollama', return_value={'message': {'content': 'Resposta [1]'}}) as model, \
              patch.object(handler, 'json_response') as response:
             handler.do_POST()
+            self.addCleanup(handler.server.jobs.close)
             self.assertEqual(response.call_args.args[0], 200)
             self.assertEqual(response.call_args.args[1]['sources'], [source])
             self.assertIn(source['text'], model.call_args.args[1]['messages'][0]['content'])
