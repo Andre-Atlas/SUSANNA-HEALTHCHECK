@@ -45,7 +45,7 @@ def evaluate(use_llm=False):
                     refs = [int(ref) for ref in re.findall(r'\[(\d+)\]', answer)]
                     row['citation_ids_in_range'] = all(1 <= ref <= len(supplied) for ref in refs)
                     row['has_citation'] = bool(refs)
-                    row['human_review'] = 'Pendente: IDs válidos não comprovam fidelidade factual.'
+                    row['review_note'] = 'Revisão automática por IA quando grounding_checked; não é garantia factual.'
                     row['done_reason'] = result.get('done_reason')
                 except Exception as exc:
                     row['error'] = f'{type(exc).__name__}: {exc}'
