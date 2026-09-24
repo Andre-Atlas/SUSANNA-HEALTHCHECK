@@ -72,8 +72,8 @@ async function send(text) {
   addMessage(question, true);
   input.value = '';
   setBusy(true);
-  const pending = addMessage('Preparando resposta… O primeiro carregamento pode levar mais tempo.');
-  const timer = setTimeout(() => controller.abort(), 190000);
+  const pending = addMessage('Preparando a resposta e conferindo o apoio nas fontes… O primeiro carregamento pode levar mais tempo.');
+  const timer = setTimeout(() => controller.abort(), 370000);
   try {
     const response = await fetch('/api/chat', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
