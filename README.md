@@ -27,14 +27,18 @@ Outro modelo local instalado: `OLLAMA_MODEL=nome:tag python3 server.py`.
 - `styles.css`: aparência responsiva.
 - `app.js`: conversa, histórico, espera e tratamento de falhas.
 - `server.py`: arquivos públicos e API local que conversa com o Ollama.
+- `jobs.py`: fila limitada, cancelamento, expiração e métricas em memória.
+- `ollama_transport.py`: stream privado e conexão cancelável com o Ollama.
 
-A conversa existe apenas em memória. O navegador envia até as últimas seis trocas e a nova pergunta ao servidor local. O servidor pode remover trocas antigas para respeitar seu orçamento conservador de contexto. Limpar ou recarregar reinicia o histórico. Limpar cancela a espera no navegador; o Ollama pode continuar a geração já iniciada até concluir. O servidor não salva as mensagens. Os logs HTTP registram rotas e códigos, não o corpo das conversas.
+A conversa existe apenas em memória. O navegador envia até as últimas seis trocas e a nova pergunta ao servidor local. O servidor pode remover trocas antigas para respeitar seu orçamento conservador de contexto. Limpar ou recarregar reinicia o histórico e solicita cancelamento do pedido; o servidor fecha sua conexão com o Ollama. Históricos em processamento são liberados ao término; resultados ficam em memória por até 60 segundos, com limite de quantidade. Não há gravação das conversas em disco. Os logs HTTP não registram corpos nem IDs dos pedidos.
+
+O chat mostra fila, geração e revisão em andamento. O texto aparece progressivamente somente após a validação completa. Há botão **Cancelar**, uma execução por vez e até três pedidos em espera por padrão. Para configurar: `python3 server.py --concurrency 1 --queue-size 3`. Veja [desempenho, limites e medições](docs/desempenho-experiencia.md).
 
 ## Limites desta etapa
 
 O chatbot consulta uma base documental local usando SQLite FTS5. O repositório inclui seis sínteses experimentais de fontes oficiais em `sources/`, com revisão documental por IA. Para carregar esse conjunto, execute `python3 seed_knowledge.py`. Veja [como cadastrar fontes e testar](docs/base-documental.md) e [escopo e manutenção](docs/escopo-fontes.md).
 
-Os trechos enviados ao modelo são apresentados com suas referências. A busca inicial é lexical; recuperar um trecho não comprova uma alegação. Ainda precisamos avaliar relevância, fidelidade das respostas e citações. Não se deve apresentar as respostas como checagem factual ou orientação médica.
+Os trechos enviados ao modelo são apresentados com suas referências. A busca lexical inclui expansão controlada de termos, correção simples de digitação e continuidade em formas como “e nesse caso?”. Veja [funcionamento e comparação da busca](docs/busca-conversa.md). Recuperar um trecho não comprova uma alegação. Ainda precisamos avaliar relevância, fidelidade das respostas e citações. Não se deve apresentar as respostas como checagem factual ou orientação médica.
 
 Sem fontes, o servidor responde sem chamar a LLM. Com fontes, valida referências
 e faz uma segunda revisão por IA do apoio documental, exigindo evidências literais
@@ -48,6 +52,9 @@ Depois de atualizar o código, reinicie `python3 server.py` e recarregue a pági
 ```bash
 python3 -m unittest discover -s tests -v
 python3 evaluate.py
+python3 evaluate_search.py
+# Medições reais de tempo, memória e cancelamento (requer Ollama)
+python3 benchmark_performance.py
 # Opcional: também gerar respostas com o Ollama local
 python3 evaluate.py --llm --output evaluation/llm.json
 ```
