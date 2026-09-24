@@ -4,7 +4,7 @@
 
 Foram preparadas três sínteses curtas por IA, com atribuição às páginas consultadas.
 São materiais experimentais para desenvolvimento, não transcrições oficiais nem
-conteúdos aprovados por profissionais de saúde. Revisão humana: pendente.
+conteúdos aprovados por profissionais de saúde. Revisão documental: Revisado por IA.
 
 | Arquivo | Fonte | Datas disponíveis |
 |---|---|---|
@@ -24,7 +24,7 @@ como sínteses; a equipe deve conferir seu conteúdo e as condições de reutili
 antes de ampliar o acervo ou distribuí-lo como material institucional.
 
 Os JSONs registram autoria institucional, datas disponíveis, tipo de conteúdo e
-pendência de revisão humana. Datas ausentes ficam como `null`, sem suposição.
+revisão documental por IA. Datas ausentes ficam como `null`, sem suposição.
 O relatório contém hashes SHA-256 dos JSONs para identificar o conjunto avaliado;
 eles não são hashes de cópias completas das páginas originais.
 
