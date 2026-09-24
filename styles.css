@@ -10,3 +10,5 @@
 
 button:disabled{opacity:.5;cursor:wait}.bubble.error{border:1px solid #d69e61;background:#453628;color:#ffe0ba}#model-status{display:block;max-width:280px;overflow-wrap:anywhere}
 .sources{margin-top:12px;padding-top:8px;border-top:1px solid #536875;font-size:12px;overflow-wrap:anywhere}.sources p{margin:6px 0}.sources details{margin:8px 0}.sources summary{cursor:pointer}.sources a{color:#b9e5e7}
+
+#cancel[hidden]{display:none}#cancel{border:1px solid #8ca9ba;border-radius:6px;padding:4px 8px;flex-shrink:0}.chat-top{flex-wrap:wrap}.chat-top>div{min-width:0}
