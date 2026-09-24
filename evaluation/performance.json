@@ -1,0 +1,236 @@
+{
+  "created_at": "2026-09-24T13:32:23.442370+00:00",
+  "hardware": {
+    "platform": "macOS-26.6-arm64-arm-64bit-Mach-O",
+    "cpu": "Apple M4",
+    "ram_bytes": "25769803776",
+    "python": "3.14.6"
+  },
+  "ollama_version": {
+    "version": "0.32.5"
+  },
+  "model": "qwen2.5:7b",
+  "initial_models": {
+    "models": [
+      {
+        "name": "qwen2.5:7b",
+        "model": "qwen2.5:7b",
+        "size": 4979792280,
+        "digest": "845dbda0ea48ed749caafd9e6037047aa19acfcfd82e704d7ca97d631a0b697e",
+        "details": {
+          "parent_model": "",
+          "format": "gguf",
+          "family": "qwen2",
+          "families": [
+            "qwen2"
+          ],
+          "parameter_size": "7.6B",
+          "quantization_level": "Q4_K_M"
+        },
+        "expires_at": "2026-09-24T10:36:30.328014-03:00",
+        "size_vram": 4979792280,
+        "context_length": 8192
+      }
+    ]
+  },
+  "runs": [
+    {
+      "label": "first",
+      "state": "done",
+      "timings_seconds": {
+        "queue": 0.0001,
+        "retrieval": 0.0007,
+        "generation_first_token": 0.1759,
+        "generation": 1.8276,
+        "review_first_token": 4.4893,
+        "review": 10.3904,
+        "total": 12.2221
+      },
+      "answer_status": "grounding_checked",
+      "validation_errors": [],
+      "error": null,
+      "cancel_requested": false,
+      "cancel_to_worker_exit_seconds": null,
+      "memory_samples": 23,
+      "memory_peak_mib": {
+        "python_rss_mib": 35.05,
+        "ollama_processes_rss_mib": 145.22
+      },
+      "loaded_models_after": {
+        "models": [
+          {
+            "name": "qwen2.5:7b",
+            "model": "qwen2.5:7b",
+            "size": 5457942936,
+            "digest": "845dbda0ea48ed749caafd9e6037047aa19acfcfd82e704d7ca97d631a0b697e",
+            "details": {
+              "parent_model": "",
+              "format": "gguf",
+              "family": "qwen2",
+              "families": [
+                "qwen2"
+              ],
+              "parameter_size": "7.6B",
+              "quantization_level": "Q4_K_M"
+            },
+            "expires_at": "2026-09-24T10:37:35.68034-03:00",
+            "size_vram": 5457942936,
+            "context_length": 16384
+          }
+        ]
+      }
+    },
+    {
+      "label": "repeat",
+      "state": "done",
+      "timings_seconds": {
+        "queue": 0.0,
+        "retrieval": 0.0059,
+        "generation_first_token": 4.6465,
+        "generation": 6.3094,
+        "review_first_token": 4.5382,
+        "review": 10.3419,
+        "total": 16.6581
+      },
+      "answer_status": "grounding_checked",
+      "validation_errors": [],
+      "error": null,
+      "cancel_requested": false,
+      "cancel_to_worker_exit_seconds": null,
+      "memory_samples": 31,
+      "memory_peak_mib": {
+        "python_rss_mib": 35.42,
+        "ollama_processes_rss_mib": 137.89
+      },
+      "loaded_models_after": {
+        "models": [
+          {
+            "name": "qwen2.5:7b",
+            "model": "qwen2.5:7b",
+            "size": 5457942936,
+            "digest": "845dbda0ea48ed749caafd9e6037047aa19acfcfd82e704d7ca97d631a0b697e",
+            "details": {
+              "parent_model": "",
+              "format": "gguf",
+              "family": "qwen2",
+              "families": [
+                "qwen2"
+              ],
+              "parameter_size": "7.6B",
+              "quantization_level": "Q4_K_M"
+            },
+            "expires_at": "2026-09-24T10:37:52.340197-03:00",
+            "size_vram": 5457942936,
+            "context_length": 16384
+          }
+        ]
+      }
+    },
+    {
+      "label": "cancel_generation",
+      "state": "cancelled",
+      "timings_seconds": {
+        "queue": 0.0,
+        "retrieval": 0.0059,
+        "generation_first_token": 4.7163,
+        "generation": 5.0315,
+        "total": 5.0377
+      },
+      "answer_status": null,
+      "validation_errors": null,
+      "error": null,
+      "cancel_requested": true,
+      "cancel_to_worker_exit_seconds": 0.0004,
+      "memory_samples": 10,
+      "memory_peak_mib": {
+        "python_rss_mib": 35.45,
+        "ollama_processes_rss_mib": 137.95
+      },
+      "loaded_models_after": {
+        "models": [
+          {
+            "name": "qwen2.5:7b",
+            "model": "qwen2.5:7b",
+            "size": 4979792280,
+            "digest": "845dbda0ea48ed749caafd9e6037047aa19acfcfd82e704d7ca97d631a0b697e",
+            "details": {
+              "parent_model": "",
+              "format": "gguf",
+              "family": "qwen2",
+              "families": [
+                "qwen2"
+              ],
+              "parameter_size": "7.6B",
+              "quantization_level": "Q4_K_M"
+            },
+            "expires_at": "2026-09-24T10:37:57.380072-03:00",
+            "size_vram": 4979792280,
+            "context_length": 8192
+          }
+        ]
+      }
+    },
+    {
+      "label": "cancel_review",
+      "state": "cancelled",
+      "timings_seconds": {
+        "queue": 0.0002,
+        "retrieval": 0.0031,
+        "generation_first_token": 0.1506,
+        "generation": 1.9383,
+        "review_first_token": 4.4823,
+        "review": 4.7789,
+        "total": 6.7211
+      },
+      "answer_status": null,
+      "validation_errors": null,
+      "error": null,
+      "cancel_requested": true,
+      "cancel_to_worker_exit_seconds": 0.0005,
+      "memory_samples": 13,
+      "memory_peak_mib": {
+        "python_rss_mib": 35.47,
+        "ollama_processes_rss_mib": 138.78
+      },
+      "loaded_models_after": {
+        "models": [
+          {
+            "name": "qwen2.5:7b",
+            "model": "qwen2.5:7b",
+            "size": 5457942936,
+            "digest": "845dbda0ea48ed749caafd9e6037047aa19acfcfd82e704d7ca97d631a0b697e",
+            "details": {
+              "parent_model": "",
+              "format": "gguf",
+              "family": "qwen2",
+              "families": [
+                "qwen2"
+              ],
+              "parameter_size": "7.6B",
+              "quantization_level": "Q4_K_M"
+            },
+            "expires_at": "2026-09-24T10:38:04.105243-03:00",
+            "size_vram": 5457942936,
+            "context_length": 16384
+          }
+        ]
+      }
+    }
+  ],
+  "method": "Pipeline real em um worker; banco temporário com fontes versionadas. Tempos excluem HTTP do navegador, polling e apresentação progressiva. RSS amostrado a cada 0,5 s; pode perder picos. RSS de processos Ollama pode contar páginas compartilhadas. Alocação do modelo não deve ser somada ao RSS.",
+  "sha256": {
+    "server.py": "3176bc530c0c9496f03e0413b8e78e5c47d9e882689d86ad1e0aad4a08759ac1",
+    "jobs.py": "fbbcb70fc1f9021cb07a1e5e1b4cb7a736ca51763bb385f2c698599648dfbc57",
+    "ollama_transport.py": "18f57be830b66a61d51eb86c20d05c43b9da42118ba314c4e445b64262ac8a4a",
+    "knowledge.py": "eecb68c826aa08a1c5fe16273677477ea90fdc2ba6116d24afd0499813d2ca78",
+    "conversation.py": "93ebb2af78ded416f0d2a26c55ae3e67bb2200c696c218f525c845d0a230ef8d",
+    "answer_policy.py": "ff46fced18db4b81e83b800e36779cdd15895966c8248106d0af76770677bd0e",
+    "benchmark_performance.py": "cf66f2d7473c97aa7960ce975fbc5e4437db096b842fc156417a13b973a6bbef",
+    "sources/antibioticos.json": "a481663a860fbf6ee69784495df819745fc34fb34602d5c5b501def8ede939eb",
+    "sources/antimicrobianos-cuidados.json": "c9416aafca053111953234e5106325aca1d1168853aba02051ec5693b1c37817",
+    "sources/dengue.json": "0846ce032bcdb39cc6cd5902630131d70abe5b2dc526f2cd5d696502d908786d",
+    "sources/desinformacao.json": "badf1a1ace1339eaebba8fc4ca72d31e899d52b82b5a306b0e36ec21d43b676c",
+    "sources/identificar-boatos.json": "f09a8123a87179804bb729c9de3d7aafa439be0413c55fe28c511b75fcd4f8ff",
+    "sources/vacinas-seguranca.json": "f64c7f4b17da331a463fbf2dd40032be93e7c6e0d757e958fdcb37d70a7b1a43"
+  }
+}
