@@ -7,4 +7,4 @@ if __name__ == '__main__':
     for path in sorted((Path(__file__).resolve().parent / 'sources').glob('*.json')):
         count = import_document(path)
         print(f'{path.name}: {count} trecho(s) importado(s).')
-    print('Conjunto experimental: sínteses por IA; revisão humana pendente.')
+    print('Conjunto experimental: sínteses por IA; revisão documental por IA concluída.')
