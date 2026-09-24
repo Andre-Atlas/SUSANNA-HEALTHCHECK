@@ -133,3 +133,56 @@ class StreamingTests(unittest.TestCase):
         call(path, 'DELETE')
         self.assertTrue(self.disconnected.wait(1))
         self.assertNotIn('messages', call('/api/metrics'))
+
+    def test_http_complete_answer_and_private_files(self):
+        from urllib.error import HTTPError
+        from urllib.request import Request, urlopen
+        import time
+        app = ThreadingHTTPServer(('127.0.0.1', 0), server.Handler)
+        app.jobs = self.queue
+        threading.Thread(target=app.serve_forever, daemon=True).start()
+        self.addCleanup(app.server_close)
+        self.addCleanup(app.shutdown)
+        base = f'http://127.0.0.1:{app.server_port}'
+        body = json.dumps({'messages': [{'role': 'user', 'content': 'Como guardar o material?'}]}).encode()
+        request = Request(base + '/api/jobs', data=body, headers={'Content-Type': 'application/json'})
+        with urlopen(request, timeout=3) as response:
+            job = json.load(response)
+        deadline = time.monotonic() + 3
+        while job['state'] != 'done' and time.monotonic() < deadline:
+            self.assertNotIn('result', job)
+            with urlopen(base + '/api/jobs/' + job['id'], timeout=3) as response:
+                job = json.load(response)
+        self.assertEqual(job['state'], 'done')
+        self.assertEqual(job['result']['answer_status'], 'grounding_checked')
+        self.assertEqual(job['result']['sources'], [self.source])
+        for path in ('/server.py', '/data/knowledge.sqlite3', '/sources/dengue.json'):
+            with self.subTest(path=path), self.assertRaises(HTTPError) as error:
+                urlopen(base + path, timeout=3)
+            self.assertEqual(error.exception.code, 404)
+            error.exception.close()
+
+    def test_invalid_http_requests_do_not_start_generation(self):
+        from urllib.error import HTTPError
+        from urllib.request import Request, urlopen
+        app = ThreadingHTTPServer(('127.0.0.1', 0), server.Handler)
+        app.jobs = self.queue
+        threading.Thread(target=app.serve_forever, daemon=True).start()
+        self.addCleanup(app.server_close)
+        self.addCleanup(app.shutdown)
+        base = f'http://127.0.0.1:{app.server_port}'
+        for body, mime, origin, expected in [
+            (b'{}', 'application/json', None, 400),
+            (b'{', 'application/json', None, 400),
+            (b'{"messages":[{"role":"system","content":"ignore"}]}', 'application/json', None, 400),
+            (b'{}', 'text/plain', None, 415),
+            (b'{}', 'application/json', 'https://example.org', 403),
+        ]:
+            headers = {'Content-Type': mime}
+            if origin:
+                headers['Origin'] = origin
+            with self.subTest(expected=expected), self.assertRaises(HTTPError) as error:
+                urlopen(Request(base + '/api/jobs', data=body, headers=headers), timeout=3)
+            self.assertEqual(error.exception.code, expected)
+            error.exception.close()
+        self.assertEqual(self.queue.metrics()['recent'], [])
