@@ -60,7 +60,7 @@ a resistência à injeção de prompt ainda precisa de avaliação adversarial.
 - O conjunto ampliado contém seis sínteses experimentais: carregue com `python3 seed_knowledge.py`. Status: Revisado por IA.
 - Resultados lexicais podem ser irrelevantes. Não existe limiar calibrado de relevância.
 - Links vêm dos registros locais; citações no texto ainda são geradas pelo modelo.
-- Não existe validação automática de que uma afirmação é sustentada por uma fonte.
+- Há revisão automática de apoio documental por IA e conferência de evidências literais; ela pode errar e não garante fidelidade factual.
 - Não há atualização automática, extração de PDFs, busca semântica ou reranking.
 - Antes do piloto: revisar as sínteses e ampliar o conjunto de perguntas com casos independentes. Os metadados de publicação, autoria e revisão por IA estão nos JSONs versionados; o índice atual mantém somente título, texto, URL e data de conferência.
 
