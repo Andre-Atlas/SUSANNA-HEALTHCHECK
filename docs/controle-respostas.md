@@ -16,7 +16,22 @@
   uma mensagem controlada e mantém disponíveis os trechos recuperados.
 - Links clicáveis continuam vindo dos registros da base, não da resposta da LLM.
 
-Não há nova dependência, chamada externa ou segunda inferência de verificação.
+Após a validação formal há uma segunda inferência local de verificação documental.
+O revisor recebe a pergunta atual, os parágrafos e somente as fontes citadas na
+resposta, mantendo os IDs originais. Fontes recuperadas mas não citadas não podem
+justificar a resposta nessa revisão. Avalia
+apoio de todas as afirmações, ressalvas, relevância e contradições entre as fontes citadas. Para cada ID
+citado exige-se o texto literal de uma fonte. O schema JSON restringe as opções
+aos textos fornecidos; o código confere a correspondência com o ID citado,
+os tipos dos campos e a cobertura de todos os parágrafos e IDs.
+
+Espaços dentro de citações e grupos como `[1, 2]` são normalizados para `[1][2]`.
+Não se acrescentam IDs ausentes nem se substituem fontes. Ausência de citação,
+links gerados e truncamento continuam bloqueados. A revisão também falha de modo
+conservador se retornar JSON inválido, evidência inexistente, exceder contexto,
+truncar ou ficar indisponível. O rascunho e o parecer bruto nunca vão ao navegador.
+
+Não há nova dependência nem serviço externo; usa-se o mesmo Ollama local.
 Erros de conexão com o Ollama continuam sendo tratados como erros HTTP quando
 a geração é necessária; a ausência de evidência dispensa a conexão.
 
@@ -29,17 +44,18 @@ Além de `message`, `model` e `sources`, a API informa:
 
 | Campo | Significado |
 |---|---|
-| `answer_status` | `no_evidence`, `insufficient_evidence`, `reference_rejected` ou `references_valid` |
+| `answer_status` | `no_evidence`, `insufficient_evidence`, `reference_rejected`, `grounding_rejected` ou `grounding_checked` |
 | `llm_called` | Indica se houve chamada ao modelo |
 | `validation_errors` | Motivos técnicos da rejeição; não contém o texto bloqueado |
 | `done_reason` | Motivo de término informado pelo Ollama, quando houver geração |
 
-`references_valid` significa apenas que as regras formais foram atendidas.
+`grounding_checked` significa que as regras formais e o revisor por IA aceitaram a resposta.
 Não significa “conteúdo verdadeiro”, “fonte oficial validada” ou “resposta aprovada”.
 
 ```bash
 python3 -m unittest discover -s tests -v
 python3 evaluate.py --llm --output evaluation/controlled.json
+python3 evaluate_grounding.py
 ```
 
 O relatório anterior está preservado em `evaluation/llm.json`. O novo relatório
@@ -49,10 +65,18 @@ necessário inspecionar rejeições, abstenções e fidelidade no relatório.
 
 ## Limites
 
-As regras não verificam semanticamente se o parágrafo é sustentado pela citação.
-Uma afirmação incorreta acompanhada de um ID existente pode passar. O filtro de
-links reconhece padrões comuns; não é um detector universal de endereços ofuscados.
-A regra de citação por parágrafo também não mede suporte de cada frase individual.
+A revisão semântica é probabilística e usa o mesmo modelo da geração: erros
+correlacionados e aceitação indevida continuam possíveis. A existência literal de
+uma evidência não prova que ela sustenta a afirmação; esse julgamento é da IA.
+O modelo é instruído a avaliar todas as frases de cada parágrafo, mas pode omitir
+uma falha. Conflitos com documentos não citados não são avaliados nessa etapa.
+A revisão considera a pergunta atual, sem resolver referências ambíguas
+ao histórico. Citações sem número não são reconstruídas. A segunda inferência
+aumenta latência e usa contexto de até 16.384 tokens, com limite conservador por
+bytes (incluindo o schema) e 2.000 tokens de saída. Ainda não há cancelamento ou fila de geração.
+Cada chamada ao Ollama mantém timeout de 180 segundos; a interface espera até
+370 segundos para comportar geração e revisão. O cancelamento no navegador
+continua sem interromper a inferência local.
 
 O controle conservador pode rejeitar uma resposta útil por formato. Não inserimos
 citações automaticamente, pois isso atribuiria evidência sem verificar a relação.
@@ -60,6 +84,10 @@ As sínteses da base têm revisão documental por IA concluída. Antes do piloto
 avaliar fidelidade com pessoas da equipe e perguntas independentes.
 
 ## Resultado da rodada local
+
+Os resultados abaixo são históricos, anteriores à segunda inferência. A rodada
+atual está em `evaluation/fidelidade.json`; seu código de saída não mede acurácia
+semântica, apenas recuperação e erros de execução.
 
 Após ajustar as instruções de formato e o tratamento do marcador de abstenção:
 
