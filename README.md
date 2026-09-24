@@ -36,9 +36,10 @@ O chatbot consulta uma base documental local usando SQLite FTS5. O repositório 
 
 Os trechos enviados ao modelo são apresentados com suas referências. A busca inicial é lexical; recuperar um trecho não comprova uma alegação. Ainda precisamos avaliar relevância, fidelidade das respostas e citações. Não se deve apresentar as respostas como checagem factual ou orientação médica.
 
-Sem fontes, o servidor responde sem chamar a LLM. Com fontes, valida o formato das
-referências e bloqueia respostas que não atendam às regras. Isso não comprova
-fidelidade factual. Veja [controle de respostas](docs/controle-respostas.md).
+Sem fontes, o servidor responde sem chamar a LLM. Com fontes, valida referências
+e faz uma segunda revisão por IA do apoio documental, exigindo evidências literais
+nas fontes citadas antes de exibir a resposta. A revisão pode errar e acrescenta
+tempo de processamento. Veja [controle de respostas](docs/controle-respostas.md).
 
 Depois de atualizar o código, reinicie `python3 server.py` e recarregue a página. Importar novos documentos não exige reinício.
 
