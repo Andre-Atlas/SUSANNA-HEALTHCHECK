@@ -2,6 +2,7 @@ const messages = document.querySelector('#messages');
 const input = document.querySelector('#question');
 const form = document.querySelector('#chat-form');
 const status = document.querySelector('#model-status');
+const cancelButton = document.querySelector('#cancel');
 const controls = [...form.querySelectorAll('button'), ...document.querySelectorAll('.suggestions button')];
 const welcome = 'Olá! Sou o InspectorFakeNews. Posso ajudar a analisar uma mensagem e identificar o que precisa ser conferido. Consulto documentos locais cadastrados pela equipe, quando disponíveis, sem pesquisa na internet ao vivo. Posso cometer erros; uma resposta não equivale a uma checagem de fatos. Qual é sua dúvida?';
 let history = [];
@@ -24,6 +25,8 @@ function setBusy(busy) {
   controls.forEach(button => { button.disabled = busy; });
   input.disabled = busy;
   form.setAttribute('aria-busy', String(busy));
+  cancelButton.hidden = !busy;
+  cancelButton.disabled = false;
 }
 
 function addSources(bubble, sources) {
@@ -63,41 +66,107 @@ async function checkHealth() {
   }
 }
 
+const pause = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+function cancelRequest(request, reason = 'user') {
+  if (!request) return;
+  request.reason = reason;
+  if (activeRequest === request && request.pending) {
+    request.pending.content.textContent = 'Cancelando o pedido…';
+    cancelButton.disabled = true;
+  }
+  request.controller.abort();
+  if (request.id) {
+    // keepalive permite enviar o cancelamento também ao sair/recarregar a página.
+    fetch(`/api/jobs/${request.id}`, { method: 'DELETE', keepalive: true }).catch(() => {});
+  }
+}
+
+async function showApprovedText(pending, text, request) {
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const chunks = text.match(/.{1,100}(?:\s|$)|.{1,100}/gs) || [text];
+  pending.content.textContent = '';
+  for (const chunk of chunks) {
+    request.controller.signal.throwIfAborted();
+    if (activeRequest !== request) return;
+    pending.content.textContent += chunk;
+    messages.scrollTop = messages.scrollHeight;
+    if (!reducedMotion) await pause(35);
+  }
+}
+
 async function send(text) {
   const question = text.trim();
   if (!question || activeRequest || question.length > 3000) return;
-  const controller = new AbortController();
-  activeRequest = controller;
+  const request = { controller: new AbortController(), id: null, reason: null };
+  activeRequest = request;
   const pendingHistory = [...history.slice(-12), { role: 'user', content: question }];
   addMessage(question, true);
   input.value = '';
   setBusy(true);
-  const pending = addMessage('Preparando a resposta e conferindo o apoio nas fontes… O primeiro carregamento pode levar mais tempo.');
-  const timer = setTimeout(() => controller.abort(), 370000);
+  const pending = addMessage('Enviando sua pergunta…');
+  request.pending = pending;
+  pending.bubble.setAttribute('aria-busy', 'true');
+  const timer = setTimeout(() => cancelRequest(request, 'timeout'), 490000);
   try {
-    const response = await fetch('/api/chat', {
+    // Não abortar a criação ao clicar Limpar: precisamos receber o ID para cancelá-lo.
+    const response = await fetch('/api/jobs', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ messages: pendingHistory }), signal: controller.signal,
+      body: JSON.stringify({ messages: pendingHistory }), signal: AbortSignal.timeout(10000),
     });
-    let data;
-    try { data = await response.json(); } catch { throw new Error('Abra o chat pelo servidor Python: http://127.0.0.1:8002.'); }
-    if (!response.ok) throw new Error(data.error || 'Não foi possível gerar a resposta.');
-    if (typeof data.message !== 'string' || !data.message.trim()) throw new Error('Resposta vazia do modelo.');
-    if (activeRequest !== controller) return;
-    pending.content.textContent = data.message;
+    let job = await response.json();
+    if (!response.ok) throw new Error(job.error || 'Não foi possível enviar a pergunta.');
+    request.id = job.id;
+    if (request.controller.signal.aborted) {
+      cancelRequest(request, request.reason);
+      request.controller.signal.throwIfAborted();
+    }
+    const stages = {
+      retrieval: 'Consultando as fontes locais…',
+      generation: 'Preparando a resposta… O primeiro carregamento pode levar mais tempo.',
+      review: 'Conferindo a resposta nas fontes antes de exibi-la…',
+    };
+    while (!['done', 'error', 'cancelled'].includes(job.state)) {
+      request.controller.signal.throwIfAborted();
+      if (activeRequest !== request) return;
+      const progress = job.state === 'queued'
+        ? `Aguardando na fila · posição ${job.queue_position || 1}`
+        : stages[job.stage] || 'Processando sua pergunta…';
+      pending.content.textContent = `${progress} (${Math.floor(job.elapsed_seconds || 0)} s)`;
+      await pause(500);
+      const poll = await fetch(`/api/jobs/${request.id}`, { signal: request.controller.signal });
+      job = await poll.json();
+      if (!poll.ok) throw new Error(job.error || 'Não foi possível acompanhar o pedido.');
+    }
+    if (job.state === 'error') throw new Error(job.error);
+    if (job.state === 'cancelled') {
+      throw new Error(job.cancel_reason === 'queue_timeout'
+        ? 'O tempo de espera na fila terminou. Tente novamente.'
+        : 'Pedido interrompido. Envie a pergunta novamente para continuar.');
+    }
+    const data = job.result;
+    if (typeof data?.message !== 'string' || !data.message.trim()) throw new Error('Resposta vazia do servidor.');
+    if (activeRequest !== request) return;
+    // Apenas o resultado final aprovado (ou a mensagem segura de recusa) chega aqui.
+    await showApprovedText(pending, data.message, request);
+    request.controller.signal.throwIfAborted();
     addSources(pending.bubble, Array.isArray(data.sources) ? data.sources : []);
     history = [...pendingHistory, { role: 'assistant', content: data.message }];
-    status.textContent = `Local · ${data.model}`;
+    status.textContent = `Local · ${data.model} · ${job.elapsed_seconds} s`;
   } catch (error) {
-    if (activeRequest !== controller) return;
-    pending.content.textContent = error.name === 'AbortError'
-      ? 'A resposta demorou demais. Tente novamente com uma mensagem menor.'
+    // Falha de rede também cancela a execução; a expiração cobre pedidos inacessíveis.
+    if (!request.reason) cancelRequest(request, 'network_error');
+    if (activeRequest !== request) return;
+    pending.content.textContent = request.reason === 'user'
+      ? 'Pedido cancelado.'
+      : request.reason === 'timeout' ? 'O tempo de espera terminou. Tente novamente.'
       : error instanceof TypeError ? 'Sem conexão com o servidor. Execute python3 server.py.' : error.message;
     pending.bubble.classList.add('error');
     input.value = question;
   } finally {
     clearTimeout(timer);
-    if (activeRequest === controller) {
+    pending.bubble.removeAttribute('aria-busy');
+    if (activeRequest === request) {
       activeRequest = null;
       setBusy(false);
       input.focus();
@@ -122,7 +191,7 @@ document.querySelectorAll('.suggestions button').forEach(button => {
 document.querySelector('#clear').addEventListener('click', () => {
   const previous = activeRequest;
   activeRequest = null;
-  previous?.abort();
+  cancelRequest(previous);
   history = [];
   messages.replaceChildren();
   input.value = '';
@@ -131,5 +200,7 @@ document.querySelector('#clear').addEventListener('click', () => {
   input.focus();
   checkHealth();
 });
+cancelButton.addEventListener('click', () => cancelRequest(activeRequest));
+window.addEventListener('pagehide', () => cancelRequest(activeRequest));
 addMessage(welcome);
 checkHealth();
