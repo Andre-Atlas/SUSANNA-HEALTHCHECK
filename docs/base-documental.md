@@ -2,8 +2,8 @@
 
 Esta etapa usa Python, SQLite FTS5 e Ollama. Não requer serviço pago,
 embeddings ou novos pacotes pip. O Python precisa ter SQLite com FTS5 habilitado.
-Busca por palavras não compreende todos os sinônimos nem resolve perguntas
-de continuidade como “e ela?”. A consulta considera a pergunta atual.
+A busca expande algumas variações e corrige erros simples de digitação. Formas
+limitadas de continuidade usam perguntas anteriores; veja [busca e conversa](busca-conversa.md).
 
 ## Cadastrar uma fonte
 
@@ -40,8 +40,8 @@ Novas importações ficam disponíveis sem reiniciar o servidor.
 
 O conjunto ampliado contém seis sínteses. Consulte [temas, cobertura e manutenção](escopo-fontes.md), incluindo o procedimento de retirada por `python knowledge.py --remove-url "URL"`.
 
-1. A pergunta atual é pesquisada no índice lexical FTS5.
-2. Até 30 candidatos são ordenados por BM25. Para perguntas com vários termos, exigem-se pelo menos duas coincidências distintas; até três trechos são selecionados. Esse filtro é heurístico e não mede confiança factual.
+1. A pergunta é contextualizada quando corresponde a uma forma de continuidade reconhecida; seus termos são expandidos e pesquisados no índice lexical FTS5.
+2. Até 30 candidatos são ordenados por BM25. Para perguntas com vários conceitos, exigem-se pelo menos dois conceitos distintos; até três trechos são selecionados. Sinônimos contam uma vez. Esse filtro é heurístico e não mede confiança factual.
 3. O servidor ajusta histórico e trechos a um orçamento conservador de contexto.
 4. O Ollama recebe as instruções, os trechos e a conversa restante.
 5. A interface apresenta os trechos efetivamente enviados e seus links.
@@ -61,7 +61,7 @@ a resistência à injeção de prompt ainda precisa de avaliação adversarial.
 - Resultados lexicais podem ser irrelevantes. Não existe limiar calibrado de relevância.
 - Links vêm dos registros locais; citações no texto ainda são geradas pelo modelo.
 - Há revisão automática de apoio documental por IA e conferência de evidências literais; ela pode errar e não garante fidelidade factual.
-- Não há atualização automática, extração de PDFs, busca semântica ou reranking.
+- Não há atualização automática, extração de PDFs ou busca semântica. A reordenação experimental por cobertura fica desativada por padrão, pois não melhorou a avaliação atual.
 - Antes do piloto: revisar as sínteses e ampliar o conjunto de perguntas com casos independentes. Os metadados de publicação, autoria e revisão por IA estão nos JSONs versionados; o índice atual mantém somente título, texto, URL e data de conferência.
 
 Referências técnicas: [SQLite FTS5](https://www.sqlite.org/fts5.html) e
