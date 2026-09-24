@@ -61,6 +61,24 @@ python3 evaluate.py --llm --output evaluation/llm.json
 
 A avaliação usa uma base temporária com o conjunto versionado, sem alterar seus documentos locais. Veja [fontes e critérios de avaliação](docs/avaliacao-inicial.md).
 
+## Aceitação e revisão humana
+
+Novos cenários e instruções de revisão estão em [aceitação e testes adversariais](docs/aceitacao.md).
+A rodada real obteve **5/14** nos critérios automáticos do fluxo HTTP e **4/5** no
+revisor isolado. Foi observada aceitação indevida de uma resposta contraditória
+quando a fonte incluía uma instrução maliciosa ao revisor; isso bloqueia a aprovação
+do piloto. Revisões humanas e verificação real de navegador/celular permanecem pendentes.
+
+O [pacote de revisão](evaluation/acceptance.human.md) contém as perguntas, respostas
+exibidas, fontes e campos pendentes para duas pessoas. Os relatórios são de testes
+sintéticos, sem gravação de conversas reais de usuários.
+
+```bash
+python3 audit_interface.py --output evaluation/interface-nova-rodada.json
+python3 evaluate_acceptance.py --output evaluation/acceptance-nova-rodada.json
+python3 evaluate_grounding.py --cases evaluation/review-acceptance-cases.json --output evaluation/review-nova-rodada.json
+```
+
 ## Referências técnicas
 
 - [API de conversa do Ollama](https://docs.ollama.com/api/chat)
