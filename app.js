@@ -3,10 +3,16 @@ const input = document.querySelector('#question');
 const form = document.querySelector('#chat-form');
 const status = document.querySelector('#model-status');
 const cancelButton = document.querySelector('#cancel');
+const progressStatus = document.querySelector('#chat-progress');
 const controls = [...form.querySelectorAll('button'), ...document.querySelectorAll('.suggestions button')];
 const welcome = 'Olá! Sou o InspectorFakeNews. Posso ajudar a analisar uma mensagem e identificar o que precisa ser conferido. Consulto documentos locais cadastrados pela equipe, quando disponíveis, sem pesquisa na internet ao vivo. Posso cometer erros; uma resposta não equivale a uma checagem de fatos. Qual é sua dúvida?';
 let history = [];
 let activeRequest = null;
+
+function announceProgress(text) {
+  // Anunciar mudanças de etapa, não cada atualização do cronômetro.
+  if (progressStatus.textContent !== text) progressStatus.textContent = text;
+}
 
 function addMessage(text, user = false) {
   const bubble = document.createElement('div');
@@ -73,6 +79,7 @@ function cancelRequest(request, reason = 'user') {
   request.reason = reason;
   if (activeRequest === request && request.pending) {
     request.pending.content.textContent = 'Cancelando o pedido…';
+    announceProgress('Cancelando o pedido…');
     cancelButton.disabled = true;
   }
   request.controller.abort();
@@ -105,6 +112,7 @@ async function send(text) {
   input.value = '';
   setBusy(true);
   const pending = addMessage('Enviando sua pergunta…');
+  announceProgress('Enviando sua pergunta…');
   request.pending = pending;
   pending.bubble.setAttribute('aria-busy', 'true');
   const timer = setTimeout(() => cancelRequest(request, 'timeout'), 490000);
@@ -133,6 +141,7 @@ async function send(text) {
         ? `Aguardando na fila · posição ${job.queue_position || 1}`
         : stages[job.stage] || 'Processando sua pergunta…';
       pending.content.textContent = `${progress} (${Math.floor(job.elapsed_seconds || 0)} s)`;
+      announceProgress(progress);
       await pause(500);
       const poll = await fetch(`/api/jobs/${request.id}`, { signal: request.controller.signal });
       job = await poll.json();
@@ -153,6 +162,7 @@ async function send(text) {
     addSources(pending.bubble, Array.isArray(data.sources) ? data.sources : []);
     history = [...pendingHistory, { role: 'assistant', content: data.message }];
     status.textContent = `Local · ${data.model} · ${job.elapsed_seconds} s`;
+    announceProgress('Resposta pronta. Confira o texto e as fontes na conversa.');
   } catch (error) {
     // Falha de rede também cancela a execução; a expiração cobre pedidos inacessíveis.
     if (!request.reason) cancelRequest(request, 'network_error');
@@ -162,6 +172,7 @@ async function send(text) {
       : request.reason === 'timeout' ? 'O tempo de espera terminou. Tente novamente.'
       : error instanceof TypeError ? 'Sem conexão com o servidor. Execute python3 server.py.' : error.message;
     pending.bubble.classList.add('error');
+    announceProgress(pending.content.textContent);
     input.value = question;
   } finally {
     clearTimeout(timer);
@@ -197,6 +208,7 @@ document.querySelector('#clear').addEventListener('click', () => {
   input.value = '';
   setBusy(false);
   addMessage(welcome);
+  announceProgress('Conversa limpa.');
   input.focus();
   checkHealth();
 });
