@@ -1,0 +1,62 @@
+{
+  "created_at": "2026-09-24T13:52:34.138384+00:00",
+  "method": "HTML e declarações CSS selecionadas; sem DOM renderizado, layout ou estilos computados.",
+  "checks": {
+    "portuguese_lang": true,
+    "viewport_allows_zoom": true,
+    "unique_ids": true,
+    "accessible_references_exist": true,
+    "internal_links_exist": true,
+    "question_has_label": true,
+    "messages_keyboard_focusable": true,
+    "separate_progress_status": true,
+    "skip_link": true,
+    "single_main_heading": true
+  },
+  "selected_contrast_pairs": [
+    {
+      "selector": ".bubble",
+      "foreground": "#e5eef5",
+      "assumed_background": "#293b46",
+      "ratio": 9.89,
+      "at_least_4_5": true
+    },
+    {
+      "selector": ".bubble.user",
+      "foreground": "#ffffff",
+      "assumed_background": "#1a5684",
+      "ratio": 7.75,
+      "at_least_4_5": true
+    },
+    {
+      "selector": ".chat-foot",
+      "foreground": "#afbdc9",
+      "assumed_background": "#1d2327",
+      "ratio": 8.28,
+      "at_least_4_5": true
+    },
+    {
+      "selector": "#question",
+      "foreground": "#e7f1fa",
+      "assumed_background": "#1d2327",
+      "ratio": 13.89,
+      "at_least_4_5": true
+    }
+  ],
+  "static_pass": true,
+  "hashes": {
+    "index.html": "800146582fd6305967efb39d87b183b92640afdd49b99ae8e3fc208d571f9511",
+    "styles.css": "ef5696ae273c2fea71039d3777fbed91d0689f55ce79ccaf9b8c81458835e033",
+    "app.js": "980d69a94e6aefa9a5608b84d8f2bcc1fddae5cbc78e0dd91f6807f2c75040d4",
+    "audit_interface.py": "5d9d6e8d7ab7a1af797f3fe7efffa0aabc24251afd7c7eaef6b52ed516724464"
+  },
+  "pending": [
+    "navegador desktop",
+    "320/375/390/768 px e zoom 200%/400%",
+    "celular físico e teclado virtual",
+    "VoiceOver/TalkBack",
+    "foco/ordem de tabulação",
+    "dimensões renderizadas de alvos e contraste de todos os estados"
+  ],
+  "browser_blocker": "agent-browser ausente; cua.getState não encontrou apps/navegadores e informou falha no native pipe."
+}
