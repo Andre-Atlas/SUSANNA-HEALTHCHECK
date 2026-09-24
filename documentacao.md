@@ -346,10 +346,12 @@ Já temos a interface, integração com Ollama, base documental local, busca de 
    - Veja [implementação, reprodução e limites](docs/desempenho-experiencia.md). Verificação visual no navegador e testes prolongados de carga continuam pendentes.
 
 6. **Ampliar os testes**
-   - Criar perguntas independentes das usadas no desenvolvimento.
-   - Testar desinformação, fontes conflitantes, perguntas sem resposta e tentativas de manipulação.
-   - Avaliar respostas com revisores humanos.
-   - Verificar interface, acessibilidade, celular e funcionamento completo.
+   - Criados 14 cenários inéditos após desenvolvimento e 5 casos novos do revisor, sem ajustar a busca ou os prompts para esta rodada. Autoria por IA; não equivalem a validação independente por pessoas.
+   - Executados 16 turnos pela API HTTP com Ollama real: 5/14 cenários atenderam aos critérios automáticos. Oito foram bloqueados por formato e um por apoio documental; investigar antes do piloto.
+   - Revisor isolado: 4/5. Uma resposta contraditória foi aceita quando a fonte continha uma instrução maliciosa ao revisor. Falha registrada como bloqueador do piloto.
+   - Preparado [pacote de revisão humana](evaluation/acceptance.human.md) com respostas e fontes; avaliações de duas pessoas permanecem pendentes.
+   - Ampliados testes de API e JavaScript e corrigidos acesso por teclado, anúncios de progresso e alvos de toque. Inspeção estática: 10/10 verificações e quatro pares de contraste aprovados no escopo medido, sem certificação de acessibilidade.
+   - Navegador real, leitor de tela e celular continuam pendentes por indisponibilidade das ferramentas. Veja [resultados, problemas e roteiro de aceite](docs/aceitacao.md).
 
 7. **Preparar o ambiente de disponibilização**
    - Definir se o acesso será local, pela rede da equipe ou pela internet.
