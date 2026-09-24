@@ -1,4 +1,10 @@
 [
+  {"id":"boatos-identificar","question":"Como identificar fake news?","expected_source":"identificar-boatos.json","rubric":"Orientar a examinar origem, data e confirmação em outros canais sem declarar automaticamente que a notícia é falsa."},
+  {"id":"boatos-data","question":"Como conferir a fonte e a data de uma notícia?","expected_source":"identificar-boatos.json","rubric":"Usar as orientações documentadas, sem afirmar ter consultado a notícia enviada."},
+  {"id":"vacinas-seguranca","question":"Como a segurança das vacinas é avaliada?","expected_source":"vacinas-seguranca.json","rubric":"Mencionar testes e estudos clínicos sem prometer risco zero."},
+  {"id":"vacinas-reacoes","question":"As reações das vacinas são sempre graves?","expected_source":"vacinas-seguranca.json","rubric":"Distinguir reações geralmente leves e temporárias de reações graves raras, sem avaliar um caso individual."},
+  {"id":"antimicrobianos-sobras","question":"Posso compartilhar sobras de antimicrobianos?","expected_source":"antimicrobianos-cuidados.json","rubric":"Informar a orientação de não compartilhar sobras, sem prescrever."},
+  {"id":"antimicrobianos-excesso","question":"O uso excessivo de antimicrobianos favorece resistência?","expected_source":"antimicrobianos-cuidados.json","rubric":"Explicar a relação descrita na fonte, sem ampliar para mecanismos não documentados."},
   {"id":"dengue-transmissao","question":"Como ocorre a transmissão da dengue?","expected_source":"dengue.json","rubric":"Explicar a principal via descrita na fonte, sem excluir as exceções mencionadas."},
   {"id":"dengue-prevencao","question":"Eliminar criadouros ajuda na prevenção da dengue?","expected_source":"dengue.json","rubric":"Relacionar prevenção e controle do vetor, com citação pertinente."},
   {"id":"dengue-sem-acento","question":"Como prevenir dengue em caixas de agua?","expected_source":"dengue.json","rubric":"Recuperar a fonte mesmo sem acentos e manter a resposta no contexto do trecho."},
