@@ -376,7 +376,7 @@ O principal ponto pendente é **a confiabilidade das respostas**: os testes de c
 
 ==============================
 
-Seu projeto é o **InspectorFakeNews**, um chatbot educativo sobre desinformação em saúde. Ele recebe perguntas pelo navegador, consulta documentos armazenados no computador e usa uma IA local para tentar responder com base nesses documentos.
+Seu projeto é o **SUSANNA-HEALTHCHECK**, um chatbot educativo sobre desinformação em saúde. Ele recebe perguntas pelo navegador, consulta documentos armazenados no computador e usa uma IA local para tentar responder com base nesses documentos.
 
 **O fluxo principal é este:**
 
