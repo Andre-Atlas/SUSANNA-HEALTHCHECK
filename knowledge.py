@@ -64,6 +64,16 @@ def import_document(path, database=DATABASE):
     return len(chunks)
 
 
+def remove_document(url, database=DATABASE):
+    """Retira somente os trechos da URL exata; não cria uma base ausente."""
+    database = Path(database)
+    if not database.exists():
+        return 0
+    with closing(sqlite3.connect(database.resolve().as_uri() + '?mode=rw', uri=True)) as connection, connection:
+        cursor = connection.execute('DELETE FROM chunks WHERE url = ?', (url,))
+        return cursor.rowcount
+
+
 def retrieve(question, database=DATABASE):
     """Busca lexical na pergunta atual; resultados não significam confirmação factual."""
     if not Path(database).exists():
@@ -86,10 +96,14 @@ def retrieve(question, database=DATABASE):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('document', help='Arquivo JSON revisado pela equipe')
+    parser.add_argument('document', nargs='?', help='Arquivo JSON revisado pela equipe')
+    parser.add_argument('--remove-url', help='Retira os trechos da URL exata da base local')
     args = parser.parse_args()
+    if bool(args.document) == bool(args.remove_url):
+        parser.error('Informe um documento ou --remove-url, exclusivamente.')
     try:
-        count = import_document(args.document)
+        count = remove_document(args.remove_url) if args.remove_url else import_document(args.document)
     except (ValueError, OSError, sqlite3.Error) as exc:
-        parser.exit(1, f'Não foi possível importar: {exc}\n')
-    print(f'Documento importado: {count} trechos. Base: {DATABASE}')
+        parser.exit(1, f'Não foi possível atualizar a base: {exc}\n')
+    action = 'retirados' if args.remove_url else 'importados'
+    print(f'{count} trechos {action}. Base: {DATABASE}')
