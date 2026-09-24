@@ -5,7 +5,7 @@ const status = document.querySelector('#model-status');
 const cancelButton = document.querySelector('#cancel');
 const progressStatus = document.querySelector('#chat-progress');
 const controls = [...form.querySelectorAll('button'), ...document.querySelectorAll('.suggestions button')];
-const welcome = 'Olá! Sou o InspectorFakeNews. Posso ajudar a analisar uma mensagem e identificar o que precisa ser conferido. Consulto documentos locais cadastrados pela equipe, quando disponíveis, sem pesquisa na internet ao vivo. Posso cometer erros; uma resposta não equivale a uma checagem de fatos. Qual é sua dúvida?';
+const welcome = 'Olá! Sou o SUSANNA-HEALTHCHECK. Posso ajudar a analisar uma mensagem e identificar o que precisa ser conferido. Consulto documentos locais cadastrados pela equipe, quando disponíveis, sem pesquisa na internet ao vivo. Posso cometer erros; uma resposta não equivale a uma checagem de fatos. Qual é sua dúvida?';
 let history = [];
 let activeRequest = null;
 
@@ -18,7 +18,7 @@ function addMessage(text, user = false) {
   const bubble = document.createElement('div');
   bubble.className = user ? 'bubble user' : 'bubble';
   const author = document.createElement('strong');
-  author.textContent = user ? 'Você' : 'InspectorFakeNews · IA local';
+  author.textContent = user ? 'Você' : 'SUSANNA-HEALTHCHECK · IA local';
   const content = document.createElement('span');
   content.textContent = text;
   bubble.append(author, content);
