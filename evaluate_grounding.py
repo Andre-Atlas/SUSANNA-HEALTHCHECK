@@ -1,5 +1,6 @@
 """Casos sintéticos do revisor por IA; não são documentos da base nem validação clínica."""
 import hashlib
+import argparse
 import json
 import time
 from datetime import datetime, timezone
@@ -32,8 +33,15 @@ CASES = [
 
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--cases', type=Path, help='Casos novos em JSON, sem alterar os de desenvolvimento')
+    parser.add_argument('--output', type=Path, default=ROOT / 'evaluation/verificador.json')
+    args = parser.parse_args()
+    if args.cases and args.output.exists():
+        parser.error('Escolha --output novo para preservar a rodada anterior.')
+    cases = json.loads(args.cases.read_text()) if args.cases else CASES
     results = []
-    for name, question, source, answer, expected in CASES:
+    for name, question, source, answer, expected in cases:
         start = time.monotonic()
         sources = source if isinstance(source, list) else [source]
         errors = verify_grounding([{'role': 'user', 'content': question}], answer, [{'text': text} for text in sources])
@@ -46,9 +54,11 @@ if __name__ == '__main__':
                         'seconds': round(time.monotonic() - start, 2)})
         print(f'{name}: {"OK" if passed else "FALHOU"}', flush=True)
     report = {'created_at': datetime.now(timezone.utc).isoformat(), 'model': MODEL,
-              'note': 'Casos sintéticos de desenvolvimento; avaliação por IA, sem garantia factual.',
+              'note': 'Casos sintéticos avaliados por IA; sem revisão humana ou garantia factual.',
+              'cases_sha256': hashlib.sha256(args.cases.read_bytes()).hexdigest() if args.cases else None,
               'code_sha256': {p: hashlib.sha256((ROOT / p).read_bytes()).hexdigest()
                               for p in ('server.py', 'answer_policy.py', 'evaluate_grounding.py')},
               'passed': sum(row['passed'] for row in results), 'total': len(results), 'results': results}
-    (ROOT / 'evaluation/verificador.json').write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    args.output.write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
     raise SystemExit(0 if report['passed'] == report['total'] else 1)
