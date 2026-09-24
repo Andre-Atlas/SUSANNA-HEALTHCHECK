@@ -1,0 +1,25 @@
+{
+    "title":  "Antimicrobianos — automedicação e compartilhamento de sobras",
+    "url":  "https://www.gov.br/anvisa/pt-br/assuntos/noticias-anvisa/2021/campanha-saiba-mais-sobre-resistencia-microbiana-e-como-combate-la",
+    "reviewed_at":  "2026-09-24",
+    "publisher":  "Anvisa",
+    "published_at":  "2021-11-22",
+    "source_updated_at":  "2022-11-01",
+    "content_type":  "Síntese produzida por IA a partir da fonte; não é transcrição oficial",
+    "documentary_check":  {
+                              "checked_at":  "2026-09-24",
+                              "checked_by":  "Codex (IA)",
+                              "report":  "docs/escopo-fontes.md",
+                              "source_section":  "Como posso evitar que isso aconteça?",
+                              "reuse_assessment":  "Pendente de decisão da equipe",
+                              "review_status":  "Revisado por IA"
+                          },
+    "source_license_notice":  "Rodapé: CC BY-ND 3.0. Condições de reutilização da síntese pendentes; ver docs/revisao-fontes.md.",
+    "next_review_at":  "2026-10-24",
+    "coverage_questions":  [
+                               "Posso compartilhar sobras de antimicrobianos?",
+                               "O uso excessivo de antimicrobianos favorece resistência?"
+                           ],
+    "text":  "Síntese da Anvisa: o uso excessivo ou inadequado de antimicrobianos acelera a resistência dos microrganismos. A orientação é evitar a automedicação, utilizar esses medicamentos mediante prescrição e respeitar as instruções profissionais recebidas. Não se deve pressionar o profissional a receitar um medicamento considerado desnecessário nem compartilhar sobras de antimicrobianos.",
+    "review_status":  "Revisado por IA"
+}
