@@ -49,6 +49,18 @@ class KnowledgeTests(unittest.TestCase):
             knowledge.import_document(self.document(reviewed_at='invalid'), self.database)
         self.assertEqual(len(knowledge.retrieve('vacinação', self.database)), 1)
 
+    def test_remove_only_exact_url_and_all_its_chunks(self):
+        knowledge.import_document(self.document(text='vacinação exemplo ' * 600), self.database)
+        knowledge.import_document(self.document(url='https://example.org/teste-2'), self.database)
+        self.assertGreater(knowledge.remove_document('https://example.org/teste', self.database), 1)
+        found = knowledge.retrieve('vacinação', self.database)
+        self.assertEqual([row['url'] for row in found], ['https://example.org/teste-2'])
+        self.assertEqual(knowledge.remove_document('https://example.org/teste', self.database), 0)
+
+    def test_remove_missing_database_does_not_create_file(self):
+        self.assertEqual(knowledge.remove_document('https://example.org/teste', self.database), 0)
+        self.assertFalse(self.database.exists())
+
     def test_unsafe_url_rejected(self):
         with self.assertRaises(ValueError):
             knowledge.import_document(self.document(url='javascript:alert(1)'), self.database)
