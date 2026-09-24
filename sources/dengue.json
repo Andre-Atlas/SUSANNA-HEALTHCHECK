@@ -1,19 +1,19 @@
 {
-  "title": "Dengue — síntese sobre transmissão e prevenção",
-  "url": "https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/d/dengue",
-  "reviewed_at": "2026-09-22",
-  "publisher": "Ministério da Saúde",
-  "published_at": null,
-  "source_updated_at": null,
-  "content_type": "Síntese produzida por IA a partir da fonte; não é transcrição oficial",
-  "human_review": "Pendente",
-  "documentary_check": {
-    "checked_at": "2026-09-24",
-    "checked_by": "Codex (IA)",
-    "report": "docs/revisao-fontes.md",
-    "human_approval": "Pendente",
-    "reuse_assessment": "Pendente de decisão da equipe"
-  },
-  "source_license_notice": "O rodapé informa CC BY-ND 3.0; a licença do código não se aplica à página original.",
-  "text": "Síntese da página do Ministério da Saúde: a transmissão da dengue ocorre principalmente pela picada da fêmea infectada do mosquito Aedes aegypti. Existem formas raras de transmissão na gestação e por transfusão. A prevenção inclui eliminar recipientes que sirvam de criadouros, manter caixas de água fechadas e desobstruir calhas e ralos. A vacinação não elimina a necessidade de controlar o mosquito. Este resumo não informa critérios atuais de vacinação nem permite diagnosticar casos individuais."
+    "title":  "Dengue — síntese sobre transmissão e prevenção",
+    "url":  "https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/d/dengue",
+    "reviewed_at":  "2026-09-24",
+    "publisher":  "Ministério da Saúde",
+    "published_at":  null,
+    "source_updated_at":  null,
+    "content_type":  "Síntese produzida por IA a partir da fonte; não é transcrição oficial",
+    "documentary_check":  {
+                              "checked_at":  "2026-09-24",
+                              "checked_by":  "Codex (IA)",
+                              "report":  "docs/revisao-fontes.md",
+                              "reuse_assessment":  "Pendente de decisão da equipe",
+                              "review_status":  "Revisado por IA"
+                          },
+    "source_license_notice":  "O rodapé informa CC BY-ND 3.0; a licença do código não se aplica à página original.",
+    "text":  "Síntese da página do Ministério da Saúde: a transmissão da dengue ocorre principalmente pela picada da fêmea infectada do mosquito Aedes aegypti. Existem formas raras de transmissão na gestação e por transfusão. A prevenção inclui eliminar recipientes que sirvam de criadouros, manter caixas de água fechadas e desobstruir calhas e ralos. A vacinação não elimina a necessidade de controlar o mosquito. Este resumo não informa critérios atuais de vacinação nem permite diagnosticar casos individuais.",
+    "review_status":  "Revisado por IA"
 }
