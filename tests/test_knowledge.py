@@ -110,6 +110,7 @@ class PromptTests(unittest.TestCase):
         handler.server = type('Server', (), {'server_port': 8002})()
         source = dict(title='Teste', text='Trecho sintético.', url='https://example.org', reviewed_at='2026-01-01')
         with patch.object(server, 'retrieve', return_value=[source]), \
+             patch.object(server, 'verify_grounding', return_value=[]), \
              patch.object(server, 'ollama', return_value={'message': {'content': 'Resposta [1]'}}) as model, \
              patch.object(handler, 'json_response') as response:
             handler.do_POST()
