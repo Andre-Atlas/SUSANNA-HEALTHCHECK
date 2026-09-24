@@ -7,6 +7,8 @@ de continuidade como “e ela?”. A consulta considera a pergunta atual.
 
 ## Cadastrar uma fonte
 
+Para as três sínteses iniciais, consulte o [relatório e registro de revisão](revisao-fontes.md). Ele separa a conferência por IA da aprovação humana e registra as pendências de reutilização.
+
 A equipe deve selecionar e revisar o texto original e suas condições de uso.
 Priorize documentos institucionais e registre a URL da página específica.
 Não inclua dados pessoais. O cadastro não certifica a veracidade do documento.
