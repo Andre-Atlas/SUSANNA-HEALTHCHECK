@@ -311,6 +311,7 @@ Ainda precisamos:
 Já temos a interface, integração com Ollama, base documental local, busca de trechos, validação de referências e avaliação automatizada. As etapas restantes são:
 
 1. **Revisar o conteúdo da base**
+   - Conferência documental por IA registrada em 24/09/2026: [evidências, pendências e registro de revisão humana](docs/revisao-fontes.md). Etapa ainda pendente de revisão e aprovação pela equipe.
    - Conferir as três sínteses com pessoas da equipe.
    - Validar informações, contexto, datas e condições de reutilização.
    - Registrar quem revisou e aprovou cada documento.
