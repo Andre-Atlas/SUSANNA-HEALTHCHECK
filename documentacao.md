@@ -323,6 +323,7 @@ Já temos a interface, integração com Ollama, base documental local, busca de 
    - Estabelecer uma rotina para atualizar ou retirar conteúdos desatualizados.
 
 3. **Melhorar a fidelidade das respostas — prioridade principal**
+   - Implementada revisão por IA antes da exibição: apoio por parágrafo, evidência literal por citação, abstenção e normalização de referências. Veja [controle de respostas](docs/controle-respostas.md). É uma mitigação, não garantia de fidelidade.
    - Reduzir afirmações que não estão nos documentos.
    - Conferir se cada citação realmente sustenta a afirmação.
    - Melhorar o reconhecimento de evidências insuficientes.
