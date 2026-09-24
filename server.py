@@ -1,4 +1,4 @@
-"""Servidor local do InspectorFakeNews: Python padrão + Ollama."""
+"""Servidor local do SUSANNA-HEALTHCHECK: Python padrão + Ollama."""
 import argparse
 import json
 import http.client
@@ -23,7 +23,7 @@ from answer_policy import (NO_EVIDENCE, INVALID_ANSWER, reference_errors, is_abs
 ROOT = Path(__file__).resolve().parent
 MODEL = os.environ.get('OLLAMA_MODEL', 'qwen2.5:7b')
 OLLAMA = 'http://127.0.0.1:11434'
-SYSTEM = '''Você é o InspectorFakeNews, assistente educativo de um projeto acadêmico.
+SYSTEM = '''Você é o SUSANNA-HEALTHCHECK, assistente educativo de um projeto acadêmico.
 Responda em português brasileiro, de forma clara e breve. Ajude a analisar desinformação
 em saúde. Você não representa o SUS nem o governo. Não tem acesso à internet ao vivo.
 Pode receber trechos de uma base local, incluindo sínteses experimentais produzidas por IA
@@ -366,7 +366,7 @@ if __name__ == '__main__':
     except OSError as exc:
         parser.exit(1, f'Não foi possível abrir a porta {args.port}: {exc}\nUse --port 8003 para escolher outra porta.\n')
     server.jobs = JobQueue(process_messages, concurrency=args.concurrency, capacity=args.queue_size)
-    print(f'InspectorFakeNews: http://127.0.0.1:{args.port} | Modelo: {MODEL}', flush=True)
+    print(f'SUSANNA-HEALTHCHECK: http://127.0.0.1:{args.port} | Modelo: {MODEL}', flush=True)
     try:
         server.serve_forever()
     except KeyboardInterrupt:
