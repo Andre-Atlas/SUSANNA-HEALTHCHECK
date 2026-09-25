@@ -15,6 +15,7 @@ from urllib.parse import urlsplit
 from urllib.request import Request, urlopen
 from jobs import JobQueue, QueueFull, stage
 from ollama_transport import chat_stream
+from operations import inspect_database
 from knowledge import retrieve
 from conversation import resolve_question, CLARIFY
 from answer_policy import (NO_EVIDENCE, INVALID_ANSWER, reference_errors, is_abstention,
@@ -202,13 +203,29 @@ class Handler(BaseHTTPRequestHandler):
         self.connection.settimeout(10)
 
     def log_message(self, format, *args):
-        if urlsplit(self.path).path.startswith('/api/jobs/'):
-            return  # O identificador concede acesso ao pedido; não gravá-lo no log.
-        # Um terminal encerrado não deve impedir o envio da resposta HTTP.
-        try:
-            super().log_message(format, *args)
-        except OSError:
-            pass
+        # Não registrar URLs, query strings, IDs ou conteúdo fornecido pelo cliente.
+        pass
+
+    def parse_request(self):
+        if not super().parse_request():
+            return False
+        port = self.server.server_port
+        allowed = {f'127.0.0.1:{port}', f'localhost:{port}'}
+        if self.headers.get_all('Host', []) not in [[host] for host in allowed]:
+            self.json_response(403, {'error': 'Host não permitido.'})
+            return False
+        origin = self.headers.get('Origin')
+        if origin and origin not in {f'http://{host}' for host in allowed}:
+            self.json_response(403, {'error': 'Origem não permitida.'})
+            return False
+        return True
+
+    def end_headers(self):
+        self.send_header('X-Content-Type-Options', 'nosniff')
+        self.send_header('Referrer-Policy', 'no-referrer')
+        self.send_header('Content-Security-Policy',
+            "default-src 'self'; object-src 'none'; frame-ancestors 'none'; base-uri 'none'")
+        super().end_headers()
 
     def json_response(self, status, data):
         body = json.dumps(data, ensure_ascii=False).encode()
@@ -224,6 +241,17 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         path = urlsplit(self.path).path
+        if path == '/api/ready':
+            try:
+                database = inspect_database()
+                models = ollama('/api/tags', timeout=5).get('models', [])
+                ready = any(m.get('name') == MODEL for m in models)
+                self.json_response(200 if ready else 503,
+                    {'ready': ready, 'database': database, 'model_available': ready})
+            except (OSError, sqlite3.Error, ValueError, URLError):
+                self.json_response(503, {'ready': False,
+                    'message': 'Verifique a base documental, o Ollama e o modelo instalado.'})
+            return
         if path == '/api/metrics':
             self.json_response(200, get_runtime(self.server).metrics())
             return
@@ -253,7 +281,6 @@ class Handler(BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header('Content-Type', mime + '; charset=utf-8')
         self.send_header('Content-Length', str(len(body)))
-        self.send_header('X-Content-Type-Options', 'nosniff')
         self.end_headers()
         self.wfile.write(body)
 
