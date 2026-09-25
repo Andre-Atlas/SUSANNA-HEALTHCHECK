@@ -2,15 +2,25 @@
 
 Chatbot educativo sobre desinformação em saúde. Interface independente, sem vínculo oficial com o SUS. Desenvolvido para apresentação na Eldorado.
 
+## Guias do projeto
+
+- [Instalação, uso e manutenção](docs/guia-projeto.md).
+- [Dados processados, registros e privacidade](docs/privacidade.md).
+- [Versões e licenças dos componentes](docs/componentes.md).
+- [Responsáveis e rotina de manutenção](docs/responsabilidades.md).
+- [Operação local, métricas, backup e recuperação](docs/disponibilizacao.md).
+
 ## Executar localmente
 
-Requer Python 3.10+ e [Ollama](https://ollama.com/download). Sem pacotes pip, chave de API ou serviços pagos. O processamento usa os recursos do computador.
+Ambiente verificado: macOS; Windows nativo não suportado atualmente. Requer Python 3.10+ com SQLite FTS5 e [Ollama](https://ollama.com/download). Sem pacotes pip, chave de API ou serviços pagos. O processamento usa os recursos do computador.
 
 1. Inicie o Ollama pelo aplicativo ou, em um terminal, com `ollama serve`.
 2. Se o modelo ainda não estiver instalado, execute `ollama pull qwen2.5:7b` (download de aproximadamente 4,7 GB, uma única vez).
-3. Na pasta do projeto, execute:
+3. Na primeira instalação, importe a base e inicie o servidor (em instalações existentes, faça backup antes de reimportar):
 
 ```bash
+python3 seed_knowledge.py
+python3 operations.py check
 python3 server.py
 ```
 
@@ -37,7 +47,7 @@ e o conjunto base/modelo em `http://127.0.0.1:8002/api/ready`.
 - `jobs.py`: fila limitada, cancelamento, expiração e métricas em memória.
 - `ollama_transport.py`: stream privado e conexão cancelável com o Ollama.
 
-A conversa existe apenas em memória. O navegador envia até as últimas seis trocas e a nova pergunta ao servidor local. O servidor pode remover trocas antigas para respeitar seu orçamento conservador de contexto. Limpar ou recarregar reinicia o histórico e solicita cancelamento do pedido; o servidor fecha sua conexão com o Ollama. Históricos em processamento são liberados ao término; resultados ficam em memória por até 60 segundos, com limite de quantidade. Não há gravação das conversas em disco. Os logs HTTP estão desativados.
+A conversa existe apenas em memória. O navegador envia até as últimas seis trocas e a nova pergunta ao servidor local. O servidor pode remover trocas antigas para respeitar seu orçamento conservador de contexto. Limpar ou recarregar reinicia o histórico e solicita cancelamento do pedido; o servidor fecha sua conexão com o Ollama. Históricos em processamento são liberados ao término; resultados ficam em memória por até 60 segundos, com limite de quantidade. O servidor do chat não grava conversas em disco. Scripts de avaliação gravam relatórios com casos e respostas; logs próprios do Ollama e do sistema não foram auditados. Os logs HTTP estão desativados. Veja [retenção e limites de privacidade](docs/privacidade.md).
 
 O chat mostra fila, geração e revisão em andamento. O texto aparece progressivamente somente após a validação completa. Há botão **Cancelar**, uma execução por vez e até três pedidos em espera por padrão. Para configurar: `python3 server.py --concurrency 1 --queue-size 3`. Veja [desempenho, limites e medições](docs/desempenho-experiencia.md).
 
