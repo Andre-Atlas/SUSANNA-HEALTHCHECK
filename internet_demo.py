@@ -42,13 +42,14 @@ def main():
             for _ in range(90):
                 if tunnel.poll() is not None:
                     raise RuntimeError('Túnel encerrou; confira .internet/tunnel.log.')
-                match = re.search(r'https://[a-z0-9-]+\.trycloudflare\.com', (private / 'tunnel.log').read_text())
-                if match:
+                logs = (private / 'tunnel.log').read_text()
+                match = re.search(r'https://[a-z0-9-]+\.trycloudflare\.com', logs)
+                if match and 'Registered tunnel connection' in logs:
                     origin = match.group()
                     break
                 time.sleep(1)
             if not origin:
-                raise RuntimeError('Túnel não retornou endereço em 90 segundos.')
+                raise RuntimeError('Túnel não conectou em 90 segundos. Confira a saída TCP 7844 e .internet/tunnel.log.')
             config = private / 'access.json'
             config.write_text(json.dumps({'origin': origin, 'username': 'equipe', 'password': secrets.token_urlsafe(24)}, indent=2)+'\n')
             config.chmod(0o600)
