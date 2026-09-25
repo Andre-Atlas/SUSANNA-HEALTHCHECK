@@ -54,3 +54,9 @@ Ao redistribuir, mantenha os textos de licença e avisos aplicáveis aos compone
 incluídos. O inventário não relicencia pesos, fontes oficiais ou marcas. As
 pendências de reutilização documental continuam em [revisão das fontes](revisao-fontes.md).
 Não extrapole a licença do Qwen 7B para todas as variantes do modelo.
+
+## Componentes opcionais da demonstração externa
+
+Waitress 3.0.2 (ZPL 2.1), fixado em `requirements-internet.txt`, e cloudflared
+(Apache 2.0), instalado separadamente em `.internet/bin/`. Consulte
+[o guia do túnel](internet-demo.md). O modo local continua sem dependências pip.
