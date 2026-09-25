@@ -14,9 +14,18 @@ ROOT = Path(__file__).resolve().parent
 
 
 def main():
+    import argparse
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--provider', choices=['cloudflare', 'ngrok'], default='cloudflare')
+    args = parser.parse_args()
+    provider = args.provider
     executable = shutil.which('cloudflared') or str(ROOT / '.internet/bin/cloudflared')
+    if provider == 'ngrok':
+        executable = shutil.which('ngrok') or str(ROOT / '.internet/bin/ngrok')
+        if not (ROOT / '.internet/ngrok.yml').exists():
+            raise SystemExit('Primeiro execute: .venv/bin/python configurar_ngrok.py')
     if not Path(executable).is_file():
-        raise SystemExit('Instale cloudflared antes de iniciar.')
+        raise SystemExit('Instale o cliente do túnel antes de iniciar.')
     import socket
     with socket.socket() as probe:
         probe.bind(('127.0.0.1', 8010))
@@ -35,23 +44,39 @@ def main():
     processes = []
     try:
         with (private / 'tunnel.log').open('w') as log:
-            tunnel = subprocess.Popen([executable, 'tunnel', '--url', 'http://127.0.0.1:8010',
-                '--no-autoupdate', '--protocol', 'http2'], stdout=log, stderr=subprocess.STDOUT)
+            command = [executable, 'tunnel', '--url', 'http://127.0.0.1:8010',
+                       '--no-autoupdate', '--protocol', 'http2']
+            if provider == 'ngrok':
+                command = [executable, 'http', 'http://127.0.0.1:8010',
+                           '--config', str(private / 'ngrok.yml'), '--inspect=false',
+                           '--log=stdout', '--log-format=json']
+            tunnel = subprocess.Popen(command, stdout=log, stderr=subprocess.STDOUT)
             processes.append(tunnel)
             origin = None
             for _ in range(90):
                 if tunnel.poll() is not None:
                     raise RuntimeError('Túnel encerrou; confira .internet/tunnel.log.')
                 logs = (private / 'tunnel.log').read_text()
-                match = re.search(r'https://[a-z0-9-]+\.trycloudflare\.com', logs)
-                if match and 'Registered tunnel connection' in logs:
-                    origin = match.group()
-                    break
+                if provider == 'ngrok':
+                    for line in logs.splitlines():
+                        try:
+                            entry = json.loads(line)
+                        except ValueError:
+                            continue
+                        if entry.get('msg') == 'started tunnel' and entry.get('url', '').startswith('https://'):
+                            origin = entry['url']
+                    if origin:
+                        break
+                else:
+                    match = re.search(r'https://[a-z0-9-]+\.trycloudflare\.com', logs)
+                    if match and 'Registered tunnel connection' in logs:
+                        origin = match.group()
+                        break
                 time.sleep(1)
             if not origin:
-                raise RuntimeError('Túnel não conectou em 90 segundos. Confira a saída TCP 7844 e .internet/tunnel.log.')
+                raise RuntimeError('Túnel não conectou em 90 segundos. Confira a conexão de saída e .internet/tunnel.log.')
             config = private / 'access.json'
-            config.write_text(json.dumps({'origin': origin, 'username': 'equipe', 'password': secrets.token_urlsafe(24)}, indent=2)+'\n')
+            config.write_text(json.dumps({'origin': origin, 'provider': provider, 'username': 'equipe', 'password': secrets.token_urlsafe(24)}, indent=2)+'\n')
             config.chmod(0o600)
             with (private / 'server.log').open('w') as server_log:
                 server = subprocess.Popen([sys.executable, str(ROOT / 'internet_app.py'), '--config', str(config)],
