@@ -14,9 +14,12 @@ ROOT = Path(__file__).resolve().parent
 
 
 def main():
-    executable = shutil.which('cloudflared')
-    if not executable:
+    executable = shutil.which('cloudflared') or str(ROOT / '.internet/bin/cloudflared')
+    if not Path(executable).is_file():
         raise SystemExit('Instale cloudflared antes de iniciar.')
+    import socket
+    with socket.socket() as probe:
+        probe.bind(('127.0.0.1', 8010))
     from operations import inspect_database
     from server import ollama, MODEL
     inspect_database()
