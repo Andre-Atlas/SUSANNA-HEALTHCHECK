@@ -71,3 +71,13 @@ Cloudflared: [Apache 2.0](https://github.com/cloudflare/cloudflared/blob/master/
 [Quick Tunnels](https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/do-more-with-tunnels/trycloudflare/)
 são para testes: limite de 200 requisições simultâneas e sem SSE. Nosso frontend usa
 polling, não SSE. Disponibilidade e condições do serviço podem mudar.
+
+## Tentativa de conexão em 25/09/2026
+
+Ativação autorizada pelo responsável. A Cloudflare gerou endereço, mas não
+registrou conexão: saída TCP 7844 expirou e o endereço retornou HTTP 530 /
+erro 1033. A tentativa foi encerrada; não há demonstração pública funcionando.
+O iniciador agora aguarda registro de conexão antes de anunciar o endereço.
+Teste uma conexão que permita saída TCP 7844 (por exemplo, outra rede autorizada)
+ou peça ao administrador da rede que verifique esse acesso. Não é necessário
+abrir portas de entrada no roteador. Depois execute o iniciador novamente.
