@@ -1,3 +1,5 @@
+> **Demonstração pela internet:** modo temporário autenticado disponível; veja [como iniciar e encerrar](docs/internet-demo.md). A configuração local continua disponível.
+
 > **Guias atuais:** [instalação, uso e manutenção](docs/guia-projeto.md),
 > [privacidade](docs/privacidade.md), [componentes](docs/componentes.md) e
 > [responsabilidades](docs/responsabilidades.md). Os registros históricos abaixo
