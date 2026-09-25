@@ -7,3 +7,4 @@ data/*.sqlite3*
 backups/
 data-antes-da-recuperacao*/
 dist/
+.internet/
