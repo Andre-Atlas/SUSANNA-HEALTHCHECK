@@ -13,12 +13,13 @@ from server import ROOT, MODEL, ollama, process_messages, validate_messages
 
 
 class DemoApp:
-    def __init__(self, origin, password, runtime=None):
+    def __init__(self, origin, password, runtime=None, provider="cloudflare"):
         parsed = urlsplit(origin)
         if parsed.scheme != 'https' or not parsed.hostname or parsed.path or parsed.query or parsed.fragment or parsed.username:
             raise ValueError('Configure uma origem HTTPS exata, sem caminho.')
         if len(password) < 24:
             raise ValueError('A senha da demonstração deve ter pelo menos 24 caracteres.')
+        self.provider = "ngrok" if provider == "ngrok" else "Cloudflare"
         self.origin, self.host = origin, parsed.netloc
         self.authorization = 'Basic ' + base64.b64encode(('equipe:' + password).encode()).decode()
         self.runtime = runtime or JobQueue(process_messages, concurrency=1, capacity=3)
@@ -56,7 +57,7 @@ class DemoApp:
             body = (ROOT / name).read_bytes()
             if name == 'index.html':
                 body = body.replace(b'Este projeto n\xc3\xa3o grava conversas em arquivos ou banco de dados.',
-                    'Demonstração experimental com falha conhecida na revisão de respostas. Não use para decisões de saúde. O acesso passa pela Cloudflare; o processamento da IA ocorre neste computador. O servidor do chat não grava conversas em arquivos ou banco de dados.'.encode())
+                    f'Demonstração experimental com falha conhecida na revisão de respostas. Não use para decisões de saúde. O acesso passa pelo serviço {self.provider}; o processamento da IA ocorre neste computador. O servidor do chat não grava conversas em arquivos ou banco de dados.'.encode())
             return respond('200 OK', body, mime + '; charset=utf-8')
         if method == 'GET' and path == '/api/health':
             try:
@@ -99,7 +100,7 @@ if __name__ == '__main__':
     parser.add_argument('--config', type=Path, required=True)
     args = parser.parse_args()
     config = json.loads(args.config.read_text())
-    app = DemoApp(config['origin'], config['password'])
+    app = DemoApp(config['origin'], config['password'], provider=config.get('provider', 'cloudflare'))
     try:
         serve(app, host='127.0.0.1', port=8010, threads=4, connection_limit=32,
               backlog=32, channel_timeout=15, max_request_header_size=8192,
