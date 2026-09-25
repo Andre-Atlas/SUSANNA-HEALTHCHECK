@@ -21,6 +21,13 @@ Use o servidor `server.py`, não `python3 -m http.server` nem o Live Server: ele
 Outra porta: `python3 server.py --port 8003`.
 Outro modelo local instalado: `OLLAMA_MODEL=nome:tag python3 server.py`.
 
+## Ambiente de disponibilização
+
+Configurado para uso somente neste computador, sem publicação na rede. Veja
+[o guia de operação local](docs/disponibilizacao.md) para prontidão, limites,
+métricas, backup e recuperação. Verifique a base com `python3 operations.py check`
+e o conjunto base/modelo em `http://127.0.0.1:8002/api/ready`.
+
 ## Organização
 
 - `index.html`: página e chat.
@@ -30,7 +37,7 @@ Outro modelo local instalado: `OLLAMA_MODEL=nome:tag python3 server.py`.
 - `jobs.py`: fila limitada, cancelamento, expiração e métricas em memória.
 - `ollama_transport.py`: stream privado e conexão cancelável com o Ollama.
 
-A conversa existe apenas em memória. O navegador envia até as últimas seis trocas e a nova pergunta ao servidor local. O servidor pode remover trocas antigas para respeitar seu orçamento conservador de contexto. Limpar ou recarregar reinicia o histórico e solicita cancelamento do pedido; o servidor fecha sua conexão com o Ollama. Históricos em processamento são liberados ao término; resultados ficam em memória por até 60 segundos, com limite de quantidade. Não há gravação das conversas em disco. Os logs HTTP não registram corpos nem IDs dos pedidos.
+A conversa existe apenas em memória. O navegador envia até as últimas seis trocas e a nova pergunta ao servidor local. O servidor pode remover trocas antigas para respeitar seu orçamento conservador de contexto. Limpar ou recarregar reinicia o histórico e solicita cancelamento do pedido; o servidor fecha sua conexão com o Ollama. Históricos em processamento são liberados ao término; resultados ficam em memória por até 60 segundos, com limite de quantidade. Não há gravação das conversas em disco. Os logs HTTP estão desativados.
 
 O chat mostra fila, geração e revisão em andamento. O texto aparece progressivamente somente após a validação completa. Há botão **Cancelar**, uma execução por vez e até três pedidos em espera por padrão. Para configurar: `python3 server.py --concurrency 1 --queue-size 3`. Veja [desempenho, limites e medições](docs/desempenho-experiencia.md).
 
