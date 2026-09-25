@@ -81,3 +81,36 @@ O iniciador agora aguarda registro de conexão antes de anunciar o endereço.
 Teste uma conexão que permita saída TCP 7844 (por exemplo, outra rede autorizada)
 ou peça ao administrador da rede que verifique esse acesso. Não é necessário
 abrir portas de entrada no roteador. Depois execute o iniciador novamente.
+
+## Alternativa na mesma internet: ngrok
+
+Cliente instalado em `.internet/bin/ngrok`. Requer conta gratuita e authtoken;
+usará o ngrok como intermediário do tráfego, em lugar da Cloudflare. O modelo
+continua no computador. Não há promessa de acesso se a rede também bloquear ngrok.
+
+No terminal do VS Code, execute uma vez:
+
+```bash
+.venv/bin/python configurar_ngrok.py
+```
+
+Cole somente o authtoken do painel e pressione Enter. A entrada fica oculta e o
+segredo é salvo em `.internet/ngrok.yml` com permissão 600; não envie esse arquivo
+ou o token pela conversa nem o inclua no Git. Este token é diferente da senha
+`equipe` usada para entrar no chatbot.
+
+Com Ollama aberto, inicie:
+
+```bash
+.venv/bin/python internet_demo.py --provider ngrok
+```
+
+O iniciador espera o evento de criação do túnel HTTPS antes de iniciar o servidor.
+Use a URL exibida e a senha nova em `.internet/access.json`. Ctrl+C encerra ambos.
+A inspeção local de tráfego está desativada (`--inspect=false`, `web_addr: false`);
+isso não declara ausência de registros na infraestrutura do provedor. O aviso da
+interface identifica ngrok. Limites e autenticação da aplicação são preservados.
+A conectividade real ainda depende de configurar o token e testar nesta rede.
+
+Referências: [instalação oficial](https://ngrok.com/download/mac-os) e
+[CLI do agente](https://ngrok.com/docs/gateway/agent/cli).
