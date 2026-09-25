@@ -1,3 +1,5 @@
+> **Novo modo de demonstração:** quando iniciado por `internet_demo.py`, o tráfego passa pela Cloudflare. Consulte [fluxo externo, autenticação e logs](internet-demo.md). A descrição local abaixo aplica-se a `server.py`.
+
 # Dados processados e registros mantidos
 
 Registro técnico conferido no código em 25/09/2026. Escopo: aplicação local com
