@@ -354,9 +354,10 @@ Já temos a interface, integração com Ollama, base documental local, busca de 
    - Navegador real, leitor de tela e celular continuam pendentes por indisponibilidade das ferramentas. Veja [resultados, problemas e roteiro de aceite](docs/aceitacao.md).
 
 7. **Preparar o ambiente de disponibilização**
-   - Definir se o acesso será local, pela rede da equipe ou pela internet.
-   - Configurar servidor adequado, acesso e proteção das conexões conforme esse cenário.
-   - Definir limites de uso, métricas e procedimentos de recuperação.
+   - Cenário escolhido: somente neste computador, em `127.0.0.1:8002`, com Ollama local.
+   - Proteção de Host/Origin e cabeçalhos de segurança; logs HTTP desativados. Sem exposição à rede.
+   - Prontidão conjunta em `/api/ready`, limites e métricas documentados; comando de backup consistente com verificação e roteiro de recuperação.
+   - Veja [operação e disponibilização local](docs/disponibilizacao.md). Validação automatizada com bancos temporários; exercício de recuperação completo e aprovação do piloto continuam pendentes.
 
 8. **Consolidar documentação e privacidade**
    - Atualizar os guias de instalação, uso e manutenção.
