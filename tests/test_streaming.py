@@ -34,7 +34,11 @@ class StreamingTests(unittest.TestCase):
                     self.wfile.flush()
                     owner.entered.set()
                     if select.select([self.connection], [], [], 3)[0]:
-                        if not self.connection.recv(1):
+                        try:
+                            disconnected = not self.connection.recv(1)
+                        except ConnectionResetError:
+                            disconnected = True  # Reset TCP também confirma o cancelamento.
+                        if disconnected:
                             owner.disconnected.set()
                     return
                 if review:
