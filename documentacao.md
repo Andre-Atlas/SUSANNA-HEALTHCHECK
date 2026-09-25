@@ -1,5 +1,7 @@
-> **Demonstração pela internet:** modo temporário autenticado disponível; veja [como iniciar e encerrar](docs/internet-demo.md). A configuração local continua disponível.
+# Documentação do projeto — SUSANNA-HEALTHCHECK
 
+> **Demonstração pela internet:** modo temporário autenticado disponível; veja [como iniciar e encerrar](docs/internet-demo.md). A configuração local continua disponível.
+>
 > **Guias atuais:** [instalação, uso e manutenção](docs/guia-projeto.md),
 > [privacidade](docs/privacidade.md), [componentes](docs/componentes.md) e
 > [responsabilidades](docs/responsabilidades.md). Os registros históricos abaixo
@@ -7,7 +9,7 @@
 
 Abra **dois terminais**.
 
-**1. Primeiro terminal: iniciar o Ollama**
+## 1. Primeiro terminal: iniciar o Ollama
 
 Se ainda não estiver instalado, instale pelo [site oficial](https://ollama.com/download). Depois execute:
 
@@ -17,7 +19,7 @@ ollama serve
 
 Deixe esse terminal aberto. Se aparecer que a porta `11434` já está em uso, o Ollama pode já estar rodando pelo aplicativo.
 
-**2. Segundo terminal: baixar o modelo**
+## 2. Segundo terminal: baixar o modelo
 
 ```bash
 ollama pull qwen2.5:7b
@@ -31,7 +33,7 @@ ollama run qwen2.5:7b
 
 Digite uma pergunta. Para sair da conversa, use `/bye`.
 
-**3. Iniciar o servidor do projeto**
+## 3. Iniciar o servidor do projeto
 
 No segundo terminal:
 
@@ -42,7 +44,7 @@ python3 server.py
 
 O projeto atual não precisa de instalação de pacotes com `pip`.
 
-**4. Abrir o chatbot**
+## 4. Abrir o chatbot
 
 Acesse: [http://127.0.0.1:8002](http://127.0.0.1:8002)
 
@@ -62,7 +64,7 @@ Nesse caso, acesse [http://127.0.0.1:8003](http://127.0.0.1:8003).
 
 DETALHES DO PASSO A PASSO, TOPICO A TOPICO DO PROJETO
 
-**Plano do projeto — Chatbot educativo sobre desinformação em saúde**
+## Plano do projeto — Chatbot educativo sobre desinformação em saúde
 
 **Objetivo:** desenvolver um chatbot com componentes open source, capaz de consultar uma base de fontes confiáveis, apresentar referências e reconhecer quando não houver evidências suficientes.
 
@@ -135,7 +137,7 @@ DETALHES DO PASSO A PASSO, TOPICO A TOPICO DO PROJETO
 
 =============================================
 
-**Atualização do projeto — primeira versão da base documental do chatbot**
+## Atualização do projeto — primeira versão da base documental do chatbot
 
 Registro histórico da primeira versão. Para o funcionamento atual, consulte
 [busca e continuidade](docs/busca-conversa.md) e [desempenho e experiência](docs/desempenho-experiencia.md).
@@ -144,7 +146,7 @@ Implementamos a estrutura inicial para o chatbot consultar documentos locais ant
 
 A implementação continua usando **Python, SQLite e Ollama**, sem API paga e sem novos pacotes `pip`. O Python precisa ter suporte à extensão FTS5 do SQLite.
 
-**1. Criamos o módulo de base documental: `knowledge.py`**
+### 1. Criamos o módulo de base documental: `knowledge.py`
 
 Esse arquivo permite importar documentos revisados pela equipe para uma base local.
 
@@ -165,7 +167,7 @@ O comando de importação é:
 python3 knowledge.py /caminho/para/documento.json
 ```
 
-**2. Implementamos armazenamento e divisão dos documentos**
+### 2. Implementamos armazenamento e divisão dos documentos
 
 Os documentos importados são divididos em trechos de até **1.200 caracteres**, sem cortar palavras.
 
@@ -181,7 +183,7 @@ Se um documento for importado novamente com a mesma URL, seus trechos anteriores
 
 Novos documentos ficam disponíveis para consulta **sem reiniciar o servidor**.
 
-**3. Implementamos a busca local**
+### 3. Implementamos a busca local
 
 A busca utiliza **SQLite FTS5**, com ordenação por **BM25**, para selecionar até três trechos relacionados à pergunta atual.
 
@@ -197,7 +199,7 @@ Essa primeira versão faz **busca por palavras**. Ainda não utiliza embeddings,
 
 Por isso, pode deixar de encontrar documentos que usam sinônimos ou recuperar trechos que mencionam o assunto, mas não respondem à pergunta.
 
-**4. Integramos a recuperação ao servidor: `server.py`**
+### 4. Integramos a recuperação ao servidor: `server.py`
 
 Antes, o servidor enviava ao Ollama apenas as instruções e o histórico da conversa.
 
@@ -216,7 +218,7 @@ Se a base estiver ausente ou a busca não encontrar resultados, o chatbot contin
 
 Se ocorrer um erro de acesso ao SQLite, o servidor retorna uma mensagem explícita de indisponibilidade da base.
 
-**5. Atualizamos as instruções da LLM**
+### 5. Atualizamos as instruções da LLM
 
 O prompt agora explica que o chatbot pode receber documentos de uma base local, mas não pesquisa a internet ao vivo.
 
@@ -231,7 +233,7 @@ Também orienta o modelo a:
 
 Essas instruções ajudam a orientar o comportamento, mas **não garantem resistência a manipulações nem correção das citações**. Isso ainda precisa ser avaliado.
 
-**6. Acrescentamos um orçamento conservador de contexto**
+### 6. Acrescentamos um orçamento conservador de contexto
 
 O servidor já usava uma janela de 8.192 tokens, mas aceitava históricos que poderiam ultrapassá-la.
 
@@ -246,7 +248,7 @@ Quando o conteúdo fica grande demais, o servidor:
 
 **Essa estimativa não é uma contagem exata de tokens.** Modelos alternativos precisam de avaliação com seu próprio tokenizador.
 
-**7. Atualizamos a interface: `app.js`, `index.html` e `styles.css`**
+### 7. Atualizamos a interface: `app.js`, `index.html` e `styles.css`
 
 A interface passou a informar que o assistente pode consultar documentos locais cadastrados pela equipe.
 
@@ -264,7 +266,7 @@ Os textos continuam sendo inseridos com `textContent`, sem interpretar o conteú
 
 A lista é apresentada como **“trechos fornecidos ao modelo”**: ela não afirma que todas as fontes sustentam todas as conclusões da resposta.
 
-**8. Atualizamos a documentação e o controle de arquivos**
+### 8. Atualizamos a documentação e o controle de arquivos
 
 Criamos:
 
@@ -278,7 +280,7 @@ Atualizamos:
 
 O arquivo `documentacao.dm`, que já continha os comandos de execução, foi preservado.
 
-**9. Executamos os testes**
+### 9. Executamos os testes
 
 Os **10 testes automatizados passaram**, cobrindo:
 
@@ -297,7 +299,7 @@ Também fizemos uma chamada real ao Ollama usando um servidor temporário local.
 
 A interface ainda não passou por validação visual no navegador nesta etapa. A checagem de sintaxe JavaScript pelo Node não pôde ser executada porque o Node não estava disponível no ambiente.
 
-**10. O que ainda não está concluído**
+### 10. O que ainda não está concluído
 
 A estrutura está implementada, mas **a base real ainda está vazia**. Os testes usaram documentos sintéticos temporários, que não foram adicionados à base do chatbot.
 
@@ -316,7 +318,7 @@ Ainda precisamos:
 
 ============================
 
-**O que falta para concluir o chatbot**
+## O que falta para concluir o chatbot
 
 Já temos a interface, integração com Ollama, base documental local, busca de trechos, validação de referências e avaliação automatizada. As etapas restantes são:
 
@@ -386,7 +388,7 @@ O principal ponto pendente é **a confiabilidade das respostas**: os testes de c
 
 Seu projeto é o **SUSANNA-HEALTHCHECK**, um chatbot educativo sobre desinformação em saúde. Ele recebe perguntas pelo navegador, consulta documentos armazenados no computador e usa uma IA local para tentar responder com base nesses documentos.
 
-**O fluxo principal é este:**
+## O fluxo principal é este:
 
 ```text
 Você escreve uma pergunta
@@ -404,10 +406,10 @@ Navegador mostra a resposta e as fontes
 
 Se não encontrar trechos, o sistema pula a IA e mostra uma mensagem pronta de falta de evidências.
 
-**O papel de cada arquivo:**
+## O papel de cada arquivo:
 
 | Arquivo | Responsabilidade |
-|---|---|
+| --- | --- |
 | `index.html` | Estrutura da página, campo de pergunta e chat. |
 | `styles.css` | Cores, tamanhos, posicionamento e adaptação às telas. |
 | `app.js` | Envia perguntas, mostra respostas e controla o histórico. |
@@ -417,7 +419,7 @@ Se não encontrar trechos, o sistema pula a IA e mostra uma mensagem pronta de f
 | `sources/` | Documentos JSON disponíveis para importação. |
 | `seed_knowledge.py` | Carrega esses documentos no banco. |
 
-**Acompanhando uma pergunta, passo a passo:**
+## Acompanhando uma pergunta, passo a passo:
 
 1. **Você envia a mensagem.**  
    No [app.js](/Users/aluno2/Desktop/saude-gov-br/app.js), a função `send()` recebe o texto, mostra sua pergunta na tela e cria um pedido com `POST /api/jobs`. Junto, envia até seis pares anteriores de pergunta e resposta. Enquanto espera, acompanha o estado do pedido, desativa os controles de envio e mantém Cancelar e Limpar disponíveis.
@@ -448,7 +450,7 @@ Se não encontrar trechos, o sistema pula a IA e mostra uma mensagem pronta de f
 7. **A resposta aparece na tela.**  
    Após a validação completa, o JavaScript apresenta a mensagem progressivamente e mostra os trechos utilizados, com links para as fontes. O usuário pode expandi-los para conferir o conteúdo.
 
-**Alguns detalhes importantes para entender o comportamento atual:**
+## Alguns detalhes importantes para entender o comportamento atual:
 
 - Os documentos de `sources/` só entram no banco quando você executa `python3 seed_knowledge.py`. Alterar um JSON não atualiza automaticamente o SQLite.
 - Esses documentos são sínteses experimentais produzidas por IA, com referências a páginas oficiais; não são cópias integrais dessas páginas.
