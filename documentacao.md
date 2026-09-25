@@ -368,13 +368,13 @@ Já temos a interface, integração com Ollama, base documental local, busca de 
    - Consolidado o [guia de instalação, uso e manutenção](docs/guia-projeto.md), com operação somente neste computador.
    - Registrados [versões, identificação do modelo e licenças](docs/componentes.md), preservando os créditos existentes.
    - Documentados [dados processados, retenção, relatórios e limites de privacidade](docs/privacidade.md).
-   - Definidas [atribuições de código, base documental e operação](docs/responsabilidades.md); indicação nominal ainda pendente.
+   - Definidas [atribuições de código, base documental e operação](docs/responsabilidades.md); responsável confirmado: Guilherme Barros Jacintho Ribeiro.
 
 9. **Executar o piloto e entregar**
-   - Disponibilizar para um grupo pequeno da equipe.
-   - Coletar feedback e corrigir problemas.
-   - Aprovar critérios mínimos de qualidade e desempenho.
-   - Publicar a versão final com limitações conhecidas e plano de manutenção.
+   - Preparado [pacote do piloto local](piloto/README.md), com roteiro, feedback, critérios propostos e registro de aceite.
+   - Participante e responsável pelo aceite, código, base e operação: Guilherme Barros Jacintho Ribeiro. Demais participantes e revisores ainda não indicados.
+   - Pré-piloto: 67 testes passaram; base local corrigida de três para seis fontes, com backup; regressão real do revisor 4/5, reproduzindo F01.
+   - Piloto com equipe e publicação final ainda não realizados: bloqueador F01 aberto, feedback e aprovação humana pendentes. Entrega disponível somente como candidata para revisão.
 
 **Ordem recomendada:** revisão das fontes → fidelidade das respostas → testes independentes → desempenho e disponibilização → piloto.
 
