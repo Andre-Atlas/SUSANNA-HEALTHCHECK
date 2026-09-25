@@ -129,3 +129,8 @@ A restauração de produção e a geração real não são executadas pelos novo
 
 A preparação local não aprova o piloto: continuam os bloqueadores documentados em
 [aceitação](aceitacao.md), incluindo fidelidade e revisão humana.
+
+## Documentação complementar
+
+Consulte [instalação e uso](guia-projeto.md), [dados e retenção](privacidade.md),
+[componentes](componentes.md) e [responsabilidades](responsabilidades.md).
