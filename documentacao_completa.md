@@ -9,3 +9,4 @@ Preparei a etapa 7 para **uso somente neste computador**.
 **Validação:** 67 testes passaram; a base atual passou na verificação de integridade.
 
 Consulte o [guia de disponibilização local](/Users/aluno2/Desktop/saude-gov-br/docs/disponibilizacao.md). O exercício completo de recuperação e os bloqueadores de qualidade do piloto continuam pendentes.
+
