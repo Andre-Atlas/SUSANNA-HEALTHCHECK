@@ -1,3 +1,8 @@
+> **Guias atuais:** [instalação, uso e manutenção](docs/guia-projeto.md),
+> [privacidade](docs/privacidade.md), [componentes](docs/componentes.md) e
+> [responsabilidades](docs/responsabilidades.md). Os registros históricos abaixo
+> descrevem o estado de cada etapa e podem conter limitações já resolvidas.
+
 Abra **dois terminais**.
 
 **1. Primeiro terminal: iniciar o Ollama**
@@ -360,10 +365,10 @@ Já temos a interface, integração com Ollama, base documental local, busca de 
    - Veja [operação e disponibilização local](docs/disponibilizacao.md). Validação automatizada com bancos temporários; exercício de recuperação completo e aprovação do piloto continuam pendentes.
 
 8. **Consolidar documentação e privacidade**
-   - Atualizar os guias de instalação, uso e manutenção.
-   - Documentar versões e licenças dos componentes.
-   - Explicar quais dados são processados e quais registros são mantidos.
-   - Definir responsáveis pelo código e pela base documental.
+   - Consolidado o [guia de instalação, uso e manutenção](docs/guia-projeto.md), com operação somente neste computador.
+   - Registrados [versões, identificação do modelo e licenças](docs/componentes.md), preservando os créditos existentes.
+   - Documentados [dados processados, retenção, relatórios e limites de privacidade](docs/privacidade.md).
+   - Definidas [atribuições de código, base documental e operação](docs/responsabilidades.md); indicação nominal ainda pendente.
 
 9. **Executar o piloto e entregar**
    - Disponibilizar para um grupo pequeno da equipe.
