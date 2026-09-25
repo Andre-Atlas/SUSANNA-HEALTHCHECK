@@ -1,3 +1,5 @@
+# Documentação consolidada — SUSANNA-HEALTHCHECK
+
 Preparei a etapa 7 para **uso somente neste computador**.
 
 - Proteção de acesso local e cabeçalhos de segurança.
@@ -66,4 +68,3 @@ Um cuidado: arquivos `.md` que explicam instalação, código ou reuniões são 
 Como o sistema está local, cada colega que executar sua própria cópia precisará receber os JSONs e importá-los. Podemos compartilhar esses arquivos pelo Git; o banco SQLite é gerado em cada computador.
 
 **Os `.md` dos seus amigos contêm informações de saúde com fontes ou são documentação dos projetos deles?** Isso define como vamos integrar o material.
-
