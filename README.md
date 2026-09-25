@@ -78,6 +78,12 @@ python3 evaluate.py --llm --output evaluation/llm.json
 
 A avaliação usa uma base temporária com o conjunto versionado, sem alterar seus documentos locais. Veja [fontes e critérios de avaliação](docs/avaliacao-inicial.md).
 
+## Piloto e entrega
+
+[Pacote do piloto local](piloto/README.md): roteiro, formulário, critérios propostos,
+problemas e aceite. Pré-piloto em 25/09/2026: 67 testes passaram; regressão real
+do revisor 4/5, com F01 reproduzido. Versão candidata, sem aprovação final.
+
 ## Aceitação e revisão humana
 
 Novos cenários e instruções de revisão estão em [aceitação e testes adversariais](docs/aceitacao.md).
