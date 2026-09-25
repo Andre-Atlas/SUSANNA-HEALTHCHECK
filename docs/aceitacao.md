@@ -161,3 +161,11 @@ Critérios propostos para encerrar a etapa: tratar F01; investigar F02–F04;
 reavaliar com perguntas/ataques novos e regressões; concluir duas revisões humanas
 com adjudicação; executar o roteiro real de desktop/celular/acessibilidade. A
 decisão de piloto deve registrar limitações remanescentes e responsáveis.
+
+## Pré-piloto de 25/09/2026
+
+Suíte técnica: 67/67. Base operacional atualizada com backup de três para seis
+fontes. Regressão real do revisor: **4/5; F01 reproduzido**, sem mudanças no revisor
+nesta etapa. [Relatório](../evaluation/review-pre-piloto-20260925.json).
+Isso não substitui uma nova avaliação HTTP ou revisão humana.
+[Roteiro, problemas e decisão pendente](../piloto/README.md).
