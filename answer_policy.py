@@ -22,15 +22,12 @@ def source_instruction_errors(sources):
     return []
 
 NO_EVIDENCE = (
-    'Não encontrei evidências suficientes na base local para responder a esta pergunta. '
-    'Isso não significa que a alegação seja verdadeira ou falsa. '
-    'Você pode reformular a pergunta com o tema específico ou consultar a fonte original. '
-    'Não faço diagnóstico nem prescrição.'
+    'Não encontrei informações suficientes nas fontes disponíveis para responder com segurança. '
+    'Isso não confirma nem descarta a afirmação. Tente indicar o assunto de forma mais específica.'
 )
 INVALID_ANSWER = (
-    'Encontrei trechos na base, mas não consegui produzir uma resposta que atendesse '
-    'às verificações de referências e apoio documental. Consulte os trechos e as fontes abaixo. '
-    'Não é possível concluir, apenas com esta tentativa, se a alegação é verdadeira ou falsa.'
+    'Não consegui confirmar a resposta nas fontes disponíveis. '
+    'Consulte os trechos e os links abaixo; esta tentativa não permite tirar uma conclusão.'
 )
 
 
