@@ -114,3 +114,23 @@ A conectividade real ainda depende de configurar o token e testar nesta rede.
 
 Referências: [instalação oficial](https://ngrok.com/download/mac-os) e
 [CLI do agente](https://ngrok.com/docs/gateway/agent/cli).
+
+## Diagnóstico de acesso em 29/09/2026
+
+O túnel ngrok conectou e o servidor autenticado respondeu localmente: HTTP 401
+sem credenciais e HTTP 200 em `/api/health` com credenciais, com modelo pronto.
+Entretanto, a conexão HTTPS ao domínio do túnel nesta rede apresentou certificado
+para `*.ngrok-free.app` emitido por Fortinet (CA `FG3K2D3Z16800349`). A cadeia
+não foi reconhecida: OpenSSL retornou código 21 e Chrome exibiu
+`NET::ERR_CERT_AUTHORITY_INVALID`. Isso confirma interferência da inspeção TLS
+no acesso; não confirma que o domínio esteja bloqueado por uma regra de conteúdo.
+
+A correção nesta rede depende de a TI verificar a inspeção HTTPS, fornecer e
+validar a cadeia oficial de certificados da organização e confirmar se ngrok é
+permitido. Não instalar certificados obtidos do próprio erro nem desativar a
+validação HTTPS. Testar o endereço pelos dados móveis ajuda a separar o problema
+da rede do funcionamento externo do túnel.
+
+Para acessar no próprio computador, executar `python3 server.py` e abrir
+`http://127.0.0.1:8002`. Esse endereço é exclusivamente local e não serve como
+link para os colegas. O acesso externo continua dependendo do túnel e da rede.
