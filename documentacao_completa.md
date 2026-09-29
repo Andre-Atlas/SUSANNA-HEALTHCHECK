@@ -68,3 +68,28 @@ Um cuidado: arquivos `.md` que explicam instalação, código ou reuniões são 
 Como o sistema está local, cada colega que executar sua própria cópia precisará receber os JSONs e importá-los. Podemos compartilhar esses arquivos pelo Git; o banco SQLite é gerado em cada computador.
 
 **Os `.md` dos seus amigos contêm informações de saúde com fontes ou são documentação dos projetos deles?** Isso define como vamos integrar o material.
+
+
+==================
+
+1. **Corrigir a revisão das respostas — prioridade máxima**
+   - Há uma falha conhecida: o revisor aceitou uma resposta contraditória quando a fonte continha uma instrução maliciosa.
+   - Precisamos reforçar a separação entre documentos e instruções e testar novamente.
+   - Quando faltar apoio nas fontes, o chatbot deve dizer que não consegue confirmar.
+
+=====================
+
+Implementei a correção:
+
+- Separei os documentos das instruções de sistema.
+- Comandos explícitos de manipulação nas fontes agora bloqueiam a geração e a revisão.
+- Nesses casos, o chatbot informa que não encontrou evidência suficiente.
+
+**Validação:** 73 testes automatizados, 5/5 casos de regressão e 8/8 casos complementares passaram.
+
+O servidor local já está atualizado: **[abrir chatbot](http://127.0.0.1:8002)**. A sessão antiga do ngrok precisa ser reiniciada para carregar a correção.
+
+Registrei os resultados na documentação. A falha conhecida está bloqueada, mas o filtro não detecta toda manipulação e a IA ainda pode errar.
+
+===================
+
