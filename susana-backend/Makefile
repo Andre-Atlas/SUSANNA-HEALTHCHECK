@@ -1,7 +1,6 @@
-
 install:
 	python3 -m venv .venv
-	. .venv/bin/activate && pip install -e ".[dev]"
+	. .venv/bin/activate && python -m pip install -e ".[dev]"
 
 up:
 	docker compose up -d postgres
@@ -15,6 +14,9 @@ migrate:
 seed:
 	python -m scripts.seed
 
+ollama-check:
+	python -m scripts.check_ollama
+
 dev:
 	uvicorn app.main:app --reload
 
@@ -23,3 +25,5 @@ test:
 
 lint:
 	ruff check app tests scripts
+
+check: lint test

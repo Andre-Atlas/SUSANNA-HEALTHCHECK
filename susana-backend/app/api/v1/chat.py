@@ -1,4 +1,6 @@
-from fastapi import APIRouter, Depends
+import uuid
+
+from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.session import get_db
@@ -14,3 +16,8 @@ async def chat(request: ChatRequest, db: AsyncSession = Depends(get_db)) -> Chat
     provider = OllamaProvider()
     service = ChatService(db=db, llm=provider, embeddings=provider)
     return await service.process(str(request.session_id), request.message, request.context)
+
+
+@router.delete("/sessions/{session_id}", status_code=status.HTTP_204_NO_CONTENT, summary="Limpa o contexto de uma conversa")
+async def clear_chat_session(session_id: uuid.UUID) -> None:
+    ChatService.clear_session(str(session_id))

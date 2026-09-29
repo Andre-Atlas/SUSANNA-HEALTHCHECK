@@ -104,3 +104,22 @@ GET {{api}}/ckan/tags
 
 ### 16. CKAN — resource search
 GET {{api}}/ckan/resources/search?query=name%3ADistrict%20Names
+
+### 17. Limpar sessão / Nova conversa
+DELETE {{api}}/chat/sessions/00000000-0000-0000-0000-000000000001
+
+### 18. Atualizar serviço (substituição completa via PUT)
+# Substitua <service-id> por um UUID retornado pelo POST de serviço.
+PUT {{api}}/servicos/<service-id>
+Content-Type: application/json
+
+{
+  "name": "Serviço DEMO atualizado",
+  "category": "demo",
+  "description": "Atualizado via PUT.",
+  "establishment_id": null
+}
+
+### 19. Excluir serviço
+# Substitua <service-id> por um UUID real.
+DELETE {{api}}/servicos/<service-id>

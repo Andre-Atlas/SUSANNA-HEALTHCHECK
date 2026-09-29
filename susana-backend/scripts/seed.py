@@ -12,25 +12,37 @@ async def seed() -> None:
             name="SES-DF (DEMO)",
             url="https://info.saude.df.gov.br/",
             source_type="official",
-            description="Registro inicial de desenvolvimento. Substituir/validar antes de uso real.",
+            description="Registro inicial para desenvolvimento. Validar os dados antes de uso real.",
         )
+        db.add(source)
+        await db.flush()
+
         unit = Establishment(
+            source_id=source.id,
             external_id="DEMO-UBS-001",
             name="Unidade DEMO — substituir por dado oficial",
             type="UBS",
             ra="Samambaia",
             address="DADO DEMO — substituir por endereço oficial",
+            cep=None,
+            phone=None,
+            opening_hours=None,
         )
-        db.add_all([source, unit])
+        db.add(unit)
         await db.flush()
-        db.add(Service(
-            establishment_id=unit.id,
-            name="Serviço DEMO",
-            category="demo",
-            description="Registro fictício apenas para testar GET/POST/PUT/DELETE.",
-        ))
+
+        db.add(
+            Service(
+                establishment_id=unit.id,
+                name="Serviço DEMO",
+                category="demo",
+                description="Registro fictício apenas para testar GET/POST/PUT/DELETE.",
+            )
+        )
         await db.commit()
-        print(f"Seed concluído. Fonte={source.id} Unidade={unit.id}")
+
+    print(f"Seed concluído. Fonte demo: {source.id}; unidade demo: {unit.id}")
 
 
-if __name__ == "__main__": asyncio.run(seed())
+if __name__ == "__main__":
+    asyncio.run(seed())

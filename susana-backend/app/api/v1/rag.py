@@ -6,85 +6,122 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.session import get_db
 from app.models.chunk import DocumentChunk
-from app.models.document import Document
-from app.models.source import Source
 from app.providers.ollama import OllamaProvider
-from app.schemas.rag import ChunkRead, DocumentCreate, DocumentRead, DocumentUpdate, IngestResponse, RagSearchRequest, RagSearchResponse, RagSearchResult, RagSearchSource
+from app.repositories.document_repository import DocumentRepository
+from app.repositories.source_repository import SourceRepository
+from app.schemas.rag import (
+    ChunkRead,
+    DocumentCreate,
+    DocumentRead,
+    DocumentUpdate,
+    IngestResponse,
+    RagSearchRequest,
+    RagSearchResponse,
+    RagSearchResult,
+    RagSearchSource,
+)
+from app.services.document_service import DocumentService
 from app.services.rag_service import RAGService
 from app.services.retrieval_service import RetrievalService
 
 router = APIRouter(prefix="/rag", tags=["RAG"])
 
 
-@router.get("/documents", response_model=list[DocumentRead])
+def document_service(db: AsyncSession) -> DocumentService:
+    return DocumentService(DocumentRepository(db), SourceRepository(db))
+
+
+@router.get("/documents", response_model=list[DocumentRead], summary="Lista documentos")
 async def list_documents(db: AsyncSession = Depends(get_db)):
-    return list((await db.execute(select(Document).order_by(Document.created_at.desc()))).scalars().all())
+    return await document_service(db).list()
 
 
-@router.get("/documents/{document_id}", response_model=DocumentRead)
+@router.get("/documents/{document_id}", response_model=DocumentRead, summary="Obtém documento")
 async def get_document(document_id: uuid.UUID, db: AsyncSession = Depends(get_db)):
-    document = await db.get(Document, document_id)
-    if not document: raise HTTPException(404, "Documento não encontrado.")
+    document = await document_service(db).get(document_id)
+    if not document:
+        raise HTTPException(status_code=404, detail="Documento não encontrado.")
     return document
 
 
-@router.post("/documents", response_model=DocumentRead, status_code=status.HTTP_201_CREATED)
+@router.post("/documents", response_model=DocumentRead, status_code=status.HTTP_201_CREATED, summary="Cadastra documento")
 async def create_document(payload: DocumentCreate, db: AsyncSession = Depends(get_db)):
-    if not await db.get(Source, payload.source_id):
-        raise HTTPException(404, "Fonte associada não encontrada.")
-    data = payload.model_dump(); data["url"] = str(payload.url)
-    document = Document(**data); db.add(document); await db.commit(); await db.refresh(document)
-    return document
+    try:
+        return await document_service(db).create(payload)
+    except ValueError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
 
 
-@router.put("/documents/{document_id}", response_model=DocumentRead)
-async def update_document(document_id: uuid.UUID, payload: DocumentUpdate, db: AsyncSession = Depends(get_db)):
-    document = await db.get(Document, document_id)
-    if not document: raise HTTPException(404, "Documento não encontrado.")
-    for field, value in payload.model_dump().items():
-        if field == "url": value = str(payload.url)
-        setattr(document, field, value)
-    document.status = "pending"
-    await db.commit(); await db.refresh(document)
-    return document
+@router.put("/documents/{document_id}", response_model=DocumentRead, summary="Atualiza documento")
+async def update_document(
+    document_id: uuid.UUID, payload: DocumentUpdate, db: AsyncSession = Depends(get_db)
+):
+    service = document_service(db)
+    document = await service.get(document_id)
+    if not document:
+        raise HTTPException(status_code=404, detail="Documento não encontrado.")
+    return await service.update(document, payload)
 
 
-@router.delete("/documents/{document_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/documents/{document_id}", status_code=status.HTTP_204_NO_CONTENT, summary="Remove documento")
 async def delete_document(document_id: uuid.UUID, db: AsyncSession = Depends(get_db)):
-    document = await db.get(Document, document_id)
-    if not document: raise HTTPException(404, "Documento não encontrado.")
-    await db.delete(document); await db.commit()
+    service = document_service(db)
+    document = await service.get(document_id)
+    if not document:
+        raise HTTPException(status_code=404, detail="Documento não encontrado.")
+    await service.delete(document)
 
 
-@router.post("/documents/{document_id}/ingest", response_model=IngestResponse)
+@router.post("/documents/{document_id}/ingest", response_model=IngestResponse, summary="Indexa documento")
 async def ingest_document(document_id: uuid.UUID, db: AsyncSession = Depends(get_db)):
-    document = await db.get(Document, document_id)
-    if not document: raise HTTPException(404, "Documento não encontrado.")
+    document = await document_service(db).get(document_id)
+    if not document:
+        raise HTTPException(status_code=404, detail="Documento não encontrado.")
+    document.status = "processing"
+    await db.commit()
     try:
         chunks = await RAGService(db, OllamaProvider()).ingest(document)
     except Exception as exc:
-        document.status = "error"; await db.commit()
-        raise HTTPException(503, "Falha ao processar o documento com o provedor de embeddings.") from exc
+        await db.rollback()
+        document = await document_service(db).get(document_id)
+        if document:
+            document.status = "error"
+            await db.commit()
+        raise HTTPException(
+            status_code=503,
+            detail="Falha ao processar o documento com o provedor de embeddings.",
+        ) from exc
     return IngestResponse(document_id=document_id, status=document.status, chunks_created=chunks)
 
 
-@router.get("/documents/{document_id}/chunks", response_model=list[ChunkRead])
+@router.get("/documents/{document_id}/chunks", response_model=list[ChunkRead], summary="Lista chunks do documento")
 async def list_chunks(document_id: uuid.UUID, db: AsyncSession = Depends(get_db)):
-    if not await db.get(Document, document_id): raise HTTPException(404, "Documento não encontrado.")
-    stmt = select(DocumentChunk).where(DocumentChunk.document_id == document_id).order_by(DocumentChunk.chunk_index)
+    if not await document_service(db).get(document_id):
+        raise HTTPException(status_code=404, detail="Documento não encontrado.")
+    stmt = (
+        select(DocumentChunk)
+        .where(DocumentChunk.document_id == document_id)
+        .order_by(DocumentChunk.chunk_index)
+    )
     return list((await db.execute(stmt)).scalars().all())
 
 
-@router.post("/search", response_model=RagSearchResponse)
+@router.post("/search", response_model=RagSearchResponse, summary="Busca semântica")
 async def semantic_search(payload: RagSearchRequest, db: AsyncSession = Depends(get_db)):
     try:
         results = await RetrievalService(db, OllamaProvider()).search(payload.query, payload.top_k)
     except Exception as exc:
-        raise HTTPException(503, "Não foi possível executar a busca semântica.") from exc
+        raise HTTPException(status_code=503, detail="Não foi possível executar a busca semântica.") from exc
     return RagSearchResponse(
         query=payload.query,
-        results=[RagSearchResult(
-            document_id=item["document_id"], chunk_id=item["chunk_id"], score=round(item["score"], 4),
-            content=item["content"], source=RagSearchSource(name=item["source_name"], url=item["source_url"])
-        ) for item in results],
+        results=[
+            RagSearchResult(
+                document_id=item["document_id"],
+                chunk_id=item["chunk_id"],
+                score=round(item["score"], 4),
+                content=item["content"],
+                source=RagSearchSource(name=item["source_name"], url=item["source_url"]),
+            )
+            for item in results
+        ],
     )

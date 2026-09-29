@@ -1,8 +1,10 @@
 import uuid
+
 from pydantic import BaseModel, ConfigDict, Field
 
 
 class UnitBase(BaseModel):
+    source_id: uuid.UUID | None = None
     name: str = Field(min_length=1, max_length=250)
     type: str = Field(min_length=1, max_length=80)
     ra: str | None = Field(default=None, max_length=100)
@@ -24,5 +26,6 @@ class UnitUpdate(UnitBase):
 
 class UnitRead(UnitBase):
     model_config = ConfigDict(from_attributes=True)
+
     id: uuid.UUID
     external_id: str | None = None

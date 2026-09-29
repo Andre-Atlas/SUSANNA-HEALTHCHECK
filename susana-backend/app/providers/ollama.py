@@ -11,6 +11,7 @@ class OllamaProvider(LLMProvider, EmbeddingProvider):
         self.model = settings.ollama_model
         self.embedding_model = settings.embedding_model
         self.timeout = settings.ollama_timeout_seconds
+        self.embedding_dimensions = settings.embedding_dimensions
 
     async def generate(self, prompt: str) -> str:
         if not self.model:
@@ -22,10 +23,10 @@ class OllamaProvider(LLMProvider, EmbeddingProvider):
             )
             response.raise_for_status()
             data = response.json()
-            result = str(data.get("response", "")).strip()
-            if not result:
-                raise RuntimeError("Ollama não retornou uma resposta.")
-            return result
+            answer = str(data.get("response", "")).strip()
+            if not answer:
+                raise RuntimeError("Ollama não retornou uma resposta de texto.")
+            return answer
 
     async def embed(self, text: str) -> list[float]:
         if not self.embedding_model:
@@ -41,9 +42,9 @@ class OllamaProvider(LLMProvider, EmbeddingProvider):
             if not embeddings or not isinstance(embeddings[0], list):
                 raise RuntimeError("Ollama não retornou embedding em formato válido.")
             vector = [float(value) for value in embeddings[0]]
-            expected = get_settings().embedding_dimensions
-            if len(vector) != expected:
+            if len(vector) != self.embedding_dimensions:
                 raise RuntimeError(
-                    f"Dimensão do embedding incompatível: recebido={len(vector)}, esperado={expected}."
+                    f"Dimensão de embedding incompatível: esperado {self.embedding_dimensions}, "
+                    f"recebido {len(vector)}."
                 )
             return vector

@@ -14,12 +14,18 @@ class DocumentCreate(BaseModel):
     source_updated_at: datetime | None = None
 
 
-class DocumentUpdate(DocumentCreate):
-    pass
+class DocumentUpdate(BaseModel):
+    title: str = Field(min_length=1, max_length=300)
+    category: str = Field(min_length=1, max_length=100)
+    url: HttpUrl
+    content: str = Field(min_length=1)
+    published_at: datetime | None = None
+    source_updated_at: datetime | None = None
 
 
 class DocumentRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)
+
     id: uuid.UUID
     source_id: uuid.UUID
     title: str
@@ -31,7 +37,7 @@ class DocumentRead(BaseModel):
     status: str
     content_hash: str | None
     created_at: datetime
-    updated_at: datetime
+    updated_at: datetime | None
 
 
 class IngestResponse(BaseModel):
@@ -42,6 +48,7 @@ class IngestResponse(BaseModel):
 
 class ChunkRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)
+
     id: uuid.UUID
     document_id: uuid.UUID
     chunk_index: int

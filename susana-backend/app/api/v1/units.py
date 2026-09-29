@@ -1,19 +1,29 @@
 import uuid
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
-from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.session import get_db
-from app.models.establishment import Establishment
-from app.models.service import Service
+from app.repositories.establishment_repository import EstablishmentRepository
+from app.repositories.service_repository import ServiceRepository
+from app.repositories.source_repository import SourceRepository
 from app.schemas.service import ServiceRead
 from app.schemas.unit import UnitCreate, UnitRead, UnitUpdate
+from app.services.service_service import ServiceService
+from app.services.unit_service import UnitService
 
 router = APIRouter(prefix="/unidades", tags=["Rede de Atendimento"])
 
 
-@router.get("", response_model=list[UnitRead])
+def unit_service(db: AsyncSession) -> UnitService:
+    return UnitService(EstablishmentRepository(db), SourceRepository(db))
+
+
+def service_service(db: AsyncSession) -> ServiceService:
+    return ServiceService(ServiceRepository(db), EstablishmentRepository(db))
+
+
+@router.get("", response_model=list[UnitRead], summary="Lista unidades de saúde")
 async def list_units(
     type: str | None = None,
     ra: str | None = None,
@@ -23,47 +33,50 @@ async def list_units(
     offset: int = Query(0, ge=0),
     db: AsyncSession = Depends(get_db),
 ):
-    stmt = select(Establishment)
-    if type: stmt = stmt.where(Establishment.type.ilike(f"%{type}%"))
-    if ra: stmt = stmt.where(Establishment.ra.ilike(f"%{ra}%"))
-    if cep: stmt = stmt.where(Establishment.cep == cep)
-    if name: stmt = stmt.where(Establishment.name.ilike(f"%{name}%"))
-    stmt = stmt.order_by(Establishment.name).offset(offset).limit(limit)
-    return list((await db.execute(stmt)).scalars().all())
+    return await unit_service(db).list(
+        unit_type=type, ra=ra, cep=cep, name=name, limit=limit, offset=offset
+    )
 
 
-@router.get("/{unit_id}", response_model=UnitRead)
+@router.get("/{unit_id}", response_model=UnitRead, summary="Obtém uma unidade")
 async def get_unit(unit_id: uuid.UUID, db: AsyncSession = Depends(get_db)):
-    unit = await db.get(Establishment, unit_id)
-    if not unit: raise HTTPException(404, "Unidade não encontrada.")
+    unit = await unit_service(db).get(unit_id)
+    if not unit:
+        raise HTTPException(status_code=404, detail="Unidade não encontrada.")
     return unit
 
 
-@router.get("/{unit_id}/servicos", response_model=list[ServiceRead])
+@router.get("/{unit_id}/servicos", response_model=list[ServiceRead], summary="Lista serviços da unidade")
 async def get_unit_services(unit_id: uuid.UUID, db: AsyncSession = Depends(get_db)):
-    if not await db.get(Establishment, unit_id): raise HTTPException(404, "Unidade não encontrada.")
-    stmt = select(Service).where(Service.establishment_id == unit_id).order_by(Service.name)
-    return list((await db.execute(stmt)).scalars().all())
+    if not await unit_service(db).get(unit_id):
+        raise HTTPException(status_code=404, detail="Unidade não encontrada.")
+    return await service_service(db).list(establishment_id=unit_id, limit=100)
 
 
-@router.post("", response_model=UnitRead, status_code=status.HTTP_201_CREATED)
+@router.post("", response_model=UnitRead, status_code=status.HTTP_201_CREATED, summary="Cria unidade")
 async def create_unit(payload: UnitCreate, db: AsyncSession = Depends(get_db)):
-    unit = Establishment(**payload.model_dump())
-    db.add(unit); await db.commit(); await db.refresh(unit)
-    return unit
+    try:
+        return await unit_service(db).create(payload)
+    except ValueError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
 
 
-@router.put("/{unit_id}", response_model=UnitRead)
+@router.put("/{unit_id}", response_model=UnitRead, summary="Atualiza unidade")
 async def update_unit(unit_id: uuid.UUID, payload: UnitUpdate, db: AsyncSession = Depends(get_db)):
-    unit = await db.get(Establishment, unit_id)
-    if not unit: raise HTTPException(404, "Unidade não encontrada.")
-    for field, value in payload.model_dump().items(): setattr(unit, field, value)
-    await db.commit(); await db.refresh(unit)
-    return unit
+    service = unit_service(db)
+    unit = await service.get(unit_id)
+    if not unit:
+        raise HTTPException(status_code=404, detail="Unidade não encontrada.")
+    try:
+        return await service.update(unit, payload)
+    except ValueError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
 
 
-@router.delete("/{unit_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{unit_id}", status_code=status.HTTP_204_NO_CONTENT, summary="Remove unidade")
 async def delete_unit(unit_id: uuid.UUID, db: AsyncSession = Depends(get_db)):
-    unit = await db.get(Establishment, unit_id)
-    if not unit: raise HTTPException(404, "Unidade não encontrada.")
-    await db.delete(unit); await db.commit()
+    service = unit_service(db)
+    unit = await service.get(unit_id)
+    if not unit:
+        raise HTTPException(status_code=404, detail="Unidade não encontrada.")
+    await service.delete(unit)

@@ -1,4 +1,5 @@
 import uuid
+
 from pydantic import BaseModel, ConfigDict, Field
 
 
@@ -19,4 +20,5 @@ class ServiceUpdate(ServiceBase):
 
 class ServiceRead(ServiceBase):
     model_config = ConfigDict(from_attributes=True)
+
     id: uuid.UUID

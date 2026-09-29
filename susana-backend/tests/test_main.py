@@ -12,7 +12,14 @@ def test_root():
 def test_openapi_and_routes():
     paths = TestClient(app).get("/openapi.json").json()["paths"]
     expected = {
-        "/api/v1/health", "/api/v1/chat", "/api/v1/unidades", "/api/v1/servicos",
-        "/api/v1/fontes", "/api/v1/rag/documents", "/api/v1/rag/search", "/api/v1/ckan/packages",
+        "/api/v1/health",
+        "/api/v1/chat",
+        "/api/v1/unidades",
+        "/api/v1/servicos",
+        "/api/v1/fontes",
+        "/api/v1/rag/documents",
+        "/api/v1/rag/search",
+        "/api/v1/chat/sessions/{session_id}",
+        "/api/v1/ckan/packages",
     }
     assert expected.issubset(paths)
