@@ -45,7 +45,7 @@ const FAQS = [
   ['Como encontro informações sobre medicamentos?', 'Consulte a área de medicamentos ou informe à Susana o nome do medicamento para que ela possa orientar a busca.'],
   ['A Susana substitui um profissional de saúde?', 'Não. A Susana ajuda a encontrar e compreender informações do SUS. Ela não realiza diagnóstico nem prescreve tratamentos.'],
   ['A Susana responde sobre o Brasil inteiro?', 'Neste protótipo, o escopo está concentrado no Distrito Federal.'],
-  ['Como vejo a origem de uma resposta?', 'Quando uma resposta possui fonte, use a opção Fonte para consultar a origem e abrir a referência oficial.'],
+  ['Como vejo a origem de uma resposta?', 'Expanda a seção Referências na resposta da Susana e abra o item numerado para acessar a fonte oficial.'],
 ];
 
 const CONTENTS = [
@@ -81,6 +81,43 @@ function Icon({ name, size = 24 }) {
     care: <><path d="M6 19v-5a6 6 0 0 1 12 0v5"/><path d="M8 8a4 4 0 0 1 8 0"/><path d="M5 20h14"/></>,
   };
   return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[name] ?? paths.help}</svg>;
+}
+
+function useDialogFocus(open, dialogRef, initialFocusRef) {
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    if (!open || !dialog) return;
+
+    const previousFocus = document.activeElement;
+    const getFocusable = () => [...dialog.querySelectorAll('a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])')];
+    const focusable = getFocusable();
+    (initialFocusRef?.current || focusable[0] || dialog).focus();
+
+    const trapFocus = (event) => {
+      if (event.key !== 'Tab') return;
+      const items = getFocusable();
+      if (!items.length) {
+        event.preventDefault();
+        dialog.focus();
+        return;
+      }
+      const first = items[0];
+      const last = items[items.length - 1];
+      if (event.shiftKey && (document.activeElement === first || !dialog.contains(document.activeElement))) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && (document.activeElement === last || !dialog.contains(document.activeElement))) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener('keydown', trapFocus);
+    return () => {
+      document.removeEventListener('keydown', trapFocus);
+      if (previousFocus instanceof HTMLElement && previousFocus.isConnected) previousFocus.focus();
+    };
+  }, [open, dialogRef, initialFocusRef]);
 }
 
 function Sidebar({ active, onNavigate, open, onClose }) {
@@ -191,13 +228,24 @@ function FAQPage({ onAskSusana }) {
 }
 
 function DetailModal({ detail, onClose }) {
+  const modalRef = useRef(null);
+  useDialogFocus(Boolean(detail), modalRef);
   if (!detail) return null;
-  return <div className="modal-backdrop" role="presentation" onMouseDown={onClose}><section className="detail-modal" role="dialog" aria-modal="true" aria-labelledby="detail-title" onMouseDown={(e) => e.stopPropagation()}><button type="button" className="modal-close" onClick={onClose} aria-label="Fechar"><Icon name="close" size={19}/></button><p className="eyebrow">MEU SUS DIGITAL</p><h2 id="detail-title">{detail.title}</h2><p>{detail.description}</p><div className="modal-note">Conteúdo demonstrativo do protótipo. No produto final, esta área poderá direcionar para o serviço correspondente.</div><button type="button" className="modal-primary" onClick={onClose}>Fechar</button></section></div>;
+  return <div className="modal-backdrop" role="presentation" onMouseDown={onClose}><section ref={modalRef} className="detail-modal" role="dialog" aria-modal="true" aria-labelledby="detail-title" tabIndex={-1} onMouseDown={(e) => e.stopPropagation()}><button type="button" className="modal-close" onClick={onClose} aria-label="Fechar"><Icon name="close" size={19}/></button><p className="eyebrow">MEU SUS DIGITAL</p><h2 id="detail-title">{detail.title}</h2><p>{detail.description}</p><div className="modal-note">Conteúdo demonstrativo do protótipo. No produto final, esta área poderá direcionar para o serviço correspondente.</div><button type="button" className="modal-primary" onClick={onClose}>Fechar</button></section></div>;
 }
 
 function Source({ source }) {
   const [open, setOpen] = useState(false);
-  return <div className={`source ${open ? 'open' : ''}`}><button className="source-toggle" type="button" aria-expanded={open} onClick={() => setOpen((value) => !value)}><span>Fonte</span><Icon name="chevron" size={14}/></button>{open && <div className="source-body"><strong>{source.label}</strong><span>{source.detail}</span><a href={source.url} target="_blank" rel="noreferrer">Abrir fonte oficial <Icon name="external" size={13}/></a></div>}</div>;
+  return <section className={`references ${open ? 'open' : ''}`}>
+    <button className="references-toggle" type="button" aria-expanded={open} onClick={() => setOpen((value) => !value)}>
+      <span>Referências</span><Icon name="chevron" size={14}/>
+    </button>
+    {open && <div className="references-list">
+      <a className="reference-link" href={source.url} target="_blank" rel="noreferrer">
+        <span>[1]</span><span>{source.label}</span><Icon name="external" size={13}/>
+      </a>
+    </div>}
+  </section>;
 }
 
 function TypingState({ label }) {
@@ -213,7 +261,7 @@ function createReply(text, context) {
   const normalized = text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
   const hasRA = /(ceil[aâ]ndia|samambaia|taguatinga|plano piloto|sobradinho|gama|guara|aguas claras|recanto das emas|planaltina|brazlandia|riacho fundo)/i.test(text);
   const ra = hasRA ? text.match(/(Ceil[aâ]ndia|Samambaia|Taguatinga|Plano Piloto|Sobradinho|Gama|Guar[aá]|Águas Claras|Recanto das Emas|Planaltina|Brazlândia|Riacho Fundo)/i)?.[0] : context.ra;
-  const source = { label: 'Secretaria de Saúde do Distrito Federal', detail: 'Fonte oficial usada como referência no protótipo', url: 'https://info.saude.df.gov.br/' };
+  const source = { label: 'Secretaria de Saúde do Distrito Federal', url: 'https://info.saude.df.gov.br/' };
 
   if (/(diagnostico|qual doenca|o que eu tenho|dosagem|prescrev|tratamento)/.test(normalized)) {
     return { text: 'Posso ajudar com informações sobre serviços e acesso ao SUS, mas não faço diagnóstico nem prescrevo tratamentos. Posso ajudar você a encontrar o serviço adequado no Distrito Federal.', source, suggestions: ['Encontrar uma unidade de saúde', 'Informações sobre atendimento'] };
@@ -225,10 +273,10 @@ function createReply(text, context) {
     if (!ra) return { text: 'Claro. Para localizar a informação correta, em qual Região Administrativa do Distrito Federal você está?', source, suggestions: ['Ceilândia', 'Samambaia', 'Taguatinga'] };
     return { text: `Entendi. Vou considerar ${ra} como contexto da nossa conversa. A informação disponível indica caminhos para vacinação pela rede de saúde do Distrito Federal.`, source, suggestions: ['Quero consultar meu histórico', 'Quero saber sobre vacina infantil'] };
   }
-  if (/medic|remedio|farmacia/.test(normalized)) {
-    if (!context.medicine && !/onde retirar|tenho receita/.test(normalized)) return { text: 'Claro. Para eu procurar a informação correta, qual é o nome do medicamento?', source, suggestions: ['Quero saber onde retirar', 'Tenho uma receita'] };
-    if (/onde retirar|farmacia/.test(normalized) && context.medicine) return { text: `Certo. Vou considerar o medicamento ${context.medicine}. Posso orientar a busca por informações de assistência farmacêutica no DF.`, source, suggestions: ['Quero saber onde retirar', 'Preciso de outra informação'] };
-    return { text: 'Entendi. Com o nome do medicamento consigo direcionar melhor a busca nas fontes disponíveis.', source, suggestions: ['Quero saber onde retirar', 'Tenho uma receita'] };
+  if (/medic|remedio|farmacia|receita/.test(normalized) || (context.medicine && /onde retirar/.test(normalized))) {
+    if (!context.medicine) return { text: 'Claro. Para eu procurar a informação correta, qual é o nome do medicamento?', source, suggestions: ['Quero saber onde retirar', 'Tenho uma receita'] };
+    if (/onde retirar|farmacia/.test(normalized)) return { text: `Certo. Vou considerar o medicamento ${context.medicine}. Posso orientar a busca por informações de assistência farmacêutica no DF.`, source, suggestions: ['Quero saber onde retirar', 'Preciso de outra informação'] };
+    return { text: `Entendi. Vou considerar o medicamento ${context.medicine}. Posso orientar a busca por informações de assistência farmacêutica no DF.`, source, suggestions: ['Quero saber onde retirar', 'Tenho uma receita'] };
   }
   if (/consulta|agendar|agendamento|especialista|exame/.test(normalized)) {
     return { text: 'Posso orientar sobre o acesso a consultas e serviços especializados. Você quer saber como solicitar ou já possui um atendimento marcado?', source, suggestions: ['Quero solicitar uma consulta', 'Já tenho uma consulta marcada'] };
@@ -246,7 +294,7 @@ function extractContext(text, context) {
   const normalized = text.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
   const raMatch = normalized.match(/(Ceilandia|Samambaia|Taguatinga|Plano Piloto|Sobradinho|Gama|Guara|Aguas Claras|Recanto das Emas|Planaltina|Brazlandia|Riacho Fundo)/i);
   if (raMatch) next.ra = raMatch[0];
-  const medicineMatch = text.match(/(?:medicamento|remedio)\s+([\p{L}\d-]+)/iu);
+  const medicineMatch = text.match(/(?:medicamento|rem[eé]dio)\s+([\p{L}\d-]+)/iu);
   if (medicineMatch) next.medicine = medicineMatch[1];
   return next;
 }
@@ -259,7 +307,10 @@ function Assistant({ open, setOpen }) {
   const [context, setContext] = useState({});
   const messagesRef = useRef(null);
   const inputRef = useRef(null);
+  const panelRef = useRef(null);
   const timers = useRef([]);
+
+  useDialogFocus(open, panelRef, inputRef);
 
   const now = () => new Intl.DateTimeFormat('pt-BR', { hour: '2-digit', minute: '2-digit' }).format(new Date());
   const clearTimers = () => timers.current.splice(0).forEach((timer) => window.clearTimeout(timer));
@@ -277,7 +328,6 @@ function Assistant({ open, setOpen }) {
 
   useEffect(() => { if (open && !messages.length) startConversation(); }, [open]);
   useEffect(() => { messagesRef.current?.scrollTo({ top: messagesRef.current.scrollHeight, behavior: 'smooth' }); }, [messages, typing]);
-  useEffect(() => { if (open) window.setTimeout(() => inputRef.current?.focus(), 180); }, [open]);
   useEffect(() => () => clearTimers(), []);
 
   const send = (raw) => {
@@ -295,6 +345,7 @@ function Assistant({ open, setOpen }) {
     timers.current.push(window.setTimeout(() => setTyping('Consultando informações'), 450));
     timers.current.push(window.setTimeout(() => setTyping('Preparando a resposta'), 950));
     timers.current.push(window.setTimeout(() => {
+      timers.current = [];
       setTyping(null);
       setMessages((prev) => [...prev, { role: 'bot', text: reply.text, time: now(), source: reply.source }]);
       setSuggestions(reply.suggestions || []);
@@ -309,7 +360,7 @@ function Assistant({ open, setOpen }) {
   };
 
   return <aside className={`assistant ${open ? 'is-open' : ''}`} aria-label="Assistente Susana">
-    {open && <section className="assistant-panel" role="dialog" aria-modal="true" aria-labelledby="susana-title">
+    {open && <section ref={panelRef} className="assistant-panel" role="dialog" aria-modal="true" aria-labelledby="susana-title" tabIndex={-1}>
       <header className="assistant-header">
         <div className="assistant-identity"><img src={SUSANA_AVATAR} alt=""/><div><strong id="susana-title">Susana</strong><span>Assistente do SUS · Distrito Federal</span></div></div>
         <div className="assistant-actions"><button type="button" onClick={startConversation}>Nova conversa</button><button type="button" className="icon-only" aria-label="Fechar" onClick={() => setOpen(false)}><Icon name="close" size={18}/></button></div>
@@ -339,10 +390,18 @@ function App() {
   const [assistantOpen, setAssistantOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [detail, setDetail] = useState(null);
-  const searchInputRef = useRef(null);
 
   const navigate = (label) => { setActive(label); setNotificationsOpen(false); };
   const askSusana = () => { setAssistantOpen(true); setNotificationsOpen(false); };
+  const focusSearch = () => {
+    const searchInput = document.querySelector('#globalSearch input');
+    if (searchInput) {
+      searchInput.focus();
+      return;
+    }
+    navigate('Início');
+    window.setTimeout(() => document.querySelector('#globalSearch input')?.focus(), 0);
+  };
 
   useEffect(() => {
     const onKey = (event) => {
@@ -355,7 +414,7 @@ function App() {
       }
       if (event.key === '/' && document.activeElement?.tagName !== 'INPUT' && document.activeElement?.tagName !== 'TEXTAREA') {
         event.preventDefault();
-        document.querySelector('.search-bar input')?.focus();
+        focusSearch();
       }
     };
     document.addEventListener('keydown', onKey);
@@ -381,7 +440,7 @@ function App() {
   return <div className="app">
     <Sidebar active={active} onNavigate={navigate} open={mobileOpen} onClose={() => setMobileOpen(false)}/>
     <div className="main-shell">
-      <Header onMenu={() => setMobileOpen(true)} onSearch={() => document.querySelector('.search-bar input')?.focus()} onNotifications={(event) => { event.stopPropagation(); setNotificationsOpen((value) => !value); }} notificationsOpen={notificationsOpen} onProfile={() => navigate('Meu perfil')}/>
+      <Header onMenu={() => setMobileOpen(true)} onSearch={focusSearch} onNotifications={(event) => { event.stopPropagation(); setNotificationsOpen((value) => !value); }} notificationsOpen={notificationsOpen} onProfile={() => navigate('Meu perfil')}/>
       {view}
       <footer className="footer"><span>Meu SUS Digital · Protótipo de interface</span><span>Brasil · Distrito Federal</span></footer>
     </div>
