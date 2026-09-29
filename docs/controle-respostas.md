@@ -111,3 +111,24 @@ não detecta esse tipo de extrapolação. **Fidelidade semântica continua pende
 Relatório final desta etapa: `evaluation/controlled.json`. A primeira tentativa
 com o controle, antes dos dois ajustes, está em `evaluation/controlled-first.json`.
 Não houve edição das respostas nos relatórios. A aprovação humana continua pendente.
+
+
+## Correção da falha F01 — 29/09/2026
+
+Os documentos da geração agora são dados JSON na mensagem de usuário, separados
+ das instruções fixas de sistema. Pergunta e contexto de continuidade são preservados.
+Antes de gerar ou revisar, padrões explícitos de manipulação (ordens para ignorar
+regras, atribuições aos campos do parecer e marcadores de papéis) causam abstenção
+sem chamada à IA. Nesse caso, os trechos suspeitos não são devolvidos na resposta.
+Não removemos apenas a frase maliciosa para tratar o restante como confiável.
+
+É uma barreira determinística conservadora, não um detector completo de injeção:
+pode bloquear discussões legítimas sobre esses comandos e não detecta todas as
+formulações ou ofuscações. A revisão semântica das demais fontes continua sendo
+feita por IA e pode errar. A aprovação humana do piloto permanece pendente.
+
+Validação automatizada: 73 testes passaram, incluindo bloqueio antes da inferência,
+separação das mensagens e preservação de instruções médicas legítimas. Rodadas
+com Ollama: `evaluation/review-fix-20260929.json` e
+`evaluation/review-development-20260929.json`. O resultado de injeção bloqueada
+mede a barreira determinística, não uma melhoria comprovada do julgamento da IA.
