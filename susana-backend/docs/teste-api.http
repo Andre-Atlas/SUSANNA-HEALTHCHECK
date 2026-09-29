@@ -1,0 +1,106 @@
+### Base
+@base = http://localhost:8000
+@api = {{base}}/api/v1
+
+### 1. Health
+GET {{api}}/health
+
+### 2. Dependências
+GET {{api}}/health/dependencies
+
+### 3. Criar fonte
+POST {{api}}/fontes
+Content-Type: application/json
+
+{
+  "name": "SES-DF",
+  "url": "https://info.saude.df.gov.br/",
+  "source_type": "official",
+  "description": "Fonte oficial da Secretaria de Saúde do Distrito Federal."
+}
+
+### 4. Criar unidade DEMO
+# Substitua os dados DEMO por dados oficiais quando o corpus estiver pronto.
+POST {{api}}/unidades
+Content-Type: application/json
+
+{
+  "external_id": "DEMO-001",
+  "name": "Unidade DEMO",
+  "type": "UBS",
+  "ra": "Samambaia",
+  "address": "DADO DEMO",
+  "cep": "00000-000",
+  "phone": "(61) 0000-0000",
+  "opening_hours": "DADO DEMO"
+}
+
+### 5. Listar UBS de uma RA
+GET {{api}}/unidades?type=UBS&ra=Samambaia
+
+### 6. Criar serviço
+POST {{api}}/servicos
+Content-Type: application/json
+
+{
+  "name": "Serviço DEMO",
+  "category": "demo",
+  "description": "Somente para testar o CRUD.",
+  "establishment_id": null
+}
+
+### 7. Listar serviços
+GET {{api}}/servicos
+
+### 8. Cadastrar documento no RAG
+# Primeiro obtenha um source_id real em GET /fontes.
+POST {{api}}/rag/documents
+Content-Type: application/json
+
+{
+  "source_id": "00000000-0000-0000-0000-000000000000",
+  "title": "Documento DEMO",
+  "category": "ubs",
+  "url": "https://info.saude.df.gov.br/busca-saude-ubs/",
+  "content": "Conteúdo DEMO para testar o pipeline de ingestão."
+}
+
+### 9. Buscar semanticamente
+POST {{api}}/rag/search
+Content-Type: application/json
+
+{
+  "query": "onde encontro uma UBS em Samambaia?",
+  "top_k": 5
+}
+
+### 10. Chat
+POST {{api}}/chat
+Content-Type: application/json
+
+{
+  "session_id": "00000000-0000-0000-0000-000000000001",
+  "message": "Onde encontro vacinação em Samambaia?",
+  "context": {
+    "ra": "Samambaia"
+  }
+}
+
+### 11. CKAN — datasets
+# Requer CKAN_BASE_URL no .env.
+GET {{api}}/ckan/packages
+
+### 12. CKAN — busca
+GET {{api}}/ckan/packages/search?q=spending
+
+### 13. CKAN — dataset específico
+GET {{api}}/ckan/packages/adur_district_spending
+
+### 14. CKAN — groups
+GET {{api}}/ckan/groups
+
+### 15. CKAN — tags
+GET {{api}}/ckan/tags
+
+### 16. CKAN — resource search
+GET {{api}}/ckan/resources/search?query=name%3ADistrict%20Names
