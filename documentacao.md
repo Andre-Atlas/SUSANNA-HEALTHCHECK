@@ -459,3 +459,65 @@ Se não encontrar trechos, o sistema pula a IA e mostra uma mensagem pronta de f
 - `tests/` e os scripts `evaluate.py` e `evaluate_grounding.py` servem para testar a recuperação de documentos e as verificações.
 
 Essa explicação descreve o caminho implementado no código. Não executei o chatbot nem os testes nesta leitura.
+
+=======================================
+
+Para terminar o projeto com esse foco, precisamos priorizar **qualidade das respostas e velocidade**. Pelo estado registrado no projeto, a interface e a integração com a IA já existem; o principal trabalho está em tornar as respostas confiáveis.
+
+1. **Corrigir a revisão das respostas — prioridade máxima**
+   - Há uma falha conhecida: o revisor aceitou uma resposta contraditória quando a fonte continha uma instrução maliciosa.
+   - Precisamos reforçar a separação entre documentos e instruções e testar novamente.
+   - Quando faltar apoio nas fontes, o chatbot deve dizer que não consegue confirmar.
+
+2. **Melhorar a base de fontes**
+   - Hoje existem apenas seis sínteses experimentais, revisadas por IA.
+   - Conferir o conteúdo com as publicações originais e ampliar os temas que você quer perguntar.
+   - Registrar título, instituição, link e data de revisão de cada fonte.
+
+3. **Garantir que a busca encontre o trecho certo**
+   - Testar perguntas informais, erros de digitação e diferentes formas de perguntar.
+   - Melhorar perguntas de continuidade, como “e em crianças?”.
+   - Pedir esclarecimento quando a pergunta for ambígua.
+
+4. **Exibir fontes que realmente sustentem a resposta**
+   - Vincular as afirmações aos trechos utilizados.
+   - Mostrar título e link da publicação.
+   - Não tratar a presença de uma referência como prova de que a resposta está correta.
+
+5. **Deixar as respostas claras e objetivas**
+   - Responder à pergunta logo na primeira frase.
+   - Usar português simples e parágrafos curtos.
+   - Evitar explicações repetidas, informações desnecessárias e conclusões além das fontes.
+
+6. **Reduzir o tempo de resposta**
+   - Medir separadamente busca, geração e revisão.
+   - Hoje o fluxo pode chamar a IA duas vezes; medições anteriores ficaram em aproximadamente 12 a 17 segundos.
+   - Comparar modelos menores, respostas mais curtas e redução do contexto, mantendo os testes de qualidade.
+   - Definir uma meta de tempo depois dessa comparação.
+
+7. **Testar várias perguntas seguidas e acessos simultâneos**
+   - Verificar se o chatbot mantém o contexto sem misturar assuntos.
+   - Testar cancelamento, fila e recuperação após falhas.
+   - Confirmar que conversas de pessoas diferentes permanecem separadas.
+
+8. **Criar uma avaliação final com critérios claros**
+   - Montar perguntas novas, com respostas esperadas e fontes conferidas.
+   - Incluir perguntas sem resposta na base, premissas falsas e tentativas de manipulação.
+   - Avaliar correção, clareza, apoio das fontes e tempo de resposta.
+   - Corrigir os erros e repetir a avaliação antes de considerar concluído.
+
+**Eu começaria pelos itens 1, 2 e 4; depois otimizaria a velocidade.** A meta realista é reduzir respostas inventadas e fazer o chatbot reconhecer seus limites — não prometer ausência total de erros.
+
+## Revisão das respostas — correção de 29/09/2026
+
+Implementada separação entre instruções fixas e documentos JSON na geração.
+Comandos explícitos de manipulação nas fontes agora provocam abstenção antes
+ de qualquer inferência; o mesmo bloqueio protege chamadas diretas ao revisor.
+Os trechos suspeitos não são apresentados como evidência na resposta.
+
+Validação: 73 testes automatizados passaram. A regressão de aceitação do revisor
+passou em 5/5 casos, incluindo F01, bloqueado por regra determinística.
+Relatório: `evaluation/review-fix-20260929.json`.
+Não significa ausência de alucinações: o filtro é conservador e limitado a padrões,
+e a revisão semântica ainda depende de IA. Aprovação humana continua pendente.
+Detalhes em [controle de respostas](docs/controle-respostas.md).
