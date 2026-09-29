@@ -1,6 +1,25 @@
 """Regras determinísticas de referências e do parecer de fidelidade por IA."""
 import json
 import re
+import unicodedata
+
+
+def source_instruction_errors(sources):
+    """Quarentena conservadora de comandos explícitos; não detecta toda injeção."""
+    patterns = (
+        r"\b(?:ignore|desconsidere|esqueca|ignore all|disregard)\b.{0,100}\b(?:regras|criterios|instrucoes|rules|instructions)\b",
+        r"\b(?:supported|answers_question|conflicting_sources)\s*[=:]",
+        r"\b(?:revisor|assistant|system|sistema)\s*:",
+        r"<\|(?:im_start|im_end|system|assistant)\|>",
+        r"\b(?:aprove|aceite)\s+(?:qualquer|toda)\s+resposta",
+    )
+    for source in sources:
+        text = " ".join(str(source.get(k, "")) for k in ("text", "title", "url"))
+        text = "".join(c for c in unicodedata.normalize("NFKD", text.casefold())
+                       if not unicodedata.combining(c))
+        if any(re.search(pattern, text, re.DOTALL) for pattern in patterns):
+            return ["untrusted_source_instruction"]
+    return []
 
 NO_EVIDENCE = (
     'Não encontrei evidências suficientes na base local para responder a esta pergunta. '
