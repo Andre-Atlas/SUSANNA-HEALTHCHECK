@@ -117,3 +117,40 @@ Ampliei a base de **6 para 12 documentos**, já disponíveis no chatbot.
    - Testar perguntas informais, erros de digitação e diferentes formas de perguntar.
    - Melhorar perguntas de continuidade, como “e em crianças?”.
    - Pedir esclarecimento quando a pergunta for ambígua.
+
+=====================
+
+Ampliei a base de **6 para 12 documentos**, já disponíveis no chatbot.
+
+- Reconferi cinco fontes anteriores e substituí a referência de antibióticos por uma publicação da SBI.
+- Acrescentei **gripe, tuberculose, hipertensão, HIV, raiva e SAMU 192**.
+- Registrei título, instituição, link, data de revisão e seções consultadas.
+- Fiz backup e corrigi uma confusão da busca entre doenças.
+
+**Validação:** 75 testes passaram; busca com continuidade: 38/38. Isso verifica recuperação das fontes, não garante a correção de todas as respostas.
+
+[Consultar fontes e revisão](/Users/aluno2/Desktop/saude-gov-br/docs/revisao-fontes-20260929.md) · [Testar chatbot](http://127.0.0.1:8002)
+
+=======================
+
+4. **Exibir fontes que realmente sustentem a resposta**
+   - Vincular as afirmações aos trechos utilizados.
+   - Mostrar título e link da publicação.
+   - Não tratar a presença de uma referência como prova de que a resposta está correta.
+
+========================
+
+Ampliei a base de **6 para 12 documentos**, já disponíveis no chatbot.
+
+- Reconferi cinco fontes anteriores e substituí a referência de antibióticos por uma publicação da SBI.
+- Acrescentei **gripe, tuberculose, hipertensão, HIV, raiva e SAMU 192**.
+- Registrei título, instituição, link, data de revisão e seções consultadas.
+- Fiz backup e corrigi uma confusão da busca entre doenças.
+
+**Validação:** 75 testes passaram; busca com continuidade: 38/38. Isso verifica recuperação das fontes, não garante a correção de todas as respostas.
+
+[Consultar fontes e revisão](/Users/aluno2/Desktop/saude-gov-br/docs/revisao-fontes-20260929.md) · [Testar chatbot](http://127.0.0.1:8002)
+
+======================
+
+
