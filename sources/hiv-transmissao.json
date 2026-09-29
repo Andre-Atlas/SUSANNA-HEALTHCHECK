@@ -1,0 +1,25 @@
+{
+  "title": "HIV e aids — diferenças e mitos sobre transmissão",
+  "url": "https://www.gov.br/aids/pt-br/assuntos/hiv-aids",
+  "publisher": "Ministério da Saúde",
+  "reviewed_at": "2026-09-29",
+  "published_at": null,
+  "source_updated_at": null,
+  "next_review_at": "2026-10-29",
+  "content_type": "Síntese produzida por IA a partir da fonte; não é transcrição oficial",
+  "review_status": "Revisado por IA",
+  "documentary_check": {
+    "checked_at": "2026-09-29",
+    "checked_by": "Codex (IA)",
+    "source_section": "O que é?; Assim pega; Assim não pega",
+    "report": "docs/revisao-fontes-20260929.md",
+    "review_status": "Revisado por IA",
+    "reuse_assessment": "Pendente de decisão da equipe"
+  },
+  "source_license_notice": "Consultar as condições da publicação original; a licença do código não se aplica à fonte.",
+  "coverage_questions": [
+    "HIV passa por abraço ou copos?",
+    "Ter HIV é a mesma coisa que ter aids?"
+  ],
+  "text": "Síntese do Ministério da Saúde: HIV é o vírus que compromete o sistema imunológico e pode causar aids; ter HIV não significa necessariamente ter aids. O HIV não é transmitido por abraço, aperto de mão, copos, talheres, suor, lágrimas, picadas de insetos ou pelo ar. Relações sexuais sem proteção e compartilhamento de seringas contaminadas são formas de transmissão. Sem medidas preventivas, também pode ocorrer transmissão da mãe para a criança na gestação, no parto e na amamentação. A orientação é buscar testagem e prevenção."
+}
