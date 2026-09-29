@@ -6,7 +6,7 @@
   de evidências, sem chamar o Ollama. A ausência de documento não decide a veracidade
   de uma alegação.
 - Com trechos: a LLM recebe instrução para usar apenas o conteúdo fornecido,
-  preservar ressalvas e escrever até três parágrafos, cada um encerrado por citação.
+  preservar ressalvas e responder diretamente, preferindo um parágrafo de duas ou três frases e até 80 palavras. Um segundo parágrafo é permitido quando necessário; cada parágrafo termina com citação.
 - O modelo pode responder `SEM_EVIDENCIA` se considerar os trechos insuficientes;
   o servidor substitui esse marcador pela mensagem fixa de limitação.
 - O módulo `answer_policy.py` verifica citações numéricas, IDs existentes e citação
@@ -132,3 +132,21 @@ separação das mensagens e preservação de instruções médicas legítimas. R
 com Ollama: `evaluation/review-fix-20260929.json` e
 `evaluation/review-development-20260929.json`. O resultado de injeção bloqueada
 mede a barreira determinística, não uma melhoria comprovada do julgamento da IA.
+
+
+## Clareza e objetividade — 29/09/2026
+
+A geração começa pela resposta, sem saudação, repetição da pergunta ou introdução.
+Sim/Não só é usado quando sustentado pela fonte e acompanhado das condições
+necessárias. A orientação é usar linguagem cotidiana, frases curtas e apenas
+informações necessárias à pergunta. Termos técnicos não são explicados com
+conhecimento externo. Ressalvas e negações relevantes têm prioridade sobre brevidade.
+
+O tamanho preferido (até 80 palavras) é uma instrução à IA, não um corte mecânico:
+não truncamos respostas para atingir esse número nem removemos citações.
+Continuam ativos o bloqueio de fontes suspeitas e a revisão documental.
+Mensagens de falta de evidência e falha de verificação foram simplificadas.
+
+Validação: 75 testes automatizados passaram. A amostra com IA real é registrada
+em `evaluation/clarity-20260929-final.json` (primeira rodada preservada em `evaluation/clarity-20260929.json`); não equivale a avaliação clínica nem garante
+que todas as perguntas terão resposta ou o mesmo tempo de execução.
