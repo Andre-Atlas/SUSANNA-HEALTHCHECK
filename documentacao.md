@@ -521,3 +521,16 @@ Relatório: `evaluation/review-fix-20260929.json`.
 Não significa ausência de alucinações: o filtro é conservador e limitado a padrões,
 e a revisão semântica ainda depende de IA. Aprovação humana continua pendente.
 Detalhes em [controle de respostas](docs/controle-respostas.md).
+
+
+## Base de fontes ampliada — 29/09/2026
+
+A base passa de seis para **12 documentos**. Cinco fontes anteriores foram
+reconferidas; a referência de antibióticos foi substituída por publicação da SBI
+com leitura integral disponível. Novos temas: gripe, tuberculose, hipertensão,
+HIV, raiva e SAMU 192. Os JSONs registram título, instituição, URL, revisão e
+seções utilizadas. Datas de publicação desconhecidas não foram inventadas.
+
+Validação: 75 testes passaram e a regressão de busca com continuidade obteve
+38/38. Esses resultados não equivalem a validação clínica das respostas.
+Confira [fontes, decisões e limites](docs/revisao-fontes-20260929.md).
