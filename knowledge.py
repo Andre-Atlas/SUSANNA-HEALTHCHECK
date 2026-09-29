@@ -165,11 +165,16 @@ def retrieve(question, database=DATABASE, *, rerank=False):
         rows = connection.execute('''SELECT title, text, url, reviewed_at FROM chunks
             WHERE chunks MATCH ? ORDER BY bm25(chunks), rowid LIMIT 30''', (expression,)).fetchall()
     required = min(2, len(groups))
+    # Não confundir doenças por palavras genéricas como tratamento e cura.
+    # Lista conservadora de temas explícitos, inclusive temas ainda sem fonte.
+    topics = {'dengue', 'diabetes', 'tuberculose', 'hipertensao', 'hiv', 'aids',
+              'raiva', 'gripe', 'influenza', 'sarampo', 'cancer'}
+    requested_topics = [group & topics for group in groups if group & topics]
     matches = []
     for index, row in enumerate(rows):
         words = set(search_terms(row['title'] + ' ' + row['text']))
         coverage = sum(bool(group & words) for group in groups)
-        if coverage >= required:
+        if coverage >= required and all(topic & words for topic in requested_topics):
             matches.append((coverage, index, dict(row)))
     if rerank:
         matches.sort(key=lambda item: (-item[0], item[1]))
