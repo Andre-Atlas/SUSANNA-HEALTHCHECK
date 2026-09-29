@@ -60,7 +60,7 @@ class SearchTests(unittest.TestCase):
         with patch('server.ollama', return_value={'message': {'content': '{}'}}) as model:
             server.verify_grounding(prompt, 'Texto [1].', [{'text': 'Documento de teste.'}])
         payload = json.loads(model.call_args.args[1]['messages'][1]['content'])
-        self.assertEqual(payload['question'], prompt[-1]['content'])
+        self.assertEqual(payload['question'], json.loads(prompt[-1]['content'])['question'])
 
     def test_selection_prefers_more_concepts(self):
         def document(name, text):
