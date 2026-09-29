@@ -93,3 +93,27 @@ Registrei os resultados na documentação. A falha conhecida está bloqueada, ma
 
 ===================
 
+2. **Melhorar a base de fontes**
+   - Hoje existem apenas seis sínteses experimentais, revisadas por IA.
+   - Conferir o conteúdo com as publicações originais e ampliar os temas que você quer perguntar.
+   - Registrar título, instituição, link e data de revisão de cada fonte.
+
+========================
+
+Ampliei a base de **6 para 12 documentos**, já disponíveis no chatbot.
+
+- Reconferi cinco fontes anteriores e substituí a referência de antibióticos por uma publicação da SBI.
+- Acrescentei **gripe, tuberculose, hipertensão, HIV, raiva e SAMU 192**.
+- Registrei título, instituição, link, data de revisão e seções consultadas.
+- Fiz backup e corrigi uma confusão da busca entre doenças.
+
+**Validação:** 75 testes passaram; busca com continuidade: 38/38. Isso verifica recuperação das fontes, não garante a correção de todas as respostas.
+
+[Consultar fontes e revisão](/Users/aluno2/Desktop/saude-gov-br/docs/revisao-fontes-20260929.md) · [Testar chatbot](http://127.0.0.1:8002)
+
+===================
+
+3. **Garantir que a busca encontre o trecho certo**
+   - Testar perguntas informais, erros de digitação e diferentes formas de perguntar.
+   - Melhorar perguntas de continuidade, como “e em crianças?”.
+   - Pedir esclarecimento quando a pergunta for ambígua.
