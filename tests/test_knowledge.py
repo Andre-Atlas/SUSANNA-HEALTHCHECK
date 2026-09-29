@@ -91,7 +91,7 @@ class PromptTests(unittest.TestCase):
         messages = [{'role': 'user' if i % 2 == 0 else 'assistant',
                      'content': 'a' * (3000 if i % 2 == 0 else 12000)} for i in range(13)]
         prompt, sources = server.build_prompt(messages, [])
-        self.assertEqual(prompt[-1], messages[-1])
+        self.assertEqual(json.loads(prompt[-1]['content'])['question'], messages[-1]['content'])
         self.assertLess(len(prompt), len(messages))
         self.assertEqual(prompt[0]['role'], 'system')
         self.assertEqual(sources, [])
@@ -117,7 +117,8 @@ class PromptTests(unittest.TestCase):
             self.addCleanup(handler.server.jobs.close)
             self.assertEqual(response.call_args.args[0], 200)
             self.assertEqual(response.call_args.args[1]['sources'], [source])
-            self.assertIn(source['text'], model.call_args.args[1]['messages'][0]['content'])
+            self.assertNotIn(source['text'], model.call_args.args[1]['messages'][0]['content'])
+            self.assertIn(source['text'], model.call_args.args[1]['messages'][-1]['content'])
 
 
 if __name__ == '__main__':
