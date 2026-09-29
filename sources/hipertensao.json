@@ -1,0 +1,25 @@
+{
+  "title": "Hipertensão (pressão alta) — controle e hábitos de vida",
+  "url": "https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/h/hipertensao",
+  "publisher": "Ministério da Saúde",
+  "reviewed_at": "2026-09-29",
+  "published_at": null,
+  "source_updated_at": null,
+  "next_review_at": "2026-10-29",
+  "content_type": "Síntese produzida por IA a partir da fonte; não é transcrição oficial",
+  "review_status": "Revisado por IA",
+  "documentary_check": {
+    "checked_at": "2026-09-29",
+    "checked_by": "Codex (IA)",
+    "source_section": "Introdução; Sintomas; Tratamento; Prevenção",
+    "report": "docs/revisao-fontes-20260929.md",
+    "review_status": "Revisado por IA",
+    "reuse_assessment": "Pendente de decisão da equipe"
+  },
+  "source_license_notice": "Consultar as condições da publicação original; a licença do código não se aplica à fonte.",
+  "coverage_questions": [
+    "Pressão alta sempre apresenta sintomas?",
+    "Quais hábitos ajudam a controlar a hipertensão?"
+  ],
+  "text": "Síntese do Ministério da Saúde: hipertensão é a elevação crônica da pressão arterial e aumenta o risco de derrame, infarto e problemas nos rins e no coração. Os sintomas podem aparecer somente quando a pressão está muito elevada; medir a pressão é importante para identificá-la. A pressão alta pode ser controlada com tratamento definido pelo médico. Manter peso adequado, reduzir o excesso de sal, praticar atividade física e abandonar o tabaco fazem parte dos cuidados. Hábitos saudáveis acompanham o tratamento, sem substituir a avaliação profissional."
+}
