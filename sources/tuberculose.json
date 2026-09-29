@@ -1,0 +1,25 @@
+{
+  "title": "Tuberculose — transmissão pelo ar, prevenção e tratamento no SUS",
+  "url": "https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/l/t/tuberculose",
+  "publisher": "Ministério da Saúde",
+  "reviewed_at": "2026-09-29",
+  "published_at": null,
+  "source_updated_at": null,
+  "next_review_at": "2026-10-29",
+  "content_type": "Síntese produzida por IA a partir da fonte; não é transcrição oficial",
+  "review_status": "Revisado por IA",
+  "documentary_check": {
+    "checked_at": "2026-09-29",
+    "checked_by": "Codex (IA)",
+    "source_section": "Transmissão; Tratamento; Prevenção",
+    "report": "docs/revisao-fontes-20260929.md",
+    "review_status": "Revisado por IA",
+    "reuse_assessment": "Pendente de decisão da equipe"
+  },
+  "source_license_notice": "Consultar as condições da publicação original; a licença do código não se aplica à fonte.",
+  "coverage_questions": [
+    "Tuberculose passa por copos e talheres?",
+    "Tuberculose tem cura e tratamento no SUS?"
+  ],
+  "text": "Síntese do Ministério da Saúde: a tuberculose pode ser transmitida pela inalação de partículas eliminadas na tosse, fala ou espirro de pessoas com a forma pulmonar ou laríngea ativa sem tratamento. Compartilhar copos, talheres ou roupas não é via de transmissão da tuberculose. Ventilar os ambientes e cobrir a boca ao tossir ajudam na prevenção. A tuberculose tem cura com tratamento adequado até o final, oferecido gratuitamente pelo SUS. Melhorar dos sintomas não é motivo para interromper o tratamento. A BCG protege crianças contra formas graves, como a meníngea e a miliar."
+}
