@@ -47,7 +47,7 @@ if __name__ == '__main__':
         errors = verify_grounding([{'role': 'user', 'content': question}], answer, [{'text': text} for text in sources])
         # Falha técnica não conta como detecção semântica correta.
         semantic_rejection = bool(set(errors) & {'unsupported_claim', 'insufficient_support', 'conflicting_sources',
-                                               'invalid_evidence_source', 'unchecked_citation'})
+                                               'invalid_evidence_source', 'unchecked_citation', 'untrusted_source_instruction'})
         passed = not errors if expected else semantic_rejection
         results.append({'id': name, 'question': question, 'source': source, 'answer': answer,
                         'expected_accept': expected, 'errors': errors, 'passed': passed,
