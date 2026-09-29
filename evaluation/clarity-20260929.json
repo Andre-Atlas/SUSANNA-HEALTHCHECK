@@ -1,0 +1,75 @@
+{
+  "note": "Primeira rodada, antes do reforço de citação ao fim do parágrafo. Amostra de desenvolvimento sem avaliação humana independente. Hashes capturados ao final não representam necessariamente a versão carregada; omitidos.",
+  "results": [
+    {
+      "question": "Antibiótico ajuda a curar gripe?",
+      "model": "qwen2.5:7b",
+      "sources": [
+        {
+          "title": "Antibióticos — gripe, vírus e resistência bacteriana",
+          "text": "Síntese da Sociedade Brasileira de Infectologia: antibióticos atuam contra bactérias, não contra os vírus respiratórios da gripe e dos resfriados. Não aceleram a recuperação de uma infecção viral. Uma suspeita ou confirmação de infecção bacteriana exige avaliação profissional para decidir sobre antibióticos. A automedicação e o uso inadequado favorecem bactérias resistentes, tornando infecções mais difíceis de tratar. Não se deve usar sobras, medicamentos prescritos para outra pessoa nem alterar o tratamento por conta própria.",
+          "url": "https://infectologia.org.br/noticias/antibiotico-nao-trata-gripe-riscos-da-automedicacao-e-resistencia-bacteriana/",
+          "reviewed_at": "2026-09-29"
+        }
+      ],
+      "llm_called": true,
+      "done_reason": "stop",
+      "message": "Não consegui confirmar a resposta nas fontes disponíveis. Consulte os trechos e os links abaixo; esta tentativa não permite tirar uma conclusão.",
+      "answer_status": "reference_rejected",
+      "validation_errors": [
+        "uncited_paragraph"
+      ],
+      "words": 22,
+      "seconds": 22.46
+    },
+    {
+      "question": "Qual é o telefone do SAMU e ele é gratuito?",
+      "model": "qwen2.5:7b",
+      "sources": [
+        {
+          "title": "SAMU 192 — atendimento gratuito de urgência",
+          "text": "Síntese do Ministério da Saúde: o SAMU atende urgências pelo telefone 192, gratuitamente, durante as 24 horas do dia, todos os dias. A central coleta informações e o médico regulador orienta o atendimento e decide sobre o envio de ambulância quando necessário. Entre as situações para chamar estão suspeita de infarto ou AVC, dor súbita no peito, problemas cardiorrespiratórios, acidentes com vítimas e outras emergências com risco de morte ou sequelas. Quem liga deve seguir as orientações da central. O SAMU não é transporte para consultas e exames de rotina.",
+          "url": "https://www.gov.br/saude/pt-br/composicao/saes/samu-192",
+          "reviewed_at": "2026-09-29"
+        }
+      ],
+      "llm_called": true,
+      "done_reason": "stop",
+      "message": "Sim, o telefone do SAMU é 192 e ele é gratuito [1].",
+      "answer_status": "grounding_checked",
+      "validation_errors": [],
+      "words": 12,
+      "seconds": 41.17
+    },
+    {
+      "question": "HIV passa por abraço?",
+      "model": "qwen2.5:7b",
+      "sources": [
+        {
+          "title": "HIV e aids — diferenças e mitos sobre transmissão",
+          "text": "Síntese do Ministério da Saúde: HIV é o vírus que compromete o sistema imunológico e pode causar aids; ter HIV não significa necessariamente ter aids. O HIV não é transmitido por abraço, aperto de mão, copos, talheres, suor, lágrimas, picadas de insetos ou pelo ar. Relações sexuais sem proteção e compartilhamento de seringas contaminadas são formas de transmissão. Sem medidas preventivas, também pode ocorrer transmissão da mãe para a criança na gestação, no parto e na amamentação. A orientação é buscar testagem e prevenção.",
+          "url": "https://www.gov.br/aids/pt-br/assuntos/hiv-aids",
+          "reviewed_at": "2026-09-29"
+        }
+      ],
+      "llm_called": true,
+      "done_reason": "stop",
+      "message": "Não, HIV não passa por abraço [1].",
+      "answer_status": "grounding_checked",
+      "validation_errors": [],
+      "words": 7,
+      "seconds": 50.04
+    },
+    {
+      "question": "Qual tratamento cura diabetes?",
+      "message": "Não encontrei informações suficientes nas fontes disponíveis para responder com segurança. Isso não confirma nem descarta a afirmação. Tente indicar o assunto de forma mais específica.",
+      "model": "qwen2.5:7b",
+      "sources": [],
+      "answer_status": "no_evidence",
+      "llm_called": false,
+      "validation_errors": [],
+      "words": 26,
+      "seconds": 0.0
+    }
+  ]
+}
