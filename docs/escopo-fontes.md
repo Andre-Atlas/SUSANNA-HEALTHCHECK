@@ -1,5 +1,9 @@
 # Escopo e manutenção da base documental
 
+Estado atual: **12 documentos**, revistos/ampliados em 29/09/2026. Veja o [catálogo atual e a conferência](revisao-fontes-20260929.md). Inclui gripe, tuberculose, hipertensão, HIV, raiva e SAMU 192, além dos temas anteriores.
+
+## Registro histórico de 24/09/2026
+
 Versão de trabalho: 2026-09-24. Escopo inicial adotado para desenvolvimento, sujeito ao ajuste pela equipe. Seis sínteses de fontes oficiais; todas com revisão documental por IA. A revisão documental por IA foi concluída; a confiabilidade das respostas geradas é avaliada separadamente.
 
 ## Temas e cobertura
