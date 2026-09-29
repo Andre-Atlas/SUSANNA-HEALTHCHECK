@@ -1,0 +1,25 @@
+{
+  "title": "Gripe (influenza) — vacinação anual e prevenção",
+  "url": "https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/g/gripe-influenza",
+  "publisher": "Ministério da Saúde",
+  "reviewed_at": "2026-09-29",
+  "published_at": null,
+  "source_updated_at": null,
+  "next_review_at": "2026-10-29",
+  "content_type": "Síntese produzida por IA a partir da fonte; não é transcrição oficial",
+  "review_status": "Revisado por IA",
+  "documentary_check": {
+    "checked_at": "2026-09-29",
+    "checked_by": "Codex (IA)",
+    "source_section": "Prevenção",
+    "report": "docs/revisao-fontes-20260929.md",
+    "review_status": "Revisado por IA",
+    "reuse_assessment": "Pendente de decisão da equipe"
+  },
+  "source_license_notice": "Consultar as condições da publicação original; a licença do código não se aplica à fonte.",
+  "coverage_questions": [
+    "Por que a vacina da gripe é anual?",
+    "Como prevenir a gripe?"
+  ],
+  "text": "Síntese do Ministério da Saúde: a vacinação contra a gripe reduz o risco de formas graves e mortes. Como os vírus influenza mudam, a vacina é reformulada e a vacinação é anual. Outras medidas de prevenção da gripe incluem higienizar as mãos, manter boa ventilação, cobrir boca e nariz ao tossir ou espirrar e evitar contato próximo com pessoas com sintomas. Evitar compartilhar copos, talheres e outros objetos pessoais também é recomendado."
+}
