@@ -55,7 +55,7 @@ O chat mostra fila, geração e revisão em andamento. O texto aparece progressi
 
 ## Limites desta etapa
 
-O chatbot consulta uma base documental local usando SQLite FTS5. O repositório inclui seis sínteses experimentais de fontes oficiais em `sources/`, com revisão documental por IA. Para carregar esse conjunto, execute `python3 seed_knowledge.py`. Veja [como cadastrar fontes e testar](docs/base-documental.md) e [escopo e manutenção](docs/escopo-fontes.md).
+O chatbot consulta uma base documental local usando SQLite FTS5. O repositório inclui 12 sínteses experimentais de publicações do Ministério da Saúde, Anvisa e Sociedade Brasileira de Infectologia em `sources/`, com conferência documental por IA. Veja o [catálogo e a revisão de 29/09/2026](docs/revisao-fontes-20260929.md). Para carregar esse conjunto, execute `python3 seed_knowledge.py`. Veja [como cadastrar fontes e testar](docs/base-documental.md) e [escopo e manutenção](docs/escopo-fontes.md).
 
 Os trechos enviados ao modelo são apresentados com suas referências. A busca lexical inclui expansão controlada de termos, correção simples de digitação e continuidade em formas como “e nesse caso?”. Veja [funcionamento e comparação da busca](docs/busca-conversa.md). Recuperar um trecho não comprova uma alegação. Ainda precisamos avaliar relevância, fidelidade das respostas e citações. Não se deve apresentar as respostas como checagem factual ou orientação médica.
 
