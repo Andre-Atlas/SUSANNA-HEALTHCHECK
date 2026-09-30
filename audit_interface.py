@@ -42,8 +42,8 @@ def contrast(foreground, background):
 
 
 def audit():
-    html = (ROOT / 'index.html').read_text()
-    css = (ROOT / 'styles.css').read_text()
+    html = (ROOT / 'index.html').read_text(encoding='utf-8')
+    css = (ROOT / 'styles.css').read_text(encoding='utf-8')
     parser = Markup()
     parser.feed(html)
     nodes = parser.nodes
