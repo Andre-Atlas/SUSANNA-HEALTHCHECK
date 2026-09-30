@@ -204,3 +204,19 @@ Há informações que precisam ser reconciliadas antes de compartilhar o reposit
 **Em resumo:** para uma apresentação acadêmica, o principal é explicar claramente os limites e mostrar uma demonstração revisada. Para convidar pessoas a usar o chatbot, primeiro é necessário resolver o bloqueador de confiabilidade, revisar o conteúdo com pessoas qualificadas e validar o fluxo em dispositivos reais. Para mantê-lo disponível na internet, também será necessário substituir o túnel temporário por uma implantação apropriada.
 
 Não executei testes nem alterei arquivos nesta análise; os resultados citados são os registrados na documentação do projeto.
+
+============================
+
+Corrigi a causa da recusa e confirmei a pergunta original pelo servidor local **e pela demonstração pública**.
+
+O banco ainda continha a antiga síntese da Anvisa, apesar de ela ter sido substituída pela fonte da SBI. O modelo citava as duas; o revisor só confirmava evidência para a SBI, e o sistema bloqueava a resposta por `unchecked_citation`. A carga agora remove a fonte antiga quando a nova declara `replaces_url`. Também ajustei as instruções para preferir apenas as citações necessárias.
+
+**Resultado após as mudanças:** as três perguntas avaliadas — automedicação, antibiótico para gripe e uso de sobras — passaram como `grounding_checked`, sem erros de validação. A pergunta original também passou pelo endpoint HTTP local e pelo link público. Uma resposta gerada foi: “Não pode tomar antibiótico por conta própria quando estiver com uma infecção. O uso exige avaliação de um profissional de saúde. [1]” Essa orientação está de acordo com a [SBI](https://infectologia.org.br/noticias/antibiotico-nao-trata-gripe-riscos-da-automedicacao-e-resistencia-bacteriana/) e a [Anvisa](https://www.gov.br/anvisa/pt-br/assuntos/noticias-anvisa/2021/campanha-saiba-mais-sobre-resistencia-microbiana-e-como-combate-la).
+
+A suíte terminou com **76 testes aprovados e 8 ignorados**; os ignorados dependem de JavaScriptCore nativo do macOS. As três respostas levaram cerca de **21 segundos cada** nesta máquina.
+
+Atualizei [server.py](/C:/Users/dida0/OneDrive/Área%20de%20Trabalho/SUSANNA-HEALTHCHECK/server.py), [sources/antibioticos.json](/C:/Users/dida0/OneDrive/Área%20de%20Trabalho/SUSANNA-HEALTHCHECK/sources/antibioticos.json) e a rotina de carga em [seed_knowledge.py](/C:/Users/dida0/OneDrive/Área%20de%20Trabalho/SUSANNA-HEALTHCHECK/seed_knowledge.py). Registrei o diagnóstico e os resultados em [docs/avaliacao-respostas-20260930.md](/C:/Users/dida0/OneDrive/Área%20de%20Trabalho/SUSANNA-HEALTHCHECK/docs/avaliacao-respostas-20260930.md) e [evaluation/antibiotics-focused-20260930-final.json](/C:/Users/dida0/OneDrive/Área%20de%20Trabalho/SUSANNA-HEALTHCHECK/evaluation/antibiotics-focused-20260930-final.json). Fiz backup do banco antes de atualizá-lo.
+
+O link público agora é [what-attended-saturday-equity.trycloudflare.com](https://what-attended-saturday-equity.trycloudflare.com); a reinicialização renovou também a senha. O usuário continua `equipe`; consulte a senha no arquivo privado `%LOCALAPPDATA%\SUSANNA-HEALTHCHECK\internet\access.json`.
+
+Essa melhora foi confirmada para três perguntas, mas não torna o chatbot clinicamente validado nem resolve todos os bloqueios gerais do piloto. A revisão foi automatizada pelo mesmo modelo; ainda falta avaliação humana independente.
