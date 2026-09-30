@@ -44,6 +44,8 @@ SYSTEM += (' Quando a mensagem final contiver perguntas_anteriores_do_usuario e 
 SYSTEM += (' Se uma fonte responder diretamente a uma pergunta geral sobre automedicação, responda sem '
            'abster-se apenas porque faltam detalhes clínicos pessoais. Não diagnostique nem indique '
            'medicamento, dose ou duração; explique a condição descrita pela fonte e cite-a.')
+SYSTEM += (' Ao citar, use somente os IDs necessários para apoiar todas as afirmações do parágrafo. '
+           'Prefira um único trecho quando ele bastar; não acrescente citações redundantes.')
 
 
 def source_context(sources):
@@ -140,6 +142,10 @@ def verify_grounding(prompt, content, sources):
         '[{"id":1,"supported":boolean,"evidence":[{"source_id":1,"quote":"trecho literal"}]}]}. '
         'Inclua exatamente um registro por parágrafo, na mesma ordem; evidence pode ser [] se rejeitado.'
     )
+    instruction += (' Exemplo de paráfrase fiel: fonte="antibióticos não têm eficácia contra vírus respiratórios e não aceleram a recuperação de quadros virais"; '
+        'pergunta="Antibiótico ajuda a curar gripe?"; resposta="Não. Antibióticos não tratam gripe viral nem aceleram a recuperação [1]." '
+        'O resultado deve marcar answers_question=true e supported=true. Não rejeite uma conclusão explicitamente sustentada '
+        'só porque a resposta a expressa em palavras mais curtas.')
     question = next((m['content'] for m in reversed(prompt) if m.get('role') == 'user'), '')
     try:
         envelope = json.loads(question)
@@ -197,7 +203,7 @@ def generate_answer(prompt, sources):
     # Qwen occasionally answers correctly but omits the required paragraph citation.
     # Retry only this formatting failure; the independent grounding review still
     # has to approve every claim and literal evidence quote before release.
-    if errors and set(errors) <= {'missing_citation', 'uncited_paragraph', 'invalid_citation'}:
+    if prompt and errors and set(errors) <= {'missing_citation', 'uncited_paragraph', 'invalid_citation'}:
         retry_prompt = [dict(message) for message in prompt]
         retry_prompt[0]['content'] += (
             '\n\nA resposta anterior foi recusada porque faltou uma citacao no fim '
