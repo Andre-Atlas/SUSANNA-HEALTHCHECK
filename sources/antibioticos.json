@@ -2,25 +2,26 @@
   "title": "Antibióticos — gripe, vírus e resistência bacteriana",
   "url": "https://infectologia.org.br/noticias/antibiotico-nao-trata-gripe-riscos-da-automedicacao-e-resistencia-bacteriana/",
   "publisher": "Sociedade Brasileira de Infectologia (SBI)",
-  "reviewed_at": "2026-09-29",
+  "reviewed_at": "2026-09-30",
   "published_at": "2026-06-30",
   "source_updated_at": null,
-  "next_review_at": "2026-10-29",
+  "next_review_at": "2026-10-30",
   "content_type": "Síntese produzida por IA a partir da fonte; não é transcrição oficial",
   "review_status": "Revisado por IA",
   "documentary_check": {
-    "checked_at": "2026-09-29",
+    "checked_at": "2026-09-30",
     "checked_by": "Codex (IA)",
     "source_section": "Gripe é causada por vírus; Uso inadequado de antibióticos; Quando antibióticos podem ser indicados?",
-    "report": "docs/revisao-fontes-20260929.md",
+    "report": "docs/revisao-fontes-20260930.md",
     "review_status": "Revisado por IA",
     "reuse_assessment": "Pendente de decisão da equipe"
   },
   "source_license_notice": "Consultar as condições da publicação original; a licença do código não se aplica à fonte.",
   "coverage_questions": [
     "Antibióticos combatem vírus?",
-    "Antibiótico ajuda a curar gripe?"
+    "Antibiótico ajuda a curar gripe?",
+    "Posso tomar antibiótico por conta própria quando estou com uma infecção?"
   ],
-  "text": "Síntese da Sociedade Brasileira de Infectologia: antibióticos atuam contra bactérias, não contra os vírus respiratórios da gripe e dos resfriados. Não aceleram a recuperação de uma infecção viral. Uma suspeita ou confirmação de infecção bacteriana exige avaliação profissional para decidir sobre antibióticos. A automedicação e o uso inadequado favorecem bactérias resistentes, tornando infecções mais difíceis de tratar. Não se deve usar sobras, medicamentos prescritos para outra pessoa nem alterar o tratamento por conta própria.",
+  "text": "Síntese da Sociedade Brasileira de Infectologia: não tome antibióticos por conta própria; o uso exige avaliação de um profissional de saúde. Antibióticos atuam contra bactérias, não contra os vírus respiratórios da gripe e dos resfriados, e não aceleram a recuperação de uma infecção viral. Uma suspeita ou confirmação de infecção bacteriana exige avaliação profissional para decidir se antibióticos são indicados. A automedicação e o uso inadequado favorecem bactérias resistentes, tornando infecções mais difíceis de tratar. Não use sobras nem medicamentos prescritos para outra pessoa, e não altere o tratamento por conta própria.",
   "replaces_url": "https://www.gov.br/anvisa/pt-br/assuntos/noticias-anvisa/2020/pandemia-pode-aumentar-o-risco-de-resistencia-microbiana"
 }
