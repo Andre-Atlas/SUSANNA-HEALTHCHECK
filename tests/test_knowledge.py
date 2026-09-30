@@ -7,6 +7,7 @@ from io import BytesIO
 
 import knowledge
 import server
+import seed_knowledge
 
 
 class KnowledgeTests(unittest.TestCase):
@@ -60,6 +61,28 @@ class KnowledgeTests(unittest.TestCase):
     def test_remove_missing_database_does_not_create_file(self):
         self.assertEqual(knowledge.remove_document('https://example.org/teste', self.database), 0)
         self.assertFalse(self.database.exists())
+
+    def test_seed_removes_only_explicitly_replaced_url(self):
+        old_url = 'https://example.org/old'
+        knowledge.import_document(self.document(url=old_url, text='documento antigo antibiótico'), self.database)
+        source_dir = self.root / 'sources'
+        source_dir.mkdir()
+        replacement = {
+            'title': 'Documento atualizado',
+            'url': 'https://example.org/new',
+            'reviewed_at': '2026-09-30',
+            'replaces_url': old_url,
+            'text': 'documento atualizado antibiótico',
+        }
+        (source_dir / 'replacement.json').write_text(json.dumps(replacement), encoding='utf-8')
+        knowledge.import_document(self.document(url='https://example.org/keep', text='documento preservado dengue'), self.database)
+
+        seed_knowledge.seed_knowledge(source_dir, self.database)
+
+        self.assertEqual([row['url'] for row in knowledge.retrieve('antibiótico', self.database)],
+                         ['https://example.org/new'])
+        self.assertEqual([row['url'] for row in knowledge.retrieve('dengue', self.database)],
+                         ['https://example.org/keep'])
 
     def test_unsafe_url_rejected(self):
         with self.assertRaises(ValueError):
