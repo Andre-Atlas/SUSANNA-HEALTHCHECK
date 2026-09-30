@@ -5,25 +5,38 @@ Cloudflare, sem contratação de hospedagem ou domínio. Link aleatório e tempo
 sem garantia de disponibilidade. É uma demonstração restrita, não entrega final
 aprovada: a falha F01 do revisor permanece aberta.
 
-## Iniciar
+## Instalar e iniciar
 
-Mantenha Ollama aberto com `qwen2.5:7b`. Na pasta do projeto:
+Requer Windows 10/11 ou macOS, Python 3.10+, Ollama aberto com `qwen2.5:7b`,
+e o programa `cloudflared` instalado e disponível no PATH. Instalação oficial:
+[Windows](https://developers.cloudflare.com/tunnel/downloads/) (baixe o executável
+e adicione sua pasta ao PATH) ou macOS (`brew install cloudflared`). No Windows,
+confira no PowerShell com `cloudflared --version`; no macOS, no Terminal com o
+mesmo comando.
 
-```bash
-.venv/bin/python internet_demo.py
+Crie o ambiente e instale Waitress. **Windows (PowerShell):**
+
+```powershell
+py -3 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements-internet.txt
+.\.venv\Scripts\python.exe internet_demo.py
 ```
 
-A instalação deste ambiente inclui Waitress 3.0.2 na `.venv` e cloudflared em
-`.internet/bin/`. Para reinstalar o Python da demonstração:
+**macOS (Terminal):**
 
 ```bash
 python3 -m venv .venv
 .venv/bin/python -m pip install -r requirements-internet.txt
+.venv/bin/python internet_demo.py
 ```
 
 O iniciador verifica a base/modelo, cria túnel, gera senha aleatória nova e inicia
 a aplicação WSGI no loopback `127.0.0.1:8010`. Não precisa executar `server.py`.
-O endereço aparece no terminal. Abra `.internet/access.json` para consultar
+O endereço aparece no terminal. As credenciais ficam no diretório privado do
+usuário: `%LOCALAPPDATA%\SUSANNA-HEALTHCHECK\internet\access.json` no Windows,
+`~/Library/Application Support/SUSANNA-HEALTHCHECK/internet/access.json` no macOS,
+ou `~/.local/state/SUSANNA-HEALTHCHECK/internet/access.json` no Linux. Abra esse
+arquivo para consultar
 `origin`, usuário `equipe` e senha. Compartilhe a senha apenas com os integrantes
 convidados, separadamente do link. Todos usam a mesma credencial nesta demonstração;
 não existem contas individuais ou isolamento por usuário. IDs aleatórios dão acesso
@@ -39,8 +52,9 @@ Não use a senha em URL nem em argumentos de terminal.
 Pressione Ctrl+C no terminal do iniciador: ele encerra aplicativo e túnel.
 Deixe o computador ligado, conectado e sem repouso durante o uso. Não há serviço
 automático nem mudança das configurações de energia. Se uma interrupção abrupta
-deixar `.internet/session.lock`, confirme que a sessão anterior encerrou antes de
-remover esse arquivo e iniciar novamente. Não inicie duas sessões simultâneas.
+deixar `session.lock` no diretório privado indicado acima, confirme que a sessão
+anterior encerrou antes de remover esse arquivo e iniciar novamente. Não inicie
+duas sessões simultâneas.
 
 ## Proteções e limites
 
@@ -51,8 +65,9 @@ remover esse arquivo e iniciar novamente. Não inicie duas sessões simultâneas
 - Conexões Waitress limitadas a 32, corpo a 150.000 bytes e cabeçalhos a 8 KiB.
 - Só interface, saúde do modelo e criar/consultar/cancelar pedidos são publicados.
   Métricas, prontidão detalhada, arquivos internos e Ollama não são expostos.
-- Senha e registros do túnel ficam em `.internet/`, ignorada pelo Git, com pasta
-  de acesso restrito. Não incluir essa pasta em pacotes, capturas ou compartilhamentos.
+- Senha, token ngrok e registros do túnel ficam fora do repositório, no diretório
+  privado do usuário indicado acima. Não inclua esses arquivos em pacotes, capturas
+  ou compartilhamentos.
 
 ## Privacidade e limitações
 
@@ -61,8 +76,8 @@ encaminha o tráfego pelo túnel até o computador. O modelo continua local. Nã
 prometer que o conteúdo nunca passa por terceiros. Não inserir dados pessoais.
 O aviso da interface neste modo foi atualizado para refletir esse fluxo.
 
-O servidor não implementa logs de conversas, mas `.internet/tunnel.log` e
-`server.log` mantêm diagnósticos da sessão; são substituídos no próximo início.
+O servidor não implementa logs de conversas, mas `tunnel.log` e `server.log` no
+diretório privado mantêm diagnósticos da sessão; são substituídos no próximo início.
 Não foram auditadas políticas de registros da Cloudflare ou logs do Ollama.
 As demais regras de retenção estão em [privacidade](privacidade.md).
 
@@ -84,29 +99,31 @@ abrir portas de entrada no roteador. Depois execute o iniciador novamente.
 
 ## Alternativa na mesma internet: ngrok
 
-Cliente instalado em `.internet/bin/ngrok`. Requer conta gratuita e authtoken;
+Cliente ngrok precisa estar no PATH. Requer conta e authtoken;
 usará o ngrok como intermediário do tráfego, em lugar da Cloudflare. O modelo
 continua no computador. Não há promessa de acesso se a rede também bloquear ngrok.
 
 No terminal do VS Code, execute uma vez:
 
 ```bash
-.venv/bin/python configurar_ngrok.py
+.venv/bin/python configurar_ngrok.py  # macOS
+# Windows PowerShell: .\.venv\Scripts\python.exe configurar_ngrok.py
 ```
 
 Cole somente o authtoken do painel e pressione Enter. A entrada fica oculta e o
-segredo é salvo em `.internet/ngrok.yml` com permissão 600; não envie esse arquivo
+segredo é salvo em `ngrok.yml` no diretório privado do usuário; não envie esse arquivo
 ou o token pela conversa nem o inclua no Git. Este token é diferente da senha
 `equipe` usada para entrar no chatbot.
 
 Com Ollama aberto, inicie:
 
 ```bash
-.venv/bin/python internet_demo.py --provider ngrok
+.venv/bin/python internet_demo.py --provider ngrok  # macOS
+# Windows PowerShell: .\.venv\Scripts\python.exe internet_demo.py --provider ngrok
 ```
 
 O iniciador espera o evento de criação do túnel HTTPS antes de iniciar o servidor.
-Use a URL exibida e a senha nova em `.internet/access.json`. Ctrl+C encerra ambos.
+Use a URL exibida e a senha nova no `access.json` do diretório privado. Ctrl+C encerra ambos.
 A inspeção local de tráfego está desativada (`--inspect=false`, `web_addr: false`);
 isso não declara ausência de registros na infraestrutura do provedor. O aviso da
 interface identifica ngrok. Limites e autenticação da aplicação são preservados.
