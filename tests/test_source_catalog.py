@@ -14,7 +14,7 @@ class SourceCatalogTests(unittest.TestCase):
     def test_metadata_and_no_instruction_patterns(self):
         urls = set()
         for path in (ROOT / 'sources').glob('*.json'):
-            doc = json.loads(path.read_text())
+            doc = json.loads(path.read_text(encoding='utf-8'))
             with self.subTest(source=path.name):
                 for key in ('title', 'publisher', 'url', 'reviewed_at'):
                     self.assertTrue(doc.get(key))
@@ -38,7 +38,7 @@ class SourceCatalogTests(unittest.TestCase):
             database = Path(folder) / 'test.sqlite3'
             urls = {}
             for path in (ROOT / 'sources').glob('*.json'):
-                urls[path.name] = json.loads(path.read_text())['url']
+                urls[path.name] = json.loads(path.read_text(encoding='utf-8'))['url']
                 import_document(path, database)
             for question, expected in cases:
                 with self.subTest(question=question):
