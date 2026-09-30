@@ -44,7 +44,7 @@ class FrontendTests(unittest.TestCase):
             self.js.JSStringRelease(source)
 
     def run_case(self, script):
-        code = (ROOT / 'tests/frontend_harness.js').read_text() + '\n' + (ROOT / 'app.js').read_text()
+        code = (ROOT / 'tests/frontend_harness.js').read_text(encoding='utf-8') + '\n' + (ROOT / 'app.js').read_text(encoding='utf-8')
         code += '\n(async () => {' + script + "\n})().then(() => globalThis.outcome = 'OK', e => globalThis.outcome = String(e));"
         self.evaluate(code)
         self.assertEqual(self.evaluate('globalThis.outcome'), 'OK')
