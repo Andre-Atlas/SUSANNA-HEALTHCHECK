@@ -9,7 +9,7 @@ import time
 
 try:
     import resource
-except ImportError:  # resource nÃ£o existe no Python nativo do Windows.
+except ImportError:  # resource is unavailable in native Windows Python.
     resource = None
 
 LOCAL = threading.local()
