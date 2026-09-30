@@ -113,9 +113,13 @@ TERM_GROUPS = [
     'compartilhar dividir',
     'sobra sobras',
     'resfriado resfriados',
+    'buscar busque procurar procure consultar consulte encontrar encontre',
+    'fonte fontes confiavel confiaveis canal canais origem origens',
+    'mensagem mensagens publicacao publicacoes conteudo conteudos postagem postagens',
+    'suspeita suspeitas suspeito suspeitos duvidosa duvidosas duvidoso duvidosos',
 ]
 ALIASES = {term: frozenset(group.split()) for group in TERM_GROUPS for term in group.split()}
-INFORMAL = set('posso pra pro ta to vc voces gente saber queria quero sera mesmo nesse nessa caso entao disso dessas desses elas eles'.split())
+INFORMAL = set('posso pra pro ta to vc voces gente saber queria quero sera mesmo nesse nessa caso entao disso dessas desses elas eles recebi'.split())
 
 
 def one_edit(left, right):
