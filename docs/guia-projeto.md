@@ -32,7 +32,8 @@ python3 server.py --port 8002 --concurrency 1 --queue-size 3
 
 O download é necessário na primeira instalação. Se já houver base local, faça
 [backup](disponibilizacao.md#backup-e-recuperação) antes de reimportar: URLs iguais
-substituem os trechos anteriores; URLs locais adicionais não são removidas.
+substituem os trechos anteriores, e o carregador remove uma URL anterior somente
+quando a nova fonte declara `replaces_url`; URLs locais adicionais são preservadas.
 Abra http://127.0.0.1:8002. Confira http://127.0.0.1:8002/api/ready antes do uso.
 `ready: true` verifica base/modelo, sem aprovar o conteúdo das respostas.
 
