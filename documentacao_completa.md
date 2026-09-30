@@ -154,3 +154,17 @@ Ampliei a base de **6 para 12 documentos**, já disponíveis no chatbot.
 ======================
 
 
+Atualizei o projeto para oferecer um caminho de execução no **Windows e no macOS**:
+
+- O servidor tolera a ausência de `resource` no Python do Windows; a métrica de memória fica sem valor nessa plataforma.
+- Os guias principais agora trazem comandos separados para PowerShell e Terminal do macOS.
+- O modo de demonstração procura `cloudflared` e `ngrok` no PATH e aceita executáveis `.exe` no Windows. Senhas, tokens e logs da demonstração ficam no diretório de dados do usuário, fora da pasta do projeto.
+- A interface aponta para o README quando não encontra o servidor.
+
+Comece pelas instruções em [README.md](/C:/Users/dida0/OneDrive/Área%20de%20Trabalho/SUSANNA-HEALTHCHECK/README.md), [guia do projeto](/C:/Users/dida0/OneDrive/Área%20de%20Trabalho/SUSANNA-HEALTHCHECK/docs/guia-projeto.md) e [guia de demonstração pela internet](/C:/Users/dida0/OneDrive/Área%20de%20Trabalho/SUSANNA-HEALTHCHECK/docs/internet-demo.md).
+
+**Não consegui executar os comandos nem validar o projeto nos dois sistemas nesta sessão**, pois Python não está disponível no terminal de trabalho. `git diff --check` não apontou erros de whitespace. Portanto, as instruções foram atualizadas, mas a execução em Windows e macOS ainda precisa ser confirmada na prática.
+
+A documentação também registra a falha F01 na revisão de respostas. Ela continua pendente; a adaptação multiplataforma não resolve esse problema, então o projeto ainda não deve ser tratado como aprovado para um piloto de saúde.
+
+======================
