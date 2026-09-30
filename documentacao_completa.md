@@ -181,3 +181,26 @@ Não executei testes nem uma nova conversa com o Ollama nesta sessão, então a 
 ======================
 
 
+Analisei o código e a documentação. **O projeto já funciona como protótipo**, com chat, busca em fontes locais, integração com Ollama, interface, documentação para Windows e macOS e um modo de demonstração pela internet. Mas os próprios registros do projeto indicam que ele **ainda não está aprovado para um piloto com público**.
+
+## O que falta primeiro
+
+1. **Resolver os problemas de confiabilidade das respostas.** A avaliação documentada registra um caso crítico em que o revisor aceitou uma resposta contraditória após receber uma fonte com instruções maliciosas. Também registra respostas recusadas por problemas de formato e um caso de recusa apesar de haver fonte suficiente. Esses pontos estão em [docs/aceitacao.md](/C:/Users/dida0/OneDrive/%C3%81rea%20de%20Trabalho/SUSANNA-HEALTHCHECK/docs/aceitacao.md:11). O relatório cita 5 de 14 cenários aprovados; a rodada isolada do revisor ficou em 4 de 5.
+
+2. **Fazer revisão humana do conteúdo e das respostas.** As 12 fontes atuais são sínteses experimentais revisadas por IA. O projeto ainda registra revisores humanos e aceite como pendentes. Como é um chatbot sobre saúde, as fontes e exemplos de resposta precisam ser avaliados por pessoas com experiência adequada antes de apresentá-los como confiáveis.
+
+3. **Ampliar e revisar a cobertura da busca.** Os problemas recentes com perguntas como “Recebi uma mensagem suspeita” mostram que uma fonte relevante pode não aparecer para uma formulação comum. As recusas podem ser a decisão mais segura quando falta evidência, mas muitas falhas de recuperação tornam o chatbot pouco útil. É preciso revisar casos reais de busca e adicionar conteúdo confiável para as perguntas que o projeto quer atender.
+
+4. **Validar a experiência em dispositivos reais.** A documentação registra verificações pendentes em navegador, celular, teclado e leitor de tela. Também é preciso confirmar a instalação e o funcionamento em máquinas Windows e macOS, não apenas manter instruções para esses sistemas.
+
+## Antes de divulgar pela internet
+
+O modo atual é uma demonstração temporária que depende do seu computador e de um túnel; não é uma hospedagem permanente. A documentação também descreve uma credencial compartilhada e informa que perguntas passam pela infraestrutura do provedor do túnel. Para uso público contínuo, ainda faltariam hospedagem estável, controle de acesso adequado, uma decisão documentada sobre dados e registros, monitoramento e um procedimento de recuperação. Veja [docs/internet-demo.md](/C:/Users/dida0/OneDrive/%C3%81rea%20de%20Trabalho/SUSANNA-HEALTHCHECK/docs/internet-demo.md:3) e [docs/privacidade.md](/C:/Users/dida0/OneDrive/%C3%81rea%20de%20Trabalho/SUSANNA-HEALTHCHECK/docs/privacidade.md:1).
+
+## Documentação a organizar
+
+Há informações que precisam ser reconciliadas antes de compartilhar o repositório: o README anuncia um link temporário como ativo, enquanto o guia da demonstração registra falhas de conexão em datas posteriores à criação do link. Confirme o estado atual antes de divulgá-lo. Além disso, [documentacao_completa.md](/C:/Users/dida0/OneDrive/%C3%81rea%20de%20Trabalho/SUSANNA-HEALTHCHECK/documentacao_completa.md:24) contém um caminho local de outro computador, que não funcionará para quem receber o projeto.
+
+**Em resumo:** para uma apresentação acadêmica, o principal é explicar claramente os limites e mostrar uma demonstração revisada. Para convidar pessoas a usar o chatbot, primeiro é necessário resolver o bloqueador de confiabilidade, revisar o conteúdo com pessoas qualificadas e validar o fluxo em dispositivos reais. Para mantê-lo disponível na internet, também será necessário substituir o túnel temporário por uma implantação apropriada.
+
+Não executei testes nem alterei arquivos nesta análise; os resultados citados são os registrados na documentação do projeto.
