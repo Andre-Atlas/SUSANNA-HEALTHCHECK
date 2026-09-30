@@ -99,7 +99,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--config', type=Path, required=True)
     args = parser.parse_args()
-    config = json.loads(args.config.read_text())
+    config = json.loads(args.config.read_text(encoding='utf-8'))
     app = DemoApp(config['origin'], config['password'], provider=config.get('provider', 'cloudflare'))
     try:
         serve(app, host='127.0.0.1', port=8010, threads=4, connection_limit=32,
