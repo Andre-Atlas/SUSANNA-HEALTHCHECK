@@ -20,12 +20,12 @@ class SearchTests(unittest.TestCase):
         self.database = Path(temp.name) / 'knowledge.sqlite3'
         self.urls = {}
         for path in (ROOT / 'sources').glob('*.json'):
-            self.urls[path.name] = json.loads(path.read_text())['url']
+            self.urls[path.name] = json.loads(path.read_text(encoding='utf-8'))['url']
             knowledge.import_document(path, self.database)
 
     def test_search_and_conversation_cases(self):
-        cases = json.loads((ROOT / 'evaluation/search-cases.json').read_text())
-        cases += json.loads((ROOT / 'evaluation/questions.json').read_text())
+        cases = json.loads((ROOT / 'evaluation/search-cases.json').read_text(encoding='utf-8'))
+        cases += json.loads((ROOT / 'evaluation/questions.json').read_text(encoding='utf-8'))
         for case in cases:
             with self.subTest(case=case['id']):
                 query, messages, clarify = resolve_question(case_messages(case))
