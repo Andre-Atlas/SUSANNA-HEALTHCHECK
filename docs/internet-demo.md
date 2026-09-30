@@ -8,7 +8,12 @@ aprovada: a falha F01 do revisor permanece aberta.
 ## Acessar a demonstração ativa
 
 **Link temporário desta sessão:**
-[https://beyond-merchants-knife-closes.trycloudflare.com](https://beyond-merchants-knife-closes.trycloudflare.com)
+[https://what-attended-saturday-equity.trycloudflare.com](https://what-attended-saturday-equity.trycloudflare.com)
+
+Estado conferido em 30/09/2026: o túnel autenticado e o endpoint de saúde
+responderam; uma pergunta de teste passou pela revisão documental. O endereço e a
+senha foram renovados nesta inicialização. Consulte a senha no arquivo privado
+`access.json` descrito abaixo; não use a senha da sessão anterior.
 
 Ao abrir o link, informe o usuário `equipe` e peça a senha atual ao responsável
 pela demonstração. A senha não fica neste arquivo. O endereço funciona somente
