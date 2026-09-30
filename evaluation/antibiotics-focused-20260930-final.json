@@ -1,0 +1,40 @@
+{
+  "created_at": "2026-09-30",
+  "model": "qwen2.5:7b",
+  "note": "Focused development evaluation; not independent clinical review.",
+  "results": [
+    {
+      "question": "Posso tomar antibi\u00f3tico por conta pr\u00f3pria quando estou com uma infec\u00e7\u00e3o?",
+      "source_titles": [
+        "Antibi\u00f3ticos \u2014 gripe, v\u00edrus e resist\u00eancia bacteriana"
+      ],
+      "answer": "N\u00e3o pode tomar antibi\u00f3tico por conta pr\u00f3pria quando estiver com uma infec\u00e7\u00e3o. O uso exige avalia\u00e7\u00e3o de um profissional de sa\u00fade. [1]",
+      "answer_status": "grounding_checked",
+      "validation_errors": [],
+      "llm_called": true,
+      "seconds": 20.86
+    },
+    {
+      "question": "Antibi\u00f3tico ajuda a curar gripe?",
+      "source_titles": [
+        "Antibi\u00f3ticos \u2014 gripe, v\u00edrus e resist\u00eancia bacteriana"
+      ],
+      "answer": "N\u00e3o, antibi\u00f3ticos n\u00e3o ajudam a curar a gripe. Eles s\u00e3o ineficazes contra v\u00edrus respirat\u00f3rios e n\u00e3o aceleram a recupera\u00e7\u00e3o de infec\u00e7\u00f5es virais. [1]",
+      "answer_status": "grounding_checked",
+      "validation_errors": [],
+      "llm_called": true,
+      "seconds": 21.29
+    },
+    {
+      "question": "Posso usar sobras de antibi\u00f3tico de outro tratamento?",
+      "source_titles": [
+        "Antibi\u00f3ticos \u2014 gripe, v\u00edrus e resist\u00eancia bacteriana"
+      ],
+      "answer": "N\u00e3o pode usar sobras de antibi\u00f3tico de outro tratamento. O uso inadequado favorece bact\u00e9rias resistentes e pode tornar infec\u00e7\u00f5es mais dif\u00edceis de tratar. [1]",
+      "answer_status": "grounding_checked",
+      "validation_errors": [],
+      "llm_called": true,
+      "seconds": 21.62
+    }
+  ]
+}
