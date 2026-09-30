@@ -7,7 +7,8 @@
 > [responsabilidades](docs/responsabilidades.md). Os registros históricos abaixo
 > descrevem o estado de cada etapa e podem conter limitações já resolvidas.
 
-Abra **dois terminais**.
+As instruções abaixo servem para **Windows 10/11** e **macOS**. No Windows,
+use PowerShell e `py -3`; no macOS, use Terminal e `python3`. Abra dois terminais.
 
 ## 1. Primeiro terminal: iniciar o Ollama
 
@@ -33,12 +34,24 @@ ollama run qwen2.5:7b
 
 Digite uma pergunta. Para sair da conversa, use `/bye`.
 
-## 3. Iniciar o servidor do projeto
+## 3. Preparar a base e iniciar o servidor
 
-No segundo terminal:
+Abra o terminal na pasta do projeto. Na primeira execução, carregue os documentos
+e confira a base antes de iniciar o servidor.
+
+**Windows (PowerShell):**
+
+```powershell
+py -3 seed_knowledge.py
+py -3 operations.py check
+py -3 server.py
+```
+
+**macOS (Terminal):**
 
 ```bash
-cd /Users/aluno2/Desktop/saude-gov-br
+python3 seed_knowledge.py
+python3 operations.py check
 python3 server.py
 ```
 
@@ -52,13 +65,15 @@ Para conferir a conexão entre o servidor e a LLM, abra: [http://127.0.0.1:8002/
 
 Se a porta `8002` estiver ocupada:
 
-```bash
-python3 server.py --port 8003
+```text
+Windows (PowerShell): py -3 server.py --port 8003
+macOS (Terminal):     python3 server.py --port 8003
 ```
 
 Nesse caso, acesse [http://127.0.0.1:8003](http://127.0.0.1:8003).
 
-**Nas próximas vezes:** basta garantir que o Ollama esteja aberto e executar `python3 server.py`. Para parar o servidor, pressione `Ctrl+C` no terminal correspondente.
+**Nas próximas vezes:** abra o Ollama e execute `py -3 server.py` (Windows) ou
+`python3 server.py` (macOS). Para parar o servidor, pressione `Ctrl+C` no terminal.
 
 ====================================
 
