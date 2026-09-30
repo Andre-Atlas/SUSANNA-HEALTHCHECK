@@ -41,6 +41,11 @@ SYSTEM += (' Quando a mensagem final contiver perguntas_anteriores_do_usuario e 
            'Se a referência continuar ambígua, peça que o usuário explicite o assunto.')
 
 
+SYSTEM += (' Se uma fonte responder diretamente a uma pergunta geral sobre automedicação, responda sem '
+           'abster-se apenas porque faltam detalhes clínicos pessoais. Não diagnostique nem indique '
+           'medicamento, dose ou duração; explique a condição descrita pela fonte e cite-a.')
+
+
 def source_context(sources):
     if not sources:
         return ('Nenhum trecho foi recuperado da base local para esta pergunta. '
