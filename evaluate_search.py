@@ -20,14 +20,14 @@ def case_messages(case):
 
 
 def evaluate():
-    cases = json.loads((ROOT / 'evaluation/questions.json').read_text())
-    cases += json.loads((ROOT / 'evaluation/search-cases.json').read_text())
+    cases = json.loads((ROOT / 'evaluation/questions.json').read_text(encoding='utf-8'))
+    cases += json.loads((ROOT / 'evaluation/search-cases.json').read_text(encoding='utf-8'))
     urls = {}
     results = []
     with tempfile.TemporaryDirectory() as directory:
         database = Path(directory) / 'knowledge.sqlite3'
         for path in sorted((ROOT / 'sources').glob('*.json')):
-            urls[path.name] = json.loads(path.read_text())['url']
+            urls[path.name] = json.loads(path.read_text(encoding='utf-8'))['url']
             import_document(path, database)
         for case in cases:
             query, _, clarify = resolve_question(case_messages(case))
