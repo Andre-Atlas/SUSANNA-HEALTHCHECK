@@ -168,3 +168,16 @@ Comece pelas instruções em [README.md](/C:/Users/dida0/OneDrive/Área%20de%20T
 A documentação também registra a falha F01 na revisão de respostas. Ela continua pendente; a adaptação multiplataforma não resolve esse problema, então o projeto ainda não deve ser tratado como aprovado para um piloto de saúde.
 
 ======================
+
+
+A resposta foi **bloqueada pela validação de citações**, não simplesmente por falta de fontes. A base já tinha trechos sobre automedicação e avaliação profissional. Um relatório anterior registra uma falha semelhante: o modelo respondeu, mas omitiu a citação obrigatória no fim do parágrafo; o sistema descartou a resposta. Isso torna provável que tenha ocorrido o mesmo aqui, embora o registro desta tentativa não esteja disponível para confirmar o motivo exato.
+
+Fiz uma alteração em [server.py](/C:/Users/dida0/OneDrive/Área%20de%20Trabalho/SUSANNA-HEALTHCHECK/server.py): se o modelo esquecer ou errar o formato das citações, o servidor tenta gerar a resposta mais uma vez. A resposta ainda precisa passar pela revisão de apoio nas fontes; se falhar nessa revisão, continua bloqueada.
+
+Quanto à cobertura: os trechos sustentam uma resposta geral de que não se deve começar antibiótico por conta própria. A SBI orienta que antibióticos sem avaliação profissional são uma prática de risco e que a decisão de usá-los exige avaliação de um profissional de saúde. Como a fonte trata principalmente de infecções respiratórias, o chatbot deve deixar esse limite claro ao responder sobre “uma infecção” em geral. [Orientação da SBI](https://infectologia.org.br/noticias/antibiotico-nao-trata-gripe-riscos-da-automedicacao-e-resistencia-bacteriana/)
+
+Não executei testes nem uma nova conversa com o Ollama nesta sessão, então a correção ainda precisa ser confirmada rodando o projeto.
+
+======================
+
+
