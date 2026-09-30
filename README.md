@@ -1,4 +1,4 @@
-> **Demonstração temporária ativa:** [abrir SUSANNA-HEALTHCHECK](https://beyond-merchants-knife-closes.trycloudflare.com). Peça a senha ao responsável; o link só funciona enquanto o túnel estiver ativo. [Instruções para visitantes e operador](docs/internet-demo.md).
+> **Demonstração temporária ativa:** [abrir SUSANNA-HEALTHCHECK](https://what-attended-saturday-equity.trycloudflare.com). Peça a senha ao responsável; o link só funciona enquanto o túnel estiver ativo. [Instruções para visitantes e operador](docs/internet-demo.md).
 
 # SUSANNA-HEALTHCHECK — projeto acadêmico
 
@@ -105,6 +105,10 @@ A rodada real obteve **5/14** nos critérios automáticos do fluxo HTTP e **4/5*
 revisor isolado. Foi observada aceitação indevida de uma resposta contraditória
 quando a fonte incluía uma instrução maliciosa ao revisor; isso bloqueia a aprovação
 do piloto. Revisões humanas e verificação real de navegador/celular permanecem pendentes.
+
+A [avaliação focal de respostas de antibióticos](docs/avaliacao-respostas-20260930.md)
+registrou uma correção de fonte substituída, **3/3** respostas revisadas por IA e
+confirmação HTTP local e pública. Ela não substitui avaliação humana independente.
 
 O [pacote de revisão](evaluation/acceptance.human.md) contém as perguntas, respostas
 exibidas, fontes e campos pendentes para duas pessoas. Os relatórios são de testes
