@@ -1,4 +1,4 @@
-> **Demonstração pela internet:** modo temporário autenticado disponível; veja [como iniciar e encerrar](docs/internet-demo.md). A configuração local continua disponível.
+> **Demonstração temporária ativa:** [abrir SUSANNA-HEALTHCHECK](https://beyond-merchants-knife-closes.trycloudflare.com). Peça a senha ao responsável; o link só funciona enquanto o túnel estiver ativo. [Instruções para visitantes e operador](docs/internet-demo.md).
 
 # SUSANNA-HEALTHCHECK — projeto acadêmico
 

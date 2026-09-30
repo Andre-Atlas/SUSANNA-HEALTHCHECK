@@ -5,6 +5,21 @@ Cloudflare, sem contratação de hospedagem ou domínio. Link aleatório e tempo
 sem garantia de disponibilidade. É uma demonstração restrita, não entrega final
 aprovada: a falha F01 do revisor permanece aberta.
 
+## Acessar a demonstração ativa
+
+**Link temporário desta sessão:**
+[https://beyond-merchants-knife-closes.trycloudflare.com](https://beyond-merchants-knife-closes.trycloudflare.com)
+
+Ao abrir o link, informe o usuário `equipe` e peça a senha atual ao responsável
+pela demonstração. A senha não fica neste arquivo. O endereço funciona somente
+enquanto o túnel estiver ativo e este computador estiver ligado e conectado. Se a
+sessão for encerrada ou reiniciada, o link e a senha podem mudar; o responsável
+deve atualizar esta seção antes de compartilhar o novo endereço.
+
+Use perguntas fictícias, sem nomes, contatos ou relatos pessoais de saúde. As
+perguntas passam pela infraestrutura do provedor do túnel e o chatbot é experimental;
+não use as respostas para decisões de saúde. Veja [privacidade e limitações](privacidade.md).
+
 ## Instalar e iniciar
 
 Requer Windows 10/11 ou macOS, Python 3.10+, Ollama aberto com `qwen2.5:7b`,
