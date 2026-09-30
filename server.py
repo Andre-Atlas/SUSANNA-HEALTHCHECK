@@ -179,8 +179,9 @@ def generate_answer(prompt, sources):
     if not sources:
         return {'message': NO_EVIDENCE, 'model': MODEL, 'sources': [],
                 'answer_status': 'no_evidence', 'llm_called': False, 'validation_errors': []}
-    result = ollama('/api/chat', {'model': MODEL, 'messages': prompt,
-                    'stream': False, 'options': {'temperature': 0, 'num_predict': 700, 'num_ctx': 8192}})
+    request = {'model': MODEL, 'messages': prompt, 'stream': False,
+               'options': {'temperature': 0, 'num_predict': 700, 'num_ctx': 8192}}
+    result = ollama('/api/chat', request)
     content = normalize_references(result.get('message', {}).get('content', ''))
     base = {'model': MODEL, 'sources': sources, 'llm_called': True,
             'done_reason': result.get('done_reason')}
@@ -188,6 +189,30 @@ def generate_answer(prompt, sources):
         return {**base, 'message': NO_EVIDENCE, 'answer_status': 'insufficient_evidence',
                 'validation_errors': []}
     errors = reference_errors(content, sources)
+    # Qwen occasionally answers correctly but omits the required paragraph citation.
+    # Retry only this formatting failure; the independent grounding review still
+    # has to approve every claim and literal evidence quote before release.
+    if errors and set(errors) <= {'missing_citation', 'uncited_paragraph', 'invalid_citation'}:
+        retry_prompt = [dict(message) for message in prompt]
+        retry_prompt[0]['content'] += (
+            '\n\nA resposta anterior foi recusada porque faltou uma citacao no fim '
+            'do paragrafo. Responda novamente usando somente afirmacoes apoiadas '
+            'pelos trechos fornecidos. Termine cada paragrafo com os IDs numericos '
+            'das fontes que o sustentam, no formato [1]. Nao invente referencias '
+            'e nao cite um trecho que nao sustente o paragrafo.'
+        )
+        retry_request = {**request, 'messages': retry_prompt}
+        try:
+            result = ollama('/api/chat', retry_request)
+            base['done_reason'] = result.get('done_reason')
+            content = normalize_references(result.get('message', {}).get('content', ''))
+            errors = reference_errors(content, sources)
+        except (URLError, OSError, http.client.HTTPException, ValueError, TypeError, AttributeError):
+            # Keep the original rejected draft and fail closed below.
+            pass
+    if is_abstention(content):
+        return {**base, 'message': NO_EVIDENCE, 'answer_status': 'insufficient_evidence',
+                'validation_errors': []}
     if result.get('done_reason') == 'length':
         errors.append('truncated_answer')
     if errors:
