@@ -91,7 +91,7 @@ def human_packet(report, report_path):
 
 
 def evaluate(output):
-    suite = json.loads((ROOT / 'evaluation/acceptance-cases.json').read_text())
+    suite = json.loads((ROOT / 'evaluation/acceptance-cases.json').read_text(encoding='utf-8'))
     files = [ROOT / name for name in ('server.py', 'jobs.py', 'ollama_transport.py', 'knowledge.py',
         'conversation.py', 'answer_policy.py', 'evaluate_acceptance.py', 'evaluation/acceptance-cases.json')]
     files += sorted((ROOT / 'sources').glob('*.json'))
@@ -137,7 +137,7 @@ def evaluate(output):
                         messages.append({'role': 'assistant', 'content': turn['result']['message']})
                     expected_url = None
                     if case.get('expected_source'):
-                        expected_url = json.loads((ROOT / 'sources' / case['expected_source']).read_text())['url']
+                        expected_url = json.loads((ROOT / 'sources' / case['expected_source']).read_text(encoding='utf-8'))['url']
                     row['checks'] = assess(case, row['turns'][-1]['result'], expected_url)
                     row['automatic_pass'] = all(row['checks'].values())
                 except Exception as exc:

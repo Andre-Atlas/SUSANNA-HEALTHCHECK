@@ -4,19 +4,27 @@ Consolidado em 25/09/2026 para execução somente neste computador.
 
 ## Instalar e iniciar
 
-O ambiente verificado é macOS. O código usa `resource`, disponível em sistemas
-Unix; execução nativa no Windows não foi validada e não é suportada pelo código
-atual. Requisitos declarados: Python 3.10+ com SQLite FTS5, Ollama e modelo local.
-Não há dependências pip, npm, chave de API ou serviço pago para executar o chat.
-Consulte [versões e licenças](componentes.md) para o inventário medido.
+O projeto oferece execução local para Windows 10/11 e macOS com Python 3.10+
+(incluindo SQLite FTS5), Ollama e modelo local. O chat não exige dependências pip,
+npm, chave de API ou serviço pago. Consulte [versões e licenças](componentes.md).
 
-1. Instale Python pelo [site oficial](https://www.python.org/downloads/) e Ollama
-   pelo [site oficial](https://ollama.com/download). Abra a pasta do projeto no terminal.
-2. Abra o aplicativo Ollama ou execute `ollama serve` em um terminal separado.
-3. Prepare o modelo e a base:
+1. Instale Python 3.10+ e Ollama pelos [sites oficiais](https://www.python.org/downloads/)
+   e [Ollama](https://ollama.com/download). Abra a pasta do projeto no terminal.
+2. Abra o aplicativo Ollama ou execute `ollama serve` em outro terminal. Instale o
+   modelo uma vez com `ollama pull qwen2.5:7b`.
+3. Prepare a base e inicie o servidor com os comandos da sua plataforma.
+
+**Windows (PowerShell):**
+
+```powershell
+py -3 seed_knowledge.py
+py -3 operations.py check
+py -3 server.py --port 8002 --concurrency 1 --queue-size 3
+```
+
+**macOS (Terminal):**
 
 ```bash
-ollama pull qwen2.5:7b
 python3 seed_knowledge.py
 python3 operations.py check
 python3 server.py --port 8002 --concurrency 1 --queue-size 3
@@ -24,12 +32,14 @@ python3 server.py --port 8002 --concurrency 1 --queue-size 3
 
 O download é necessário na primeira instalação. Se já houver base local, faça
 [backup](disponibilizacao.md#backup-e-recuperação) antes de reimportar: URLs iguais
-substituem os trechos anteriores; URLs locais adicionais não são removidas.
+substituem os trechos anteriores, e o carregador remove uma URL anterior somente
+quando a nova fonte declara `replaces_url`; URLs locais adicionais são preservadas.
 Abra http://127.0.0.1:8002. Confira http://127.0.0.1:8002/api/ready antes do uso.
 `ready: true` verifica base/modelo, sem aprovar o conteúdo das respostas.
 
-Nas próximas vezes, basta abrir o Ollama e iniciar `python3 server.py`.
-Não use Live Server nem `python3 -m http.server`: não executam a API.
+Nas próximas vezes, abra o Ollama e inicie `py -3 server.py` (Windows) ou
+`python3 server.py` (macOS). Não use Live Server nem `python -m http.server`:
+eles não executam a API.
 Não exponha as portas à rede. Para parar, pressione Ctrl+C no terminal do servidor.
 
 ## Usar o chatbot
@@ -59,7 +69,7 @@ do piloto estão em [aceitação](aceitacao.md).
 | Porta ocupada | Inicie com `--port 8003` e use essa porta no navegador e nas verificações. |
 | Ollama indisponível | Abra o aplicativo ou execute `ollama serve`; confira `/api/ready`. |
 | Modelo ausente | Execute `ollama pull qwen2.5:7b`; confira se `OLLAMA_MODEL` foi alterado. |
-| Base vazia ou inválida | Execute `python3 operations.py check`; preserve a base e siga a recuperação antes de sobrescrever dados. |
+| Base vazia ou inválida | Execute `py -3 operations.py check` (Windows) ou `python3 operations.py check` (macOS); preserve a base e siga a recuperação antes de sobrescrever dados. |
 | Fila cheia | Aguarde ou cancele seu pedido; não aumente a concorrência sem medir o hardware. |
 | Resposta bloqueada ou sem evidências | Confira a cobertura da base; registre um caso sintético para investigação. |
 | Interface antiga | Reinicie o servidor depois de atualizar código e recarregue a página. |
@@ -69,6 +79,8 @@ do piloto estão em [aceitação](aceitacao.md).
 Antes de atualizar, registre o commit (`git rev-parse HEAD`), versões e modelo;
 faça backup da base e preserve alterações locais. Pare o servidor, aplique uma
 versão revisada e execute:
+
+Use `py -3` no lugar de `python3` nos comandos abaixo no Windows.
 
 ```bash
 python3 -m unittest discover -s tests -v

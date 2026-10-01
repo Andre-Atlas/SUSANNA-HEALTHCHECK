@@ -106,16 +106,18 @@ TERM_GROUPS = [
     'bacteria bacterias bacteriana bacterianas',
     'prevencao prevenir evitar',
     'transmissao transmitida transmite transmitido pega pegar',
-    'boato boatos desinformacao fake news',
+    'boato boatos desinformacao fake news suspeita suspeitas suspeito suspeitos duvidosa duvidosas duvidoso duvidosos',
     'identificar reconhecer detectar',
     'conferir confira verificar checar examine',
-    'noticia noticias informacao informacoes',
+    'noticia noticias informacao informacoes mensagem mensagens publicacao publicacoes conteudo conteudos postagem postagens',
     'compartilhar dividir',
     'sobra sobras',
     'resfriado resfriados',
+    'buscar busque procurar procure consultar consulte encontrar encontre',
+    'fonte fontes confiavel confiaveis canal canais origem origens',
 ]
 ALIASES = {term: frozenset(group.split()) for group in TERM_GROUPS for term in group.split()}
-INFORMAL = set('posso pra pro ta to vc voces gente saber queria quero sera mesmo nesse nessa caso entao disso dessas desses elas eles'.split())
+INFORMAL = set('posso pra pro ta to vc voces gente saber queria quero sera mesmo nesse nessa caso entao disso dessas desses elas eles recebi'.split())
 
 
 def one_edit(left, right):

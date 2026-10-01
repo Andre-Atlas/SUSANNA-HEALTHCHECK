@@ -1,12 +1,16 @@
 """Fila FIFO limitada, cancelamento cooperativo e métricas sem texto de conversa."""
 from collections import deque
 from contextlib import contextmanager
-import resource
 import secrets
 import socket
 import sys
 import threading
 import time
+
+try:
+    import resource
+except ImportError:  # resource is unavailable in native Windows Python.
+    resource = None
 
 LOCAL = threading.local()
 TERMINAL = {'done', 'error', 'cancelled'}
@@ -163,10 +167,13 @@ class JobQueue:
             job.timings.setdefault('queue', round((job.started or job.ended) - job.created, 4))
             job.messages = None
             job.upstream = None
-            peak = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+            peak = (resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+                    if resource is not None else None)
             self.records.append({'state': job.state, 'timings': dict(job.timings),
                 'cancel_reason': job.reason,
-                'python_lifetime_peak_rss_mib': round(peak / (1024 ** 2 if sys.platform == 'darwin' else 1024), 2)})
+                'python_lifetime_peak_rss_mib': (
+                    round(peak / (1024 ** 2 if sys.platform == 'darwin' else 1024), 2)
+                    if peak is not None else None)})
             job.finished.set()
 
     def _worker(self):

@@ -1,5 +1,9 @@
 # Revisão das três sínteses da base
 
+> Registro histórico de 24/09/2026. A síntese antiga da Anvisa sobre antibióticos
+> foi substituída pela fonte da SBI em 29/09; as sugestões abaixo sobre antibióticos
+> referem-se à versão anterior. Veja a [revisão atualizada](revisao-fontes-20260930.md).
+
 Conferência documental por IA (Codex): 2026-09-24. Status: Revisado por IA. A pedido do responsável pelo projeto, revisão humana não é requisito deste fluxo. Esta conferência compara os textos locais com as páginas indicadas; não certifica adequação clínica nem autoriza sua publicação.
 
 ## Resultado da conferência

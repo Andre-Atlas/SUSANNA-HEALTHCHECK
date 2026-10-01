@@ -4,13 +4,12 @@ import json
 import os
 from pathlib import Path
 import sys
+from internet_state import state_dir
 
 if __name__ == '__main__':
     if not sys.stdin.isatty():
         raise SystemExit('Execute diretamente no terminal do VS Code.')
-    folder = Path(__file__).resolve().parent / '.internet'
-    folder.mkdir(mode=0o700, exist_ok=True)
-    folder.chmod(0o700)
+    folder = state_dir()
     if (folder / 'session.lock').exists():
         raise SystemExit('Encerre a demonstração antes de configurar o token.')
     token = getpass.getpass('Cole o authtoken do ngrok e pressione Enter (não será exibido): ').strip()
@@ -22,4 +21,7 @@ if __name__ == '__main__':
         stream.write('version: "2"\nauthtoken: ' + json.dumps(token) + '\nweb_addr: false\n')
     path.chmod(0o600)
     print('Token salvo na pasta privada. Inicie com:')
-    print('.venv/bin/python internet_demo.py --provider ngrok')
+    command = (r'.venv\Scripts\python.exe internet_demo.py --provider ngrok'
+               if os.name == 'nt' else
+               '.venv/bin/python internet_demo.py --provider ngrok')
+    print(command)

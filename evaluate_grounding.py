@@ -39,7 +39,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     if args.cases and args.output.exists():
         parser.error('Escolha --output novo para preservar a rodada anterior.')
-    cases = json.loads(args.cases.read_text()) if args.cases else CASES
+    cases = json.loads(args.cases.read_text(encoding='utf-8')) if args.cases else CASES
     results = []
     for name, question, source, answer, expected in cases:
         start = time.monotonic()

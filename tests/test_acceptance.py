@@ -13,8 +13,8 @@ class AcceptanceTests(unittest.TestCase):
         old = set()
         for filename in ('questions.json', 'search-cases.json'):
             old.update(case['question'].strip().casefold() for case in
-                       json.loads((ROOT / 'evaluation' / filename).read_text()))
-        cases = json.loads((ROOT / 'evaluation/acceptance-cases.json').read_text())['cases']
+                       json.loads((ROOT / 'evaluation' / filename).read_text(encoding='utf-8')))
+        cases = json.loads((ROOT / 'evaluation/acceptance-cases.json').read_text(encoding='utf-8'))['cases']
         self.assertEqual(len({case['id'] for case in cases}), len(cases))
         for case in cases:
             # Abertura inédita; expressões comuns de continuidade podem se repetir.

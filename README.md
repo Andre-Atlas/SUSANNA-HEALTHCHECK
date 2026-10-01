@@ -1,4 +1,4 @@
-> **Demonstração pela internet:** modo temporário autenticado disponível; veja [como iniciar e encerrar](docs/internet-demo.md). A configuração local continua disponível.
+> **Demonstração temporária ativa:** [abrir SUSANNA-HEALTHCHECK](https://what-attended-saturday-equity.trycloudflare.com). Peça a senha ao responsável; o link só funciona enquanto o túnel estiver ativo. [Instruções para visitantes e operador](docs/internet-demo.md).
 
 # SUSANNA-HEALTHCHECK — projeto acadêmico
 
@@ -14,30 +14,42 @@ Chatbot educativo sobre desinformação em saúde. Interface independente, sem v
 
 ## Executar localmente
 
-Ambiente verificado: macOS; Windows nativo não suportado atualmente. Requer Python 3.10+ com SQLite FTS5 e [Ollama](https://ollama.com/download). Sem pacotes pip, chave de API ou serviços pagos. O processamento usa os recursos do computador.
+Compatibilidade prevista: Windows 10/11 e macOS, com Python 3.10+ e SQLite FTS5, além do [Ollama](https://ollama.com/download). O chat local não exige pacotes pip nem chave de API. O modo de demonstração pela internet instala Waitress; consulte o guia específico abaixo.
 
 1. Inicie o Ollama pelo aplicativo ou, em um terminal, com `ollama serve`.
 2. Se o modelo ainda não estiver instalado, execute `ollama pull qwen2.5:7b` (download de aproximadamente 4,7 GB, uma única vez).
-3. Na primeira instalação, importe a base e inicie o servidor (em instalações existentes, faça backup antes de reimportar):
+3. Abra o terminal na pasta do projeto. Na primeira instalação, importe a base; em instalações existentes, faça backup antes de reimportar.
+
+**Windows (PowerShell):**
+
+```powershell
+py -3 seed_knowledge.py
+py -3 operations.py check
+py -3 server.py --port 8002 --concurrency 1 --queue-size 3
+```
+
+**macOS (Terminal):**
 
 ```bash
 python3 seed_knowledge.py
 python3 operations.py check
-python3 server.py
+python3 server.py --port 8002 --concurrency 1 --queue-size 3
 ```
 
 4. Abra **http://127.0.0.1:8002**.
 
-Use o servidor `server.py`, não `python3 -m http.server` nem o Live Server: eles não executam a API do chatbot. Não é necessário encerrar o servidor antigo da porta 8001.
+Use o servidor `server.py`, não `python -m http.server` nem o Live Server: eles não executam a API do chatbot. Não é necessário encerrar o servidor antigo da porta 8001. Nos comandos de manutenção abaixo, use `py -3` no Windows e `python3` no macOS.
 
-Outra porta: `python3 server.py --port 8003`.
+Outra porta: `python3 server.py --port 8003` (macOS) ou `py -3 server.py --port 8003` (Windows).
 Outro modelo local instalado: `OLLAMA_MODEL=nome:tag python3 server.py`.
+No Windows PowerShell, use `$env:OLLAMA_MODEL="nome:tag"; py -3 server.py`.
 
 ## Ambiente de disponibilização
 
 Configurado para uso somente neste computador, sem publicação na rede. Veja
 [o guia de operação local](docs/disponibilizacao.md) para prontidão, limites,
 métricas, backup e recuperação. Verifique a base com `python3 operations.py check`
+(macOS) ou `py -3 operations.py check` (Windows)
 e o conjunto base/modelo em `http://127.0.0.1:8002/api/ready`.
 
 ## Organização
@@ -51,7 +63,7 @@ e o conjunto base/modelo em `http://127.0.0.1:8002/api/ready`.
 
 A conversa existe apenas em memória. O navegador envia até as últimas seis trocas e a nova pergunta ao servidor local. O servidor pode remover trocas antigas para respeitar seu orçamento conservador de contexto. Limpar ou recarregar reinicia o histórico e solicita cancelamento do pedido; o servidor fecha sua conexão com o Ollama. Históricos em processamento são liberados ao término; resultados ficam em memória por até 60 segundos, com limite de quantidade. O servidor do chat não grava conversas em disco. Scripts de avaliação gravam relatórios com casos e respostas; logs próprios do Ollama e do sistema não foram auditados. Os logs HTTP estão desativados. Veja [retenção e limites de privacidade](docs/privacidade.md).
 
-O chat mostra fila, geração e revisão em andamento. O texto aparece progressivamente somente após a validação completa. Há botão **Cancelar**, uma execução por vez e até três pedidos em espera por padrão. Para configurar: `python3 server.py --concurrency 1 --queue-size 3`. Veja [desempenho, limites e medições](docs/desempenho-experiencia.md).
+O chat mostra fila, geração e revisão em andamento. O texto aparece progressivamente somente após a validação completa. Há botão **Cancelar**, uma execução por vez e até três pedidos em espera por padrão. Para configurar: `python3 server.py --concurrency 1 --queue-size 3` (macOS) ou `py -3 server.py --concurrency 1 --queue-size 3` (Windows). Veja [desempenho, limites e medições](docs/desempenho-experiencia.md).
 
 ## Limites desta etapa
 
@@ -64,7 +76,7 @@ e faz uma segunda revisão por IA do apoio documental, exigindo evidências lite
 nas fontes citadas antes de exibir a resposta. A revisão pode errar e acrescenta
 tempo de processamento. Veja [controle de respostas](docs/controle-respostas.md).
 
-Depois de atualizar o código, reinicie `python3 server.py` e recarregue a página. Importar novos documentos não exige reinício.
+Depois de atualizar o código, reinicie `python3 server.py` (macOS) ou `py -3 server.py` (Windows) e recarregue a página. Importar novos documentos não exige reinício.
 
 ## Avaliar a base inicial
 
@@ -93,6 +105,10 @@ A rodada real obteve **5/14** nos critérios automáticos do fluxo HTTP e **4/5*
 revisor isolado. Foi observada aceitação indevida de uma resposta contraditória
 quando a fonte incluía uma instrução maliciosa ao revisor; isso bloqueia a aprovação
 do piloto. Revisões humanas e verificação real de navegador/celular permanecem pendentes.
+
+A [avaliação focal de respostas de antibióticos](docs/avaliacao-respostas-20260930.md)
+registrou uma correção de fonte substituída, **3/3** respostas revisadas por IA e
+confirmação HTTP local e pública. Ela não substitui avaliação humana independente.
 
 O [pacote de revisão](evaluation/acceptance.human.md) contém as perguntas, respostas
 exibidas, fontes e campos pendentes para duas pessoas. Os relatórios são de testes

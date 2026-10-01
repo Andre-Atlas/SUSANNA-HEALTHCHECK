@@ -68,7 +68,7 @@ async function checkHealth() {
     const data = await response.json();
     status.textContent = data.ready ? `Local · ${data.model}` : data.message;
   } catch {
-    status.textContent = 'Inicie python3 server.py e abra http://127.0.0.1:8002';
+    status.textContent = 'Inicie o servidor seguindo o README.md e abra http://127.0.0.1:8002';
   }
 }
 
@@ -170,7 +170,7 @@ async function send(text) {
     pending.content.textContent = request.reason === 'user'
       ? 'Pedido cancelado.'
       : request.reason === 'timeout' ? 'O tempo de espera terminou. Tente novamente.'
-      : error instanceof TypeError ? 'Sem conexão com o servidor. Execute python3 server.py.' : error.message;
+      : error instanceof TypeError ? 'Sem conexão com o servidor. Inicie-o seguindo o README.md.' : error.message;
     pending.bubble.classList.add('error');
     announceProgress(pending.content.textContent);
     input.value = question;

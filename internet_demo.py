@@ -11,6 +11,7 @@ import sys
 import time
 
 ROOT = Path(__file__).resolve().parent
+from internet_state import state_dir
 
 
 def main():
@@ -19,12 +20,18 @@ def main():
     parser.add_argument('--provider', choices=['cloudflare', 'ngrok'], default='cloudflare')
     args = parser.parse_args()
     provider = args.provider
-    executable = shutil.which('cloudflared') or str(ROOT / '.internet/bin/cloudflared')
+    client = 'cloudflared'
     if provider == 'ngrok':
-        executable = shutil.which('ngrok') or str(ROOT / '.internet/bin/ngrok')
-        if not (ROOT / '.internet/ngrok.yml').exists():
-            raise SystemExit('Primeiro execute: .venv/bin/python configurar_ngrok.py')
-    if not Path(executable).is_file():
+        client = 'ngrok'
+        if not (state_dir() / 'ngrok.yml').exists():
+            python = '.venv\\Scripts\\python.exe' if os.name == 'nt' else '.venv/bin/python'
+            raise SystemExit(f'Primeiro execute: {python} configurar_ngrok.py')
+    executable = shutil.which(client)
+    if executable is None:
+        filename = client + ('.exe' if os.name == 'nt' else '')
+        candidate = ROOT / '.internet' / 'bin' / filename
+        executable = str(candidate) if candidate.is_file() else None
+    if executable is None:
         raise SystemExit('Instale o cliente do túnel antes de iniciar.')
     import socket
     with socket.socket() as probe:
@@ -34,9 +41,7 @@ def main():
     inspect_database()
     if not any(m.get('name') == MODEL for m in ollama('/api/tags', timeout=5).get('models', [])):
         raise SystemExit('Abra o Ollama e instale o modelo antes de iniciar.')
-    private = ROOT / '.internet'
-    private.mkdir(mode=0o700, exist_ok=True)
-    private.chmod(0o700)
+    private = state_dir()
     # Impede duas sessões concorrentes e substituição acidental das credenciais.
     lock = private / 'session.lock'
     fd = os.open(lock, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
@@ -82,7 +87,7 @@ def main():
                 server = subprocess.Popen([sys.executable, str(ROOT / 'internet_app.py'), '--config', str(config)],
                     cwd=ROOT, stdout=server_log, stderr=subprocess.STDOUT)
                 processes.append(server)
-                print(f'URL: {origin}\nUsuário: equipe\nSenha: consulte .internet/access.json\nCtrl+C encerra o acesso.', flush=True)
+                print(f'URL: {origin}\nUsuário: equipe\nSenha: consulte {config}\nCtrl+C encerra o acesso.', flush=True)
                 while tunnel.poll() is None and server.poll() is None:
                     time.sleep(1)
                 raise RuntimeError('Um serviço encerrou; confira os logs em .internet/.')

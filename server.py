@@ -41,6 +41,13 @@ SYSTEM += (' Quando a mensagem final contiver perguntas_anteriores_do_usuario e 
            'Se a referência continuar ambígua, peça que o usuário explicite o assunto.')
 
 
+SYSTEM += (' Se uma fonte responder diretamente a uma pergunta geral sobre automedicação, responda sem '
+           'abster-se apenas porque faltam detalhes clínicos pessoais. Não diagnostique nem indique '
+           'medicamento, dose ou duração; explique a condição descrita pela fonte e cite-a.')
+SYSTEM += (' Ao citar, use somente os IDs necessários para apoiar todas as afirmações do parágrafo. '
+           'Prefira um único trecho quando ele bastar; não acrescente citações redundantes.')
+
+
 def source_context(sources):
     if not sources:
         return ('Nenhum trecho foi recuperado da base local para esta pergunta. '
@@ -135,6 +142,10 @@ def verify_grounding(prompt, content, sources):
         '[{"id":1,"supported":boolean,"evidence":[{"source_id":1,"quote":"trecho literal"}]}]}. '
         'Inclua exatamente um registro por parágrafo, na mesma ordem; evidence pode ser [] se rejeitado.'
     )
+    instruction += (' Exemplo de paráfrase fiel: fonte="antibióticos não têm eficácia contra vírus respiratórios e não aceleram a recuperação de quadros virais"; '
+        'pergunta="Antibiótico ajuda a curar gripe?"; resposta="Não. Antibióticos não tratam gripe viral nem aceleram a recuperação [1]." '
+        'O resultado deve marcar answers_question=true e supported=true. Não rejeite uma conclusão explicitamente sustentada '
+        'só porque a resposta a expressa em palavras mais curtas.')
     question = next((m['content'] for m in reversed(prompt) if m.get('role') == 'user'), '')
     try:
         envelope = json.loads(question)
@@ -179,8 +190,9 @@ def generate_answer(prompt, sources):
     if not sources:
         return {'message': NO_EVIDENCE, 'model': MODEL, 'sources': [],
                 'answer_status': 'no_evidence', 'llm_called': False, 'validation_errors': []}
-    result = ollama('/api/chat', {'model': MODEL, 'messages': prompt,
-                    'stream': False, 'options': {'temperature': 0, 'num_predict': 700, 'num_ctx': 8192}})
+    request = {'model': MODEL, 'messages': prompt, 'stream': False,
+               'options': {'temperature': 0, 'num_predict': 700, 'num_ctx': 8192}}
+    result = ollama('/api/chat', request)
     content = normalize_references(result.get('message', {}).get('content', ''))
     
     print("\n========== DIAGNÓSTICO: PRIMEIRO QWEN ==========", flush=True)
@@ -195,6 +207,30 @@ def generate_answer(prompt, sources):
         return {**base, 'message': NO_EVIDENCE, 'answer_status': 'insufficient_evidence',
                 'validation_errors': []}
     errors = reference_errors(content, sources)
+    # Qwen occasionally answers correctly but omits the required paragraph citation.
+    # Retry only this formatting failure; the independent grounding review still
+    # has to approve every claim and literal evidence quote before release.
+    if prompt and errors and set(errors) <= {'missing_citation', 'uncited_paragraph', 'invalid_citation'}:
+        retry_prompt = [dict(message) for message in prompt]
+        retry_prompt[0]['content'] += (
+            '\n\nA resposta anterior foi recusada porque faltou uma citacao no fim '
+            'do paragrafo. Responda novamente usando somente afirmacoes apoiadas '
+            'pelos trechos fornecidos. Termine cada paragrafo com os IDs numericos '
+            'das fontes que o sustentam, no formato [1]. Nao invente referencias '
+            'e nao cite um trecho que nao sustente o paragrafo.'
+        )
+        retry_request = {**request, 'messages': retry_prompt}
+        try:
+            result = ollama('/api/chat', retry_request)
+            base['done_reason'] = result.get('done_reason')
+            content = normalize_references(result.get('message', {}).get('content', ''))
+            errors = reference_errors(content, sources)
+        except (URLError, OSError, http.client.HTTPException, ValueError, TypeError, AttributeError):
+            # Keep the original rejected draft and fail closed below.
+            pass
+    if is_abstention(content):
+        return {**base, 'message': NO_EVIDENCE, 'answer_status': 'insufficient_evidence',
+                'validation_errors': []}
     if result.get('done_reason') == 'length':
         errors.append('truncated_answer')
     if errors:
