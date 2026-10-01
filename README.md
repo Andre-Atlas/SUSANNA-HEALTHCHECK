@@ -14,7 +14,7 @@ Chatbot educativo sobre desinformação em saúde. Interface independente, sem v
 
 ## Executar localmente
 
-Compatibilidade prevista: Windows 10/11 e macOS, com Python 3.10+ e SQLite FTS5, além do [Ollama](https://ollama.com/download). O chat local não exige pacotes pip nem chave de API. O modo de demonstração pela internet instala Waitress; consulte o guia específico abaixo.
+Compatibilidade prevista: Windows 10/11 e macOS, com Python 3.10+ e [Ollama](https://ollama.com/download). O servidor executa localmente e usa a internet para pesquisar páginas oficiais `gov.br`; essa busca não exige pacote pip nem chave de API. O modo de demonstração pela internet instala Waitress; consulte o guia específico abaixo.
 
 1. Inicie o Ollama pelo aplicativo ou, em um terminal, com `ollama serve`.
 2. Se o modelo ainda não estiver instalado, execute `ollama pull qwen2.5:7b` (download de aproximadamente 4,7 GB, uma única vez).
@@ -97,6 +97,7 @@ e o conjunto base/modelo em `http://127.0.0.1:8002/api/ready`.
 - `styles.css`: aparência responsiva.
 - `app.js`: conversa, histórico, espera e tratamento de falhas.
 - `server.py`: arquivos públicos e API local que conversa com o Ollama.
+- `govbr_search.py`: busca ao vivo e extração limitada a páginas HTTPS `gov.br`.
 - `jobs.py`: fila limitada, cancelamento, expiração e métricas em memória.
 - `ollama_transport.py`: stream privado e conexão cancelável com o Ollama.
 
@@ -106,9 +107,9 @@ O chat mostra fila, geração e revisão em andamento. O texto aparece progressi
 
 ## Limites desta etapa
 
-O chatbot consulta uma base documental local usando SQLite FTS5. O repositório inclui 12 sínteses experimentais de publicações do Ministério da Saúde, Anvisa e Sociedade Brasileira de Infectologia em `sources/`, com conferência documental por IA. Veja o [catálogo e a revisão de 29/09/2026](docs/revisao-fontes-20260929.md). Para carregar esse conjunto, execute `python3 seed_knowledge.py`. Veja [como cadastrar fontes e testar](docs/base-documental.md) e [escopo e manutenção](docs/escopo-fontes.md).
+O chatbot busca conteúdo ao vivo pela pesquisa do Ministério da Saúde e extrai até três páginas HTML HTTPS de domínios `gov.br` por pergunta. A resposta usa apenas trechos dessas páginas; não há fallback para documentos locais nem para outros domínios. PDFs e páginas que não podem ser extraídas ficam de fora. A consulta depende de internet e pode aumentar o tempo de resposta. Veja [busca ao vivo gov.br](docs/busca-govbr-ao-vivo-20261001.md). Os 16 documentos em `sources/` continuam versionados para avaliação/offline, mas não são usados pelo servidor de chat neste modo.
 
-Os trechos enviados ao modelo são apresentados com suas referências. A busca lexical inclui expansão controlada de termos, correção simples de digitação e continuidade em formas como “e nesse caso?”. Veja [funcionamento e comparação da busca](docs/busca-conversa.md). Recuperar um trecho não comprova uma alegação. Ainda precisamos avaliar relevância, fidelidade das respostas e citações. Não se deve apresentar as respostas como checagem factual ou orientação médica.
+Os trechos enviados ao modelo são apresentados com suas referências. A busca ao vivo usa o mecanismo lexical do portal do Ministério da Saúde; a resolução de continuidade usa a conversa para contextualizar a pergunta atual. A documentação da busca lexical local continua valendo para os scripts de avaliação/offline, não para a recuperação online do chat. Recuperar um trecho não comprova uma alegação. Ainda precisamos avaliar relevância, fidelidade das respostas e citações. Não se deve apresentar as respostas como checagem factual ou orientação médica.
 
 Sem fontes, o servidor responde sem chamar a LLM. Com fontes, valida referências
 e faz uma segunda revisão por IA do apoio documental, exigindo evidências literais
@@ -132,7 +133,7 @@ python3 benchmark_performance.py --mlflow
 python3 evaluate.py --llm --output evaluation/llm.json
 ```
 
-A avaliação usa uma base temporária com o conjunto versionado, sem alterar seus documentos locais. O benchmark grava p50/p95 de fila, busca, geração, revisão e total; não grava perguntas, respostas ou trechos recuperados. MLflow é opcional e registra somente agregados e parâmetros técnicos. Veja [fontes e critérios de avaliação](docs/avaliacao-inicial.md) e [desempenho e experiência](docs/desempenho-experiencia.md).
+A avaliação offline usa uma base temporária com o conjunto versionado, sem alterar seus documentos locais nem consultar a web. O benchmark grava p50/p95 de fila, busca lexical local, geração, revisão e total; ele ainda não mede a busca ao vivo em `gov.br`. Não grava perguntas, respostas ou trechos recuperados. MLflow é opcional e registra somente agregados e parâmetros técnicos. Veja [fontes e critérios de avaliação](docs/avaliacao-inicial.md) e [desempenho e experiência](docs/desempenho-experiencia.md).
 
 ## Piloto e entrega
 
