@@ -9,6 +9,8 @@ Chatbot educativo sobre desinformação em saúde. Interface independente, sem v
 - [Versões e licenças dos componentes](docs/componentes.md).
 - [Responsáveis e rotina de manutenção](docs/responsabilidades.md).
 - [Operação local, métricas, backup e recuperação](docs/disponibilizacao.md).
+- [Meta da próxima versão e critérios de sucesso](docs/02proximo-passo.md).
+- [Registro da etapa de regressões F01–F04](docs/etapa-regressoes-f01-f04-20261001.md).
 
 ## Executar localmente
 
