@@ -121,13 +121,16 @@ Depois de atualizar o código, reinicie `python3 server.py` (macOS) ou `py -3 se
 python3 -m unittest discover -s tests -v
 python3 evaluate.py
 python3 evaluate_search.py
-# Medições reais de tempo, memória e cancelamento (requer Ollama)
+# Latência real do pipeline (requer Ollama): aquecimento + 20 casos x 3 rodadas
 python3 benchmark_performance.py
+# Opcional: salvar agregados de latência no MLflow local
+python3 -m pip install mlflow
+python3 benchmark_performance.py --mlflow
 # Opcional: também gerar respostas com o Ollama local
 python3 evaluate.py --llm --output evaluation/llm.json
 ```
 
-A avaliação usa uma base temporária com o conjunto versionado, sem alterar seus documentos locais. Veja [fontes e critérios de avaliação](docs/avaliacao-inicial.md).
+A avaliação usa uma base temporária com o conjunto versionado, sem alterar seus documentos locais. O benchmark grava p50/p95 de fila, busca, geração, revisão e total; não grava perguntas, respostas ou trechos recuperados. MLflow é opcional e registra somente agregados e parâmetros técnicos. Veja [fontes e critérios de avaliação](docs/avaliacao-inicial.md) e [desempenho e experiência](docs/desempenho-experiencia.md).
 
 ## Piloto e entrega
 
