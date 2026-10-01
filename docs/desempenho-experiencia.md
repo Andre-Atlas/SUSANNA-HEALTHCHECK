@@ -69,6 +69,36 @@ autenticação para uma instalação pública: o servidor permanece vinculado a 
 sem perguntas, respostas ou IDs dos pedidos. Os tempos incluem fila, busca,
 geração, primeiro token de cada etapa, revisão e total. Primeiro token é uma
 medida interna; não significa que o texto já foi liberado ao usuário.
+O benchmark `benchmark_performance.py` usa uma execução de aquecimento e, por
+padrão, três repetições de cada caso sintético da suíte de busca. O aquecimento
+fica fora das estatísticas. Ele informa p50 e p95 de fila, busca, geração, revisão
+e total com percentil inclusivo por interpolação linear. Os casos são processados
+em memória, mas perguntas, respostas, fontes recuperadas e IDs de job não são
+copiados para o relatório nem para o MLflow. O relatório mantém IDs opacos dos
+casos, tempos, estados, versão/modelo, hardware e hashes para identificar a rodada.
+Fila, busca e total incluem todos os casos concluídos; geração e revisão contam
+somente os casos em que `llm_called=true`, excluindo esclarecimentos e recusas sem
+fonte que terminam sem inferência.
+
+```bash
+python3 benchmark_performance.py --warmup 1 --repetitions 3
+python3 -m pip install mlflow
+python3 benchmark_performance.py --mlflow --mlflow-experiment saude-gov-br-latency
+```
+
+MLflow é opcional e usa o tracking local padrão. Serve para comparar as métricas
+agregadas de diferentes rodadas/modelos; não é necessário para inspecionar uma
+execução, pois o JSON local já contém amostras e percentis. Mantenha os dados de
+tracking em armazenamento local controlado, especialmente se alterar a
+configuração do tracking URI.
+
+O benchmark não descarrega o modelo. `model_loaded_before_benchmark` registra se
+ele já estava carregado, e a primeira execução medida ocorre depois do
+aquecimento; assim os percentis descrevem estado aquecido e não o custo de cold
+start. Para comparar um modelo recém-carregado, faça uma rodada separada e
+identifique-a como cold start. Isso não é feito automaticamente porque descarregar
+o modelo pode afetar o servidor de chat em uso.
+
 `python_lifetime_peak_rss_mib` é o pico histórico de RSS do processo Python,
 não o consumo incremental de uma requisição nem a memória do Ollama.
 
@@ -77,15 +107,10 @@ python3 -m unittest discover -s tests -v
 python3 benchmark_performance.py
 ```
 
-O benchmark usa as seis fontes versionadas em banco temporário e o Ollama real.
-Não modifica a base do usuário nem descarrega um modelo que já esteja carregado.
-Executa duas respostas e duas interrupções, aguardando tokens antes de cancelar
-na geração e na revisão. Amostra RSS de Python e dos processos Ollama a cada 500 ms
-e registra a alocação informada por `/api/ps` depois de cada execução.
-
-O relatório `evaluation/performance.json` contém equipamento, versões, hashes,
-estado inicial dos modelos e resultados. A pergunta de referência é sintética:
-“Como a segurança das vacinas é avaliada?”. O relatório não armazena respostas.
+O benchmark usa as fontes versionadas em banco temporário e o Ollama real. Não
+modifica a base do usuário nem descarrega um modelo já carregado. O relatório
+`evaluation/performance.json` contém equipamento, versões, hashes e métricas por
+amostra, mas não armazena conversas nem respostas.
 
 Medição registrada em 24/09/2026: Apple M4, 24 GiB de RAM, Python 3.14.6,
 Ollama 0.32.5, `qwen2.5:7b`. O modelo já estava carregado no início desta rodada.
