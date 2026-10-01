@@ -1,4 +1,6 @@
-from sqlalchemy import delete, select
+import uuid
+
+from sqlalchemy import delete, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import get_settings
@@ -10,10 +12,45 @@ from app.services.ingestion_service import make_chunks, sha256_text
 settings = get_settings()
 
 
+class DocumentNotFoundError(LookupError):
+    pass
+
+
+class DocumentAlreadyProcessingError(RuntimeError):
+    pass
+
+
 class RAGService:
     def __init__(self, db: AsyncSession, embeddings: EmbeddingProvider):
         self.db = db
         self.embeddings = embeddings
+
+    async def ingest_document(self, document_id: uuid.UUID) -> int:
+        claim = await self.db.execute(
+            update(Document)
+            .where(Document.id == document_id, Document.status != "processing")
+            .values(status="processing")
+        )
+        if claim.rowcount != 1:
+            await self.db.rollback()
+            if not await self.db.get(Document, document_id):
+                raise DocumentNotFoundError("Documento não encontrado.")
+            raise DocumentAlreadyProcessingError("Documento já está sendo processado.")
+
+        await self.db.commit()
+        document = await self.db.get(Document, document_id)
+        if not document:
+            raise DocumentNotFoundError("Documento não encontrado.")
+
+        try:
+            return await self.ingest(document)
+        except Exception:
+            await self.db.rollback()
+            document = await self.db.get(Document, document_id)
+            if document:
+                document.status = "error"
+                await self.db.commit()
+            raise
 
     async def ingest(self, document: Document) -> int:
         chunks = make_chunks(

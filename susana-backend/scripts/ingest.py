@@ -3,9 +3,12 @@ import sys
 from uuid import UUID
 
 from app.db.session import SessionLocal
-from app.models.document import Document
 from app.providers.ollama import OllamaProvider
-from app.services.rag_service import RAGService
+from app.services.rag_service import (
+    DocumentAlreadyProcessingError,
+    DocumentNotFoundError,
+    RAGService,
+)
 
 
 async def main(document_id: str) -> None:
@@ -15,13 +18,13 @@ async def main(document_id: str) -> None:
         raise SystemExit("document_id precisa ser um UUID válido.") from exc
 
     async with SessionLocal() as db:
-        document = await db.get(Document, parsed_id)
-        if not document:
-            raise SystemExit("Documento não encontrado.")
         try:
-            chunks = await RAGService(db, OllamaProvider()).ingest(document)
+            chunks = await RAGService(db, OllamaProvider()).ingest_document(parsed_id)
+        except DocumentNotFoundError as exc:
+            raise SystemExit(str(exc)) from exc
+        except DocumentAlreadyProcessingError as exc:
+            raise SystemExit(str(exc)) from exc
         except Exception as exc:
-            await db.rollback()
             raise SystemExit(f"Falha na ingestão: {exc}") from exc
         print(f"Documento indexado: {chunks} chunks.")
 

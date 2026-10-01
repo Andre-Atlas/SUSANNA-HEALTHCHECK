@@ -125,7 +125,7 @@ class ChatService:
                     "source_updated_at": None,
                     "structured": True,
                     "score": 1.0,
-                    "chunk_id": unit.id,
+                    "unit_id": unit.id,
                 }
             else:
                 item = self.structured.unit_evidence(unit)
@@ -133,7 +133,7 @@ class ChatService:
                 item["source_url"] = source.url
                 item["document_title"] = unit.name
                 item["score"] = 1.0
-                item["chunk_id"] = unit.id
+                item["unit_id"] = unit.id
             evidence.append(item)
         return evidence
 
@@ -267,10 +267,11 @@ class ChatService:
             )
             evidence_refs.append(
                 EvidenceReference(
-                    chunk_id=item.get("chunk_id", source_id),
                     content=item["content"],
                     score=round(float(item.get("score", 1.0)), 4),
                     source=source,
+                    chunk_id=item.get("chunk_id"),
+                    unit_id=item.get("unit_id"),
                 )
             )
 

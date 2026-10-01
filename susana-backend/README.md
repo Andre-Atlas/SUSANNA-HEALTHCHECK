@@ -30,29 +30,30 @@ A versão 0.2 usa recuperação híbrida: unidades e serviços podem ser consult
 
 ## Instalação
 
+Execute os comandos a partir da raiz do repositório clonado:
+
 ```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -e ".[dev]"
+cd susana-backend
+make install
 cp .env.example .env
 ```
 
 Subir PostgreSQL + pgvector:
 
 ```bash
-docker compose up -d postgres
+make up
 ```
 
 A migration inicial usa `vector(768)`. O modelo de embeddings configurado precisa produzir essa dimensão, ou a migration e `EMBEDDING_DIMENSIONS` devem ser ajustados de forma consistente antes de executar `alembic upgrade head`.
 
 ```bash
-alembic upgrade head
+make migrate
 ```
 
 Rodar API:
 
 ```bash
-uvicorn app.main:app --reload
+make dev
 ```
 
 Documentação:
@@ -187,10 +188,11 @@ Os URLs `demo.ckan.org` da documentação são apenas exemplos. Configure `CKAN_
 ## Testes
 
 ```bash
-pytest
+make test
 ```
 
 Os testes unitários básicos não dependem do Ollama nem do PostgreSQL.
+Para executar lint e testes juntos, use `make check`.
 
 ## Próximos passos
 

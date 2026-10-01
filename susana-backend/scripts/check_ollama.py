@@ -1,5 +1,4 @@
 import asyncio
-import sys
 
 from app.core.config import get_settings
 from app.providers.ollama import OllamaProvider

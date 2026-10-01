@@ -46,7 +46,7 @@ class RetrievalService:
                     "content": chunk.content,
                     "document_title": document.title,
                     "source_name": source.name,
-                    "source_url": source.url,
+                    "source_url": document.url,
                     "source_id": source.id,
                     "source_updated_at": document.source_updated_at,
                     "structured": False,

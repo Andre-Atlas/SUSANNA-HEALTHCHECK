@@ -40,10 +40,11 @@ class SourceReference(BaseModel):
 
 
 class EvidenceReference(BaseModel):
-    chunk_id: uuid.UUID
     content: str
     score: float
     source: SourceReference
+    chunk_id: uuid.UUID | None = None
+    unit_id: uuid.UUID | None = None
 
 
 class Clarification(BaseModel):
