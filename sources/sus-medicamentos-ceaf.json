@@ -1,0 +1,15 @@
+{
+  "title": "Como solicitar medicamentos do componente especializado do SUS (CEAF)",
+  "url": "https://www.gov.br/saude/pt-br/composicao/sectics/daf/ceaf",
+  "publisher": "Ministério da Saúde",
+  "reviewed_at": "2026-10-01",
+  "published_at": null,
+  "source_updated_at": null,
+  "next_review_at": "2026-11-01",
+  "content_type": "Síntese produzida por IA a partir da fonte; não é transcrição oficial",
+  "review_status": "Revisado por IA",
+  "documentary_check": {"checked_at": "2026-10-01", "checked_by": "Codex (IA)", "source_section": "Componente Especializado da Assistência Farmacêutica; como acessar os medicamentos", "report": "docs/etapa-expansao-fontes-sus-20261001.md", "review_status": "Revisado por IA", "reuse_assessment": "Pendente de decisão da equipe"},
+  "source_license_notice": "A página informa direitos reservados pelo Ministério da Saúde. A reutilização desta síntese ainda requer análise específica; consultar a página original.",
+  "coverage_questions": ["Como peço um medicamento do CEAF pelo SUS?", "Quais documentos podem ser pedidos para medicamento especializado?", "Onde solicito medicamento do componente especializado?"],
+  "text": "Síntese do Ministério da Saúde: o Componente Especializado da Assistência Farmacêutica (CEAF) inclui medicamentos vinculados a condições e critérios definidos em Protocolos Clínicos e Diretrizes Terapêuticas. Para solicitar um medicamento pertencente ao CEAF, em geral é necessária avaliação clínica e prescrição, formulário LME e documentos definidos no protocolo aplicável. A solicitação, avaliação, autorização e dispensação são organizadas pelas Secretarias Estaduais de Saúde e do Distrito Federal, que informam a farmácia de referência e os procedimentos da unidade federativa. A lista, documentos e critérios dependem do medicamento e do protocolo; nem todo medicamento do SUS pertence ao CEAF. Esta fonte não trata o percurso específico dos antirretrovirais para HIV, que integram o componente estratégico."
+}
