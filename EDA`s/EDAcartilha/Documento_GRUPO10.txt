@@ -1,0 +1,338 @@
+﻿1 INTRODUÇÃO
+1.1 Contexto e problema
+O acesso a informações sobre o Sistema Único de Saúde pode envolver diferentes sistemas, páginas, documentos e serviços digitais. Embora o Meu SUS Digital concentre diversas funcionalidades relacionadas à saúde do cidadão, ainda pode existir uma necessidade de orientação quando o usuário possui uma dúvida específica que não consegue resolver diretamente pela navegação convencional da plataforma.
+O Meu SUS Digital é uma plataforma oficial de saúde digital do Ministério da Saúde que reúne informações e serviços relacionados ao SUS em um ambiente digital. Entre suas funcionalidades estão informações sobre vacinação, medicamentos, exames, consultas, estabelecimentos de saúde, campanhas e outros serviços. 
+Nesse contexto, a Susana é proposta como uma funcionalidade complementar de assistência conversacional. Em vez de substituir as funcionalidades existentes, a assistente deverá atuar como uma camada de apoio para situações em que o usuário não sabe exatamente onde encontrar determinada informação ou possui uma pergunta específica sobre o SUS.
+O problema investigado pelo projeto não é apenas a falta de informação, mas a dificuldade de encontrar, interpretar e verificar informações confiáveis em meio a diferentes fontes.
+1.2 Desafio e questão-guia
+O projeto está inserido no desafio:
+Em um mundo com excesso de informação, como distinguir fatos, evidências e opiniões? A IA pode apoiar a investigação da confiabilidade das informações, fortalecendo o pensamento crítico em vez de substituí-lo?
+A questão-guia é:
+Como sistemas de IA podem ajudar as pessoas a avaliar a confiabilidade de informações sem substituir seu pensamento crítico?
+A Susana será utilizada como objeto de investigação dessa questão. A proposta é verificar se uma IA pode auxiliar o usuário a localizar informações oficiais, explicar seu conteúdo e apresentar as evidências utilizadas para produzir uma resposta.
+1.3 Justificativa
+A escolha de um assistente integrado ao contexto do SUS permite investigar a aplicação de Inteligência Artificial em um domínio no qual a confiabilidade e a atualidade das informações são relevantes.
+A solução também permite explorar uma questão central da pesquisa: uma resposta produzida por IA não precisa ser apresentada como uma verdade absoluta. Ao disponibilizar as fontes utilizadas, a Susana pode transformar a resposta em um ponto de partida para a verificação pelo próprio usuário.
+Dessa forma, o projeto busca investigar uma utilização da IA baseada em recuperação, contextualização e apresentação de evidências, e não apenas em geração de texto.
+1.4 Objetivos
+Objetivo geral
+Desenvolver e avaliar um protótipo de assistente virtual baseado em Inteligência Artificial, denominado Susana, integrado conceitualmente ao Meu SUS Digital, capaz de auxiliar usuários na busca por informações específicas sobre o SUS, utilizando fontes confiáveis e apresentando evidências que permitam verificar as respostas.
+Objetivos específicos
+* Investigar como técnicas de IA podem auxiliar na recuperação de informações confiáveis.
+* Construir uma base de conhecimento composta por fontes oficiais.
+* Implementar uma arquitetura baseada em RAG.
+* Avaliar diferentes estratégias de recuperação e geração de respostas.
+* Reduzir a geração de informações não fundamentadas.
+* Associar as respostas às fontes utilizadas.
+* Avaliar o sistema por meio de casos de teste.
+* Identificar e documentar falhas do sistema.
+* Analisar o aprendizado obtido durante o processo de desenvolvimento.
+1.5 Escopo e limitações
+A Susana será concebida como um assistente informacional, e não como um sistema de diagnóstico ou atendimento médico.
+No protótipo, o conteúdo será concentrado em informações relacionadas ao Distrito Federal, especialmente serviços e informações disponibilizados pela rede pública de saúde.
+A Susana poderá responder perguntas sobre temas como:
+* unidades de saúde;
+* serviços oferecidos;
+* vacinação;
+* medicamentos;
+* consultas e encaminhamentos;
+* fluxos de atendimento;
+* informações administrativas;
+* localização e características de serviços;
+* outras informações presentes nas fontes selecionadas.
+A Susana não deverá:
+* realizar diagnósticos;
+* prescrever tratamentos;
+* determinar medicamentos ou dosagens;
+* substituir profissionais de saúde;
+* inventar informações ausentes da base;
+* apresentar informações sem evidência como se fossem fatos.
+1.6 Definições e Siglas
+Termo / Sigla
+	Definição
+	RAG
+	Retrieval-Augmented Generation — arquitetura que combina recuperação de documentos com geração de texto por LLM
+	LLM
+	Large Language Model — modelo de linguagem de grande escala
+	Embedding
+	Representação vetorial de texto gerada por um modelo de linguagem para possibilitar busca semântica
+	Banco vetorial
+	Sistema de armazenamento e recuperação de embeddings (ex.: ChromaDB, Qdrant, pgvector)
+	Corpus
+	Conjunto de documentos indexados na base de conhecimento do sistema
+	CNES
+	Cadastro Nacional de Estabelecimentos de Saúde
+	DATASUS
+	Departamento de Informática do SUS
+	UBS
+	Unidade Básica de Saúde
+	UPA
+	Unidade de Pronto Atendimento
+	CAPS
+	Centro de Atenção Psicossocial
+	DF
+	Distrito Federal
+	RF
+	Requisito Funcional — descreve uma funcionalidade que o sistema deve executar
+	RNF
+	Requisito Não Funcional — descreve uma característica de qualidade ou restrição do sistema
+	CBL
+	Challenge-Based Learning — metodologia pedagógica de aprendizagem baseada em desafios
+	
+2 VISÃO DO PRODUTO
+2.1 Descrição da Susana
+A Susana será uma funcionalidade conversacional integrada à interface do Meu SUS Digital.
+A representação conceitual é a de um pequeno assistente disponível em uma área discreta da interface, por exemplo, no canto da tela. O usuário poderá acioná-lo quando tiver uma dúvida específica que não consiga solucionar diretamente pela navegação da plataforma.
+A interação será baseada em linguagem natural. O usuário não precisará conhecer o nome exato do serviço ou utilizar termos técnicos para formular sua pergunta.
+Exemplo:
+“Moro em Samambaia e preciso saber onde posso tomar determinada vacina.”
+A Susana deverá interpretar a intenção, recuperar informações relevantes e apresentar uma resposta baseada nas fontes disponíveis.
+2.2 Público-alvo e necessidades
+O público-alvo é composto por usuários do SUS que necessitam localizar ou compreender informações relacionadas aos serviços de saúde.
+As principais necessidades consideradas são:
+1. Encontrar uma informação específica.
+2. Entender qual serviço está relacionado à sua necessidade.
+3. Localizar uma unidade.
+4. Compreender procedimentos ou requisitos administrativos.
+5. Saber de onde veio uma informação.
+6. Receber orientação sem precisar navegar por diversas páginas e documentos.
+2.3 Objetivo de negócio
+Como funcionalidade do Meu SUS Digital, a Susana tem como objetivo complementar a experiência de acesso à informação da plataforma.
+Sua função não é substituir os mecanismos de consulta já existentes, mas oferecer uma interface conversacional para dúvidas específicas.
+O valor da funcionalidade está na transformação de uma busca tradicional:
+usuário → procura página → procura documento → interpreta informação
+em uma interação:
+usuário → pergunta → Susana recupera informação → responde → usuário pode verificar a fonte.
+2.4 Funcionalidades e casos de uso
+UC01 — Realizar pergunta
+O usuário abre a Susana e formula uma pergunta em linguagem natural.
+UC02 — Recuperar informação
+A Susana identifica conteúdos relevantes na base de conhecimento.
+UC03 — Gerar resposta
+O modelo de linguagem recebe a pergunta e o contexto recuperado e produz uma resposta.
+UC04 — Consultar fonte
+O usuário pode selecionar “Ver mais” ou mecanismo equivalente para consultar a origem das informações utilizadas.
+UC05 — Tratar ausência de informação
+Quando a base não possuir informações suficientes, a Susana deverá comunicar a limitação.
+UC06 — Tratar pergunta fora do escopo
+Quando a pergunta estiver fora do domínio definido, a Susana deverá informar que não pode fornecer aquela resposta.
+3 DADOS E BASE DE CONHECIMENTO
+Aqui eu faria uma mudança importante em relação à documentação anterior: não chamaria tudo simplesmente de “datasets”.
+A Susana poderá utilizar tanto dados estruturados quanto documentos textuais.
+3.1 Fontes de dados
+O corpus inicial poderá utilizar fontes oficiais do Ministério da Saúde e, principalmente, da Secretaria de Saúde do Distrito Federal.
+Entre as fontes investigadas estão:
+* InfoSaúde;
+* Dados Abertos da SES-DF;
+* Carta de Serviços da SES-DF;
+* CNES;
+* REME-DF;
+* documentos e páginas oficiais relacionados aos serviços de saúde.
+O InfoSaúde, por exemplo, disponibiliza informações sobre UBS, CAPS, UPAs, hospitais e outros serviços, além de conjuntos de dados abertos relacionados à Atenção Primária, vacinação, procedimentos, medicamentos, atendimentos e outros temas. 
+O CNES é uma fonte oficial de cadastro de estabelecimentos de saúde e possui informações relacionadas a estabelecimentos, serviços, profissionais e estrutura. A própria SES-DF descreve o CNES como sistema oficial de cadastramento dos estabelecimentos de saúde.
+3.2 Critérios de seleção
+Cada fonte deverá ser analisada considerando:
+* autoridade da instituição responsável;
+* relação com o escopo do projeto;
+* atualidade;
+* disponibilidade;
+* possibilidade de identificar a origem;
+* estrutura dos dados;
+* relevância para perguntas reais dos usuários.
+A prioridade será dada às fontes oficiais e diretamente relacionadas aos serviços públicos de saúde.
+3.3 Organização do conhecimento
+A arquitetura deverá diferenciar dois tipos principais de informação.
+Documentos textuais
+Exemplo:
+Carta de Serviços → texto → chunking → embeddings → banco vetorial.
+Dados estruturados
+Exemplo:
+CNES → registros estruturados → consulta/filtro → informação recuperada.
+Essa separação evita a necessidade de transformar todo o conhecimento disponível em embeddings.
+3.4 Atualização
+Como informações sobre serviços, horários, unidades e disponibilidade podem sofrer alterações, a base de conhecimento deverá possuir mecanismos ou procedimentos para atualização periódica.
+No protótipo, a atualização poderá ser realizada de maneira controlada, mantendo registro da fonte e da versão ou data do conteúdo utilizado.
+4 REQUISITOS DO SISTEMA
+4.1 Requisitos funcionais
+Os principais requisitos são:
+RF01 — O sistema deverá permitir que o usuário envie perguntas em linguagem natural.
+RF02 — O sistema deverá identificar informações relevantes na base de conhecimento.
+RF03 — O sistema deverá utilizar as informações recuperadas como contexto para a geração da resposta.
+RF04 — O sistema deverá apresentar respostas relacionadas ao escopo definido.
+RF05 — O sistema deverá informar quando não houver informações suficientes para responder.
+RF06 — O sistema deverá disponibilizar as fontes utilizadas na elaboração da resposta.
+RF07 — O sistema deverá permitir a consulta detalhada das fontes por meio de uma funcionalidade como “Ver mais”.
+RF08 — O sistema deverá utilizar informações fornecidas pelo usuário, como Região Administrativa ou endereço, quando necessárias para contextualizar a pergunta.
+RF09 — O sistema deverá tratar perguntas fora do escopo.
+RF10 — O sistema não deverá realizar diagnósticos ou prescrições.
+4.2 Requisitos não funcionais
+RNF01 — Confiabilidade: as respostas deverão ser fundamentadas nas informações recuperadas.
+RNF02 — Rastreabilidade: deverá ser possível identificar a fonte relacionada à resposta.
+RNF03 — Transparência: o usuário deverá conseguir consultar as evidências utilizadas.
+RNF04 — Usabilidade: a interação deverá ser compreensível para usuários sem conhecimento técnico.
+RNF05 — Atualidade: a base deverá permitir atualização das informações.
+RNF06 — Manutenibilidade: fontes e componentes deverão poder ser atualizados sem reconstrução completa da aplicação.
+RNF07 — Custo: o protótipo deverá priorizar tecnologias gratuitas ou de código aberto.
+RNF08 — Desempenho: a resposta deverá ser produzida em tempo compatível com uma interação conversacional dentro das limitações do ambiente utilizado.
+5 ESPECIFICAÇÃO E ARQUITETURA DO SISTEMA — SDD
+5.1 Arquitetura geral
+A arquitetura proposta será baseada em uma abordagem RAG.
+Fluxo conceitual:
+Usuário
+   ↓
+Interface Meu SUS Digital
+   ↓
+Susana
+   ↓
+Processamento da pergunta
+   ↓
+Recuperação de informações
+   ↓
+Base de conhecimento
+   ↓
+Contexto relevante
+   ↓
+LLM
+   ↓
+Resposta + fontes
+   ↓
+Usuário
+O ponto fundamental é que a LLM não será utilizada isoladamente. Ela receberá informações recuperadas da base como contexto para produzir a resposta.
+5.2 Componentes
+A solução será composta por:
+Interface: componente visual da Susana dentro do Meu SUS Digital.
+Backend: responsável pelo processamento das solicitações e integração entre os componentes.
+Base de conhecimento: documentos e dados selecionados.
+Embeddings: representação vetorial dos conteúdos textuais.
+Banco vetorial: armazenamento e recuperação semântica dos conteúdos.
+LLM: geração da resposta a partir da pergunta e do contexto recuperado.
+Módulo de fontes: associação entre resposta e documentos utilizados.
+5.3 Fluxo de funcionamento
+1. O usuário formula uma pergunta.
+2. A pergunta é processada.
+3. O sistema identifica os termos e contexto relevantes.
+4. O mecanismo de recuperação procura informações relacionadas.
+5. Os conteúdos mais relevantes são selecionados.
+6. Esses conteúdos são enviados à LLM como contexto.
+7. A LLM gera a resposta.
+8. O sistema associa a resposta às fontes recuperadas.
+9. O usuário recebe a resposta.
+10. O usuário pode consultar as evidências.
+6 SEGURANÇA, CONFIABILIDADE E TRANSPARÊNCIA
+Essa seção é particularmente importante para o projeto de vocês porque conecta diretamente o produto à questão do CBL.
+6.1 Controle de alucinações
+A Susana deverá ser configurada para priorizar informações recuperadas da base de conhecimento.
+Quando não houver evidência suficiente, o comportamento esperado não será completar a resposta com conhecimento presumido do modelo, mas informar a ausência de informação suficiente.
+6.2 Rastreabilidade
+A resposta deverá manter relação com os conteúdos recuperados.
+Por exemplo:
+Resposta
+   ↓
+Documento utilizado
+   ↓
+Trecho recuperado
+   ↓
+Fonte original
+Isso permite investigar não apenas o que a IA respondeu, mas por que ela respondeu aquilo.
+6.3 Transparência
+A transparência será implementada por meio da apresentação das fontes utilizadas.
+A interface principal poderá manter a resposta simples, enquanto uma opção como “Ver mais” permitirá consultar:
+* fonte;
+* documento;
+* data/versão, quando disponível;
+* trecho utilizado;
+* referência original.
+
+
+6.4 Pensamento crítico
+A apresentação das fontes possui uma função que ultrapassa a documentação técnica.
+O objetivo é evitar que a IA seja apresentada como uma autoridade absoluta. A Susana deverá auxiliar o usuário a encontrar e compreender informações, mas manter a possibilidade de verificação.
+Isso conecta diretamente a implementação tecnológica à questão-guia do projeto.
+7 TESTES E AVALIAÇÃO
+Aqui eu recomendo que vocês façam algo que pode ficar muito forte na apresentação: não mostrar somente quando a Susana acertou.
+7.1 Estratégia de testes
+Será construído um conjunto de perguntas representando situações reais de utilização.
+As perguntas serão organizadas em categorias:
+Categoria
+	Objetivo
+	Direta
+	Verificar recuperação de informação explícita
+	Semântica
+	Verificar se diferentes formulações recuperam a mesma informação
+	Contextual
+	Verificar perguntas com RA, unidade ou serviço
+	Ambígua
+	Avaliar necessidade de esclarecimento
+	Sem evidência
+	Avaliar se a IA reconhece ausência de informação
+	Fora do escopo
+	Avaliar controle de domínio
+	Sensível
+	Avaliar limites relacionados a diagnóstico e tratamento
+	
+
+7.2 Avaliação
+A avaliação deverá observar pelo menos quatro dimensões:
+Recuperação: a informação correta foi encontrada?
+Resposta: a resposta corresponde ao conteúdo recuperado?
+Fundamentação: a resposta possui evidência?
+Transparência: o usuário consegue identificar a origem?
+Isso permite avaliar a cadeia completa:
+Pergunta
+   ↓
+Recuperação
+   ↓
+Contexto
+   ↓
+Resposta
+   ↓
+Evidência
+7.3 Falhas
+As falhas deverão ser documentadas como parte dos resultados, e não escondidas.
+Exemplos de problemas a investigar:
+* informação correta não recuperada;
+* informação irrelevante recuperada;
+* resposta parcialmente correta;
+* resposta correta com fonte inadequada;
+* informação desatualizada;
+* pergunta ambígua;
+* alucinação;
+* incapacidade de reconhecer ausência de informação.
+Isso é particularmente relevante para a proposta do CBL, porque demonstra a evolução da investigação.
+8 JORNADA CBL E CONCLUSÃO
+8.1 Jornada de investigação
+A documentação deverá registrar a evolução do projeto desde a definição inicial do problema até a implementação e avaliação da Susana.
+A jornada pode ser apresentada como:
+Problema
+   ↓
+Investigação
+   ↓
+Hipótese
+   ↓
+Experimentação
+   ↓
+Falha
+   ↓
+Aprendizado
+   ↓
+Alteração
+   ↓
+Novo experimento
+   ↓
+Resultado
+Isso é mais importante para vocês do que simplesmente registrar que “foi utilizado RAG”.
+8.2 Principais decisões
+Cada decisão técnica relevante deverá ser relacionada ao problema que ela procura resolver.
+Por exemplo:
+Problema: risco de a LLM gerar informações que não estão nas fontes.
+Decisão: utilização de RAG com corpus controlado.
+Hipótese: fornecer contexto recuperado das fontes reduzirá respostas não fundamentadas.
+Teste: conjunto de perguntas com respostas conhecidas.
+Resultado: análise comparativa do comportamento.
+Esse formato deixa evidente a curva de aprendizado.
+8.3 Limitações e trabalhos futuros
+Entre as limitações previstas estão a quantidade e qualidade das fontes disponíveis, a necessidade de atualização periódica, a capacidade do modelo escolhido e a possibilidade de falhas na recuperação.
+Como trabalhos futuros podem ser considerados mecanismos automatizados de atualização das fontes, expansão do corpus, aprimoramento da recuperação e integração mais profunda com os serviços existentes do Meu SUS Digital.
+8.4 Considerações finais
+A Susana representa uma investigação sobre o uso de Inteligência Artificial como camada de assistência para acesso e compreensão de informações do SUS.
+O principal objetivo não é criar uma IA que simplesmente “saiba responder perguntas”, mas investigar uma arquitetura na qual a resposta esteja relacionada a evidências recuperáveis e verificáveis.
