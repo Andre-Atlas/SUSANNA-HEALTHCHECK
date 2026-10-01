@@ -40,8 +40,8 @@ function addSources(bubble, sources) {
   section.className = 'sources';
   const heading = document.createElement('p');
   heading.textContent = sources.length
-    ? 'Trechos fornecidos ao modelo — confira se sustentam a resposta:'
-    : 'Nenhuma fonte local foi fornecida ao modelo para esta resposta.';
+    ? 'Trechos encontrados ao vivo em páginas gov.br — confira se sustentam a resposta:'
+    : 'Nenhuma página gov.br com trechos legíveis foi encontrada para esta resposta.';
   section.append(heading);
   sources.forEach((source, index) => {
     const details = document.createElement('details');
@@ -51,11 +51,14 @@ function addSources(bubble, sources) {
     excerpt.textContent = source.text;
     const link = document.createElement('a');
     const url = new URL(source.url);
-    if (url.protocol !== 'https:') return;
+    if (url.protocol !== 'https:' || (url.port && url.port !== '443') ||
+        !(url.hostname === 'gov.br' || url.hostname.endsWith('.gov.br'))) return;
     link.href = url.href;
     link.target = '_blank';
     link.rel = 'noopener noreferrer';
-    link.textContent = `Abrir fonte · consulta documental: ${source.reviewed_at}`;
+    link.textContent = source.retrieved_at
+      ? `Abrir página gov.br · consultada: ${source.retrieved_at}`
+      : `Abrir fonte · consulta documental: ${source.reviewed_at}`;
     details.append(summary, excerpt, link);
     section.append(details);
   });
