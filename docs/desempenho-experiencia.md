@@ -66,10 +66,14 @@ autenticação para uma instalação pública: o servidor permanece vinculado a 
 ## Métricas e reprodução
 
 `GET /api/metrics` mostra ocupação e os últimos 100 registros de tempo/estado,
-sem perguntas, respostas ou IDs dos pedidos. Os tempos incluem fila, busca,
+sem perguntas, respostas ou IDs dos pedidos. No servidor de chat, a etapa de
+busca mede a consulta externa ao portal do Ministério da Saúde, a leitura das
+páginas candidatas e a extração de trechos gov.br. Os tempos incluem fila, busca,
 geração, primeiro token de cada etapa, revisão e total. Primeiro token é uma
 medida interna; não significa que o texto já foi liberado ao usuário.
-O benchmark `benchmark_performance.py` usa uma execução de aquecimento e, por
+O benchmark `benchmark_performance.py` ainda substitui a busca ao vivo por uma
+base SQLite temporária com documentos versionados; portanto, não mede latência
+nem cobertura do portal gov.br. Usa uma execução de aquecimento e, por
 padrão, três repetições de cada caso sintético da suíte de busca. O aquecimento
 fica fora das estatísticas. Ele informa p50 e p95 de fila, busca, geração, revisão
 e total com percentil inclusivo por interpolação linear. Os casos são processados
