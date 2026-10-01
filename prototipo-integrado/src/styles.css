@@ -27,7 +27,7 @@
 .references.open .references-toggle svg{transform:rotate(180deg)}
 .references-list{padding-top:8px}
 .reference-link{display:inline-flex;align-items:center;gap:6px;max-width:100%;min-height:35px;padding:6px 10px;border:1px solid #e1e6eb;border-radius:999px;background:#f7f8ff;color:#334258;font-size:11px;line-height:1.35;text-decoration:underline;box-shadow:0 2px 3px rgba(26,44,67,.08)}
-.reference-link span{overflow-wrap:anywhere}
+.reference-link span{overflow-wrap:anywhere}.reference-link span:first-child{align-self:flex-start;flex:none;white-space:nowrap}.reference-link span:nth-child(2){min-width:0}
 .reference-link svg{flex:none}
 
 /* Anchor the open panel to the viewport, independently of the toggle size. */
