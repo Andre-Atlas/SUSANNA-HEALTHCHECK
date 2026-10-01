@@ -182,6 +182,13 @@ def generate_answer(prompt, sources):
     result = ollama('/api/chat', {'model': MODEL, 'messages': prompt,
                     'stream': False, 'options': {'temperature': 0, 'num_predict': 700, 'num_ctx': 8192}})
     content = normalize_references(result.get('message', {}).get('content', ''))
+    
+    print("\n========== DIAGNÓSTICO: PRIMEIRO QWEN ==========", flush=True)
+    print("RESPOSTA GERADA:", flush=True)
+    print(content, flush=True)
+    print("DONE_REASON:", result.get('done_reason'), flush=True)
+    print("================================================\n", flush=True)
+
     base = {'model': MODEL, 'sources': sources, 'llm_called': True,
             'done_reason': result.get('done_reason')}
     if is_abstention(content):

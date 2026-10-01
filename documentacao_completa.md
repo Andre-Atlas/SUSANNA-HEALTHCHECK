@@ -153,4 +153,324 @@ Ampliei a base de **6 para 12 documentos**, já disponíveis no chatbot.
 
 ======================
 
+Entendi a estrutura atual da branch **`develop_gui`** e já consigo continuar com você sem reconstruir o projeto do zero. Vou sempre considerar essa branch como nossa referência. 
+
+O fluxo principal hoje é este:
+
+```text
+USUÁRIO
+  ↓
+index.html
+  ↓
+app.js
+  ↓
+POST /api/jobs
+  ↓
+server.py
+  ↓
+conversation.py
+  ↓
+knowledge.py
+  ↓
+SQLite FTS5 / base documental
+  ↓
+sources/*.json
+  ↓
+server.py monta o prompt
+  ↓
+ollama_transport.py
+  ↓
+Ollama
+  ↓
+qwen2.5:7b
+  ↓
+answer_policy.py
+  ↓
+segunda revisão / grounding
+  ↓
+server.py
+  ↓
+jobs.py
+  ↓
+app.js consulta o resultado
+  ↓
+RESPOSTA + FONTES NA INTERFACE
+```
+
+### O que cada parte faz
+
+`index.html` é a interface principal. É a página visual inspirada no Meu SUS Digital, com área educativa, chatbot, sugestões de perguntas e avisos de que é um protótipo acadêmico.
+
+`styles.css` cuida exclusivamente da aparência.
+
+`app.js` controla o chatbot no navegador. Quando você envia uma pergunta, ele não chama diretamente o Ollama. Ele cria um pedido em:
+
+```text
+POST /api/jobs
+```
+
+Depois fica consultando:
+
+```text
+GET /api/jobs/<id>
+```
+
+e mostra etapas como:
+
+```text
+Consultando as fontes locais…
+Preparando a resposta…
+Conferindo a resposta nas fontes…
+```
+
+Também permite cancelar o processamento.
+
+---
+
+### O `server.py` é o coração do sistema
+
+É nele que praticamente todo o fluxo se conecta.
+
+Ele recebe a pergunta, valida o histórico da conversa e chama a busca da base documental.
+
+Depois prepara os documentos que serão enviados ao modelo.
+
+O modelo configurado atualmente é:
+
+```text
+qwen2.5:7b
+```
+
+rodando localmente pelo:
+
+```text
+Ollama
+```
+
+em:
+
+```text
+127.0.0.1:11434
+```
+
+O servidor do SUSANNA roda normalmente em:
+
+```text
+http://127.0.0.1:8002
+```
+
+---
+
+### A base de conhecimento
+
+Os documentos versionados ficam em:
+
+```text
+sources/
+```
+
+Por exemplo:
+
+```text
+sources/
+├── antibioticos.json
+├── antimicrobianos-cuidados.json
+├── dengue.json
+├── desinformacao.json
+├── gripe-prevencao.json
+├── hipertensao.json
+├── hiv-transmissao.json
+├── identificar-boatos.json
+├── raiva-prevencao.json
+├── samu-192.json
+├── tuberculose.json
+└── vacinas-seguranca.json
+```
+
+Esses arquivos são importados por:
+
+```text
+seed_knowledge.py
+```
+
+que chama:
+
+```text
+knowledge.import_document()
+```
+
+A base efetivamente utilizada pela busca é um banco SQLite com **FTS5**.
+
+Então não é simplesmente:
+
+```text
+pergunta → LLM
+```
+
+É aproximadamente:
+
+```text
+pergunta
+   ↓
+busca lexical
+   ↓
+documentos relevantes
+   ↓
+LLM
+```
+
+---
+
+### Existe uma camada importante de segurança
+
+Depois que o Qwen produz uma resposta, ela **ainda não é exibida imediatamente**.
+
+Existe uma política em:
+
+```text
+answer_policy.py
+```
+
+e o próprio `server.py` faz outra chamada ao modelo para conferir se a resposta realmente está apoiada pelas fontes.
+
+Simplificando:
+
+```text
+Qwen gera resposta
+      ↓
+verifica citações
+      ↓
+verifica se os parágrafos têm suporte
+      ↓
+segunda análise pelo Qwen
+      ↓
+se aprovado
+      ↓
+mostra ao usuário
+```
+
+Se a resposta não estiver suficientemente apoiada, o sistema pode retornar algo equivalente a:
+
+```text
+SEM_EVIDENCIA
+```
+
+em vez de inventar uma resposta.
+
+Isso é uma parte importante da arquitetura atual.
+
+---
+
+### `jobs.py`
+
+É a camada de processamento assíncrono do próprio servidor.
+
+Controla:
+
+```text
+fila
+cancelamento
+tempo de espera
+requisições em execução
+resultados temporários
+métricas
+```
+
+Por padrão, a própria documentação indica algo semelhante a:
+
+```text
+1 execução simultânea
+até 3 pedidos aguardando
+```
+
+Por isso o frontend consegue mostrar:
+
+```text
+Aguardando na fila · posição 2
+```
+
+---
+
+### Conversação
+
+Existe também:
+
+```text
+conversation.py
+```
+
+Ele ajuda a interpretar continuidade de conversa, principalmente perguntas como:
+
+```text
+"E nesse caso?"
+"E para crianças?"
+"E essa vacina?"
+```
+
+O histórico enviado pelo navegador também é limitado. O `app.js` mantém as últimas trocas e o servidor ainda pode reduzir esse contexto se ficar grande demais.
+
+---
+
+### O que temos além da aplicação
+
+O projeto também já possui uma estrutura considerável de testes:
+
+```text
+tests/
+```
+
+com testes de:
+
+```text
+answer_policy
+frontend
+grounding
+internet
+jobs
+knowledge
+operations
+search
+streaming
+```
+
+E também:
+
+```text
+evaluation/
+```
+
+onde ficam várias rodadas de avaliação da IA.
+
+Por exemplo:
+
+```text
+acceptance.json
+controlled.json
+fidelidade.json
+performance.json
+search-comparison.json
+clarity-20260929-final.json
+```
+
+Então devemos tomar cuidado para não alterar uma parte central e quebrar os testes existentes.
+
+---
+
+### Situação atual importante
+
+A documentação atual deixa explícito que o sistema:
+
+- é **educativo**;
+- combate desinformação em saúde;
+- não representa oficialmente o SUS;
+- não pesquisa a internet ao vivo no fluxo normal;
+- usa documentos locais;
+- roda com Ollama;
+- não deve fazer diagnóstico ou prescrição;
+- exige suporte documental para afirmações;
+- possui segunda verificação da resposta.
+
+Também vi que há trabalho recente de **29/09/2026** relacionado à revisão das fontes e avaliações, portanto essa branch está ativa e recebeu mudanças recentes.
+
+===========================
 
