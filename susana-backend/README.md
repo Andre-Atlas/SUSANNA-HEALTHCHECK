@@ -114,6 +114,22 @@ O chat não responde com conhecimento geral quando não encontra evidências. Ca
 
 O repositório não contém corpus oficial ingerido. Registros DEMO servem apenas para validar a integração e não devem ser usados para responder cidadãos.
 
+### Importar os Markdown da pasta `DADOS`
+
+Revise `DADOS/manifest.json` e marque `status: "approved"` somente para arquivos conferidos com a fonte indicada. Primeiro veja a prévia, sem gravar nada:
+
+```bash
+python -m scripts.ingest_markdown_directory
+```
+
+Para criar/atualizar os documentos e gerar embeddings no Ollama:
+
+```bash
+python -m scripts.ingest_markdown_directory --apply
+```
+
+O importador é idempotente: se o conteúdo não mudou e já estiver indexado, ele não o processa de novo. Alterações no arquivo aprovado atualizam o documento e refazem sua indexação. Arquivos `review_required` são ignorados.
+
 ## Endpoints
 
 ### Health
