@@ -2,15 +2,18 @@
 
 # Dados processados e registros mantidos
 
-Registro técnico conferido no código em 25/09/2026. Escopo: aplicação local com
-Ollama em `127.0.0.1`, sem conta de usuário, autenticação gov.br ou acesso a dados
-do SUS. Este documento descreve a implementação, sem declarar conformidade jurídica.
+Registro técnico conferido no código em 01/10/2026. Escopo: servidor local com
+Ollama em `127.0.0.1` e busca ao vivo no portal `gov.br`, sem conta de usuário,
+autenticação gov.br ou acesso a dados do SUS. Este documento descreve a
+implementação, sem declarar conformidade jurídica.
 
 ## Fluxo e finalidade
 
 A pergunta e até seis trocas anteriores passam do navegador ao servidor Python.
-A busca usa a pergunta e, quando aplicável, perguntas anteriores para recuperar
-fontes. O servidor envia instruções, contexto e trechos ao Ollama local. Quando
+A busca envia somente a pergunta atual contextualizada ao portal de busca do
+Ministério da Saúde em `gov.br`; o portal retorna resultados de páginas. O
+servidor lê trechos dessas páginas e envia instruções, contexto e trechos ao
+Ollama local. Quando
 há evidências, o modelo gera a resposta e recebe uma segunda solicitação para
 revisar seu apoio documental. Sem fontes, o fluxo pode responder sem chamar a IA.
 A resposta validada e os trechos retornam ao navegador.
@@ -55,10 +58,12 @@ o ID do pedido concede acesso ao resultado enquanto existir. Não compartilhe
 IDs, capturas do painel de rede ou dumps de memória. Os arquivos locais dependem
 das permissões da conta e do disco; o projeto não criptografa o SQLite ou backups.
 
-O fluxo configurado do chat usa apenas loopback e modelo local. Downloads de
-Python/Ollama/modelos e atualizações precisam de acesso externo. Clicar em uma
-fonte abre o site da instituição, sujeito às práticas desse site. A aplicação
-não consulta as páginas ao responder nem inclui analytics externos no frontend.
+O modo atual do chat envia a pergunta de busca ao portal do Ministério da Saúde
+em `www.gov.br` e solicita páginas fonte em domínios HTTPS terminados em
+`.gov.br`. O conteúdo desses domínios é processado durante a resposta; políticas
+de acesso e retenção do portal não foram auditadas. A LLM continua local via
+Ollama. Clicar em uma fonte abre a página gov.br no navegador, sujeita às práticas
+desse site. A aplicação não usa buscador de terceiros neste fluxo.
 
 ## Cuidados operacionais e incidentes
 
