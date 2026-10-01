@@ -1,6 +1,6 @@
 # Escopo e manutenção da base documental
 
-Estado atual: **12 documentos**, revistos/ampliados em 29/09/2026. Veja o [catálogo atual e a conferência](revisao-fontes-20260929.md). Inclui gripe, tuberculose, hipertensão, HIV, raiva e SAMU 192, além dos temas anteriores.
+Estado atual: **16 documentos**, com ampliação em 01/10/2026. Veja o [catálogo e a conferência anteriores](revisao-fontes-20260929.md) e o [registro da ampliação sobre o SUS](etapa-expansao-fontes-sus-20261001.md). Inclui visão geral do SUS, tratamento HIV e assistência farmacêutica, além dos temas anteriores.
 
 ## Registro histórico de 24/09/2026
 
@@ -14,10 +14,13 @@ Versão de trabalho: 2026-09-24. Escopo inicial adotado para desenvolvimento, su
 | Dengue | `dengue.json` | Como ocorre a transmissão? Quais medidas documentadas reduzem criadouros? |
 | Antibióticos e antimicrobianos | `antibioticos.json`, `antimicrobianos-cuidados.json` | Antibióticos combatem vírus? Como o uso inadequado se relaciona à resistência? Pode compartilhar sobras? |
 | Segurança geral das vacinas | `vacinas-seguranca.json` | Como a segurança é avaliada? Todas as reações são graves? |
+| SUS e serviços | `sus-visao-geral.json` | O que é o SUS? Quais serviços gerais oferece? Como se organiza? |
+| HIV e antirretrovirais | `hiv-tratamento-sus.json`, `sus-medicamentos-cesaf.json` | O SUS oferece tratamento gratuito para HIV? Como se organiza a distribuição dos antirretrovirais? Não cobre estoque local nem escolha de esquema individual. |
+| Assistência farmacêutica | `sus-medicamentos-ceaf.json`, `sus-medicamentos-cesaf.json` | Como funciona em linhas gerais o CEAF? Como se organiza o componente estratégico? São componentes diferentes, com critérios e fluxos distintos. |
 
 Fora deste recorte: diagnóstico, prescrição, doses, interpretação de sintomas individuais, calendário e elegibilidade vacinal atual, tratamentos de outras doenças e verificação ao vivo de notícias. A fonte geral sobre segurança não responde, por exemplo, a alegações específicas sobre DNA. Os cumprimentos também não são resolvidos pela ampliação documental.
 
-“Cobertura” significa existência de conteúdo para essas perguntas delimitadas, não cobertura completa do tema. O conjunto de desenvolvimento tem 18 casos, incluindo seis novos. Critério técnico inicial: recuperar a fonte esperada e manter os casos sem evidência. A equipe ainda precisa avaliar respostas geradas, perguntas independentes e suficiência do conteúdo antes do piloto.
+“Cobertura” significa existência de conteúdo para essas perguntas delimitadas, não cobertura completa do tema. Consulte o registro da [ampliação sobre o SUS](etapa-expansao-fontes-sus-20261001.md) para os casos adicionados nesta etapa. Critério técnico inicial: recuperar a fonte esperada e manter os casos sem evidência. A recuperação correta não comprova fidelidade da geração.
 
 ## Novas fontes consultadas
 
