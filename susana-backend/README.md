@@ -22,6 +22,8 @@ Scope / Intent
 
 A versão 0.2 usa recuperação híbrida: unidades e serviços podem ser consultados diretamente no PostgreSQL, enquanto explicações documentais passam pelo RAG. A proveniência de estabelecimentos pode ser registrada por `source_id`.
 
+Para entender o caminho da pergunta, a busca estruturada, o RAG e o que ainda falta para o produto final, consulte o [guia didático de funcionamento da Susana](docs/como-a-susana-funciona.md).
+
 ## Requisitos
 
 - Python 3.12+
@@ -74,16 +76,23 @@ Não tratar esse seed como corpus oficial.
 
 ## Ollama
 
-No `.env`:
+Baixe um modelo de chat e um modelo de embeddings compatível com a dimensão do banco:
+
+```env
+ollama pull llama3.2:3b
+ollama pull nomic-embed-text
+```
+
+No `.env`, configure os nomes dos modelos instalados:
 
 ```env
 OLLAMA_BASE_URL=http://localhost:11434
-OLLAMA_MODEL=<modelo-de-chat>
-EMBEDDING_MODEL=<modelo-de-embedding>
+OLLAMA_MODEL=llama3.2:3b
+EMBEDDING_MODEL=nomic-embed-text:latest
 EMBEDDING_DIMENSIONS=768
 ```
 
-O provider utiliza `/api/generate` para geração e `/api/embed` para embeddings.
+O provider utiliza `/api/generate` para geração e `/api/embed` para embeddings. Reinicie a API depois de alterar `.env`.
 
 Depois de configurar o modelo de embeddings, rode:
 
@@ -93,6 +102,18 @@ python -m scripts.check_ollama
 
 Esse teste confirma a dimensão real produzida pelo Ollama contra `EMBEDDING_DIMENSIONS`.
 
+## Colocar documentos no RAG
+
+O chat não responde com conhecimento geral quando não encontra evidências. Cadastre uma fonte oficial, um documento obtido dessa fonte e depois indexe-o:
+
+1. Crie uma fonte por `POST /api/v1/fontes`, com nome, URL oficial e `source_type` apropriado.
+2. Crie um documento por `POST /api/v1/rag/documents`, usando o `source_id` retornado e o conteúdo autorizado da página/documento.
+3. Indexe-o com `POST /api/v1/rag/documents/{id}/ingest`.
+4. Confirme `status: "indexed"` e teste `POST /api/v1/rag/search` antes de validar o chat.
+5. Consulte `GET /api/v1/health/dependencies`: `ollama_chat` e `ollama_embeddings` devem estar como `ok`.
+
+O repositório não contém corpus oficial ingerido. Registros DEMO servem apenas para validar a integração e não devem ser usados para responder cidadãos.
+
 ## Endpoints
 
 ### Health
@@ -101,6 +122,8 @@ Esse teste confirma a dimensão real produzida pelo Ollama contra `EMBEDDING_DIM
 GET /api/v1/health
 GET /api/v1/health/dependencies
 ```
+
+`/health/dependencies` informa separadamente `postgres`, `pgvector`, `ollama_chat`, `ollama_embeddings` e `indexed_documents`. Os modelos podem estar prontos enquanto `indexed_documents` ainda é `0`; nesse estado, o chat deve informar que não encontrou evidências.
 
 ### Chat
 
