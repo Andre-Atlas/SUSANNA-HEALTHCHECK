@@ -1,5 +1,3 @@
-> **Demonstração temporária ativa:** [abrir SUSANNA-HEALTHCHECK](https://what-attended-saturday-equity.trycloudflare.com). Peça a senha ao responsável; o link só funciona enquanto o túnel estiver ativo. [Instruções para visitantes e operador](docs/internet-demo.md).
-
 # SUSANNA-HEALTHCHECK — projeto acadêmico
 
 Chatbot educativo sobre desinformação em saúde. Interface independente, sem vínculo oficial com o SUS. Desenvolvido para apresentação na Eldorado.
@@ -43,6 +41,45 @@ Use o servidor `server.py`, não `python -m http.server` nem o Live Server: eles
 Outra porta: `python3 server.py --port 8003` (macOS) ou `py -3 server.py --port 8003` (Windows).
 Outro modelo local instalado: `OLLAMA_MODEL=nome:tag python3 server.py`.
 No Windows PowerShell, use `$env:OLLAMA_MODEL="nome:tag"; py -3 server.py`.
+
+## Compartilhar pela internet
+
+Não há um link público permanente: cada inicialização gera um endereço temporário.
+O link que já apareceu em versões anteriores deste README expirou. Para criar um
+novo, mantenha o Ollama aberto com `qwen2.5:7b` instalado. Instale também o
+`cloudflared`: no macOS, `brew install cloudflared`; no Windows, baixe o executável
+pelas [instruções oficiais](https://developers.cloudflare.com/tunnel/downloads/)
+e deixe-o disponível no PATH.
+
+Execute estes comandos no terminal aberto na pasta do projeto. Eles instalam a
+dependência da demonstração e iniciam juntos o servidor protegido e o túnel; não
+execute `server.py` neste modo.
+
+**macOS:**
+
+```bash
+python3 -m venv .venv
+.venv/bin/python -m pip install -r requirements-internet.txt
+.venv/bin/python internet_demo.py
+```
+
+**Windows (PowerShell):**
+
+```powershell
+py -3 -m venv .venv
+.venv\Scripts\python.exe -m pip install -r requirements-internet.txt
+.venv\Scripts\python.exe internet_demo.py
+```
+
+Quando o terminal mostrar `URL:`, compartilhe esse endereço e o usuário `equipe`;
+consulte a senha atual no arquivo privado indicado pelo próprio terminal e envie-a
+separadamente aos amigos. Deixe o terminal, o computador e a conexão ligados.
+Pressione Ctrl+C para encerrar. O endereço e a senha deixam de valer ao parar a
+demonstração. Se o túnel não conectar, consulte [alternativas e diagnóstico](docs/internet-demo.md);
+algumas redes bloqueiam esse tipo de conexão. As perguntas passam pela infraestrutura
+do provedor do túnel, e há uma falha conhecida na revisão automática que bloqueia a
+aprovação do piloto. Use somente perguntas fictícias; consulte as [limitações e privacidade](docs/internet-demo.md)
+e não use as respostas para decisões de saúde.
 
 ## Ambiente de disponibilização
 
