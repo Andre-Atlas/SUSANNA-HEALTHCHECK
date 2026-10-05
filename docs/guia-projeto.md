@@ -12,30 +12,24 @@ npm, chave de API ou serviço pago. Consulte [versões e licenças](componentes.
    e [Ollama](https://ollama.com/download). Abra a pasta do projeto no terminal.
 2. Abra o aplicativo Ollama ou execute `ollama serve` em outro terminal. Instale o
    modelo uma vez com `ollama pull qwen2.5:7b`.
-3. Prepare a base e inicie o servidor com os comandos da sua plataforma.
+3. Inicie o servidor com os comandos da sua plataforma. A base SQLite é mantida para avaliações e manutenção offline; o chat pesquisa páginas oficiais gov.br por pergunta.
 
 **Windows (PowerShell):**
 
 ```powershell
-py -3 seed_knowledge.py
-py -3 operations.py check
 py -3 server.py --port 8002 --concurrency 1 --queue-size 3
 ```
 
 **macOS (Terminal):**
 
 ```bash
-python3 seed_knowledge.py
-python3 operations.py check
 python3 server.py --port 8002 --concurrency 1 --queue-size 3
 ```
 
-O download é necessário na primeira instalação. Se já houver base local, faça
-[backup](disponibilizacao.md#backup-e-recuperação) antes de reimportar: URLs iguais
-substituem os trechos anteriores, e o carregador remove uma URL anterior somente
-quando a nova fonte declara `replaces_url`; URLs locais adicionais são preservadas.
 Abra http://127.0.0.1:8002. Confira http://127.0.0.1:8002/api/ready antes do uso.
-`ready: true` verifica base/modelo, sem aprovar o conteúdo das respostas.
+`ready: true` verifica Ollama/modelo; não consulta gov.br nem aprova o conteúdo
+das respostas. Para cadastrar fontes na base offline, siga [base documental](base-documental.md)
+e faça backup antes de reimportar.
 
 Nas próximas vezes, abra o Ollama e inicie `py -3 server.py` (Windows) ou
 `python3 server.py` (macOS). Não use Live Server nem `python -m http.server`:
@@ -69,7 +63,7 @@ do piloto estão em [aceitação](aceitacao.md).
 | Porta ocupada | Inicie com `--port 8003` e use essa porta no navegador e nas verificações. |
 | Ollama indisponível | Abra o aplicativo ou execute `ollama serve`; confira `/api/ready`. |
 | Modelo ausente | Execute `ollama pull qwen2.5:7b`; confira se `OLLAMA_MODEL` foi alterado. |
-| Base vazia ou inválida | Execute `py -3 operations.py check` (Windows) ou `python3 operations.py check` (macOS); preserve a base e siga a recuperação antes de sobrescrever dados. |
+| Pesquisa gov.br indisponível | Tente novamente mais tarde; `/api/ready` não verifica o acesso externo. |
 | Fila cheia | Aguarde ou cancele seu pedido; não aumente a concorrência sem medir o hardware. |
 | Resposta bloqueada ou sem evidências | Confira a cobertura da base; registre um caso sintético para investigação. |
 | Interface antiga | Reinicie o servidor depois de atualizar código e recarregue a página. |
@@ -84,7 +78,7 @@ Use `py -3` no lugar de `python3` nos comandos abaixo no Windows.
 
 ```bash
 python3 -m unittest discover -s tests -v
-python3 operations.py check
+python3 operations.py check  # valida apenas a base local de avaliação/manutenção
 ```
 
 Reinicie, confira `/api/ready` e faça uma pergunta de referência. Para mudanças de

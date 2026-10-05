@@ -10,7 +10,7 @@ from pathlib import Path
 from urllib.parse import urlsplit
 
 DATABASE = Path(__file__).resolve().parent / 'data' / 'knowledge.sqlite3'
-STOPWORDS = set('a o as os um uma de da do das dos em no na nos nas e ou que se para por com como qual quais onde quando porque sobre isso isto esse essa ser sao foi tem pode nao mais uma'.split())
+STOPWORDS = set('a o as os um uma de da do das dos em no na nos nas e ou que se para por com como qual quais onde quando porque sobre isso isto esse essa estes estas este esta nesta neste nestas nestes base ser sao foi tem pode nao mais uma'.split())
 
 
 def search_terms(text):

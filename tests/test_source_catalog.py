@@ -37,6 +37,8 @@ class SourceCatalogTests(unittest.TestCase):
             ('Como prevenir raiva depois de mordida?', 'raiva-prevencao.json'),
             ('O atendimento do SAMU é pago?', 'samu-192.json'),
             ('Qual tratamento cura diabetes?', None),
+            ('Há comprovação nesta base de que imunizantes modificam o genoma humano?', None),
+            ('Imunizantes alteram DNA?', None),
             ('Qual tratamento cura câncer?', None),
         ]
         with tempfile.TemporaryDirectory() as folder:

@@ -9,7 +9,7 @@ Chatbot educativo sobre desinformação em saúde. Interface independente, sem v
 - [Versões e licenças dos componentes](docs/componentes.md).
 - [Responsáveis e rotina de manutenção](docs/responsabilidades.md).
 - [Operação local, métricas, backup e recuperação](docs/disponibilizacao.md).
-- [Meta da próxima versão e critérios de sucesso](docs/02proximo-passo.md).
+- [Plano e progresso do projeto](docs/01proximo-passo.md).
 - [Registro da etapa de regressões F01–F04](docs/etapa-regressoes-f01-f04-20261001.md).
 
 ## Executar localmente
@@ -18,21 +18,17 @@ Compatibilidade prevista: Windows 10/11 e macOS, com Python 3.10+ e [Ollama](htt
 
 1. Inicie o Ollama pelo aplicativo ou, em um terminal, com `ollama serve`.
 2. Se o modelo ainda não estiver instalado, execute `ollama pull qwen2.5:7b` (download de aproximadamente 4,7 GB, uma única vez).
-3. Abra o terminal na pasta do projeto. Na primeira instalação, importe a base; em instalações existentes, faça backup antes de reimportar.
+3. Abra o terminal na pasta do projeto e inicie o servidor. A base SQLite é usada em avaliações e manutenção offline, não é necessária para conversar.
 
 **Windows (PowerShell):**
 
 ```powershell
-py -3 seed_knowledge.py
-py -3 operations.py check
 py -3 server.py --port 8002 --concurrency 1 --queue-size 3
 ```
 
 **macOS (Terminal):**
 
 ```bash
-python3 seed_knowledge.py
-python3 operations.py check
 python3 server.py --port 8002 --concurrency 1 --queue-size 3
 ```
 
@@ -87,9 +83,8 @@ e não use as respostas para decisões de saúde.
 
 Configurado para uso somente neste computador, sem publicação na rede. Veja
 [o guia de operação local](docs/disponibilizacao.md) para prontidão, limites,
-métricas, backup e recuperação. Verifique a base com `python3 operations.py check`
-(macOS) ou `py -3 operations.py check` (Windows)
-e o conjunto base/modelo em `http://127.0.0.1:8002/api/ready`.
+métricas, backup e recuperação. `/api/ready` verifica a disponibilidade do Ollama
+e do modelo; a pesquisa gov.br é verificada quando cada pergunta é enviada.
 
 ## Organização
 

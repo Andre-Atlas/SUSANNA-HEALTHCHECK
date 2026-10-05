@@ -15,7 +15,6 @@ from urllib.parse import urlsplit
 from urllib.request import Request, urlopen
 from jobs import JobQueue, QueueFull, stage
 from ollama_transport import chat_stream
-from operations import inspect_database
 from govbr_search import search_gov_br, GovBrSearchError
 from conversation import resolve_question, CLARIFY
 from answer_policy import (NO_EVIDENCE, INVALID_ANSWER, reference_errors, is_abstention,
@@ -307,14 +306,16 @@ class Handler(BaseHTTPRequestHandler):
         path = urlsplit(self.path).path
         if path == '/api/ready':
             try:
-                database = inspect_database()
                 models = ollama('/api/tags', timeout=5).get('models', [])
                 ready = any(m.get('name') == MODEL for m in models)
                 self.json_response(200 if ready else 503,
-                    {'ready': ready, 'database': database, 'model_available': ready})
-            except (OSError, sqlite3.Error, ValueError, URLError):
+                    {'ready': ready, 'model': MODEL, 'model_available': ready,
+                     'retrieval': 'gov.br checked per request'})
+            except (OSError, ValueError, URLError):
                 self.json_response(503, {'ready': False,
-                    'message': 'Verifique a base documental, o Ollama e o modelo instalado.'})
+                    'model': MODEL, 'model_available': False,
+                    'retrieval': 'gov.br checked per request',
+                    'message': 'Verifique se o Ollama está ativo e se o modelo está instalado.'})
             return
         if path == '/api/metrics':
             self.json_response(200, get_runtime(self.server).metrics())

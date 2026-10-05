@@ -1,6 +1,8 @@
-# Base documental local — primeira versão
+# Base documental local para avaliação e manutenção
 
-Esta etapa usa Python, SQLite FTS5 e Ollama. Não requer serviço pago,
+O chatbot em execução pesquisa páginas oficiais gov.br e não consulta esta base.
+Esta base local é mantida para avaliações offline e experimentos. Usa Python,
+SQLite FTS5 e Ollama. Não requer serviço pago,
 embeddings ou novos pacotes pip. O Python precisa ter SQLite com FTS5 habilitado.
 A busca expande algumas variações e corrige erros simples de digitação. Formas
 limitadas de continuidade usam perguntas anteriores; veja [busca e conversa](busca-conversa.md).
@@ -40,7 +42,7 @@ Novas importações ficam disponíveis sem reiniciar o servidor.
 
 O conjunto versionado contém 16 sínteses experimentais, incluindo quatro novas sobre o SUS. Consulte [temas, cobertura e manutenção](escopo-fontes.md) e o [registro da ampliação sobre o SUS](etapa-expansao-fontes-sus-20261001.md), incluindo o procedimento de retirada por `python knowledge.py --remove-url "URL"`.
 
-1. A pergunta é contextualizada quando corresponde a uma forma de continuidade reconhecida; seus termos são expandidos e pesquisados no índice lexical FTS5.
+1. Este fluxo descreve a recuperação offline: a pergunta é contextualizada quando corresponde a uma forma de continuidade reconhecida; seus termos são expandidos e pesquisados no índice lexical FTS5.
 2. Até 30 candidatos são ordenados por BM25. Para perguntas com vários conceitos, exigem-se pelo menos dois conceitos distintos; até três trechos são selecionados. Sinônimos contam uma vez. Esse filtro é heurístico e não mede confiança factual.
 3. O servidor ajusta histórico e trechos a um orçamento conservador de contexto.
 4. O Ollama recebe as instruções, os trechos e a conversa restante.
@@ -51,8 +53,9 @@ com reserva para resposta e template. Não é uma contagem exata de tokens.
 Remove pares antigos de conversa e depois trechos, mantendo a pergunta atual.
 Perguntas que sozinhas excedem o orçamento são recusadas com uma mensagem clara.
 
-Sem base ou sem resultados, a interface informa a ausência de fontes. Uma base
-corrompida gera erro explícito. Os documentos são dados, não instruções;
+Sem resultados na busca online, a interface informa a ausência de fontes.
+Uma base local corrompida afeta as avaliações/manutenção offline, não a prontidão
+nem a pesquisa gov.br do chat. Os documentos são dados, não instruções;
 a resistência à injeção de prompt ainda precisa de avaliação adversarial.
 
 ## Limitações e próximas entregas

@@ -56,6 +56,9 @@ class DemoApp:
             name, mime = files[path]
             body = (ROOT / name).read_bytes()
             if name == 'index.html':
+                notice = (f'Demonstração temporária via {self.provider}. Conteúdo processado neste computador; '
+                          'a revisão automática possui limitações. ').encode()
+                body = body.replace(b'<p class="privacy">', b'<p class="privacy">' + notice, 1)
                 body = body.replace(b'Este projeto n\xc3\xa3o grava conversas em arquivos ou banco de dados.',
                     f'Demonstração experimental com falha conhecida na revisão de respostas. Não use para decisões de saúde. O acesso passa pelo serviço {self.provider}; o processamento da IA ocorre neste computador. O servidor do chat não grava conversas em arquivos ou banco de dados.'.encode())
             return respond('200 OK', body, mime + '; charset=utf-8')

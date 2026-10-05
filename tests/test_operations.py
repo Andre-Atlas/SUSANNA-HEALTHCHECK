@@ -1,4 +1,5 @@
 import http.client
+import json
 from http.server import ThreadingHTTPServer
 from pathlib import Path
 import tempfile
@@ -42,7 +43,7 @@ class OperationsTests(unittest.TestCase):
             try:
                 conn.request('GET', path, headers=headers or {})
                 response = conn.getresponse()
-                response.read()
+                response.body = response.read()
                 return response
             finally:
                 conn.close()
@@ -51,14 +52,13 @@ class OperationsTests(unittest.TestCase):
             self.assertEqual(request('/', {'Host': 'untrusted.example'}).status, 403)
             self.assertEqual(request('/api/metrics', {'Origin': 'https://untrusted.example'}).status, 403)
             self.assertEqual(request('/data/knowledge.sqlite3').status, 404)
-            with patch('server.inspect_database', return_value={'ready': True, 'chunks': 6}), patch('server.ollama', return_value={'models': []}):
-                self.assertEqual(request('/api/ready').status, 503)
-            with patch('server.inspect_database', side_effect=ValueError('empty')):
+            with patch('server.ollama', return_value={'models': []}):
                 self.assertEqual(request('/api/ready').status, 503)
             from server import MODEL
-            with patch('server.inspect_database', return_value={'ready': True, 'chunks': 6}), patch('server.ollama', return_value={'models': [{'name': MODEL}]}):
+            with patch('server.ollama', return_value={'models': [{'name': MODEL}]}):
                 response = request('/api/ready')
                 self.assertEqual(response.status, 200)
+                self.assertTrue(json.loads(response.body)['ready'])
                 self.assertIn("frame-ancestors 'none'", response.getheader('Content-Security-Policy'))
         finally:
             server.shutdown()

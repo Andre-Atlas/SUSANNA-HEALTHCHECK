@@ -15,9 +15,7 @@ Na pasta do projeto:
 ollama serve
 # Terminal 2, somente se ainda faltar o modelo:
 ollama pull qwen2.5:7b
-# Somente para importar/atualizar as fontes versionadas:
-python3 seed_knowledge.py
-python3 operations.py check
+# O chatbot não exige a base SQLite local; ela serve avaliações e manutenção offline.
 python3 server.py --port 8002 --concurrency 1 --queue-size 3
 ```
 
@@ -28,9 +26,9 @@ curl --fail http://127.0.0.1:8002/api/ready
 curl --fail http://127.0.0.1:8002/api/metrics
 ```
 
-`/api/ready` retorna 200 apenas quando o banco está íntegro, tem trechos, permite
-consulta FTS e o modelo consta no Ollama; caso contrário retorna 503.
-Não executa uma geração nem certifica a qualidade das respostas.
+`/api/ready` retorna 200 quando o modelo configurado consta no Ollama; caso
+contrário retorna 503. Não consulta gov.br, executa uma geração ou certifica a
+qualidade das respostas. A pesquisa externa é verificada durante cada pergunta.
 `/api/health` continua verificando apenas o Ollama/modelo por compatibilidade.
 
 O processo fica no terminal, sem inicialização automática. Encerre com Ctrl+C.

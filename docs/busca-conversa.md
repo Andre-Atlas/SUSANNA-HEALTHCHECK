@@ -1,6 +1,7 @@
 # Busca e continuidade da conversa
 
-A busca padrão continua local, com Python e SQLite FTS5. Não foram adicionados
+A busca do chatbot em execução consulta o portal do Ministério da Saúde ao vivo.
+Python e SQLite FTS5 continuam disponíveis para busca local offline e avaliação. Não foram adicionados
 modelos, pacotes pip ou chamadas de IA para a recuperação.
 
 ## Funcionamento
