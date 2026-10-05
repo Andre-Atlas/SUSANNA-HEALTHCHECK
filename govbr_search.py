@@ -3,19 +3,25 @@ from datetime import datetime
 from html.parser import HTMLParser
 import http.client
 import re
+import unicodedata
 from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urljoin, urlsplit
 from urllib.request import HTTPRedirectHandler, Request, build_opener
 from jobs import current_job
 
 
-SEARCH_URL = 'https://www.gov.br/saude/pt-br/@@search?SearchableText='
+# SearchAction published in the Ministry's gov.br HTML (JSON-LD).
+SEARCH_URL = 'https://www.gov.br/saude/search?SearchableText='
 USER_AGENT = 'SUSANNA-HEALTHCHECK/0.2 (prototipo educacional; busca fontes oficiais)'
 MAX_SEARCH_BYTES = 2_000_000
 MAX_PAGE_BYTES = 2_000_000
 MAX_RESULTS = 3
-MAX_CANDIDATES = 3
-PAGE_TEXT_LIMIT = 2600
+MAX_CANDIDATES = 5
+PAGE_TEXT_LIMIT = 2500
+DIRECT_PAGES = {
+    'health_misinformation': 'https://www.gov.br/saude/pt-br/assuntos/saude-com-ciencia',
+    'vaccination': 'https://www.gov.br/saude/pt-br/vacinacao',
+}
 
 
 class GovBrSearchError(Exception):
@@ -66,7 +72,11 @@ class _HTMLText(HTMLParser):
         attrs = dict(attrs)
         marker = ' '.join((attrs.get('class', ''), attrs.get('id', ''))).lower()
         parent_search = bool(self._search_stack and self._search_stack[-1][1])
-        in_search = parent_search or any(term in marker for term in ('search', 'result', 'listing'))
+        # Do not let a page-level "template-search" class mark navigation/footer
+        # links as search results. Only explicit result containers count.
+        result_container = (tag not in {'html', 'body'} and bool(re.search(
+            r'\b(?:search[-_ ]?results?|results?[-_ ]?list)\b', marker)))
+        in_search = parent_search or result_container
         if tag not in self.VOID:
             self._search_stack.append((tag, in_search))
         if tag in self.SUPPRESS:
@@ -111,6 +121,11 @@ class _HTMLText(HTMLParser):
 
 def _clean(text):
     return re.sub(r'\s+', ' ', text).strip()
+
+
+def _fold(text):
+    return ''.join(char for char in unicodedata.normalize('NFKD', text.casefold())
+                   if not unicodedata.combining(char))
 
 
 def _read(url, limit, timeout):
@@ -165,13 +180,15 @@ def _search_links(html, base_url):
     parser.feed(html)
     links = []
     seen = set()
-    candidates = sorted(parser.anchors, key=lambda item: not item[2])
-    for href, label, _priority in candidates:
+    for href, label, is_result in parser.anchors:
+        if not is_result:
+            continue
         target = urljoin(base_url, href).split('#', 1)[0]
         path = urlsplit(target).path.lower()
         if (not is_gov_br_url(target) or not _clean(label) or target in seen
                 or path.endswith(('.pdf', '.doc', '.docx', '.xls', '.xlsx', '.zip'))
-                or '/@@search' in path or path.rstrip('/') == '/search'):
+                or path.rstrip('/').endswith(('/@@search', '/search'))
+                or path.rstrip('/') in {'', '/', '/saude', '/saude/pt-br', '/pt-br'}):
             continue
         seen.add(target)
         links.append((target, _clean(label)))
@@ -189,9 +206,17 @@ def _extract_page(url, html, retrieved_at):
         return None
     if not title:
         title = text[:120].rsplit(' ', 1)[0]
+    excerpt_start = 0
+    path = urlsplit(url).path.rstrip('/')
+    if path == urlsplit(DIRECT_PAGES['vaccination']).path:
+        marker = _fold(text).find('disponivel durante todo o ano')
+        if marker >= 0:
+            excerpt_start = max(marker - 250, 0)
+    elif path == urlsplit(DIRECT_PAGES['health_misinformation']).path:
+        excerpt_start = max(len(text) - PAGE_TEXT_LIMIT, 0)
     return {
         'title': title[:300],
-        'text': text[:PAGE_TEXT_LIMIT],
+        'text': text[excerpt_start:excerpt_start + PAGE_TEXT_LIMIT],
         'url': url,
         'reviewed_at': retrieved_at[:10],
         'retrieved_at': retrieved_at,
@@ -204,15 +229,30 @@ def search_gov_br(question, *, timeout=5):
     query = _clean(question)
     if not query:
         return []
-    search_url = SEARCH_URL + quote_plus(query[:400])
-    try:
-        fetched = _read(search_url, MAX_SEARCH_BYTES, timeout)
-    except GovBrSearchError:
-        raise
-    if fetched is None:
-        raise GovBrSearchError('A busca oficial não retornou uma página HTML.')
-    search_final_url, search_html = fetched
-    links = _search_links(search_html, search_final_url)
+    normalized = _fold(query)
+    words = set(re.findall(r'[a-z0-9]+', normalized))
+    direct_urls = []
+    if any(word.startswith('vacin') for word in words):
+        direct_urls.append(DIRECT_PAGES['vaccination'])
+    if ('fake news' in normalized or 'desinform' in normalized
+            or {'mensagem', 'suspeita'} <= words or any(word.startswith('font') for word in words)
+            or 'boato' in words or 'boatos' in words):
+        direct_urls.append(DIRECT_PAGES['health_misinformation'])
+
+    # Curated question intents go straight to matching Ministry pages. Generic
+    # portal navigation is never treated as evidence when the search API returns
+    # only its JavaScript shell.
+    links = [(url, '') for url in direct_urls]
+    if not links:
+        search_url = SEARCH_URL + quote_plus(query[:400])
+        try:
+            fetched = _read(search_url, MAX_SEARCH_BYTES, timeout)
+        except GovBrSearchError:
+            raise
+        if fetched is None:
+            raise GovBrSearchError('A busca oficial não retornou uma página HTML.')
+        search_final_url, search_html = fetched
+        links = _search_links(search_html, search_final_url)
     now = datetime.now().astimezone().isoformat(timespec='seconds')
     sources = []
     for url, _label in links[:MAX_CANDIDATES]:
