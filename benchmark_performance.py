@@ -82,6 +82,8 @@ def maybe_log_mlflow(report, experiment):
         import mlflow
     except ImportError as exc:
         raise RuntimeError('MLflow não está instalado. Instale-o para usar --mlflow.') from exc
+    from analyze_evaluations import local_tracking_uri
+    mlflow.set_tracking_uri(local_tracking_uri())
     mlflow.set_experiment(experiment)
     with mlflow.start_run(run_name=report['run_id']):
         mlflow.log_params({
