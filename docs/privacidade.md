@@ -10,13 +10,14 @@ implementação, sem declarar conformidade jurídica.
 ## Fluxo e finalidade
 
 A pergunta e até seis trocas anteriores passam do navegador ao servidor Python.
-Para os tópicos de vacinação e desinformação cobertos por rotas temáticas, o
+Para vacinação, desinformação e hepatite B cobertas por rotas temáticas, o
 servidor consulta diretamente a página correspondente em `gov.br`. Nos demais
-casos, envia somente a pergunta atual contextualizada à API oficial SERPRO
-(`portalunico.estaleiro.serpro.gov.br/api/search/`), filtrada para o site do
-Ministério da Saúde. A API fornece URLs candidatas; seu texto não é usado como
-evidência. O servidor aceita somente URLs HTTPS em `gov.br` e baixa o conteúdo
-das páginas diretamente desses domínios. O servidor lê trechos das páginas encontradas e envia instruções, contexto e trechos ao
+casos, envia somente os termos centrais extraídos da pergunta atual à API oficial SERPRO
+(`portalunico.estaleiro.serpro.gov.br/api/search/`), usando os tipos `Servico|Tema`
+e o contexto organizacional do portal. A API pode retornar páginas de outros
+órgãos públicos; seu texto não é usado como evidência. O servidor aceita somente
+URLs HTTPS em `gov.br` e baixa o conteúdo das páginas diretamente desses domínios.
+O servidor lê trechos das páginas encontradas e envia instruções, contexto e trechos ao
 Ollama local. Quando
 há evidências, o modelo gera a resposta e recebe uma segunda solicitação para
 revisar seu apoio documental. Sem fontes, o fluxo pode responder sem chamar a IA.
@@ -62,9 +63,9 @@ o ID do pedido concede acesso ao resultado enquanto existir. Não compartilhe
 IDs, capturas do painel de rede ou dumps de memória. Os arquivos locais dependem
 das permissões da conta e do disco; o projeto não criptografa o SQLite ou backups.
 
-O modo atual do chat envia a pergunta de busca à API SERPRO em
-`portalunico.estaleiro.serpro.gov.br`, com filtro para o site do Ministério da
-Saúde, e busca as páginas fonte em domínios HTTPS terminados em `.gov.br`. O
+O modo atual do chat envia os termos de busca extraídos da pergunta à API SERPRO em
+`portalunico.estaleiro.serpro.gov.br` e busca páginas fonte em domínios HTTPS
+terminados em `.gov.br`. A API pode retornar páginas de diferentes órgãos. O
 conteúdo desses domínios é processado durante a resposta; políticas de acesso e
 retenção da API e dos portais não foram auditadas. A LLM continua local via
 Ollama. Clicar em uma fonte abre a página gov.br no navegador, sujeita às práticas
