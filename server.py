@@ -158,8 +158,9 @@ def verify_grounding(prompt, content, sources):
         'Verifique TODAS as afirmações de cada parágrafo contra SOMENTE os IDs citados nele. '
         'supported só é true se todas as afirmações forem sustentadas, sem perder negações, '
         'condições, exceções, quantidades ou grau de certeza. Uma única frase inventada exige false. '
-        'Coincidência de palavras não comprova suporte. Para cada ID citado, copie em quote um '
-        'texto literal do campo text que sustenta a resposta (mínimo 12 caracteres). '
+        'Coincidência de palavras não comprova suporte. Para cada ID citado, copie em quote '
+        'o menor trecho literal contíguo do campo text que sustenta a resposta, com 12 a 240 '
+        'caracteres; não copie o campo inteiro se um trecho curto bastar. '
         'Não invente evidência. Se o ID é irrelevante, supported=false. '
         'answers_question só é true se as fontes responderem especificamente à pergunta. '
         'Fonte sobre segurança geral não responde sobre DNA; prevenção não comprova cura. '
@@ -171,7 +172,7 @@ def verify_grounding(prompt, content, sources):
         'Resultado: {"answers_question":true,"conflicting_sources":false,"paragraphs":'
         '[{"id":1,"supported":true,"evidence":[{"source_id":1,"quote":"A medida reduz o risco, mas não elimina o risco."}]}]}. '
         'Se a resposta disser que elimina o risco, supported=false. '
-        'Em quote, selecione o texto COMPLETO da fonte citada, NÃO a resposta. '
+        'Em quote, selecione apenas o trecho literal necessário da fonte, NÃO a resposta. '
         'Em dúvida, rejeite. Responda apenas JSON: '
         '{"answers_question":boolean,"conflicting_sources":boolean,"paragraphs":'
         '[{"id":1,"supported":boolean,"evidence":[{"source_id":1,"quote":"trecho literal"}]}]}. '
@@ -210,13 +211,14 @@ def verify_grounding(prompt, content, sources):
                     'evidence': {'type': 'array', 'items': {'type': 'object',
                         'required': ['source_id', 'quote'], 'properties': {
                             'source_id': {'type': 'integer'},
-                            'quote': {'type': 'string', 'enum': [s['text'] for s in cited_sources]}}}}}}}}}
+                            'quote': {'type': 'string', 'description':
+                                'Trecho literal contíguo de 12 a 240 caracteres da fonte citada.'}}}}}}}}}
     if len((instruction + payload + json.dumps(schema, ensure_ascii=False)).encode('utf-8')) > 16384 - 2000 - 512:
         return ['verification_context_exceeded']
     try:
         result = ollama('/api/chat', {'model': MODEL, 'format': schema, 'stream': False,
             'messages': [{'role': 'system', 'content': instruction}, {'role': 'user', 'content': payload}],
-            'options': {'temperature': 0, 'num_predict': 2000, 'num_ctx': 16384}})
+            'options': {'temperature': 0, 'num_predict': 700, 'num_ctx': 8192}})
         if result.get('done_reason') == 'length':
             return ['truncated_verification']
         return grounding_errors(result.get('message', {}).get('content'), content, sources)
