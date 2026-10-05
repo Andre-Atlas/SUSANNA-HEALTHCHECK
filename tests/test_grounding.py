@@ -89,6 +89,16 @@ class GroundingTests(unittest.TestCase):
                 self.assertTrue(grounding_errors(raw, self.answer, self.sources))
         self.assertEqual(grounding_errors(json.dumps(baseline), self.answer, self.sources), [])
 
+    def test_evidence_quote_must_be_literal_and_concise(self):
+        source = 'A vacina está disponível durante o ano. ' + ('Detalhe adicional. ' * 20)
+        long_quote = source[:241]
+        verdict = {'answers_question': True, 'conflicting_sources': False, 'paragraphs': [
+            {'id': 1, 'supported': True, 'evidence': [
+                {'source_id': 1, 'quote': long_quote}]}]}
+        errors = grounding_errors(json.dumps(verdict), 'A vacina está disponível [1].',
+                                  [{'text': source}])
+        self.assertIn('unverified_evidence_quote', errors)
+
     def test_every_citation_must_have_evidence(self):
         errors = grounding_errors(self.verdict(), self.answer + ' [2]', self.sources * 2)
         self.assertIn('unchecked_citation', errors)
