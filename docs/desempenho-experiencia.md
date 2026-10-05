@@ -101,15 +101,24 @@ fonte que terminam sem inferência.
 
 ```bash
 python3 benchmark_performance.py --warmup 1 --repetitions 3
-python3 -m pip install mlflow
+python3 -m pip install -r requirements-analytics.txt
 python3 benchmark_performance.py --mlflow --mlflow-experiment saude-gov-br-latency
+python3 analyze_evaluations.py --mlflow
 ```
 
-MLflow é opcional e usa o tracking local padrão. Serve para comparar as métricas
-agregadas de diferentes rodadas/modelos; não é necessário para inspecionar uma
-execução, pois o JSON local já contém amostras e percentis. Mantenha os dados de
-tracking em armazenamento local controlado, especialmente se alterar a
-configuração do tracking URI.
+MLflow é opcional e usa o banco SQLite local em `.mlflow/mlflow.db`. Serve para
+comparar as métricas agregadas de diferentes rodadas/modelos; não é necessário
+para inspecionar uma execução, pois o JSON local já contém amostras e percentis.
+`analyze_evaluations.py` usa pandas para consolidar os relatórios JSON compatíveis
+de `evaluation/` em `evaluation/analytics-summary.csv`; com `--mlflow`, registra
+uma execução por relatório contendo apenas métricas agregadas e metadados
+permitidos. Perguntas, respostas, fontes, rubricas, casos e arquivos JSON não são
+enviados como parâmetros ou artefatos. `.mlflow/` fica fora do Git. Para abrir a
+interface local do MLflow, execute `python3 -m mlflow ui --host 127.0.0.1
+--backend-store-uri sqlite:///./.mlflow/mlflow.db`; no Windows, use `py -3 -m
+mlflow ui --host 127.0.0.1 --backend-store-uri
+sqlite:///./.mlflow/mlflow.db`. Acesse `http://127.0.0.1:5000` no próprio
+computador. Não exponha essa interface à internet.
 
 O benchmark não descarrega o modelo. `model_loaded_before_benchmark` registra se
 ele já estava carregado, e a primeira execução medida ocorre depois do
