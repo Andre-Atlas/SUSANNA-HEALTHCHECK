@@ -89,7 +89,8 @@ def grounding_errors(raw, content, sources):
                 source_id, quote = item.get('source_id'), item.get('quote')
                 if type(source_id) is not int or source_id not in cited or not 1 <= source_id <= len(sources):
                     return ['invalid_evidence_source']
-                if not isinstance(quote, str) or len(quote.strip()) < 12 or quote not in sources[source_id - 1]['text']:
+                if (not isinstance(quote, str) or not 12 <= len(quote.strip()) <= 240
+                        or quote not in sources[source_id - 1]['text']):
                     return ['unverified_evidence_quote']
                 verified.add(source_id)
             if verified != cited:
