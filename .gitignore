@@ -8,3 +8,5 @@ backups/
 data-antes-da-recuperacao*/
 dist/
 .internet/
+.mlflow/
+evaluation/analytics-summary.csv
