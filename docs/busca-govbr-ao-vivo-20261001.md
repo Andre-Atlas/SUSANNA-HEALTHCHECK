@@ -6,16 +6,11 @@ O servidor consulta páginas do Ministério da Saúde ao vivo. Para perguntas so
 vacinação, acessa diretamente a página [Vacinação](https://www.gov.br/saude/pt-br/vacinacao); para perguntas sobre fontes,
 boatos ou desinformação em saúde, acessa [Saúde com Ciência](https://www.gov.br/saude/pt-br/assuntos/saude-com-ciencia). Ambas são páginas HTTPS `gov.br`.
 
-Para os demais temas, consulta `https://www.gov.br/saude/search`, rota de busca
-publicada pelo próprio portal. O portal atual carrega os resultados por
-JavaScript; o servidor não executa essa busca dinâmica. Por isso, se a resposta
-HTML não contiver links dentro de um contêiner explícito de resultados, a
-consulta retorna sem fontes em vez de tratar links de menu ou a página inicial
-como resultados. A integração mais ampla com a busca do portal está pendente.
+Para os demais temas, envia o termo de busca à API oficial SERPRO usada pelo portal gov.br, em `https://portalunico.estaleiro.serpro.gov.br/api/search/`, usando os parâmetros observados na busca oficial: aba `servicos`, tipos `Servico|Tema` e filtro de site para o Ministério da Saúde. A resposta JSON serve somente para localizar URLs candidatas. O servidor aceita URLs HTTPS sob `gov.br`, segue redirecionamentos somente nesse domínio e baixa cada página com o leitor HTML; texto ou resumos retornados pela API não são usados como evidência.
 
 O fluxo: pergunta atual (já contextualizada pela conversa) → rota temática
-direta ou busca do portal → leitura de até cinco resultados candidatos e
-extração de no máximo três páginas HTML → geração e revisão por evidências literais → resposta com
+direta ou busca SERPRO restrita ao Ministério da Saúde → leitura de até cinco resultados candidatos e
+extração de no máximo três páginas HTML gov.br → geração e revisão por evidências literais → resposta com
 links e horário local da consulta informado pelo servidor. A resposta não usa os documentos locais em
 `sources/`; esses continuam úteis para avaliação offline e manutenção do projeto.
 
@@ -37,8 +32,9 @@ automática existente.
 
 ## Falhas e latência
 
-Uma indisponibilidade do portal retorna erro de busca e não consulta a LLM. Uma
-busca concluída sem trecho extraível leva à abstenção sem fontes. A busca lê no
+Uma indisponibilidade da API SERPRO ou das páginas-fonte retorna erro de busca e
+não consulta a LLM. Uma busca concluída sem trecho extraível leva à abstenção
+sem fontes. A busca lê no
 máximo três resultados e usa timeout por requisição; pode acrescentar alguns
 segundos de espera antes da geração. Cancelar o pedido fecha a conexão de leitura
 quando ela já está aberta. O modo fica dependente de uma conexão de internet e
@@ -50,11 +46,12 @@ local de medicamentos nem se garante que toda pergunta tenha resposta no portal.
 
 ## Privacidade
 
-A pergunta atual é enviada como termo de busca a `www.gov.br`; portanto, não fica
-somente no computador. A aplicação não envia o histórico completo para a busca,
-apenas a pergunta atual após a resolução de continuidade. A LLM permanece local
-via Ollama. Retenção, logs e processamento do lado do portal não foram auditados;
-não envie dados pessoais ou detalhes identificadores de saúde.
+A pergunta atual é enviada como termo de busca à API em
+`portalunico.estaleiro.serpro.gov.br`; portanto, não fica somente no computador.
+A aplicação não envia o histórico completo para a busca, apenas a pergunta atual
+após a resolução de continuidade. A LLM permanece local via Ollama. Retenção,
+logs e processamento do lado da API e do portal não foram auditados; não envie
+dados pessoais ou detalhes identificadores de saúde.
 
 ## Próximas melhorias
 
