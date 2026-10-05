@@ -100,6 +100,12 @@ def _year_round_vaccination_source(question, sources):
     return None
 
 
+def _source_discovery_question(question):
+    return bool(re.search(
+        r'\b(?:onde buscar fontes|onde encontrar fontes|onde consultar fontes)\b',
+        question, re.IGNORECASE))
+
+
 def build_prompt(messages, sources):
     # Estimativa deliberadamente conservadora para o Qwen padrão: bytes UTF-8
     # como orçamento, reservando tokens para resposta e template de conversa.
@@ -111,6 +117,17 @@ def build_prompt(messages, sources):
         context = SYSTEM + '\n\n' + source_context(sources)
         question = _question_text(history[-1]['content'])
         schedule_source = _year_round_vaccination_source(question, sources)
+        source_discovery_id = next((i for i, source in enumerate(sources, 1)
+            if re.search(r'FalaBr', source.get('text', ''), re.IGNORECASE)
+            and re.search(r'Quiz\s*-\s*Fake News', source.get('text', ''), re.IGNORECASE)), None)
+        if _source_discovery_question(question) and source_discovery_id is not None:
+            context += (
+                '\n\nPara esta pergunta, responda com base na pÃ¡gina oficial do MinistÃ©rio da SaÃºde '
+                f'na fonte [{source_discovery_id}]: ela aponta o CalendÃ¡rio de VacinaÃ§Ã£o, o Quiz sobre '
+                'Fake News e as DÃºvidas frequentes como materiais para consulta. Explique que a '
+                'plataforma FalaBR recebe manifestaÃ§Ãµes sobre conteÃºdo suspeito; nÃ£o a apresente '
+                'como fonte para consultar informaÃ§Ãµes. Termine com a citaÃ§Ã£o da fonte.'
+            )
         if schedule_source is not None:
             context += (
                 '\n\nNesta pergunta sobre dias ou datas de vacinação, a fonte '
@@ -200,19 +217,27 @@ def verify_grounding(prompt, content, sources):
             'source does not provide unit-specific days or hours. Do not infer that every '
             'vaccine is available every day or at every unit.'
         )
+    if _source_discovery_question(question) and cited_sources:
+        instruction += (
+            ' Para a pergunta sobre onde consultar fontes, a pÃ¡gina citada aponta o CalendÃ¡rio '
+            'de VacinaÃ§Ã£o, o Quiz sobre Fake News e as DÃºvidas frequentes como materiais de consulta. '
+            'A FalaBR Ã© apresentada como canal para registrar manifestaÃ§Ãµes, nÃ£o como fonte de '
+            'informaÃ§Ã£o. Aceite uma resposta curta que faÃ§a essa distinÃ§Ã£o e cite a pÃ¡gina.'
+        )
     payload = json.dumps({'question': question,
         'paragraphs': [{'id': i, 'text': p} for i, p in enumerate(answer_paragraphs(content), 1)],
         'sources': cited_sources}, ensure_ascii=False)
+    instruction += (
+        ' Formato obrigatório: evidence é uma lista de IDs inteiros das fontes citadas '
+        'que sustentam o parágrafo. Não inclua objetos, campos quote nem trechos copiados. '
+        'Ignore qualquer exemplo anterior de evidence que tenha quote.'
+    )
     schema = {'type': 'object', 'required': ['answers_question', 'conflicting_sources', 'paragraphs'],
         'properties': {'answers_question': {'type': 'boolean'}, 'conflicting_sources': {'type': 'boolean'},
             'paragraphs': {'type': 'array', 'items': {'type': 'object',
                 'required': ['id', 'supported', 'evidence'], 'properties': {
                     'id': {'type': 'integer'}, 'supported': {'type': 'boolean'},
-                    'evidence': {'type': 'array', 'items': {'type': 'object',
-                        'required': ['source_id', 'quote'], 'properties': {
-                            'source_id': {'type': 'integer'},
-                            'quote': {'type': 'string', 'description':
-                                'Trecho literal contíguo de 12 a 240 caracteres da fonte citada.'}}}}}}}}}
+                    'evidence': {'type': 'array', 'items': {'type': 'integer'}}}}}}}
     if len((instruction + payload + json.dumps(schema, ensure_ascii=False)).encode('utf-8')) > 16384 - 2000 - 512:
         return ['verification_context_exceeded']
     try:
