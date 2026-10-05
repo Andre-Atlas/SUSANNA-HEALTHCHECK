@@ -1,5 +1,3 @@
-> **Demonstração temporária ativa:** [abrir SUSANNA-HEALTHCHECK](https://what-attended-saturday-equity.trycloudflare.com). Peça a senha ao responsável; o link só funciona enquanto o túnel estiver ativo. [Instruções para visitantes e operador](docs/internet-demo.md).
-
 # SUSANNA-HEALTHCHECK — projeto acadêmico
 
 Chatbot educativo sobre desinformação em saúde. Interface independente, sem vínculo oficial com o SUS. Desenvolvido para apresentação na Eldorado.
@@ -11,10 +9,12 @@ Chatbot educativo sobre desinformação em saúde. Interface independente, sem v
 - [Versões e licenças dos componentes](docs/componentes.md).
 - [Responsáveis e rotina de manutenção](docs/responsabilidades.md).
 - [Operação local, métricas, backup e recuperação](docs/disponibilizacao.md).
+- [Meta da próxima versão e critérios de sucesso](docs/02proximo-passo.md).
+- [Registro da etapa de regressões F01–F04](docs/etapa-regressoes-f01-f04-20261001.md).
 
 ## Executar localmente
 
-Compatibilidade prevista: Windows 10/11 e macOS, com Python 3.10+ e SQLite FTS5, além do [Ollama](https://ollama.com/download). O chat local não exige pacotes pip nem chave de API. O modo de demonstração pela internet instala Waitress; consulte o guia específico abaixo.
+Compatibilidade prevista: Windows 10/11 e macOS, com Python 3.10+ e [Ollama](https://ollama.com/download). O servidor executa localmente e usa a internet para pesquisar páginas oficiais `gov.br`; essa busca não exige pacote pip nem chave de API. O modo de demonstração pela internet instala Waitress; consulte o guia específico abaixo.
 
 1. Inicie o Ollama pelo aplicativo ou, em um terminal, com `ollama serve`.
 2. Se o modelo ainda não estiver instalado, execute `ollama pull qwen2.5:7b` (download de aproximadamente 4,7 GB, uma única vez).
@@ -44,6 +44,45 @@ Outra porta: `python3 server.py --port 8003` (macOS) ou `py -3 server.py --port 
 Outro modelo local instalado: `OLLAMA_MODEL=nome:tag python3 server.py`.
 No Windows PowerShell, use `$env:OLLAMA_MODEL="nome:tag"; py -3 server.py`.
 
+## Compartilhar pela internet
+
+Não há um link público permanente: cada inicialização gera um endereço temporário.
+O link que já apareceu em versões anteriores deste README expirou. Para criar um
+novo, mantenha o Ollama aberto com `qwen2.5:7b` instalado. Instale também o
+`cloudflared`: no macOS, `brew install cloudflared`; no Windows, baixe o executável
+pelas [instruções oficiais](https://developers.cloudflare.com/tunnel/downloads/)
+e deixe-o disponível no PATH.
+
+Execute estes comandos no terminal aberto na pasta do projeto. Eles instalam a
+dependência da demonstração e iniciam juntos o servidor protegido e o túnel; não
+execute `server.py` neste modo.
+
+**macOS:**
+
+```bash
+python3 -m venv .venv
+.venv/bin/python -m pip install -r requirements-internet.txt
+.venv/bin/python internet_demo.py
+```
+
+**Windows (PowerShell):**
+
+```powershell
+py -3 -m venv .venv
+.venv\Scripts\python.exe -m pip install -r requirements-internet.txt
+.venv\Scripts\python.exe internet_demo.py
+```
+
+Quando o terminal mostrar `URL:`, compartilhe esse endereço e o usuário `equipe`;
+consulte a senha atual no arquivo privado indicado pelo próprio terminal e envie-a
+separadamente aos amigos. Deixe o terminal, o computador e a conexão ligados.
+Pressione Ctrl+C para encerrar. O endereço e a senha deixam de valer ao parar a
+demonstração. Se o túnel não conectar, consulte [alternativas e diagnóstico](docs/internet-demo.md);
+algumas redes bloqueiam esse tipo de conexão. As perguntas passam pela infraestrutura
+do provedor do túnel, e há uma falha conhecida na revisão automática que bloqueia a
+aprovação do piloto. Use somente perguntas fictícias; consulte as [limitações e privacidade](docs/internet-demo.md)
+e não use as respostas para decisões de saúde.
+
 ## Ambiente de disponibilização
 
 Configurado para uso somente neste computador, sem publicação na rede. Veja
@@ -58,6 +97,7 @@ e o conjunto base/modelo em `http://127.0.0.1:8002/api/ready`.
 - `styles.css`: aparência responsiva.
 - `app.js`: conversa, histórico, espera e tratamento de falhas.
 - `server.py`: arquivos públicos e API local que conversa com o Ollama.
+- `govbr_search.py`: busca ao vivo e extração limitada a páginas HTTPS `gov.br`.
 - `jobs.py`: fila limitada, cancelamento, expiração e métricas em memória.
 - `ollama_transport.py`: stream privado e conexão cancelável com o Ollama.
 
@@ -67,9 +107,9 @@ O chat mostra fila, geração e revisão em andamento. O texto aparece progressi
 
 ## Limites desta etapa
 
-O chatbot consulta uma base documental local usando SQLite FTS5. O repositório inclui 12 sínteses experimentais de publicações do Ministério da Saúde, Anvisa e Sociedade Brasileira de Infectologia em `sources/`, com conferência documental por IA. Veja o [catálogo e a revisão de 29/09/2026](docs/revisao-fontes-20260929.md). Para carregar esse conjunto, execute `python3 seed_knowledge.py`. Veja [como cadastrar fontes e testar](docs/base-documental.md) e [escopo e manutenção](docs/escopo-fontes.md).
+O chatbot busca conteúdo ao vivo pela pesquisa do Ministério da Saúde e extrai até três páginas HTML HTTPS de domínios `gov.br` por pergunta. A resposta usa apenas trechos dessas páginas; não há fallback para documentos locais nem para outros domínios. PDFs e páginas que não podem ser extraídas ficam de fora. A consulta depende de internet e pode aumentar o tempo de resposta. Veja [busca ao vivo gov.br](docs/busca-govbr-ao-vivo-20261001.md). Os 16 documentos em `sources/` continuam versionados para avaliação/offline, mas não são usados pelo servidor de chat neste modo.
 
-Os trechos enviados ao modelo são apresentados com suas referências. A busca lexical inclui expansão controlada de termos, correção simples de digitação e continuidade em formas como “e nesse caso?”. Veja [funcionamento e comparação da busca](docs/busca-conversa.md). Recuperar um trecho não comprova uma alegação. Ainda precisamos avaliar relevância, fidelidade das respostas e citações. Não se deve apresentar as respostas como checagem factual ou orientação médica.
+Os trechos enviados ao modelo são apresentados com suas referências. A busca ao vivo usa o mecanismo lexical do portal do Ministério da Saúde; a resolução de continuidade usa a conversa para contextualizar a pergunta atual. A documentação da busca lexical local continua valendo para os scripts de avaliação/offline, não para a recuperação online do chat. Recuperar um trecho não comprova uma alegação. Ainda precisamos avaliar relevância, fidelidade das respostas e citações. Não se deve apresentar as respostas como checagem factual ou orientação médica.
 
 Sem fontes, o servidor responde sem chamar a LLM. Com fontes, valida referências
 e faz uma segunda revisão por IA do apoio documental, exigindo evidências literais
@@ -84,13 +124,16 @@ Depois de atualizar o código, reinicie `python3 server.py` (macOS) ou `py -3 se
 python3 -m unittest discover -s tests -v
 python3 evaluate.py
 python3 evaluate_search.py
-# Medições reais de tempo, memória e cancelamento (requer Ollama)
+# Latência real do pipeline (requer Ollama): aquecimento + 20 casos x 3 rodadas
 python3 benchmark_performance.py
+# Opcional: salvar agregados de latência no MLflow local
+python3 -m pip install mlflow
+python3 benchmark_performance.py --mlflow
 # Opcional: também gerar respostas com o Ollama local
 python3 evaluate.py --llm --output evaluation/llm.json
 ```
 
-A avaliação usa uma base temporária com o conjunto versionado, sem alterar seus documentos locais. Veja [fontes e critérios de avaliação](docs/avaliacao-inicial.md).
+A avaliação offline usa uma base temporária com o conjunto versionado, sem alterar seus documentos locais nem consultar a web. O benchmark grava p50/p95 de fila, busca lexical local, geração, revisão e total; ele ainda não mede a busca ao vivo em `gov.br`. Não grava perguntas, respostas ou trechos recuperados. MLflow é opcional e registra somente agregados e parâmetros técnicos. Veja [fontes e critérios de avaliação](docs/avaliacao-inicial.md) e [desempenho e experiência](docs/desempenho-experiencia.md).
 
 ## Piloto e entrega
 
