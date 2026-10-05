@@ -33,6 +33,8 @@ DIRECT_PAGES = {
     'health_misinformation': 'https://www.gov.br/saude/pt-br/assuntos/saude-com-ciencia',
     'vaccination': 'https://www.gov.br/saude/pt-br/vacinacao',
     'hepatitis_b': 'https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/h/hepatites-virais/hepatite-b',
+    'hiv_aids': 'https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/a/aids-hiv',
+    'hiv_transmission': 'https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/a/aids-hiv/transmissao/transmissao',
 }
 
 
@@ -247,6 +249,7 @@ def _fold(text):
 
 def _search_terms(question):
     question = re.sub(r'\bminist[eé]rio\s+da\s+sa[uú]de\b', ' ', question, flags=re.I)
+    question = re.sub(r'\b(?:aide|aides|aidis)\b', ' aids ', question, flags=re.I)
     words = re.findall(r'[^\W_]+', question, flags=re.UNICODE)
     terms = [word for word in words if _fold(word) not in SEARCH_STOP_WORDS]
     return ' '.join(terms[:8]) or question[:100]
@@ -360,6 +363,11 @@ def search_gov_br(question, *, timeout=5):
         direct_urls.append(DIRECT_PAGES['vaccination'])
     if {'hepatite', 'b'} <= words or {'hepatites', 'b'} <= words:
         direct_urls.append(DIRECT_PAGES['hepatitis_b'])
+    if words & {'aids', 'aide', 'aides', 'aidis', 'hiv'}:
+        if any(word.startswith('transmit') for word in words) or 'ar' in words:
+            direct_urls.append(DIRECT_PAGES['hiv_transmission'])
+        else:
+            direct_urls.append(DIRECT_PAGES['hiv_aids'])
     if ('fake news' in normalized or 'desinform' in normalized
             or {'mensagem', 'suspeita'} <= words or any(word.startswith('font') for word in words)
             or 'boato' in words or 'boatos' in words):
