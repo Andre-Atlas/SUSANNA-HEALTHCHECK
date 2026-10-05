@@ -133,7 +133,7 @@ async function send(text) {
       request.controller.signal.throwIfAborted();
     }
     const stages = {
-      retrieval: 'Consultando as fontes locais…',
+      retrieval: 'Consultando a busca do Ministério da Saúde…',
       generation: 'Preparando a resposta… O primeiro carregamento pode levar mais tempo.',
       review: 'Conferindo a resposta nas fontes antes de exibi-la…',
     };
