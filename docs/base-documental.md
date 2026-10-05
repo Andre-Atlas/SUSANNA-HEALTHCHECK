@@ -38,7 +38,7 @@ Novas importações ficam disponíveis sem reiniciar o servidor.
 
 ## Como funciona
 
-O conjunto ampliado contém seis sínteses. Consulte [temas, cobertura e manutenção](escopo-fontes.md), incluindo o procedimento de retirada por `python knowledge.py --remove-url "URL"`.
+O conjunto versionado contém 16 sínteses experimentais, incluindo quatro novas sobre o SUS. Consulte [temas, cobertura e manutenção](escopo-fontes.md) e o [registro da ampliação sobre o SUS](etapa-expansao-fontes-sus-20261001.md), incluindo o procedimento de retirada por `python knowledge.py --remove-url "URL"`.
 
 1. A pergunta é contextualizada quando corresponde a uma forma de continuidade reconhecida; seus termos são expandidos e pesquisados no índice lexical FTS5.
 2. Até 30 candidatos são ordenados por BM25. Para perguntas com vários conceitos, exigem-se pelo menos dois conceitos distintos; até três trechos são selecionados. Sinônimos contam uma vez. Esse filtro é heurístico e não mede confiança factual.
@@ -57,7 +57,7 @@ a resistência à injeção de prompt ainda precisa de avaliação adversarial.
 
 ## Limitações e próximas entregas
 
-- O conjunto ampliado contém seis sínteses experimentais: carregue com `python3 seed_knowledge.py`. Status: Revisado por IA.
+- O conjunto versionado contém 16 sínteses experimentais: carregue com `python3 seed_knowledge.py`. Status documental: Revisado por IA; reutilização continua dependendo das condições de cada fonte.
 - Resultados lexicais podem ser irrelevantes. Não existe limiar calibrado de relevância.
 - Links vêm dos registros locais; citações no texto ainda são geradas pelo modelo.
 - Há revisão automática de apoio documental por IA e conferência de evidências literais; ela pode errar e não garante fidelidade factual.
