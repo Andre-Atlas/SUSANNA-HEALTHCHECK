@@ -10,9 +10,11 @@ implementação, sem declarar conformidade jurídica.
 ## Fluxo e finalidade
 
 A pergunta e até seis trocas anteriores passam do navegador ao servidor Python.
-A busca envia somente a pergunta atual contextualizada ao portal de busca do
-Ministério da Saúde em `gov.br`; o portal retorna resultados de páginas. O
-servidor lê trechos dessas páginas e envia instruções, contexto e trechos ao
+Para os tópicos de vacinação e desinformação cobertos por rotas temáticas, o
+servidor consulta diretamente a página correspondente em `gov.br`. Nos demais
+casos, envia somente a pergunta atual contextualizada à rota de busca do
+Ministério da Saúde em `gov.br`; resultados dinâmicos que não estejam presentes
+no HTML recebido não são usados. O servidor lê trechos das páginas encontradas e envia instruções, contexto e trechos ao
 Ollama local. Quando
 há evidências, o modelo gera a resposta e recebe uma segunda solicitação para
 revisar seu apoio documental. Sem fontes, o fluxo pode responder sem chamar a IA.
