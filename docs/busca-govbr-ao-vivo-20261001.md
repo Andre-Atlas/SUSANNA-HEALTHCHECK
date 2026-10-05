@@ -2,14 +2,11 @@
 
 ## Objetivo e fluxo
 
-O servidor consulta páginas do Ministério da Saúde ao vivo. Para perguntas sobre
-vacinação, acessa diretamente a página [Vacinação](https://www.gov.br/saude/pt-br/vacinacao); para perguntas sobre fontes,
-boatos ou desinformação em saúde, acessa [Saúde com Ciência](https://www.gov.br/saude/pt-br/assuntos/saude-com-ciencia). Ambas são páginas HTTPS `gov.br`.
+O servidor consulta páginas oficiais ao vivo. Para perguntas sobre vacinação, acessa diretamente a página [Vacinação](https://www.gov.br/saude/pt-br/vacinacao); para perguntas sobre fontes, boatos ou desinformação em saúde, acessa [Saúde com Ciência](https://www.gov.br/saude/pt-br/assuntos/saude-com-ciencia); para perguntas sobre hepatite B, acessa a página [Hepatite B](https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/h/hepatites-virais/hepatite-b) do Ministério da Saúde. São páginas HTTPS `gov.br`.
 
-Para os demais temas, envia o termo de busca à API oficial SERPRO usada pelo portal gov.br, em `https://portalunico.estaleiro.serpro.gov.br/api/search/`, usando os parâmetros observados na busca oficial: aba `servicos`, tipos `Servico|Tema` e filtro de site para o Ministério da Saúde. A resposta JSON serve somente para localizar URLs candidatas. O servidor aceita URLs HTTPS sob `gov.br`, segue redirecionamentos somente nesse domínio e baixa cada página com o leitor HTML; texto ou resumos retornados pela API não são usados como evidência.
+Para os demais temas, envia os termos de busca à API oficial SERPRO usada pelo portal gov.br, em `https://portalunico.estaleiro.serpro.gov.br/api/search/`, solicitando relevância e tipos `Servico|Tema`. O filtro de site do Ministério foi removido porque eliminava resultados válidos; a API pode retornar conteúdo de outros órgãos públicos. A resposta JSON serve somente para localizar URLs candidatas. O servidor aceita URLs HTTPS sob `gov.br`, segue redirecionamentos somente nesse domínio e baixa cada página com o leitor HTML; texto ou resumos retornados pela API não são usados como evidência.
 
-O fluxo: pergunta atual (já contextualizada pela conversa) → rota temática
-direta ou busca SERPRO restrita ao Ministério da Saúde → leitura de até cinco resultados candidatos e
+O fluxo: pergunta atual (já contextualizada pela conversa) → extração dos termos de busca (removendo expressões interrogativas comuns) → rota temática direta ou busca SERPRO por tipos `Servico|Tema` → leitura de até cinco resultados candidatos e
 extração de no máximo três páginas HTML gov.br → geração e revisão por evidências literais → resposta com
 links e horário local da consulta informado pelo servidor. A resposta não usa os documentos locais em
 `sources/`; esses continuam úteis para avaliação offline e manutenção do projeto.
@@ -46,7 +43,7 @@ local de medicamentos nem se garante que toda pergunta tenha resposta no portal.
 
 ## Privacidade
 
-A pergunta atual é enviada como termo de busca à API em
+Apenas os termos de busca extraídos da pergunta atual são enviados à API em
 `portalunico.estaleiro.serpro.gov.br`; portanto, não fica somente no computador.
 A aplicação não envia o histórico completo para a busca, apenas a pergunta atual
 após a resolução de continuidade. A LLM permanece local via Ollama. Retenção,
