@@ -124,13 +124,15 @@ python3 benchmark_performance.py
 # Busca online gov.br com 20 casos sintéticos (requer Ollama e internet)
 python3 benchmark_performance.py --live-search --warmup 1 --repetitions 1 --output evaluation/performance-live.json
 # Opcional: salvar agregados de latência no MLflow local
-python3 -m pip install mlflow
+python3 -m pip install -r requirements-analytics.txt
 python3 benchmark_performance.py --mlflow
+# Opcional: resumir avaliações existentes com pandas e registrar os agregados
+python3 analyze_evaluations.py --mlflow
 # Opcional: também gerar respostas com o Ollama local
 python3 evaluate.py --llm --output evaluation/llm.json
 ```
 
-A avaliação offline usa uma base temporária com o conjunto versionado, sem alterar seus documentos locais nem consultar a web. O benchmark padrão mede fila, busca lexical local, geração, revisão e total. `benchmark_performance.py --live-search` mede o fluxo com consultas sintéticas e pesquisa ao vivo em `gov.br`; isso exige internet e pode ser afetado pela disponibilidade ou limitação do portal. Os relatórios preservam métricas e IDs dos casos, não perguntas, respostas ou trechos recuperados. MLflow é opcional e registra somente agregados e parâmetros técnicos. Veja [fontes e critérios de avaliação](docs/avaliacao-inicial.md) e [desempenho e experiência](docs/desempenho-experiencia.md).
+A avaliação offline usa uma base temporária com o conjunto versionado, sem alterar seus documentos locais nem consultar a web. O benchmark padrão mede fila, busca lexical local, geração, revisão e total. `benchmark_performance.py --live-search` mede o fluxo com consultas sintéticas e pesquisa ao vivo em `gov.br`; isso exige internet e pode ser afetado pela disponibilidade ou limitação do portal. Os relatórios preservam métricas e IDs dos casos, não perguntas, respostas ou trechos recuperados. `analyze_evaluations.py` usa pandas para resumir relatórios existentes em CSV e pode enviar somente esses agregados ao MLflow. O tracking fica em `.mlflow/` e não é versionado. Veja [fontes e critérios de avaliação](docs/avaliacao-inicial.md) e [desempenho e experiência](docs/desempenho-experiencia.md).
 
 ## Piloto e entrega
 
