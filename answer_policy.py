@@ -5,18 +5,23 @@ import unicodedata
 
 
 def source_instruction_errors(sources):
-    """Quarentena conservadora de comandos explícitos; não detecta toda injeção."""
+    """Fail closed on text that appears to instruct the model or reviewer."""
     patterns = (
-        r"\b(?:ignore|desconsidere|esqueca|ignore all|disregard)\b.{0,100}\b(?:regras|criterios|instrucoes|rules|instructions)\b",
+        r"\b(?:ignore|desconsidere|esqueca|disregard|forget|override|deixe de lado|coloque de lado|suspenda)\b.{0,160}\b(?:regras|criterios|instrucoes|politicas|prompt|rules|criteria|instructions|policies|system prompt)\b",
+        r"\b(?:nao|don't|do not)\b.{0,80}\b(?:siga|obedeca|obedece|follow|obey)\b.{0,80}\b(?:do sistema|the system|system prompt|developer instructions|regras do sistema)\b",
+        r"\b(?:supported|answers_question|conflicting_sources)\s*[:=]\s*(?:true|false|yes|no|verdadeiro|falso|sim|nao)\b",
+        r"\b(?:revisor|reviewer|assistant|assistente|modelo|model|system|sistema)\b.{0,120}\b(?:ignore|desconsidere|marque|retorne|responda|aprove|aprovar|aceite|approve|return|set|output)\b",
+        r"\b(?:aprove|aprovar|aceite|approve|accept)\b.{0,120}\b(?:qualquer|toda|mesmo se|mesmo quando|apesar|contradiz|contradiga|unsupported|even if|regardless|contradicts?)\b",
+        r"\b(?:marque|retorne|responda|return|output|set)\b.{0,80}\b(?:supported|answers_question|conflicting_sources)\b.{0,40}\b(?:true|false|verdadeiro|falso|sim|nao)\b",
         r"\b(?:supported|answers_question|conflicting_sources)\s*[=:]",
-        r"\b(?:revisor|assistant|system|sistema)\s*:",
+        r"\b(?:revisor|reviewer|assistant|assistente|system|sistema|developer|desenvolvedor)\s*:",
         r"<\|(?:im_start|im_end|system|assistant)\|>",
-        r"\b(?:aprove|aceite)\s+(?:qualquer|toda)\s+resposta",
     )
     for source in sources:
         text = " ".join(str(source.get(k, "")) for k in ("text", "title", "url"))
-        text = "".join(c for c in unicodedata.normalize("NFKD", text.casefold())
-                       if not unicodedata.combining(c))
+        text = unicodedata.normalize("NFKD", unicodedata.normalize("NFKC", text).casefold())
+        text = "".join(c for c in text
+                       if not unicodedata.combining(c) and unicodedata.category(c) != "Cf")
         if any(re.search(pattern, text, re.DOTALL) for pattern in patterns):
             return ["untrusted_source_instruction"]
     return []
