@@ -26,7 +26,11 @@ def is_gov_br_url(url):
     try:
         parsed = urlsplit(url)
         host = (parsed.hostname or '').lower().rstrip('.')
-        return (parsed.scheme == 'https' and parsed.username is None
+        labels = host.split('.')
+        valid_host = (len(host) <= 253 and all(
+            re.fullmatch(r'[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?', label)
+            for label in labels))
+        return (valid_host and parsed.scheme == 'https' and parsed.username is None
                 and parsed.password is None and parsed.port in (None, 443)
                 and (host == 'gov.br' or host.endswith('.gov.br')))
     except (TypeError, ValueError):
@@ -135,7 +139,7 @@ def _read(url, limit, timeout):
             try:
                 raw = response.read(limit + 1)
                 if len(raw) > limit:
-                    raw = raw[:limit]
+                    raise GovBrSearchError('A página excede o limite de leitura segura.')
                 charset = response.headers.get_content_charset() or 'utf-8'
                 if job:
                     job.check()
