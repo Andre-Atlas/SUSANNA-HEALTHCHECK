@@ -2,14 +2,20 @@
 
 ## Objetivo e fluxo
 
-O servidor agora consulta ao vivo a busca do portal do Ministério da Saúde para
-cada pergunta nova. A rota usada é `https://www.gov.br/saude/pt-br/@@search`,
-que recebe a pergunta no parâmetro `SearchableText`. O portal pesquisado e todo
-conteúdo recuperado ficam em `gov.br`; não usamos buscador externo.
+O servidor consulta páginas do Ministério da Saúde ao vivo. Para perguntas sobre
+vacinação, acessa diretamente a página [Vacinação](https://www.gov.br/saude/pt-br/vacinacao); para perguntas sobre fontes,
+boatos ou desinformação em saúde, acessa [Saúde com Ciência](https://www.gov.br/saude/pt-br/assuntos/saude-com-ciencia). Ambas são páginas HTTPS `gov.br`.
 
-O fluxo ficou: pergunta atual (já contextualizada pela conversa) → pesquisa no
-portal → leitura de até três páginas HTML candidatas → extração de texto → mesmo
-prompt, geração e revisão por evidências literais já existentes → resposta com
+Para os demais temas, consulta `https://www.gov.br/saude/search`, rota de busca
+publicada pelo próprio portal. O portal atual carrega os resultados por
+JavaScript; o servidor não executa essa busca dinâmica. Por isso, se a resposta
+HTML não contiver links dentro de um contêiner explícito de resultados, a
+consulta retorna sem fontes em vez de tratar links de menu ou a página inicial
+como resultados. A integração mais ampla com a busca do portal está pendente.
+
+O fluxo: pergunta atual (já contextualizada pela conversa) → rota temática
+direta ou busca do portal → leitura de até cinco resultados candidatos e
+extração de no máximo três páginas HTML → geração e revisão por evidências literais → resposta com
 links e horário local da consulta informado pelo servidor. A resposta não usa os documentos locais em
 `sources/`; esses continuam úteis para avaliação offline e manutenção do projeto.
 
