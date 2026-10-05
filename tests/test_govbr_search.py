@@ -89,6 +89,22 @@ class GovBrSearchTests(unittest.TestCase):
         self.assertEqual(sources[0]['url'], DIRECT_PAGES['hiv_transmission'])
         self.assertIn('não é transmitido pelo ar', sources[0]['text'])
 
+    def test_free_medicines_question_uses_farmacia_popular_and_rename(self):
+        farmacia_html = ('<h1>Farmácia Popular</h1><p>Os medicamentos e insumos '
+                         'são fornecidos gratuitamente. ' * 8 + '</p>')
+        rename_html = ('<h1>Rename</h1><p>A Rename lista medicamentos e insumos '
+                       'disponíveis no SUS. ' * 8 + '</p>')
+        pages = [
+            (DIRECT_PAGES['farmacia_popular'], farmacia_html),
+            (DIRECT_PAGES['rename'], rename_html),
+        ]
+        with patch('govbr_search._serpro_search') as serpro, patch(
+                'govbr_search._read', side_effect=pages) as read:
+            sources = search_gov_br('tem remédios gratuitos no sus?')
+        serpro.assert_not_called()
+        self.assertEqual([source['url'] for source in sources], [url for url, _ in pages])
+        self.assertEqual(read.call_count, 2)
+
     def test_failed_search_is_explicit_and_oversized_body_is_rejected(self):
         with patch('govbr_search._serpro_search',
                    side_effect=GovBrSearchError('falha sintética')):
