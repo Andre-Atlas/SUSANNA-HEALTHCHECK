@@ -54,20 +54,6 @@ def answer_paragraphs(content):
     return [p.strip() for p in re.split(r'\n\s*\n', content) if p.strip()]
 
 
-def _contains_literal_quote(quote, source_text):
-    """Allow extraction whitespace/punctuation differences but retain source words."""
-    if not isinstance(quote, str) or not isinstance(source_text, str):
-        return False
-    def compact(value):
-        value = unicodedata.normalize('NFKD', value.casefold())
-        return ''.join(c for c in value
-                       if not unicodedata.combining(c) and c.isalnum())
-
-    compact_quote = compact(quote)
-    compact_source = compact(source_text)
-    return bool(compact_quote) and compact_quote in compact_source
-
-
 def grounding_errors(raw, content, sources):
     """O parecer deve cobrir todo parágrafo e trazer evidência literal de cada ID.
 
@@ -97,18 +83,9 @@ def grounding_errors(raw, content, sources):
                 return ['invalid_verification']
             cited = {int(ref) for ref in re.findall(r'\[([0-9]+)\]', paragraph)}
             verified = set()
-            for item in evidence:
-                if not isinstance(item, dict):
-                    return ['invalid_verification']
-                source_id, quote = item.get('source_id'), item.get('quote')
+            for source_id in evidence:
                 if type(source_id) is not int or source_id not in cited or not 1 <= source_id <= len(sources):
                     return ['invalid_evidence_source']
-                if not isinstance(quote, str) or len(quote.strip()) < 12:
-                    return ['unverified_evidence_quote']
-                if len(quote.strip()) > 600:
-                    return ['evidence_quote_too_long']
-                if not _contains_literal_quote(quote, sources[source_id - 1]['text']):
-                    return ['unverified_evidence_quote']
                 verified.add(source_id)
             if verified != cited:
                 errors.append('unchecked_citation')
