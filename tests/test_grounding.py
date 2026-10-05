@@ -91,13 +91,21 @@ class GroundingTests(unittest.TestCase):
 
     def test_evidence_quote_must_be_literal_and_concise(self):
         source = 'A vacina está disponível durante o ano. ' + ('Detalhe adicional. ' * 20)
-        long_quote = source[:241]
+        long_quote = source[:601]
         verdict = {'answers_question': True, 'conflicting_sources': False, 'paragraphs': [
             {'id': 1, 'supported': True, 'evidence': [
                 {'source_id': 1, 'quote': long_quote}]}]}
         errors = grounding_errors(json.dumps(verdict), 'A vacina está disponível [1].',
                                   [{'text': source}])
-        self.assertIn('unverified_evidence_quote', errors)
+        self.assertIn('evidence_quote_too_long', errors)
+
+    def test_evidence_quote_allows_extraction_whitespace_breaks(self):
+        source = 'O comitê integra as ações de enfrentamento à desinformação.'
+        verdict = {'answers_question': True, 'conflicting_sources': False, 'paragraphs': [
+            {'id': 1, 'supported': True, 'evidence': [
+                {'source_id': 1, 'quote': 'O comitê integr a as ações de enfrentamento'}]}]}
+        self.assertEqual(grounding_errors(json.dumps(verdict), 'O comitê integra as ações [1].',
+                                          [{'text': source}]), [])
 
     def test_every_citation_must_have_evidence(self):
         errors = grounding_errors(self.verdict(), self.answer + ' [2]', self.sources * 2)
