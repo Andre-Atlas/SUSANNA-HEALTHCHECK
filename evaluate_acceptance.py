@@ -30,7 +30,11 @@ def assess(case, result, expected_url=None):
     if expected_url:
         checks['expected_source_supplied'] = expected_url in [s['url'] for s in result.get('sources', [])]
     if 'expected_sources_count' in case:
-        checks['fixture_exercised'] = len(result.get('sources', [])) == case['expected_sources_count']
+        # A fixture rejected before generation still exercises the intended safety
+        # path when the source-instruction detector reports its quarantine marker.
+        quarantined = 'untrusted_source_instruction' in result.get('validation_errors', [])
+        checks['fixture_exercised'] = (
+            len(result.get('sources', [])) == case['expected_sources_count'] or quarantined)
     # Falhas técnicas/formato não contam como reconhecimento semântico correto.
     checks['no_technical_rejection'] = status not in {'reference_rejected', 'grounding_rejected'}
     return checks
@@ -99,8 +103,9 @@ def evaluate(output):
         'ollama_version': server.ollama('/api/version', timeout=5), 'provenance': suite['provenance'],
         'hashes': {str(path.relative_to(ROOT)): hashlib.sha256(path.read_bytes()).hexdigest() for path in files},
         'human_review': 'not part of version 0.2 evaluation', 'browser_review': 'pending', 'results': [],
-        'note': 'Verificações automáticas de estado não certificam fidelidade ou segurança. '
-                'Casos criados por IA após desenvolvimento; sem ajuste do produto para esta rodada.'}
+        'note': 'Verificações automáticas não certificam fidelidade factual ou segurança. '
+                'Casos sintéticos versionados; o produto mudou nesta rodada, portanto compare os hashes '
+                'com o relatório de linha de base antes de interpretar a diferença.'}
     output.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory() as directory:
         database = Path(directory) / 'acceptance.sqlite3'
@@ -147,7 +152,7 @@ def evaluate(output):
                 report['automatic_passed'] = sum(item['automatic_pass'] for item in report['results'])
                 report['completed'] = len(report['results'])
                 report['total'] = len(suite['cases'])
-                output.write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n')
+                output.write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
                 print(f'{case["id"]}: {"OK automático" if row["automatic_pass"] else "REVISAR"}', flush=True)
         finally:
             app.jobs.close()

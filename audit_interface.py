@@ -85,7 +85,7 @@ def audit():
         'pending': ['navegador desktop', '320/375/390/768 px e zoom 200%/400%',
                     'celular físico e teclado virtual', 'VoiceOver/TalkBack',
                     'foco/ordem de tabulação', 'dimensões renderizadas de alvos e contraste de todos os estados'],
-        'browser_blocker': 'agent-browser ausente; cua.getState não encontrou apps/navegadores e informou falha no native pipe.'}
+        'browser_blocker': 'O runtime de automação Computer Use falhou ao iniciar (erro do sistema operacional 3); não houve verificação visual em navegador.'}
 
 
 if __name__ == '__main__':
@@ -93,6 +93,6 @@ if __name__ == '__main__':
     parser.add_argument('--output', type=Path, default=ROOT / 'evaluation/interface-static.json')
     args = parser.parse_args()
     report = audit()
-    args.output.write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n')
+    args.output.write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
     print(json.dumps({'checks': report['checks'], 'contrast': report['selected_contrast_pairs']}, ensure_ascii=False, indent=2))
     raise SystemExit(0 if report['static_pass'] else 1)
