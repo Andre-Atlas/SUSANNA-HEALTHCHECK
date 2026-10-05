@@ -13,8 +13,7 @@ class GroundingTests(unittest.TestCase):
 
     def verdict(self, **overrides):
         value = {'answers_question': True, 'conflicting_sources': False, 'paragraphs': [
-            {'id': 1, 'supported': True, 'evidence': [
-                {'source_id': 1, 'quote': self.sources[0]['text']}]}]}
+            {'id': 1, 'supported': True, 'evidence': [1]}]}
         value.update(overrides)
         return json.dumps(value)
 
@@ -76,36 +75,18 @@ class GroundingTests(unittest.TestCase):
             with self.subTest(change=change):
                 self.assertEqual(self.run_generation(self.verdict(**change))['message'], NO_EVIDENCE)
 
-    def test_invented_quote_wrong_id_missing_paragraph_and_boolean_rejected(self):
+    def test_wrong_evidence_id_missing_paragraph_and_boolean_rejected(self):
         baseline = json.loads(self.verdict())
         cases = []
-        for field, value in [('quote', 'Esta frase não existe na fonte.'), ('source_id', 2), ('source_id', True)]:
+        for value in ([2], [True], ['1']):
             variant = json.loads(self.verdict())
-            variant['paragraphs'][0]['evidence'][0][field] = value
+            variant['paragraphs'][0]['evidence'] = value
             cases.append(json.dumps(variant))
         cases.extend([self.verdict(paragraphs=[]), self.verdict(answers_question='true'), 'null', '[]', '{}', 'inválido'])
         for raw in cases:
             with self.subTest(raw=raw):
                 self.assertTrue(grounding_errors(raw, self.answer, self.sources))
         self.assertEqual(grounding_errors(json.dumps(baseline), self.answer, self.sources), [])
-
-    def test_evidence_quote_must_be_literal_and_concise(self):
-        source = 'A vacina está disponível durante o ano. ' + ('Detalhe adicional. ' * 20)
-        long_quote = source[:601]
-        verdict = {'answers_question': True, 'conflicting_sources': False, 'paragraphs': [
-            {'id': 1, 'supported': True, 'evidence': [
-                {'source_id': 1, 'quote': long_quote}]}]}
-        errors = grounding_errors(json.dumps(verdict), 'A vacina está disponível [1].',
-                                  [{'text': source}])
-        self.assertIn('evidence_quote_too_long', errors)
-
-    def test_evidence_quote_allows_extraction_whitespace_breaks(self):
-        source = 'O comitê integra as ações de enfrentamento à desinformação.'
-        verdict = {'answers_question': True, 'conflicting_sources': False, 'paragraphs': [
-            {'id': 1, 'supported': True, 'evidence': [
-                {'source_id': 1, 'quote': 'O comitê integr a as ações de enfrentamento'}]}]}
-        self.assertEqual(grounding_errors(json.dumps(verdict), 'O comitê integra as ações [1].',
-                                          [{'text': source}]), [])
 
     def test_every_citation_must_have_evidence(self):
         errors = grounding_errors(self.verdict(), self.answer + ' [2]', self.sources * 2)
