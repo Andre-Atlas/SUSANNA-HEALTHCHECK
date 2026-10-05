@@ -24,7 +24,7 @@ aprovar os limiares antes da sessão e registrar sua decisão em [aceite](aceite
 
 | Critério | Evidência exigida | Regra proposta |
 |---|---|---|
-| Integridade e prontidão | Base, modelo e teste de restauração | Prontidão 200 e restauração verificada em cópia; operação real ensaiada pelo operador |
+| Integridade e prontidão | `/api/ready`, Ollama/modelo e pergunta sintética ao gov.br | Prontidão 200 e uma consulta funcional; backup/recuperação SQLite fica restrito à manutenção offline |
 | Regressão técnica | Suíte automatizada | Todos os testes pertinentes passam |
 | Segurança documental | Casos de manipulação/contradição e ataques novos | Nenhuma resposta contraditória ou sem apoio aceita; corrigir F01 antes da sessão |
 | Utilidade e fidelidade | Rodada HTTP e dois revisores humanos | Pelo menos 90% dos cenários aprovados; nenhum erro crítico; divergências adjudicadas |
@@ -34,8 +34,13 @@ aprovar os limiares antes da sessão e registrar sua decisão em [aceite](aceite
 | Feedback | Sessões e registro de problemas | Nenhum bloqueador aberto; falhas menores com responsável e prazo aceitos |
 | Entrega e manutenção | Versão/hash, responsáveis e guias | Responsáveis nomeados e decisão explícita registrada |
 
-Os resultados antigos 5/14 e 4/5 não satisfazem estes critérios. Testes de código
-não substituem avaliação de respostas. Celular físico e acesso remoto estão fora
+Em 05/10/2026, a rodada HTTP automática marcou 14/14 e o revisor isolado 10/10
+nos casos sintéticos atuais; o caso malicioso foi barrado antes da geração. O
+benchmark ao vivo concluiu 20/20, com p95 de 8,5115 s numa repetição. Dezoito
+respostas se abstiveram, uma foi revisada e uma pediu esclarecimento; isso não
+estabelece utilidade ou fidelidade clínica. Os resultados antigos 5/14 e 4/5
+continuam registrados como histórico. Testes de código não substituem avaliação
+de respostas. Celular físico e acesso remoto estão fora
 da sessão local; as pendências de acessibilidade de [aceitação](../docs/aceitacao.md)
 continuam registradas, sem alegação de conformidade ou aprovação multiplataforma.
 

@@ -4,9 +4,10 @@ Consolidado em 25/09/2026 para execução somente neste computador.
 
 ## Instalar e iniciar
 
-O projeto oferece execução local para Windows 10/11 e macOS com Python 3.10+
-(incluindo SQLite FTS5), Ollama e modelo local. O chat não exige dependências pip,
+O projeto oferece execução local para Windows 10/11 e macOS com Python 3.10+,
+Ollama e modelo local. O chat não exige dependências pip,
 npm, chave de API ou serviço pago. Consulte [versões e licenças](componentes.md).
+SQLite FTS5 só é necessário para as ferramentas locais de avaliação e manutenção.
 
 1. Instale Python 3.10+ e Ollama pelos [sites oficiais](https://www.python.org/downloads/)
    e [Ollama](https://ollama.com/download). Abra a pasta do projeto no terminal.
@@ -38,7 +39,7 @@ Não exponha as portas à rede. Para parar, pressione Ctrl+C no terminal do serv
 
 ## Usar o chatbot
 
-Escreva uma pergunta geral sobre os temas da [base](escopo-fontes.md), sem nome,
+Escreva uma pergunta geral sobre informação pública de saúde, sem nome,
 CPF, identificação de terceiros ou relatos pessoais de saúde. Enter envia;
 Shift+Enter quebra a linha. Cada pergunta aceita até 3.000 caracteres.
 
@@ -65,7 +66,7 @@ do piloto estão em [aceitação](aceitacao.md).
 | Modelo ausente | Execute `ollama pull qwen2.5:7b`; confira se `OLLAMA_MODEL` foi alterado. |
 | Pesquisa gov.br indisponível | Tente novamente mais tarde; `/api/ready` não verifica o acesso externo. |
 | Fila cheia | Aguarde ou cancele seu pedido; não aumente a concorrência sem medir o hardware. |
-| Resposta bloqueada ou sem evidências | Confira a cobertura da base; registre um caso sintético para investigação. |
+| Resposta bloqueada ou sem evidências | Confira se há fontes adequadas na busca ao vivo; registre um caso sintético para investigação. |
 | Interface antiga | Reinicie o servidor depois de atualizar código e recarregue a página. |
 
 ## Manter e atualizar

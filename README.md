@@ -119,8 +119,10 @@ Depois de atualizar o código, reinicie `python3 server.py` (macOS) ou `py -3 se
 python3 -m unittest discover -s tests -v
 python3 evaluate.py
 python3 evaluate_search.py
-# Latência real do pipeline (requer Ollama): aquecimento + 20 casos x 3 rodadas
+# Latência offline do pipeline com SQLite temporário (requer Ollama)
 python3 benchmark_performance.py
+# Busca online gov.br com 20 casos sintéticos (requer Ollama e internet)
+python3 benchmark_performance.py --live-search --warmup 1 --repetitions 1 --output evaluation/performance-live.json
 # Opcional: salvar agregados de latência no MLflow local
 python3 -m pip install mlflow
 python3 benchmark_performance.py --mlflow
@@ -128,7 +130,7 @@ python3 benchmark_performance.py --mlflow
 python3 evaluate.py --llm --output evaluation/llm.json
 ```
 
-A avaliação offline usa uma base temporária com o conjunto versionado, sem alterar seus documentos locais nem consultar a web. O benchmark grava p50/p95 de fila, busca lexical local, geração, revisão e total; ele ainda não mede a busca ao vivo em `gov.br`. Não grava perguntas, respostas ou trechos recuperados. MLflow é opcional e registra somente agregados e parâmetros técnicos. Veja [fontes e critérios de avaliação](docs/avaliacao-inicial.md) e [desempenho e experiência](docs/desempenho-experiencia.md).
+A avaliação offline usa uma base temporária com o conjunto versionado, sem alterar seus documentos locais nem consultar a web. O benchmark padrão mede fila, busca lexical local, geração, revisão e total. `benchmark_performance.py --live-search` mede o fluxo com consultas sintéticas e pesquisa ao vivo em `gov.br`; isso exige internet e pode ser afetado pela disponibilidade ou limitação do portal. Os relatórios preservam métricas e IDs dos casos, não perguntas, respostas ou trechos recuperados. MLflow é opcional e registra somente agregados e parâmetros técnicos. Veja [fontes e critérios de avaliação](docs/avaliacao-inicial.md) e [desempenho e experiência](docs/desempenho-experiencia.md).
 
 ## Piloto e entrega
 
@@ -143,6 +145,11 @@ A rodada real obteve **5/14** nos critérios automáticos do fluxo HTTP e **4/5*
 revisor isolado. Foi observada aceitação indevida de uma resposta contraditória
 quando a fonte incluía uma instrução maliciosa ao revisor; isso bloqueia a aprovação
 do piloto. Revisões humanas e verificação real de navegador/celular permanecem pendentes.
+
+Uma nova rodada local sintética em 05/10/2026 passou **14/14** critérios
+automáticos ([relatório](evaluation/acceptance-20261005-final.json)). A rodada
+exercitou a quarentena da fonte maliciosa; não substitui revisão humana nem
+verificação real em navegador/celular.
 
 A [avaliação focal de respostas de antibióticos](docs/avaliacao-respostas-20260930.md)
 registrou uma correção de fonte substituída, **3/3** respostas revisadas por IA e

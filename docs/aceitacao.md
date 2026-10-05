@@ -14,6 +14,30 @@ Revisão humana, navegador real, leitor de tela e celular continuam pendentes.
 
 ## Resultados registrados
 
+### Rodada técnica atual — 05/10/2026
+
+| Camada | Resultado | Limite da evidência |
+|---|---|---|
+| Suíte Python | 83 testes passaram; 8 testes JavaScript ignorados | Os testes de DOM usam JavaScriptCore nativo do macOS, indisponível nesta máquina Windows |
+| Busca offline | 38/38 casos contextuais | Testa corpus lexical versionado; não mede qualidade da busca ao vivo |
+| Revisor isolado, casos sintéticos | 10/10 | O filtro bloqueia padrões testados antes do modelo; não cobre toda formulação possível |
+| HTTP + Ollama, 14 cenários | 14/14 automáticos | O caso de injeção passa por quarentena antes da geração; sucesso automático não é aprovação humana |
+| Auditoria estática de interface | 10/10; quatro pares de contraste acima de 4,5:1 | Não foi executada revisão visual/interativa real em navegador |
+| Benchmark online | 20/20 pedidos concluídos; total p50 1,5622 s e p95 8,5115 s | Uma repetição, uma amostra revisada e 18 abstenções; não avalia fidelidade factual nem estabilidade |
+
+Relatórios: [aceitação HTTP](../evaluation/acceptance-20261005-final.json),
+[revisor endurecido](../evaluation/verificador-hardening-20261005.json),
+[auditoria estática](../evaluation/interface-static-final-20261005.json) e
+[latência ao vivo](../evaluation/performance-live-20261005.json). O estado
+anterior de 5/14 e 4/5 abaixo é histórico e foi preservado. A mitigação automática
+de F01 reduz a exposição aos padrões detectados; revisão independente das
+respostas, ataques inéditos e teste real de navegador continuam pendentes. O
+projeto não está aprovado para piloto.
+
+A tentativa de inspeção interativa nesta máquina não pôde iniciar o runtime de
+automação do navegador (erro `os error 3`). Portanto, a auditoria estática não
+deve ser interpretada como verificação visual ou de teclado.
+
 | Camada | Resultado | O que significa |
 |---|---|---|
 | Testes de código, integração e interface simulada | 64/64 | Verifica contratos e comportamentos controlados; não valida respostas reais por si só |

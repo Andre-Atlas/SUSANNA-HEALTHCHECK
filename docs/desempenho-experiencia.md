@@ -65,6 +65,21 @@ autenticação para uma instalação pública: o servidor permanece vinculado a 
 
 ## Métricas e reprodução
 
+Rodada ao vivo de 05/10/2026: [relatório](../evaluation/performance-live-20261005.json),
+20 casos sintéticos, um aquecimento e uma repetição. Todos terminaram; 19 fizeram
+busca e inferência e um pediu esclarecimento sem chamar o modelo. Busca p50/p95:
+0,7061/0,7655 s (19 amostras); total p50/p95: 1,5622/8,5115 s (20 amostras).
+Apenas uma amostra chegou à revisão documental (40,2402 s). Dezoito respostas
+abstiveram-se por falta de evidência, uma passou pela revisão e uma pediu
+esclarecimento; estados não avaliam correção factual. A amostra é pequena e
+depende da rede, do portal e da carga do computador.
+
+Para medir o fluxo online, use `--live-search`; o modo padrão continua usando
+SQLite temporário e não acessa gov.br. A opção online consulta o portal com os
+casos sintéticos da suíte e pode falhar por rede, disponibilidade ou limite do
+portal. Um exemplo com 20 observações: `python3 benchmark_performance.py
+--live-search --warmup 1 --repetitions 1 --output evaluation/performance-live.json`.
+
 `GET /api/metrics` mostra ocupação e os últimos 100 registros de tempo/estado,
 sem perguntas, respostas ou IDs dos pedidos. No servidor de chat, a etapa de
 busca mede a consulta externa ao portal do Ministério da Saúde, a leitura das

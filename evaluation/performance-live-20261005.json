@@ -1,0 +1,353 @@
+{
+  "created_at": "2026-10-05T14:19:00.076504+00:00",
+  "run_id": "latency-20261005T141900Z",
+  "hardware": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "cpu": null,
+    "ram_bytes": null,
+    "python": "3.13.5"
+  },
+  "ollama_version": "0.34.0",
+  "model": "qwen2.5:7b",
+  "model_loaded_before_benchmark": true,
+  "warmup_runs": 1,
+  "repetitions": 1,
+  "retrieval_mode": "gov.br_live",
+  "case_count": 20,
+  "case_set_sha256": "e4f814d293e35729ca28f28855c22b3d4120cf909d21523705a9cff780fcf72a",
+  "samples": [
+    {
+      "case_id": "case_001",
+      "repetition": 1,
+      "state": "done",
+      "timings_seconds": {
+        "queue": 0.0,
+        "retrieval": 0.7373,
+        "generation_first_token": 0.0478,
+        "generation": 0.2562,
+        "total": 0.9945
+      },
+      "answer_status": "insufficient_evidence",
+      "llm_called": true
+    },
+    {
+      "case_id": "case_002",
+      "repetition": 1,
+      "state": "done",
+      "timings_seconds": {
+        "queue": 0.0,
+        "retrieval": 0.674,
+        "generation_first_token": 0.675,
+        "generation": 0.8817,
+        "total": 1.5567
+      },
+      "answer_status": "insufficient_evidence",
+      "llm_called": true
+    },
+    {
+      "case_id": "case_003",
+      "repetition": 1,
+      "state": "done",
+      "timings_seconds": {
+        "queue": 0.0,
+        "retrieval": 0.6802,
+        "generation_first_token": 0.6598,
+        "generation": 0.8668,
+        "total": 1.548
+      },
+      "answer_status": "insufficient_evidence",
+      "llm_called": true
+    },
+    {
+      "case_id": "case_004",
+      "repetition": 1,
+      "state": "done",
+      "timings_seconds": {
+        "queue": 0.0,
+        "retrieval": 0.7496,
+        "generation_first_token": 0.6621,
+        "generation": 0.8698,
+        "total": 1.6208
+      },
+      "answer_status": "insufficient_evidence",
+      "llm_called": true
+    },
+    {
+      "case_id": "case_005",
+      "repetition": 1,
+      "state": "done",
+      "timings_seconds": {
+        "queue": 0.0,
+        "retrieval": 0.7666,
+        "generation_first_token": 0.6396,
+        "generation": 0.8465,
+        "total": 1.6141
+      },
+      "answer_status": "insufficient_evidence",
+      "llm_called": true
+    },
+    {
+      "case_id": "case_006",
+      "repetition": 1,
+      "state": "done",
+      "timings_seconds": {
+        "queue": 0.0,
+        "retrieval": 0.7363,
+        "generation_first_token": 0.641,
+        "generation": 1.1624,
+        "review_first_token": 5.716,
+        "review": 40.2402,
+        "total": 42.1421
+      },
+      "answer_status": "grounding_checked",
+      "llm_called": true
+    },
+    {
+      "case_id": "case_007",
+      "repetition": 1,
+      "state": "done",
+      "timings_seconds": {
+        "queue": 0.0,
+        "retrieval": 0.7323,
+        "generation_first_token": 5.7875,
+        "generation": 6.0083,
+        "total": 6.7415
+      },
+      "answer_status": "insufficient_evidence",
+      "llm_called": true
+    },
+    {
+      "case_id": "case_008",
+      "repetition": 1,
+      "state": "done",
+      "timings_seconds": {
+        "queue": 0.0,
+        "retrieval": 0.6331,
+        "generation_first_token": 0.6372,
+        "generation": 0.8477,
+        "total": 1.4817
+      },
+      "answer_status": "insufficient_evidence",
+      "llm_called": true
+    },
+    {
+      "case_id": "case_009",
+      "repetition": 1,
+      "state": "done",
+      "timings_seconds": {
+        "queue": 0.0,
+        "retrieval": 0.6824,
+        "generation_first_token": 0.6374,
+        "generation": 0.8457,
+        "total": 1.5291
+      },
+      "answer_status": "insufficient_evidence",
+      "llm_called": true
+    },
+    {
+      "case_id": "case_010",
+      "repetition": 1,
+      "state": "done",
+      "timings_seconds": {
+        "queue": 0.0,
+        "retrieval": 0.6725,
+        "generation_first_token": 0.6507,
+        "generation": 0.8583,
+        "total": 1.5318
+      },
+      "answer_status": "insufficient_evidence",
+      "llm_called": true
+    },
+    {
+      "case_id": "case_011",
+      "repetition": 1,
+      "state": "done",
+      "timings_seconds": {
+        "queue": 0.0,
+        "retrieval": 0.7203,
+        "generation_first_token": 0.6551,
+        "generation": 0.8638,
+        "total": 1.5854
+      },
+      "answer_status": "insufficient_evidence",
+      "llm_called": true
+    },
+    {
+      "case_id": "case_012",
+      "repetition": 1,
+      "state": "done",
+      "timings_seconds": {
+        "queue": 0.0,
+        "retrieval": 0.7554,
+        "generation_first_token": 0.6714,
+        "generation": 0.8798,
+        "total": 1.6362
+      },
+      "answer_status": "insufficient_evidence",
+      "llm_called": true
+    },
+    {
+      "case_id": "case_013",
+      "repetition": 1,
+      "state": "done",
+      "timings_seconds": {
+        "queue": 0.0,
+        "retrieval": 0.6595,
+        "generation_first_token": 0.6736,
+        "generation": 0.8552,
+        "total": 1.5162
+      },
+      "answer_status": "insufficient_evidence",
+      "llm_called": true
+    },
+    {
+      "case_id": "case_014",
+      "repetition": 1,
+      "state": "done",
+      "timings_seconds": {
+        "queue": 0.0,
+        "retrieval": 0.7654,
+        "generation_first_token": 0.6462,
+        "generation": 0.8532,
+        "total": 1.6195
+      },
+      "answer_status": "insufficient_evidence",
+      "llm_called": true
+    },
+    {
+      "case_id": "case_015",
+      "repetition": 1,
+      "state": "done",
+      "timings_seconds": {
+        "queue": 0.0,
+        "retrieval": 0.7042,
+        "generation_first_token": 0.6407,
+        "generation": 0.8495,
+        "total": 1.5546
+      },
+      "answer_status": "insufficient_evidence",
+      "llm_called": true
+    },
+    {
+      "case_id": "case_016",
+      "repetition": 1,
+      "state": "done",
+      "timings_seconds": {
+        "queue": 0.0,
+        "retrieval": 0.7061,
+        "generation_first_token": 0.6561,
+        "generation": 0.8625,
+        "total": 1.57
+      },
+      "answer_status": "insufficient_evidence",
+      "llm_called": true
+    },
+    {
+      "case_id": "case_017",
+      "repetition": 1,
+      "state": "done",
+      "timings_seconds": {
+        "queue": 0.0,
+        "total": 0.0001
+      },
+      "answer_status": "needs_clarification",
+      "llm_called": false
+    },
+    {
+      "case_id": "case_018",
+      "repetition": 1,
+      "state": "done",
+      "timings_seconds": {
+        "queue": 0.0,
+        "retrieval": 0.7053,
+        "generation_first_token": 0.6524,
+        "generation": 0.8614,
+        "total": 1.5677
+      },
+      "answer_status": "insufficient_evidence",
+      "llm_called": true
+    },
+    {
+      "case_id": "case_019",
+      "repetition": 1,
+      "state": "done",
+      "timings_seconds": {
+        "queue": 0.0,
+        "retrieval": 0.7303,
+        "generation_first_token": 0.6488,
+        "generation": 0.8555,
+        "total": 1.5868
+      },
+      "answer_status": "insufficient_evidence",
+      "llm_called": true
+    },
+    {
+      "case_id": "case_020",
+      "repetition": 1,
+      "state": "done",
+      "timings_seconds": {
+        "queue": 0.0,
+        "retrieval": 0.6137,
+        "generation_first_token": 0.6386,
+        "generation": 0.8508,
+        "total": 1.4655
+      },
+      "answer_status": "insufficient_evidence",
+      "llm_called": true
+    }
+  ],
+  "summary_seconds": {
+    "queue": {
+      "count": 20,
+      "p50": 0.0,
+      "p95": 0.0
+    },
+    "retrieval": {
+      "count": 19,
+      "p50": 0.7061,
+      "p95": 0.7655
+    },
+    "generation": {
+      "count": 19,
+      "p50": 0.8583,
+      "p95": 1.647
+    },
+    "review": {
+      "count": 1,
+      "p50": 40.2402,
+      "p95": 40.2402
+    },
+    "total": {
+      "count": 20,
+      "p50": 1.5622,
+      "p95": 8.5115
+    }
+  },
+  "method": "Synthetic representative cases from the versioned search suite; warmups are excluded. Retrieval mode: live gov.br. The model is not unloaded. Queue, retrieval, generation, review and total are reported. Conversation text, prompts, answers, sources and job IDs are not stored.",
+  "sha256": {
+    "server.py": "8bb69cb0821fc7bb93f0520e755842fa3652c0984e70f62c44200867b8621e65",
+    "jobs.py": "37a1218b4070aecc2bc744ffe67a2e3074bbb6ac8564d53273899bc3b06af666",
+    "ollama_transport.py": "87ada1408b36405ed86abac51a9badb8997838e0632c3f698a8f6cf23d2937bc",
+    "knowledge.py": "d24fb216407ef44a9a0f8adcb93b91fc2e3b84f57313be2ed024e43b7354b667",
+    "conversation.py": "f81099f401619d45c97ca501354136c9cdc1209ef0f5ccec5746a86dc118f414",
+    "answer_policy.py": "c36d364ae0c34760151f33fbe9280df2143a9443d0e6dafcb0a32eff250748a7",
+    "govbr_search.py": "02b61d416518643d62f5ff6f2914d64febf712aec9fe7994636cf92eb3717dd8",
+    "benchmark_performance.py": "774c02f05ea94d22c59dcc6bebcd2c34f74b3169ced768e3bae3477089cc1da4",
+    "sources\\antibioticos.json": "e55cc38006faafd558b74c05396c31ef9b0f5c21bea77297c5d7162d6ae723b8",
+    "sources\\antimicrobianos-cuidados.json": "3c5ba045104e310edc9155e79bd1d5ba49bea5ea485a37b05799fa367c65c284",
+    "sources\\dengue.json": "8a2c7a04079deece2a0437bf1a7f28d8b24e49736aeaee4a3cb3f306266a4949",
+    "sources\\desinformacao.json": "fa228843ef47ddd39a39b5d1c7a319d28fc536b0bc5b0c951bb08b732b44bcf6",
+    "sources\\gripe-prevencao.json": "7aaad880ef13bef5e0e47a3dade4a020f1987a45e39285f75c25e901ad324c84",
+    "sources\\hipertensao.json": "0c6230839c16295cda3ec136e83d982e7b91235a9068aeae706057dd01445d18",
+    "sources\\hiv-transmissao.json": "cdf46e785ecd72e0d55309768733930c9b9e8fd77135d0b04f30cf7146fe9c41",
+    "sources\\hiv-tratamento-sus.json": "6c00ebe714342ca429db23a83a56c41a57c18b512573ab0646cc2c9122f2a2c8",
+    "sources\\identificar-boatos.json": "beb00f0264b0e1e76282d4c20b465a12e7f5d7e654654c4ce356eef85299b18a",
+    "sources\\raiva-prevencao.json": "262dce87f4f0b0e73b83ab5dec6c659cca06e3c16c9ef9ff9c8f5b22bc055034",
+    "sources\\samu-192.json": "f670bbd57c3e2d5484621e4ee60d6603045a80293510f71361ae752d7ac1d4e1",
+    "sources\\sus-medicamentos-ceaf.json": "f2449b1b068398576ba297590460553cfaa65cd4e9f4de6dd9ba5d2c6327b788",
+    "sources\\sus-medicamentos-cesaf.json": "459e862109861d2aa7ecd2c822f105118211dbc5faa01be2f5c81dc994e52570",
+    "sources\\sus-visao-geral.json": "12031e73a90b50869329a61dc9635019307fc45829a3fde56ba9050833e51ca6",
+    "sources\\tuberculose.json": "acb14a8a65f856a98f8ec41bebb67de0f64a8720e6bc94601e9b7039c35bc5fb",
+    "sources\\vacinas-seguranca.json": "d20887450ba2029d018e1491eea94ed5b85c932d16f727ee2b6b02fc9b3a4beb"
+  }
+}

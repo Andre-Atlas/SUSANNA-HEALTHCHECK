@@ -7,7 +7,8 @@ acesso à sessão do computador podem usar a aplicação e as métricas.
 
 ## Inicialização e verificação
 
-Requer Python 3.10+ com SQLite FTS5 e Ollama com o modelo `qwen2.5:7b`.
+Requer Python 3.10+ e Ollama com o modelo `qwen2.5:7b`. SQLite FTS5 é usado
+pelas ferramentas offline de avaliação/manutenção, não pela execução do chat.
 Na pasta do projeto:
 
 ```bash

@@ -4,6 +4,14 @@ Inventário em 25/09/2026. Versões observadas neste computador, não versões m
 certificadas nem recomendação de atualização. Código de referência: commit
 `5348c47` antes da consolidação documental da etapa 8.
 
+## Verificação do ambiente em 05/10/2026
+
+Python 3.13.5 executou a suíte. A API local do Ollama informou versão 0.34.0 e
+`qwen2.5:7b` instalado. O comando `ollama` não estava no PATH do terminal,
+embora a API local respondesse. Esses dados descrevem uma execução neste
+computador e não certificam compatibilidade em outras instalações. O estado
+trabalhado nesta etapa está na branch `develop_gui`; não foi enviado ao remoto.
+
 | Componente | Versão / identificação | Licença / evidência |
 |---|---|---|
 | Código Python, HTML, CSS e JavaScript do projeto | Commit de referência acima; sem versão semântica declarada | [MIT no repositório](../LICENSE), copyright 2026 André Acioli |

@@ -9,12 +9,12 @@ Este registro não contém assinatura nem avaliação humana.
 - Participante confirmado: Guilherme Barros Jacintho Ribeiro; sessões realizadas: nenhuma registrada
 - Versão e SHA-256 do pacote avaliado: PENDENTE
 - Aprovação prévia dos limiares propostos: PENDENTE
-- Relatório HTTP atualizado e critérios atendidos: PENDENTE
+- Relatório HTTP atualizado: 14/14 critérios automáticos em `evaluation/acceptance-20261005-final.json`; revisão humana e decisão de aceite pendentes
 - Revisor A / evidências: PENDENTE
 - Revisor B / evidências: PENDENTE
 - Adjudicação de divergências: PENDENTE
 - Teste de navegador real: PENDENTE
-- Amostra de desempenho e p95: PENDENTE
+- Amostra de desempenho e p95: 20 casos ao vivo, uma repetição, p95 total 8,5115 s em `evaluation/performance-live-20261005.json`; amostra limitada, decisão pendente
 - Recuperação ensaiada pelo operador: PENDENTE
 - Bloqueadores resolvidos e retestados: PENDENTE
 - Feedback consolidado e correções: PENDENTE

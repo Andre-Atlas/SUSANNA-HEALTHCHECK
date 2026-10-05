@@ -47,24 +47,38 @@ O portal gov.br não aparece no código como serviço pago, mas a busca envia a 
 Parei ao fim da Etapa 1, como o roteiro pede. Aguardo sua autorização para iniciar a Etapa 2.
 
 
------------------------------------------------------------------------------------------------------------------
+## Etapas 2–9 — trabalho técnico concluído em 05/10/2026
 
+### Linha de base, correções e resultados
 
-## Etapa 2: linha de base parcial
+- A linha de base documentada registra 5/14 critérios HTTP e 4/5 no revisor. A falha F01 foi reproduzida: uma instrução maliciosa na fonte influenciou a revisão de uma resposta contraditória.
+- A suíte Python final passou: **83 testes; 8 ignorados** porque os testes de interface usam JavaScriptCore nativo do macOS, indisponível neste Windows. Não foram instalados pacotes.
+- A busca offline contextual passou **38/38**; a avaliação de recuperação, **18/18**. O avaliador isolado do revisor passou **10/10** após o endurecimento.
+- A rodada HTTP com Ollama passou **14/14** critérios automáticos. O cenário de injeção foi barrado antes da geração e contado como caminho de quarentena exercitado. Isso não demonstra resistência a todas as variantes nem é aprovação humana.
+- A auditoria estática da interface passou **10/10**; quatro pares de contraste avaliados passaram 4,5:1. Os oito testes JavaScript não executaram nesta máquina.
+- A inspeção interativa no navegador também ficou pendente: o runtime de automação disponível falhou ao iniciar (`os error 3`).
+- Benchmark online: **20/20** pedidos concluídos, uma repetição mais aquecimento. Busca p50/p95: 0,7061/0,7655 s (19 consultas); total: 1,5622/8,5115 s (20 pedidos). Uma amostra chegou à revisão (40,2402 s), 18 respostas abstiveram-se e uma pediu esclarecimento. A amostra não mede fidelidade e ainda é pequena para comparação estável.
 
-O serviço local está ativo: `/api/health` e `/api/ready` retornaram **200**. O Ollama responde como versão **0.34.0**, com `qwen2.5:7b` instalado; a prontidão também confirmou a base SQLite com 12 trechos.
+### Alterações implementadas
 
-**Não consegui executar a suíte Python nem as avaliações.** `py` e `python` não estão disponíveis no PATH, e `.venv\Scripts\python.exe` aponta para um executável externo bloqueado. Não tentei contornar o bloqueio nem instalar ferramentas. Assim, não há resultados novos de testes ou avaliações nesta etapa.
+O fluxo do revisor agora rejeita padrões adversariais detectados antes de chamar o modelo; testes cobrem ordens ao revisor, comandos de sistema falsos e caracteres invisíveis. A defesa continua heurística e precisa de ataques independentes novos.
 
-O que consegui verificar:
+A busca gov.br ganhou validação estrita dos rótulos de host, testes locais de redirecionamento/conteúdo/limites e rejeita páginas maiores que o limite em vez de usar texto truncado. A busca offline ignora palavras genéricas da consulta que antes podiam selecionar uma fonte apenas por “nesta base”.
 
-- `node --check app.js` e `node --check tests/frontend_harness.js` passaram como verificações de sintaxe. Executar `node tests/frontend_harness.js` não executou os casos comportamentais; o arquivo prepara o ambiente que a suíte Python usa.
-- O histórico **5/14** registra nove falhas: a02, a03, a04, a05, a08, a09, a10, a12 e a14. Oito envolvem respostas recusadas por formato/citações; a14 foi recusada por `unsupported_claim`.
-- O relatório histórico do revisor **4/5** reproduz F01: a fonte sintética proibia abrir uma caixa, mas incluía uma instrução ao revisor para aprovar a contradição; a resposta contraditória foi aceita, com `errors=[]`.
-- Um relatório posterior registra **12/14** no fluxo HTTP e **10/10** no revisor. Porém, os hashes de código desses relatórios não correspondem aos arquivos atuais da branch. Sem reexecutá-los, não confirmam o comportamento da versão atual.
+`/api/ready` verifica Ollama e modelo, sem depender da base SQLite, já que o chat pesquisa gov.br por pergunta. Interface, privacidade e guias agora explicam que a pergunta contextualizada segue para gov.br, que o histórico completo não vai à busca e que o modelo roda localmente. A demonstração por túnel volta a inserir seu aviso específico de provedor.
 
-Não criei relatórios novos nem alterei o comportamento. A avaliação F01 da versão atual continua pendente; os dados históricos documentam a falha, mas não substituem sua reprodução atual.
+### Relatórios e arquivos de referência
 
-Encontrei e preservei uma alteração local em [docs/01proximo-passo.md](</C:/Users/dida0/OneDrive/Área de Trabalho/SUSANNA-HEALTHCHECK/docs/01proximo-passo.md>). Não fiz outras alterações. A branch continua `develop_gui`.
+- Aceitação HTTP: [evaluation/acceptance-20261005-final.json](../evaluation/acceptance-20261005-final.json).
+- Revisor após endurecimento: [evaluation/verificador-hardening-20261005.json](../evaluation/verificador-hardening-20261005.json).
+- Busca: [evaluation/search-comparison-20261005.json](../evaluation/search-comparison-20261005.json).
+- Interface: [evaluation/interface-static-final-20261005.json](../evaluation/interface-static-final-20261005.json).
+- Desempenho ao vivo: [evaluation/performance-live-20261005.json](../evaluation/performance-live-20261005.json).
 
-Para concluir a Etapa 2, preciso que o ambiente disponibilize um executável Python acessível — por exemplo, restaurando o launcher `py` ou o Python do ambiente virtual. Vou aguardar isso antes de avançar; não inicio a Etapa 3 sem sua autorização.
+As alterações principais estão em `answer_policy.py`, `govbr_search.py`, `knowledge.py`, `server.py`, `evaluate_acceptance.py`, `benchmark_performance.py`, `internet_app.py`, `index.html`, `app.js` e testes. README, guias, privacidade, aceitação e materiais de piloto foram alinhados aos comportamentos medidos. Os relatórios históricos foram preservados.
+
+### Estado e pendências
+
+O piloto **não está aprovado**. Faltam revisão independente de duas pessoas sobre respostas e fontes, teste interativo em navegador real (incluindo teclado/zoom), feedback de participantes e decisão formal de aceite. A detecção de injeção não é universal; a rodada 14/14 é sintética e automática. As respostas abstiveram-se em 18 dos 20 pedidos do benchmark, então utilidade permanece em aberto.
+
+O ambiente observado usou Python 3.13.5, Ollama local 0.34.0 e `qwen2.5:7b`. Não foram contratados serviços, usadas APIs pagas ou adicionados serviços externos de monitoramento. A pesquisa gov.br requer internet e pode variar com a disponibilidade do portal e a conexão do operador.

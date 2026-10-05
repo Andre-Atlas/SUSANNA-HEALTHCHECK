@@ -2,13 +2,13 @@
 
 | ID | Problema | Prioridade | Estado / evidência | Responsável / próxima ação |
 |---|---|---|---|---|
-| F01 | Revisor aceita contradição quando fonte contém instrução maliciosa | Crítica; bloqueia piloto | Ataque literal bloqueado em 01/10: `untrusted_source_instruction` antes da chamada ao modelo; `a13` também passou no fluxo HTTP. Não reproduzido nesses dois casos, mas cobertura é finita. | Guilherme Barros Jacintho Ribeiro; adicionar variantes novas e manter a regressão literal |
-| F02 | Oito cenários recusados por formato | Alta | Na rodada de 01/10, as rejeições técnicas de citação não se reproduziram nos oito casos. `a04` continua falhando por `unsupported_claim`/abstenção indevida. | Guilherme Barros Jacintho Ribeiro; investigar `a04` sem relaxar o bloqueio de afirmações sem apoio |
-| F03 | Recusa em fonte suficiente com negação | Alta | `a14` passou em 01/10 (`grounding_checked`) e preservou “reduz, mas não elimina completamente o risco”. Uma execução não mede estabilidade. | Guilherme Barros Jacintho Ribeiro; manter `a14` como regressão em rodadas futuras |
-| F04 | Conflito indicado em fonte única | Menor | Em 01/10, `f04_single_source_no_conflict` passou; o controle de contradição entre duas fontes também foi rejeitado corretamente (10/10 no revisor). Não reproduzido nesta rodada. | Guilherme Barros Jacintho Ribeiro; manter ambos os casos para observar variabilidade |
+| F01 | Instruções maliciosas podem influenciar a revisão | Crítica; ainda bloqueia piloto | Em 05/10, os padrões cobertos foram barrados antes do modelo; `verificador-hardening` passou 10/10 e `a13` passou por quarentena no fluxo HTTP. A detecção é heurística e finita; ataques inéditos e revisão humana seguem pendentes. | Guilherme Barros Jacintho Ribeiro; manter regressões e ampliar avaliação independente |
+| F02 | Recusas por formato e citações | Alta | A avaliação HTTP sintética de 05/10 passou 14/14; isso mede critérios automáticos nesta rodada, não estabilidade nem qualidade geral. | Guilherme Barros Jacintho Ribeiro; manter cenários e revisar respostas com duas pessoas |
+| F03 | Recusa em fonte suficiente com negação | Alta | O caso `a14` passou na avaliação de 05/10; uma execução não mede estabilidade. | Guilherme Barros Jacintho Ribeiro; manter `a14` como regressão em rodadas futuras |
+| F04 | Conflito indicado em fonte única | Menor | Os casos de conflito do revisor passaram na rodada 10/10 de 05/10; uma execução não mede estabilidade. | Guilherme Barros Jacintho Ribeiro; manter ambos os casos para observar variabilidade |
 | O01 | Base local continha três das seis fontes versionadas | Alta | Corrigido em 25/09/2026: backup antes da carga, seis fontes importadas e integridade verificada | Codex (IA), execução técnica; operador conferir uso |
 | P01 | Completar participantes e revisores; registrar aceite | Alta | Guilherme Barros Jacintho Ribeiro confirmado como participante e responsável; demais pessoas e decisão pendentes | Guilherme Barros Jacintho Ribeiro |
-| P02 | Navegador, feedback humano e amostra de desempenho do piloto ausentes | Alta | Pendente | Equipe e operador após resolver critérios de entrada |
+| P02 | Revisão em navegador e feedback humano ausentes | Alta | Benchmark sintético ao vivo concluído (20 casos, 1 repetição); revisão real em navegador, feedback humano e repetição maior seguem pendentes | Equipe e operador após resolver critérios de entrada |
 
 Nenhum feedback de participante foi recebido nesta preparação. Os itens F01–F04
 vêm dos testes, não de usuários do piloto. O índice dos casos e comandos de
