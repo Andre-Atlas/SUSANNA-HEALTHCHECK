@@ -35,6 +35,8 @@ DIRECT_PAGES = {
     'hepatitis_b': 'https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/h/hepatites-virais/hepatite-b',
     'hiv_aids': 'https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/a/aids-hiv',
     'hiv_transmission': 'https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/a/aids-hiv/transmissao/transmissao',
+    'farmacia_popular': 'https://www.gov.br/saude/pt-br/composicao/sectics/farmacia-popular',
+    'rename': 'https://www.gov.br/saude/pt-br/composicao/sectics/rename',
 }
 
 
@@ -368,6 +370,10 @@ def search_gov_br(question, *, timeout=5):
             direct_urls.append(DIRECT_PAGES['hiv_transmission'])
         else:
             direct_urls.append(DIRECT_PAGES['hiv_aids'])
+    if (any(word.startswith(('medicament', 'remedi')) for word in words)
+            and ('sus' in words or any(word.startswith('gratuit') for word in words)
+                 or 'farmacia' in words)):
+        direct_urls.extend((DIRECT_PAGES['farmacia_popular'], DIRECT_PAGES['rename']))
     if ('fake news' in normalized or 'desinform' in normalized
             or {'mensagem', 'suspeita'} <= words or any(word.startswith('font') for word in words)
             or 'boato' in words or 'boatos' in words):
