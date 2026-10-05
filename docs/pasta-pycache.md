@@ -1,0 +1,3 @@
+Ela é criada automaticamente pelo Python quando módulos do projeto são importados ou executados.
+Nela, o Python guarda arquivos .pyc: versões compiladas de módulos como server.py, knowledge.py e govbr_search.py. Quando esses módulos são usados novamente, o Python pode carregar o bytecode em vez de recompilar o código-fonte. Isso ajuda a reduzir um pouco o tempo de inicialização; não é um banco de dados nem armazena conversas, respostas ou conhecimento do chatbot.
+O projeto ignora essa pasta pelo .gitignore, junto com os arquivos .pyc. Por isso, ela não deve ser necessária para compartilhar ou versionar o código. Se for apagada, o Python a recria na próxima execução, quando precisar.
