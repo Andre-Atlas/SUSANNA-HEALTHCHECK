@@ -1,0 +1,15 @@
+{
+  "title": "SUS — visão geral, serviços e princípios",
+  "url": "https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/s/sus",
+  "publisher": "Ministério da Saúde",
+  "reviewed_at": "2026-10-01",
+  "published_at": null,
+  "source_updated_at": null,
+  "next_review_at": "2026-11-01",
+  "content_type": "Síntese produzida por IA a partir da fonte; não é transcrição oficial",
+  "review_status": "Revisado por IA",
+  "documentary_check": {"checked_at": "2026-10-01", "checked_by": "Codex (IA)", "source_section": "Sistema Único de Saúde (SUS); estrutura; princípios", "report": "docs/etapa-expansao-fontes-sus-20261001.md", "review_status": "Revisado por IA", "reuse_assessment": "Pendente de decisão da equipe"},
+  "source_license_notice": "A página informa direitos reservados pelo Ministério da Saúde. A reutilização desta síntese ainda requer análise específica; consultar a página original.",
+  "coverage_questions": ["O que é o SUS e quais serviços oferece?", "Quais são os princípios do SUS?", "Quem administra o SUS?"],
+  "text": "Síntese do Ministério da Saúde: o Sistema Único de Saúde oferece acesso universal, integral e gratuito a serviços de saúde em todo o país. Sua rede inclui promoção e prevenção, atenção primária, atendimentos especializados, urgência e emergência, hospitais, vigilâncias em saúde, assistência farmacêutica, procedimentos de alta complexidade e transplantes. A gestão é compartilhada entre União, estados e municípios, com atribuições próprias para cada esfera. Entre os princípios apresentados estão universalização, equidade e integralidade. Esta síntese descreve o sistema em geral; procedimentos e serviços específicos dependem da rede e organização local."
+}
