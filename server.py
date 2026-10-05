@@ -79,6 +79,27 @@ def source_context(sources):
              'Não escreva URLs, links ou bibliografia. As fontes serão exibidas pela aplicação.')
 
 
+def _question_text(message):
+    try:
+        envelope = json.loads(message)
+    except (TypeError, ValueError):
+        return message if isinstance(message, str) else ''
+    if isinstance(envelope, dict):
+        return envelope.get('pergunta_atual', envelope.get('question', message))
+    return message
+
+
+def _year_round_vaccination_source(question, sources):
+    if (not re.search(r'vacin', question, re.IGNORECASE)
+            or not re.search(r'\b(?:dia|dias|data|datas|quando|m[eê]s)\b', question, re.IGNORECASE)):
+        return None
+    for index, source in enumerate(sources, 1):
+        if re.search(r'rotina.{0,100}dispon[ií]vel durante todo o ano',
+                     source.get('text', ''), re.IGNORECASE):
+            return index
+    return None
+
+
 def build_prompt(messages, sources):
     # Estimativa deliberadamente conservadora para o Qwen padrão: bytes UTF-8
     # como orçamento, reservando tokens para resposta e template de conversa.
@@ -87,7 +108,19 @@ def build_prompt(messages, sources):
     sources = list(sources)
     history = list(messages)
     while True:
-        prompt = [{'role': 'system', 'content': SYSTEM + '\n\n' + source_context(sources)}] + history[:-1] + [
+        context = SYSTEM + '\n\n' + source_context(sources)
+        question = _question_text(history[-1]['content'])
+        schedule_source = _year_round_vaccination_source(question, sources)
+        if schedule_source is not None:
+            context += (
+                '\n\nNesta pergunta sobre dias ou datas de vacinação, a fonte '
+                f'[{schedule_source}] responde sobre a vacinação de rotina: informe '
+                'que ela está disponível durante todo o ano. Não responda SEM_EVIDENCIA '
+                'só porque não há um calendário mensal de datas. Esclareça que esse trecho '
+                'não indica dias ou horários de funcionamento de cada unidade, nem garante '
+                'estoque de toda vacina em todo local. Cite a fonte que contém essa informação.'
+            )
+        prompt = [{'role': 'system', 'content': context}] + history[:-1] + [
             {'role': 'user', 'content': json.dumps({
                 'question': history[-1]['content'],
                 'sources': [{'id': i, 'text': source['text']}
@@ -157,6 +190,15 @@ def verify_grounding(prompt, content, sources):
         pass
     cited_ids = {int(ref) for ref in re.findall(r'\[([0-9]+)\]', content)}
     cited_sources = [{'id': i, 'text': s['text']} for i, s in enumerate(sources, 1) if i in cited_ids]
+    schedule_source = _year_round_vaccination_source(question, sources)
+    if schedule_source in cited_ids:
+        instruction += (
+            ' For this vaccination-date question, the cited statement that routine '
+            'vaccination is available throughout the year answers the general timing '
+            'question. Accept a concise answer that says this and clarifies that the '
+            'source does not provide unit-specific days or hours. Do not infer that every '
+            'vaccine is available every day or at every unit.'
+        )
     payload = json.dumps({'question': question,
         'paragraphs': [{'id': i, 'text': p} for i, p in enumerate(answer_paragraphs(content), 1)],
         'sources': cited_sources}, ensure_ascii=False)
