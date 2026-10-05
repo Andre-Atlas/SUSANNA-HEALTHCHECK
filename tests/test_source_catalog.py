@@ -29,6 +29,11 @@ class SourceCatalogTests(unittest.TestCase):
             ('Pegar tuberculose usando o mesmo copo é possível?', 'tuberculose.json'),
             ('Pressão alta pode ser controlada?', 'hipertensao.json'),
             ('Abraçar uma pessoa transmite HIV?', 'hiv-transmissao.json'),
+            ('Você tem remédio para HIV?', 'hiv-tratamento-sus.json'),
+            ('O SUS fornece antirretroviral de graça?', 'hiv-tratamento-sus.json'),
+            ('Quais serviços de saúde o SUS oferece?', 'sus-visao-geral.json'),
+            ('Quem distribui medicamentos para HIV nos municípios?', 'sus-medicamentos-cesaf.json'),
+            ('Como pedir medicamento do componente especializado?', 'sus-medicamentos-ceaf.json'),
             ('Como prevenir raiva depois de mordida?', 'raiva-prevencao.json'),
             ('O atendimento do SAMU é pago?', 'samu-192.json'),
             ('Qual tratamento cura diabetes?', None),
@@ -42,7 +47,7 @@ class SourceCatalogTests(unittest.TestCase):
                 import_document(path, database)
             for question, expected in cases:
                 with self.subTest(question=question):
-                    found = [s['url'] for s in retrieve(question, database)]
+                    found = [s['url'] for s in retrieve(question, database, rerank=True)]
                     if expected:
                         self.assertIn(urls[expected], found)
                     else:
