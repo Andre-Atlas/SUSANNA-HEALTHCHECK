@@ -115,6 +115,9 @@ TERM_GROUPS = [
     'resfriado resfriados',
     'buscar busque procurar procure consultar consulte encontrar encontre',
     'fonte fontes confiavel confiaveis canal canais origem origens',
+    'medicamento medicamentos remedio remedios medicacao medicacoes farmaco farmacos',
+    'antirretroviral antirretrovirais arv',
+    'sus sistema',
 ]
 ALIASES = {term: frozenset(group.split()) for group in TERM_GROUPS for term in group.split()}
 INFORMAL = set('posso pra pro ta to vc voces gente saber queria quero sera mesmo nesse nessa caso entao disso dessas desses elas eles recebi'.split())
@@ -179,6 +182,8 @@ def retrieve(question, database=DATABASE, *, rerank=False):
         if coverage >= required and all(topic & words for topic in requested_topics):
             matches.append((coverage, index, dict(row)))
     if rerank:
+        # Prefer lexical relevance (FTS5 BM25) among equal concept coverage.
+        # The index returns its best match first; row order is a stable tie-break.
         matches.sort(key=lambda item: (-item[0], item[1]))
     return [item[2] for item in matches[:3]]
 
