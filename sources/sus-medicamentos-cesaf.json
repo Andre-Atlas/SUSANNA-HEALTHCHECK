@@ -1,0 +1,15 @@
+{
+  "title": "Assistência farmacêutica no SUS — componente estratégico e HIV",
+  "url": "https://www.gov.br/saude/pt-br/composicao/sectics/daf/cesaf/componente-estrategico-da-assistencia-farmaceutica",
+  "publisher": "Ministério da Saúde",
+  "reviewed_at": "2026-10-01",
+  "published_at": null,
+  "source_updated_at": null,
+  "next_review_at": "2026-11-01",
+  "content_type": "Síntese produzida por IA a partir da fonte; não é transcrição oficial",
+  "review_status": "Revisado por IA",
+  "documentary_check": {"checked_at": "2026-10-01", "checked_by": "Codex (IA)", "source_section": "Componente Estratégico da Assistência Farmacêutica", "report": "docs/etapa-expansao-fontes-sus-20261001.md", "review_status": "Revisado por IA", "reuse_assessment": "Pendente de decisão da equipe"},
+  "source_license_notice": "A página informa direitos reservados pelo Ministério da Saúde. A reutilização desta síntese ainda requer análise específica; consultar a página original.",
+  "coverage_questions": ["A qual componente pertencem os medicamentos para HIV no SUS?", "Como os medicamentos do componente estratégico chegam aos municípios?", "Quem entrega os medicamentos estratégicos do SUS?"],
+  "text": "Síntese do Ministério da Saúde: o Componente Estratégico da Assistência Farmacêutica (CESAF) reúne medicamentos e insumos de programas estratégicos do SUS, incluindo os destinados a HIV e aids. O Ministério da Saúde financia, adquire e distribui os itens aos estados e ao Distrito Federal; essas esferas recebem, armazenam e distribuem aos municípios. A dispensação à população é realizada por unidades municipais ou locais, ou conforme a organização regional. O fluxo não permite saber o estoque atual nem indicar a farmácia específica de uma pessoa; isso deve ser confirmado com a Secretaria de Saúde local ou equipe de atendimento."
+}
