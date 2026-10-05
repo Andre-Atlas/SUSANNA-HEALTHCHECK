@@ -1,0 +1,3 @@
+# Ferramentas opcionais para analisar avaliações e acompanhar benchmarks.
+pandas>=2.2,<4
+mlflow>=3.0,<4
