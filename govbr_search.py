@@ -2,19 +2,20 @@
 from datetime import datetime
 from html.parser import HTMLParser
 import http.client
+import json
 import re
 import unicodedata
 from urllib.error import HTTPError, URLError
-from urllib.parse import quote_plus, urljoin, urlsplit
+from urllib.parse import urlencode, urljoin, urlsplit
 from urllib.request import HTTPRedirectHandler, Request, build_opener
 from jobs import current_job
 
 
-# SearchAction published in the Ministry's gov.br HTML (JSON-LD).
-SEARCH_URL = 'https://www.gov.br/saude/search?SearchableText='
+SERPRO_SEARCH_URL = 'https://portalunico.estaleiro.serpro.gov.br/api/search/'
+SERPRO_HOST = 'portalunico.estaleiro.serpro.gov.br'
 USER_AGENT = 'SUSANNA-HEALTHCHECK/0.2 (prototipo educacional; busca fontes oficiais)'
-MAX_SEARCH_BYTES = 2_000_000
 MAX_PAGE_BYTES = 2_000_000
+MAX_API_BYTES = 1_000_000
 MAX_RESULTS = 3
 MAX_CANDIDATES = 5
 PAGE_TEXT_LIMIT = 2500
@@ -49,6 +50,112 @@ class _GovBrRedirects(HTTPRedirectHandler):
         if not is_gov_br_url(target):
             raise GovBrSearchError('O portal tentou redirecionar para fora de gov.br.')
         return super().redirect_request(request, fp, code, message, headers, target)
+
+
+def _is_serpro_url(url):
+    try:
+        parsed = urlsplit(url)
+        return (parsed.scheme == 'https' and parsed.hostname == SERPRO_HOST
+                and parsed.username is None and parsed.password is None
+                and parsed.port in (None, 443))
+    except (TypeError, ValueError):
+        return False
+
+
+class _SerproRedirects(HTTPRedirectHandler):
+    def redirect_request(self, request, fp, code, message, headers, new_url):
+        target = urljoin(request.full_url, new_url)
+        if not _is_serpro_url(target):
+            raise GovBrSearchError('A busca tentou redirecionar para fora do endpoint SERPRO autorizado.')
+        return super().redirect_request(request, fp, code, message, headers, target)
+
+
+def _serpro_search(query, timeout):
+    params = urlencode({
+        'q': query[:400],
+        'aba': 'servicos',
+        'ordenacao': '-data',
+        'site': '//www.gov.br/saude',
+        'categoriasFiltro': '',
+        'orgaosFiltro': '',
+        'orgaoId': 'ministerio-da-saude',
+        'tipo': 'Servico|Tema',
+        'pagina': 1,
+        'tam_pagina': 30,
+    })
+    request = Request(SERPRO_SEARCH_URL + '?' + params, headers={
+        'User-Agent': USER_AGENT,
+        'Accept': 'application/json',
+    })
+    job = current_job()
+    if job:
+        job.check()
+    try:
+        with build_opener(_SerproRedirects()).open(request, timeout=timeout) as response:
+            if not _is_serpro_url(response.geturl()):
+                raise GovBrSearchError('A resposta da busca não veio do endpoint SERPRO autorizado.')
+            if response.headers.get_content_type() != 'application/json':
+                raise GovBrSearchError('A busca SERPRO não retornou JSON.')
+            sock = getattr(getattr(getattr(response, 'fp', None), 'raw', None), '_sock', None)
+            if job and sock:
+                job.attach(sock)
+            try:
+                raw = response.read(MAX_API_BYTES + 1)
+                if len(raw) > MAX_API_BYTES:
+                    raise GovBrSearchError('A resposta da busca excede o limite de leitura segura.')
+            finally:
+                if job and sock:
+                    with job.lock:
+                        if job.upstream is sock:
+                            job.upstream = None
+            charset = response.headers.get_content_charset() or 'utf-8'
+            if job:
+                job.check()
+        try:
+            decoded = raw.decode(charset)
+        except LookupError:
+            decoded = raw.decode('utf-8', errors='replace')
+        payload = json.loads(decoded)
+    except GovBrSearchError:
+        raise
+    except (HTTPError, URLError, TimeoutError, OSError, http.client.HTTPException,
+            UnicodeError, json.JSONDecodeError) as exc:
+        if job:
+            job.check()
+        raise GovBrSearchError('Não foi possível consultar a busca oficial do Ministério agora.') from exc
+
+    # API metadata is used only to obtain URLs. Evidence is always re-fetched
+    # from gov.br and parsed by the existing HTML reader.
+    results = []
+    queue = [payload]
+    visited = 0
+    url_fields = {'url', 'link', 'href', 'url_conteudo', 'urlconteudo', 'urlportal'}
+    while queue and visited < 500 and len(results) < 20:
+        node = queue.pop(0)
+        visited += 1
+        if isinstance(node, dict):
+            for key, value in node.items():
+                if key.casefold() not in url_fields or not isinstance(value, str):
+                    continue
+                candidate = value.strip()
+                if candidate.startswith('//'):
+                    candidate = 'https:' + candidate
+                elif candidate.startswith('/'):
+                    candidate = urljoin('https://www.gov.br', candidate)
+                if is_gov_br_url(candidate):
+                    results.append(candidate)
+            queue.extend(value for value in node.values() if isinstance(value, (dict, list)))
+        elif isinstance(node, list):
+            queue.extend(node[:20])
+    deduped = []
+    seen = set()
+    for url in results:
+        url = url.split('#', 1)[0]
+        path = urlsplit(url).path.lower()
+        if url not in seen and not path.endswith(('.pdf', '.doc', '.docx', '.xls', '.xlsx', '.zip')):
+            seen.add(url)
+            deduped.append(url)
+    return deduped
 
 
 class _HTMLText(HTMLParser):
@@ -244,15 +351,7 @@ def search_gov_br(question, *, timeout=5):
     # only its JavaScript shell.
     links = [(url, '') for url in direct_urls]
     if not links:
-        search_url = SEARCH_URL + quote_plus(query[:400])
-        try:
-            fetched = _read(search_url, MAX_SEARCH_BYTES, timeout)
-        except GovBrSearchError:
-            raise
-        if fetched is None:
-            raise GovBrSearchError('A busca oficial não retornou uma página HTML.')
-        search_final_url, search_html = fetched
-        links = _search_links(search_html, search_final_url)
+        links = [(url, '') for url in _serpro_search(query, timeout)]
     now = datetime.now().astimezone().isoformat(timespec='seconds')
     sources = []
     for url, _label in links[:MAX_CANDIDATES]:
