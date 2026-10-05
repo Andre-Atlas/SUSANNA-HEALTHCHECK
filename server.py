@@ -8,6 +8,7 @@ import os
 import re
 import socket
 import sqlite3
+import unicodedata
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.error import HTTPError, URLError
@@ -106,6 +107,13 @@ def _source_discovery_question(question):
         question, re.IGNORECASE))
 
 
+def _medication_access_question(question):
+    normalized = ''.join(char for char in unicodedata.normalize('NFKD', question.casefold())
+                         if not unicodedata.combining(char))
+    return (bool(re.search(r'\b(?:medicamentos?|remedios?)\b', normalized))
+            and bool(re.search(r'\b(?:gratuitos?|de graca|sus|farmacia popular)\b', normalized)))
+
+
 def build_prompt(messages, sources):
     # Estimativa deliberadamente conservadora para o Qwen padrão: bytes UTF-8
     # como orçamento, reservando tokens para resposta e template de conversa.
@@ -122,12 +130,25 @@ def build_prompt(messages, sources):
             and re.search(r'Quiz\s*-\s*Fake News', source.get('text', ''), re.IGNORECASE)), None)
         if _source_discovery_question(question) and source_discovery_id is not None:
             context += (
-                '\n\nPara esta pergunta, responda com base na pÃ¡gina oficial do MinistÃ©rio da SaÃºde '
-                f'na fonte [{source_discovery_id}]: ela aponta o CalendÃ¡rio de VacinaÃ§Ã£o, o Quiz sobre '
-                'Fake News e as DÃºvidas frequentes como materiais para consulta. Explique que a '
-                'plataforma FalaBR recebe manifestaÃ§Ãµes sobre conteÃºdo suspeito; nÃ£o a apresente '
-                'como fonte para consultar informaÃ§Ãµes. Termine com a citaÃ§Ã£o da fonte.'
+                '\n\nUse the cited Ministerio da Saude page and its official links as places to consult. '
+                'It points to the Calendario de Vacinacao, Quiz sobre Fake News, and Duvidas frequentes. '
+                'FalaBR receives reports about suspicious content; do not describe it as a source to check facts. '
+                f'Cite source [{source_discovery_id}].'
             )
+        if _medication_access_question(question):
+            medicine_id = next((i for i, source in enumerate(sources, 1)
+                if 'farmacia-popular' in source.get('url', '')), None)
+            rename_id = next((i for i, source in enumerate(sources, 1)
+                if '/rename' in source.get('url', '')), None)
+            if medicine_id is not None:
+                context += (
+                    '\n\nAnswer directly that some medicines are supplied free through SUS. '
+                    f'Source [{medicine_id}] says they can be obtained at accredited Farmacia Popular '
+                    'locations, UBS, and municipal pharmacies; for Farmacia Popular, mention valid '
+                    'prescription and photo ID with CPF. Do not claim every medicine is free.'
+                )
+                if rename_id is not None:
+                    context += f' Point to Rename source [{rename_id}] for the list.'
         if schedule_source is not None:
             context += (
                 '\n\nNesta pergunta sobre dias ou datas de vacinação, a fonte '
@@ -219,10 +240,15 @@ def verify_grounding(prompt, content, sources):
         )
     if _source_discovery_question(question) and cited_sources:
         instruction += (
-            ' Para a pergunta sobre onde consultar fontes, a pÃ¡gina citada aponta o CalendÃ¡rio '
-            'de VacinaÃ§Ã£o, o Quiz sobre Fake News e as DÃºvidas frequentes como materiais de consulta. '
-            'A FalaBR Ã© apresentada como canal para registrar manifestaÃ§Ãµes, nÃ£o como fonte de '
-            'informaÃ§Ã£o. Aceite uma resposta curta que faÃ§a essa distinÃ§Ã£o e cite a pÃ¡gina.'
+            ' The cited page lists the vaccination calendar, fake-news quiz and FAQ as official resources. '
+            'FalaBR is a channel to submit reports, not an information source. Accept a concise answer '
+            'that makes this distinction and cites the page.'
+        )
+    if _medication_access_question(question) and cited_sources:
+        instruction += (
+            ' For a question about free medicines, accept that the cited Farmacia Popular page says '
+            'medicines and supplies are free and can be obtained through accredited pharmacies, UBS '
+            'and municipal pharmacies. Do not accept a claim that every medicine is free.'
         )
     payload = json.dumps({'question': question,
         'paragraphs': [{'id': i, 'text': p} for i, p in enumerate(answer_paragraphs(content), 1)],
