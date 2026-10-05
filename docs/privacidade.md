@@ -12,9 +12,11 @@ implementação, sem declarar conformidade jurídica.
 A pergunta e até seis trocas anteriores passam do navegador ao servidor Python.
 Para os tópicos de vacinação e desinformação cobertos por rotas temáticas, o
 servidor consulta diretamente a página correspondente em `gov.br`. Nos demais
-casos, envia somente a pergunta atual contextualizada à rota de busca do
-Ministério da Saúde em `gov.br`; resultados dinâmicos que não estejam presentes
-no HTML recebido não são usados. O servidor lê trechos das páginas encontradas e envia instruções, contexto e trechos ao
+casos, envia somente a pergunta atual contextualizada à API oficial SERPRO
+(`portalunico.estaleiro.serpro.gov.br/api/search/`), filtrada para o site do
+Ministério da Saúde. A API fornece URLs candidatas; seu texto não é usado como
+evidência. O servidor aceita somente URLs HTTPS em `gov.br` e baixa o conteúdo
+das páginas diretamente desses domínios. O servidor lê trechos das páginas encontradas e envia instruções, contexto e trechos ao
 Ollama local. Quando
 há evidências, o modelo gera a resposta e recebe uma segunda solicitação para
 revisar seu apoio documental. Sem fontes, o fluxo pode responder sem chamar a IA.
@@ -60,12 +62,14 @@ o ID do pedido concede acesso ao resultado enquanto existir. Não compartilhe
 IDs, capturas do painel de rede ou dumps de memória. Os arquivos locais dependem
 das permissões da conta e do disco; o projeto não criptografa o SQLite ou backups.
 
-O modo atual do chat envia a pergunta de busca ao portal do Ministério da Saúde
-em `www.gov.br` e solicita páginas fonte em domínios HTTPS terminados em
-`.gov.br`. O conteúdo desses domínios é processado durante a resposta; políticas
-de acesso e retenção do portal não foram auditadas. A LLM continua local via
+O modo atual do chat envia a pergunta de busca à API SERPRO em
+`portalunico.estaleiro.serpro.gov.br`, com filtro para o site do Ministério da
+Saúde, e busca as páginas fonte em domínios HTTPS terminados em `.gov.br`. O
+conteúdo desses domínios é processado durante a resposta; políticas de acesso e
+retenção da API e dos portais não foram auditadas. A LLM continua local via
 Ollama. Clicar em uma fonte abre a página gov.br no navegador, sujeita às práticas
-desse site. A aplicação não usa buscador de terceiros neste fluxo.
+desse site. A API SERPRO atende a busca oficial do portal gov.br; o conteúdo
+usado como fonte permanece limitado a páginas gov.br.
 
 ## Cuidados operacionais e incidentes
 
