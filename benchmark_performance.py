@@ -1,5 +1,6 @@
 """Mede a latência do pipeline local sem registrar perguntas ou respostas."""
 import argparse
+from contextlib import nullcontext
 from datetime import datetime, timezone
 import hashlib
 import json
@@ -102,14 +103,14 @@ def maybe_log_mlflow(report, experiment):
         mlflow.set_tag('benchmark_run_id', report['run_id'])
 
 
-def benchmark(case_path=DEFAULT_CASES, warmup_runs=1, repetitions=3):
+def benchmark(case_path=DEFAULT_CASES, warmup_runs=1, repetitions=3, live_search=False):
     cases = load_cases(case_path)
     initial = server.ollama('/api/ps', timeout=5)
     initial_loaded = any(item.get('name') == server.MODEL for item in initial.get('models', []))
     source_files = sorted((ROOT / 'sources').glob('*.json'))
     code_files = [ROOT / name for name in (
         'server.py', 'jobs.py', 'ollama_transport.py', 'knowledge.py',
-        'conversation.py', 'answer_policy.py', 'benchmark_performance.py')]
+        'conversation.py', 'answer_policy.py', 'govbr_search.py', 'benchmark_performance.py')]
     report = {
         'created_at': datetime.now(timezone.utc).isoformat(),
         'run_id': datetime.now(timezone.utc).strftime('latency-%Y%m%dT%H%M%SZ'),
@@ -119,21 +120,25 @@ def benchmark(case_path=DEFAULT_CASES, warmup_runs=1, repetitions=3):
         'model': server.MODEL,
         'model_loaded_before_benchmark': initial_loaded,
         'warmup_runs': warmup_runs, 'repetitions': repetitions,
+        'retrieval_mode': 'gov.br_live' if live_search else 'sqlite_offline',
         'case_count': len(cases), 'case_set_sha256': hashlib.sha256(case_path.read_bytes()).hexdigest(),
         'samples': [], 'summary_seconds': {},
         'method': ('Synthetic representative cases from the versioned search suite; warmups are excluded. '
+                   f"Retrieval mode: {'live gov.br' if live_search else 'offline SQLite'}. "
                    'The model is not unloaded. Queue, retrieval, generation, review and total are reported. '
                    'Conversation text, prompts, answers, sources and job IDs are not stored.'),
         'sha256': {str(path.relative_to(ROOT)): hashlib.sha256(path.read_bytes()).hexdigest()
                    for path in code_files + source_files},
     }
 
-    with tempfile.TemporaryDirectory() as directory:
-        database = Path(directory) / 'knowledge.sqlite3'
-        for path in source_files:
-            knowledge.import_document(path, database)
+    with (nullcontext(None) if live_search else tempfile.TemporaryDirectory()) as directory:
+        if not live_search:
+            database = Path(directory) / 'knowledge.sqlite3'
+            for path in source_files:
+                knowledge.import_document(path, database)
         original_retrieve = server.retrieve
-        server.retrieve = lambda query: knowledge.retrieve(query, database)
+        if not live_search:
+            server.retrieve = lambda query: knowledge.retrieve(query, database)
         queue = JobQueue(server.process_messages, concurrency=1, capacity=0,
                          lease=600, run_timeout=600)
         try:
@@ -164,7 +169,8 @@ def benchmark(case_path=DEFAULT_CASES, warmup_runs=1, repetitions=3):
             report['summary_seconds'] = metrics_report(report['samples'])
         finally:
             queue.close()
-            server.retrieve = original_retrieve
+            if not live_search:
+                server.retrieve = original_retrieve
     return report
 
 
@@ -174,6 +180,8 @@ if __name__ == '__main__':
                         help='JSON sintético; conteúdo nunca é copiado para o relatório')
     parser.add_argument('--warmup', type=int, default=1, help='Execuções descartadas para aquecimento')
     parser.add_argument('--repetitions', type=int, default=3, help='Repetições por caso após aquecimento')
+    parser.add_argument('--live-search', action='store_true',
+                        help='Mede consultas sintéticas no portal gov.br; requer internet e respeita seus limites')
     parser.add_argument('--output', type=Path, default=ROOT / 'evaluation/performance.json')
     parser.add_argument('--mlflow', action='store_true', help='Registra agregados técnicos em MLflow local')
     parser.add_argument('--mlflow-experiment', default='saude-gov-br-latency')
@@ -181,7 +189,7 @@ if __name__ == '__main__':
     if args.warmup < 0 or args.repetitions < 1:
         parser.error('--warmup deve ser >= 0 e --repetitions deve ser >= 1.')
     try:
-        report = benchmark(args.cases, args.warmup, args.repetitions)
+        report = benchmark(args.cases, args.warmup, args.repetitions, args.live_search)
         if args.mlflow:
             maybe_log_mlflow(report, args.mlflow_experiment)
     except (OSError, ValueError, RuntimeError, TimeoutError) as exc:
