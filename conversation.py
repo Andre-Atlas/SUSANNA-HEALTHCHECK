@@ -23,7 +23,9 @@ def resolve_question(messages):
     """
     current = messages[-1]['content']
     if not is_followup(current):
-        return current, list(messages), False
+        # A pergunta independente não precisa de respostas anteriores do modelo.
+        # Mantê-las no prompt pode fazer uma abstenção antiga contaminar a nova resposta.
+        return current, [messages[-1]], False
     previous = [m['content'] for m in messages[:-1] if m['role'] == 'user'][-3:]
     context = []
     for text in reversed(previous):
@@ -37,5 +39,7 @@ def resolve_question(messages):
         return current, list(messages), True
     contextual = json.dumps({'perguntas_anteriores_do_usuario': context,
                              'pergunta_atual': current}, ensure_ascii=False)
-    resolved = [*messages[:-1], {'role': 'user', 'content': contextual}]
+    # O contexto explícito de perguntas basta para resolver a continuidade;
+    # mensagens do assistente nunca são evidência e não devem ir ao modelo.
+    resolved = [{'role': 'user', 'content': contextual}]
     return ' '.join([*context, current]), resolved, False
