@@ -19,9 +19,20 @@ MAX_API_BYTES = 1_000_000
 MAX_RESULTS = 3
 MAX_CANDIDATES = 5
 PAGE_TEXT_LIMIT = 2500
+SEARCH_STOP_WORDS = frozenset({
+    'a', 'as', 'ao', 'aos', 'da', 'das', 'de', 'do', 'dos', 'e', 'em', 'na',
+    'nas', 'no', 'nos', 'o', 'os', 'ou', 'para', 'pela', 'pelas', 'pelo',
+    'pelos', 'por', 'que', 'qual', 'quais', 'quem', 'como', 'sobre', 'um',
+    'uma', 'umas', 'uns', 'este', 'esta', 'isto', 'esse', 'essa', 'isso',
+    'hoje', 'agora', 'atualmente', 'mes', 'ano', 'ministerio', 'informa',
+    'informar', 'informe', 'diz', 'fale', 'falar', 'existe', 'existem',
+    'tem', 'tendo', 'sao', 'estao', 'ser', 'pode', 'podem', 'gostaria',
+    'quero', 'me',
+})
 DIRECT_PAGES = {
     'health_misinformation': 'https://www.gov.br/saude/pt-br/assuntos/saude-com-ciencia',
     'vaccination': 'https://www.gov.br/saude/pt-br/vacinacao',
+    'hepatitis_b': 'https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/h/hepatites-virais/hepatite-b',
 }
 
 
@@ -72,10 +83,8 @@ class _SerproRedirects(HTTPRedirectHandler):
 
 def _serpro_search(query, timeout):
     params = urlencode({
-        'q': query[:400],
-        'aba': 'servicos',
-        'ordenacao': '-data',
-        'site': '//www.gov.br/saude',
+        'q': _search_terms(query)[:400],
+        'ordenacao': '-relevancia',
         'categoriasFiltro': '',
         'orgaosFiltro': '',
         'orgaoId': 'ministerio-da-saude',
@@ -129,7 +138,8 @@ def _serpro_search(query, timeout):
     results = []
     queue = [payload]
     visited = 0
-    url_fields = {'url', 'link', 'href', 'url_conteudo', 'urlconteudo', 'urlportal'}
+    url_fields = {'url', 'link', 'href', 'url_conteudo', 'urlconteudo',
+                  'urlportal', 'contenturl'}
     while queue and visited < 500 and len(results) < 20:
         node = queue.pop(0)
         visited += 1
@@ -235,6 +245,13 @@ def _fold(text):
                    if not unicodedata.combining(char))
 
 
+def _search_terms(question):
+    question = re.sub(r'\bminist[eé]rio\s+da\s+sa[uú]de\b', ' ', question, flags=re.I)
+    words = re.findall(r'[^\W_]+', question, flags=re.UNICODE)
+    terms = [word for word in words if _fold(word) not in SEARCH_STOP_WORDS]
+    return ' '.join(terms[:8]) or question[:100]
+
+
 def _read(url, limit, timeout):
     if not is_gov_br_url(url):
         raise GovBrSearchError('A URL não pertence a um domínio gov.br HTTPS.')
@@ -332,7 +349,7 @@ def _extract_page(url, html, retrieved_at):
 
 
 def search_gov_br(question, *, timeout=5):
-    """Busca no portal do Ministério e retorna até três páginas gov.br extraídas."""
+    """Busca páginas gov.br ao vivo e retorna até três páginas extraídas."""
     query = _clean(question)
     if not query:
         return []
@@ -341,6 +358,8 @@ def search_gov_br(question, *, timeout=5):
     direct_urls = []
     if any(word.startswith('vacin') for word in words):
         direct_urls.append(DIRECT_PAGES['vaccination'])
+    if {'hepatite', 'b'} <= words or {'hepatites', 'b'} <= words:
+        direct_urls.append(DIRECT_PAGES['hepatitis_b'])
     if ('fake news' in normalized or 'desinform' in normalized
             or {'mensagem', 'suspeita'} <= words or any(word.startswith('font') for word in words)
             or 'boato' in words or 'boatos' in words):
