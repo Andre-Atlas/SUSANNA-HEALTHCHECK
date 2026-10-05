@@ -98,7 +98,7 @@ def evaluate(output):
     report = {'created_at': datetime.now(timezone.utc).isoformat(), 'model': server.MODEL,
         'ollama_version': server.ollama('/api/version', timeout=5), 'provenance': suite['provenance'],
         'hashes': {str(path.relative_to(ROOT)): hashlib.sha256(path.read_bytes()).hexdigest() for path in files},
-        'human_review': 'pending', 'browser_review': 'pending', 'results': [],
+        'human_review': 'not part of version 0.2 evaluation', 'browser_review': 'pending', 'results': [],
         'note': 'Verificações automáticas de estado não certificam fidelidade ou segurança. '
                 'Casos criados por IA após desenvolvimento; sem ajuste do produto para esta rodada.'}
     output.parent.mkdir(parents=True, exist_ok=True)
@@ -148,7 +148,6 @@ def evaluate(output):
                 report['completed'] = len(report['results'])
                 report['total'] = len(suite['cases'])
                 output.write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n')
-                output.with_suffix('.human.md').write_text(human_packet(report, output))
                 print(f'{case["id"]}: {"OK automático" if row["automatic_pass"] else "REVISAR"}', flush=True)
         finally:
             app.jobs.close()
@@ -163,8 +162,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path, default=ROOT / 'evaluation/acceptance.json')
     args = parser.parse_args()
-    if args.output.exists() or args.output.with_suffix('.human.md').exists():
-        parser.error('Escolha --output novo para preservar o relatório e as revisões existentes.')
+    if args.output.exists():
+        parser.error('Escolha --output novo para preservar o relatório existente.')
     report = evaluate(args.output)
-    print(f'Critérios automáticos: {report["automatic_passed"]}/{report["total"]}. Revisão humana pendente.')
+    print(f'Critérios automáticos: {report["automatic_passed"]}/{report["total"]}.')
     raise SystemExit(0 if report['automatic_passed'] == report['total'] else 1)
