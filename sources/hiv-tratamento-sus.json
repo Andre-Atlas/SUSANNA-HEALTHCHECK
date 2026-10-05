@@ -1,0 +1,15 @@
+{
+  "title": "HIV — tratamento antirretroviral gratuito no SUS",
+  "url": "https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/a/aids-hiv/tratamento/tratamento",
+  "publisher": "Ministério da Saúde",
+  "reviewed_at": "2026-10-01",
+  "published_at": null,
+  "source_updated_at": null,
+  "next_review_at": "2026-11-01",
+  "content_type": "Síntese produzida por IA a partir da fonte; não é transcrição oficial",
+  "review_status": "Revisado por IA",
+  "documentary_check": {"checked_at": "2026-10-01", "checked_by": "Codex (IA)", "source_section": "Tratamento", "report": "docs/etapa-expansao-fontes-sus-20261001.md", "review_status": "Revisado por IA", "reuse_assessment": "Pendente de decisão da equipe"},
+  "source_license_notice": "A página informa licença Creative Commons Atribuição-SemDerivações 3.0 Não Adaptada. Esta síntese é uma adaptação; obter análise específica sobre a possibilidade de reutilização antes de distribuir publicamente.",
+  "coverage_questions": ["O SUS oferece remédio para HIV?", "O tratamento antirretroviral para HIV é gratuito no SUS?", "O chatbot sabe se há remédio para HIV em estoque na minha cidade?"],
+  "text": "Síntese do Ministério da Saúde: o SUS distribui gratuitamente medicamentos antirretrovirais (ARV) às pessoas vivendo com HIV que necessitam de tratamento. O uso regular dos ARV é importante e o esquema adequado deve ser definido e acompanhado por profissionais de saúde. A relação de apresentações e os protocolos podem mudar, por isso não se registra aqui uma lista fixa nem se recomenda um esquema individual. Esta informação não confirma estoque, horário ou local de retirada em uma unidade específica; consulte o serviço de saúde que acompanha a pessoa ou a Secretaria de Saúde local."
+}
