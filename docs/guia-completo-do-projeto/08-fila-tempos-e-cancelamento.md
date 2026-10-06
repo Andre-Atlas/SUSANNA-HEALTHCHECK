@@ -17,3 +17,22 @@ Defaults da fila em [`jobs.py`](../../jobs.py#L100-L112): 120 s em espera, 360 s
 ## Como diagnosticar demora
 
 Leia `timings.queue`, `timings.retrieval`, `timings.generation`, `timings.review` e `timings.total` no `/api/metrics` ou no estado do job. Se `retrieval` dominar, verifique rede/portal; se `generation` ou `review` dominar, verifique modelo e CPU/GPU; se `queue` dominar, há concorrência insuficiente para o número de pedidos. `benchmark_performance.py` mede amostras controladas, mas não representa disponibilidade permanente.
+
+### Medir latência no macOS
+
+Para comparar o desempenho do modelo, conecte o Mac à energia, deixe o modo de
+baixo consumo desativado nas configurações de bateria e mantenha o Ollama em
+execução. Confirme que o modelo está carregado com `ollama ps`, então execute no
+terminal do projeto:
+
+```bash
+OLLAMA_MODEL=qwen2.5:7b python3 benchmark_performance.py --warmup 1 --repetitions 1 --output /private/tmp/performance-mac.json
+```
+
+O benchmark usa fontes locais versionadas para isolar geração e revisão do
+tempo variável do portal. Compare `generation`, `review` e `total` no resumo.
+Para medir também a rede gov.br, use `--live-search` em outra rodada; essa
+medição pode variar com a conexão e a disponibilidade do portal. Uma rodada
+curta ajuda a localizar o gargalo, mas várias repetições são necessárias para
+avaliar a estabilidade. Não aumente `--concurrency` para acelerar uma única
+resposta: isso pode disputar memória e recursos de inferência no mesmo Mac.
