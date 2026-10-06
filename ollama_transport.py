@@ -8,9 +8,9 @@ from urllib.parse import urlsplit
 from jobs import current_job
 
 
-def chat_stream(base_url, data, timeout=180):
+def chat_stream(base_url, data, timeout=180, *, stage_name=None):
     started = time.monotonic()
-    phase = 'review' if 'format' in data else 'generation'
+    phase = stage_name or ('review' if 'format' in data else 'generation')
     url = urlsplit(base_url)
     connection = http.client.HTTPConnection(url.hostname, url.port, timeout=5)
     job = current_job()
