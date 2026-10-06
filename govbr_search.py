@@ -10,7 +10,8 @@ import unicodedata
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode, urljoin, urlsplit
 from urllib.request import HTTPRedirectHandler, Request, build_opener
-from jobs import current_job
+from concurrent.futures import ThreadPoolExecutor
+from jobs import LOCAL, current_job
 
 
 SERPRO_SEARCH_URL = 'https://portalunico.estaleiro.serpro.gov.br/api/search/'
@@ -419,9 +420,23 @@ def search_gov_br(question, *, timeout=5):
     now = datetime.now().astimezone().isoformat(timespec='seconds')
     sources = []
     last_read_error = None
-    for url, _label in links[:MAX_CANDIDATES]:
+    candidates = [url for url, _label in links[:MAX_CANDIDATES]]
+    # Leituras simultâneas; os resultados são examinados na ordem original dos
+    # candidatos, com a mesma seleção e o mesmo tratamento de erros da leitura sequencial.
+    job = current_job()
+
+    def read(url):
+        LOCAL.job = job
         try:
-            page = _read(url, MAX_PAGE_BYTES, timeout)
+            return _read(url, MAX_PAGE_BYTES, timeout)
+        finally:
+            LOCAL.job = None
+
+    with ThreadPoolExecutor(max_workers=max(1, len(candidates))) as pool:
+        pages = [pool.submit(read, url) for url in candidates]
+    for future in pages:
+        try:
+            page = future.result()
         except GovBrSearchError as exc:
             last_read_error = exc
             continue
