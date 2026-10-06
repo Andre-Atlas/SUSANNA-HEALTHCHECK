@@ -1,0 +1,892 @@
+{
+  "schema_version": "1.0.0",
+  "document": {
+    "source_id": "projeto-guia-dados-assistencia-farmaceutica-df",
+    "source_title": "Guia do conjunto de dados de Assistência Farmaceutica do DF",
+    "source_file": "dados.md",
+    "source_url": null,
+    "source_version": null,
+    "captured_at": null,
+    "reference_date_original": "06/10/2026.",
+    "review_status": "governance_document",
+    "ingestion_status": "governance_only",
+    "quality_notes": [
+      "Documento de governanca; nao e fonte primaria de informacao clinica."
+    ],
+    "language": "pt-BR",
+    "original_sha256": "857cfe20b9204f4b388001455d55d8c2647ce379e1503322d3e0988afe13c23c",
+    "original_line_count": 141
+  },
+  "original_markdown": "# Guia do conjunto de dados de Assistência Farmaceutica do DF\n\n> **Finalidade:** documentar as fontes em `DADOS/`, seu estado de revisao e as regras para preparar dados para consulta, banco de dados ou chatbot.\n> **Ultima auditoria documental:** 06/10/2026.\n> **Estado geral:** nao importar nem usar estes documentos como fonte clinica automatica sem cumprir os criterios de qualidade e revisao deste guia.\n\n## 1. Objetivo e escopo\n\nO diretorio reune informacoes sobre medicamentos padronizados pela SES-DF, servicos de dispensacao, Componente Especializado e fitoterapicos. Este guia define como interpretar, validar, estruturar e atualizar esses materiais.\n\nOs documentos sao fontes informativas, nao substituem avaliacao de profissional de saude, bula, protocolo clinico ou confirmacao diretamente com o servico. A presenca de um medicamento em uma lista nao confirma estoque, elegibilidade individual, indicacao clinica nem disponibilidade imediata.\n\nEste arquivo e um indice e um registro de governanca. As listas detalhadas permanecem em seus documentos de origem; nao devem ser copiadas para ca, pois isso cria versoes divergentes.\n\n## 2. Inventario e estado das fontes\n\n| Arquivo | Conteudo | Fonte de referencia | Estado na auditoria | Condicao para ingestao |\n|---|---|---|---|---|\n| `01_REME_DF_2025_Medicamentos.md` | Relacao geral REME-DF e subsecoes tematicas | [PDF oficial da REME-DF](https://www.saude.df.gov.br/documents/d/saude/reme-df-2025-com-capa-ascom-versao-final-editada-pdf) | **Bloqueado para importacao automatica.** A sequencia da relacao principal contem 1.048 itens, mas ha forte evidencia de erros de OCR/deslocamento em codigos e descricoes. | Reextrair ou corrigir comparando cada campo com o PDF oficial; revisar candidatos a duplicata e codigos divergentes. |\n| `02_HUB_Farmacia_Escola.md` | Programas, orientacoes e dados operacionais do HUB | [Pagina oficial da Farmacia Escola do HUB](https://www.gov.br/hubrasil/pt-br/hospitais-universitarios/regiao-centro-oeste/hub-unb/saude/farmacia-escola) | **Revisao necessaria.** Estoque e operacao sao temporarios; na pagina consultada em 06/10/2026, o aviso de falta tinha atualizacao posterior a registrada no arquivo. Elenco e orientacoes clinicas precisam de confirmacao. | Atualizar a partir da pagina oficial; marcar data/hora de captura e validade; validar medicamentos, formulacoes e regras com a equipe/fonte competente. |\n| `03_Componente_Especializado_Alto_Custo.md` | Unidades, acesso, cadastro e Medicamento em Casa | [Pagina oficial do CEAF SES-DF](https://www.saude.df.gov.br/componente-especializado) | **Revisao parcial.** A pagina consultada confirma varias informacoes de atendimento, inclusive o aviso de inventario de novembro de 2026. Alguns detalhes documentais, territoriais e de elegibilidade precisam de verificacao especifica. | Vincular cada requisito ao protocolo/formulario vigente; conferir abrangencia regional e distinguir pessoa autorizada de representante legal. |\n| `04_Farmacias_Vivas_Fitoterapicos.md` | Formulacoes, unidades produtoras, UBS e alegacoes de uso | [Pagina oficial de Farmacias Vivas SES-DF](https://www.saude.df.gov.br/farmacias-vivas-fitoterapicos) | **Revisao parcial.** A pagina consultada confirma as duas unidades produtoras, as nove formulacoes e orientacao geral de dispensacao; nao confirma todas as indicacoes terapeuticas descritas nem, por si so, toda a lista de UBS. | Conferir indicacoes no guia tecnico oficial vigente e validar a lista de unidades contra o arquivo oficial de UBS dispensadoras. |\n| `dados.md` | Indice, regras de qualidade e governanca | Este documento | **Documento de governanca.** | Atualizar junto com cada rodada de auditoria. |\n\nOs estados acima descrevem a triagem documental deste projeto, nao certificacao da SES-DF, da EBSERH ou de profissional clinico. Uma fonte oficial pode mudar depois da captura; guardar sempre a data em que foi consultada.\n\n## 3. Achados conhecidos e fila de revisao\n\n### 3.1 REME-DF\n\n- A relacao principal enumera continuamente os itens de 1 a 1.048. Essa verificacao confirma a sequencia, nao a exatidao dos campos.\n- Na auditoria mecanica, 544 celulas de codigo da tabela principal continham uma letra final suspeita de deslocamento. Ha exemplos em que o nome tambem perdeu a letra inicial ou a apresentacao/dose parece truncada. Nao corrigir por regra automatica: validar contra o PDF.\n- Foram encontrados 18 grupos de descricoes identicas na relacao principal. Muitos pares parecem distinguir componente ou local de dispensacao e podem ser registros legitimos. Albumina humana nos itens 33 e 34 e candidato forte a duplicata, pois descricao, grupo e local coincidem. Exigir decisao humana antes de unir ou excluir.\n- Ha divergencia interna a verificar para suxametonio: codigo `90230` na relacao geral e `230` em carros de emergencia.\n- Algumas celulas nas subsecoes de compra eventual e carros de emergencia terminam com texto aparentemente truncado. Confirmar descricao e apresentacao no documento oficial.\n- As subsecoes repetem medicamentos da relacao geral por finalidade. Essa repeticao entre secoes e contextual, nao e duplicata para eliminar sem preservar a secao e o uso.\n\n### 3.2 Farmacia Escola HUB\n\n- O arquivo tem verificacao registrada em 01/10/2026 e alerta da unidade datado de 11/09/2026. A pagina oficial consultada em 06/10/2026 apresentava aviso de falta atualizado em 06/10 e incluia insulina ultrarrapida, item ausente daquele alerta no arquivo. Reconsultar antes de publicar qualquer status de disponibilidade.\n- A relacao de antirretrovirais e esquemas precisa de confirmacao de atualidade e de disponibilidade no HUB; nao apresentar automaticamente todos os itens como dispensados atualmente.\n- Regras gerais sobre antimicrobianos, conservacao de produtos, validade de receitas e controle de talidomida precisam de referencia normativa/produto especifica e revisao tecnica.\n- O caminho de automacao citado no final do arquivo e um caminho pessoal local. Nao e uma dependencia reproduzivel do repositorio; documentar uma rotina portavel se ela for mantida.\n\n### 3.3 CEAF\n\n- A pagina oficial consultada confirma informacoes centrais de atendimento, cadastro remoto, telefone, unidades e o fechamento para inventario anunciado para 09 e 10/11/2026, com retomada em 11/11/2026. Avisos com data devem expirar apos o periodo informado.\n- A pagina consultada descreve ate quatro pessoas autorizadas a receber entrega domiciliar; o arquivo as chama de representantes legais. Confirmar e alinhar a terminologia antes de estruturar esse campo.\n- Validade da LME, documentos, abrangencia territorial e excecoes de atendimento devem ser ligados ao protocolo, formulario ou orientacao oficial vigente. Nao assumir que um requisito e universal quando pode depender da condicao ou medicamento.\n\n### 3.4 Farmacias Vivas\n\n- A pagina oficial consultada confirma as nove formulacoes e as duas unidades produtoras. As alegacoes detalhadas de indicacao, eficacia, potencia, sintomas ou condicoes nao ficam validadas apenas por essa confirmacao.\n- A lista de UBS deve ser verificada contra o documento oficial de unidades dispensadoras, com data de publicacao/consulta registrada. Enderecos parecidos, como UBS 5 e UBS 6 Taguatinga, sao candidatos para conferencia, nao duplicatas confirmadas.\n- Prescritores habilitados, restricoes, contraindicacoes e modo de uso exigem fonte normativa ou guia clinico oficial. Nao converter texto promocional/descritivo em conselho individual.\n\n## 4. Modelo recomendado para o banco\n\nSeparar entidades diferentes. Evitar uma tabela unica que misture catalogo de produtos, estoque temporario, enderecos e orientacao clinica.\n\n### 4.1 Fonte e versao\n\n| Campo | Uso |\n|---|---|\n| `source_id` | Identificador estavel da fonte/documento. |\n| `source_title` | Titulo publicado pela instituicao. |\n| `source_url` | URL oficial consultada. |\n| `source_version` | Edicao, numero de versao ou data declarada pela fonte. |\n| `captured_at` | Data/hora em que o conteudo foi obtido. |\n| `valid_from`, `valid_until` | Periodo de validade conhecido; usar nulo quando desconhecido, nunca inventar. |\n| `review_status` | `pending`, `verified`, `rejected` ou `superseded`. |\n| `reviewed_by`, `reviewed_at` | Responsavel e data da revisao humana. |\n| `source_locator` | Pagina, secao, item, tabela ou URL especifica que sustenta o registro. |\n\n### 4.2 Medicamento e apresentacao\n\nCampos sugeridos: `ingredient_name_original`, `ingredient_name_normalized`, `description_original`, `dosage_form`, `strength_value`, `strength_unit`, `packaging`, `route` (somente se a fonte informar), `ses_code_original`, `component`, `program`, `dispensing_location`, `eligibility_text`, `cid_codes` e `source_id`.\n\nPreservar sempre os valores originais. Campos normalizados sao derivados e devem poder ser rastreados ate a fonte. Nao inferir principio ativo, dose, unidade, via, CID ou elegibilidade a partir de conhecimento externo sem registrar uma fonte apropriada.\n\n### 4.3 Disponibilidade e servicos\n\nEstoque, falta, horario, fechamento e forma de atendimento devem ser registros temporais independentes: `service_id`, `status`, `details`, `captured_at`, `valid_from`, `valid_until`, `source_id` e `source_locator`. Um aviso sem prazo conhecido deve ser marcado como validade desconhecida e precisa de reconsulta antes de ser apresentado como atual.\n\n### 4.4 Indicacoes e conteudo clinico\n\nArmazenar alegacoes clinicas separadamente do catalogo administrativo. Cada alegacao deve conter texto, populacao/contexto, tipo de afirmacao (indicacao, contraindicacao, interacao, dose, armazenamento etc.), fonte clinica/normativa, versao/data, trecho de suporte e estado de revisao por pessoa qualificada. Sem esses elementos, nao usar para gerar recomendacao clinica.\n\n## 5. Identificadores, duplicatas e valores ausentes\n\n- Nao usar o numero sequencial `Item` como chave unica: ele reinicia em cada secao.\n- Uma chave de registro de origem pode combinar `source_id + section_id + item_number`. O codigo SES deve ser guardado como valor de origem e validado, nao presumido globalmente unico.\n- Nao remover registros apenas porque principio ativo ou descricao coincidem. Comparar codigo, apresentacao, concentracao, componente, programa, local e vigencia.\n- Registrar duplicatas como candidatos com motivo e decisao humana: `duplicate_candidate`, `duplicate_of`, `decision`, `reviewer` e `reviewed_at`.\n- Diferenciar campo ausente, nao aplicavel, desconhecido e explicitamente nao informado. Nao preencher com zero, texto presumido ou valor deduzido.\n- Em conflitos entre fontes, guardar ambas as afirmacoes, as datas e as fontes; nao escolher silenciosamente uma delas.\n\n## 6. Pipeline de preparacao\n\n1. Guardar uma copia imutavel da fonte original e seus metadados de captura.\n2. Extrair registros preservando secao, item, pagina/trecho e texto original.\n3. Validar colunas, tipos, codigos, unidades, numeros de itens e campos obrigatorios.\n4. Sinalizar OCR, truncamentos, valores fora do padrao e repeticoes para revisao humana.\n5. Comparar campos clinicamente ou operacionalmente sensiveis diretamente com a fonte oficial.\n6. Registrar cada correcao como valor original, valor proposto, justificativa, fonte e revisor; nao sobrescrever a origem.\n7. Publicar apenas registros aprovados para o uso pretendido, com versao e data de validade.\n8. Reexecutar validacoes apos cada atualizacao e manter historico de alteracoes.\n\nValidacoes minimas para catalogos: codigo preservado como texto; concentracao separada de unidade; apresentacao nao vazia; secao e fonte obrigatorias; codigos suspeitos, descricoes truncadas e duplicatas candidatas em fila de revisao. Para avisos, exigir data de captura e verificar vencimento antes de responder.\n\n## 7. Uso em busca ou chatbot\n\n- Preferir recuperacao de trechos das fontes (RAG) com citacao da instituicao, secao e data, em vez de treinar o modelo para memorizar horarios, estoques ou regras que mudam.\n- Responder sobre dispensacao somente com registros aprovados e vigentes; dizer quando a fonte nao informa algo e encaminhar para o canal oficial.\n- Distinguir claramente “padronizado”, “dispensado neste servico”, “em falta na data X” e “estoque confirmado agora”. Sao afirmacoes diferentes.\n- Nao recomendar inicio, interrupcao, substituicao, dose ou combinacao de medicamentos. Nao diagnosticar nem extrapolar indicacoes de fitoterapicos.\n- Para casos urgentes, efeitos adversos, gestacao, criancas ou duvida individual de tratamento, orientar contato com profissional/servico de saude adequado; nao improvisar uma conduta.\n- Nao enviar dados pessoais ou dados de pacientes para treinamento. Os documentos atuais devem permanecer sem dados identificaveis de usuarios.\n- Antes de distribuir ou treinar modelos com conteudo de terceiros, verificar licencas, termos de uso, atribuicao e autorizacao aplicaveis. A licenca do repositorio nao deve ser presumida como licenca das fontes oficiais.\n\n## 8. Atualizacao e governanca\n\nManter um responsavel pela revisao de cada fonte. A cadencia deve refletir o tipo de dado: alertas de estoque e fechamento exigem consulta na data da resposta; horarios, unidades e regras de acesso exigem revalidacao periodica; catalogos e protocolos devem seguir a edicao oficial vigente.\n\nPara cada rodada, registrar: URL consultada, data/hora, versao publicada, arquivos alterados, diferencas encontradas, itens aprovados/rejeitados, responsavel e proxima revisao. Nao alterar silenciosamente um dado publicado.\n\n## 9. Criterios para liberar dados\n\nUm arquivo ou conjunto de registros so deve ser marcado como pronto para uso quando:\n\n- a fonte e a versao estao identificadas e acessiveis;\n- campos estruturados foram comparados com a fonte original;\n- codigos, doses, unidades e apresentacoes passaram por revisao adequada ao risco;\n- duplicatas candidatas e conflitos possuem decisao registrada;\n- informacoes temporarias possuem data, validade ou regra explicita de reconsulta;\n- afirmacoes clinicas possuem fonte clinica/normativa e revisao qualificada;\n- os testes de importacao e validacao passaram;\n- o consumidor (banco, busca ou chatbot) consegue exibir proveniencia e incerteza.\n\n**Estado atual de liberacao:** os documentos deste diretorio sao uteis como material de triagem, mas a REME transcrita ainda requer validacao contra o PDF, e os conteudos operacionais/clinicos dos arquivos tematicos devem ser consumidos com os estados e ressalvas registrados acima.\n\n",
+  "records": [
+    {
+      "record_id": "projeto-guia-dados-assistencia-farmaceutica-df:table:L17:L19",
+      "source_id": "projeto-guia-dados-assistencia-farmaceutica-df",
+      "section": "Guia do conjunto de dados de Assistência Farmaceutica do DF > 2. Inventario e estado das fontes",
+      "table_id": "projeto-guia-dados-assistencia-farmaceutica-df:table:L17",
+      "line_start": 19,
+      "line_end": 19,
+      "raw_row": "| `01_REME_DF_2025_Medicamentos.md` | Relacao geral REME-DF e subsecoes tematicas | [PDF oficial da REME-DF](https://www.saude.df.gov.br/documents/d/saude/reme-df-2025-com-capa-ascom-versao-final-editada-pdf) | **Bloqueado para importacao automatica.** A sequencia da relacao principal contem 1.048 itens, mas ha forte evidencia de erros de OCR/deslocamento em codigos e descricoes. | Reextrair ou corrigir comparando cada campo com o PDF oficial; revisar candidatos a duplicata e codigos divergentes. |",
+      "headers_original": [
+        "Arquivo",
+        "Conteudo",
+        "Fonte de referencia",
+        "Estado na auditoria",
+        "Condicao para ingestao"
+      ],
+      "cells_original": [
+        "`01_REME_DF_2025_Medicamentos.md`",
+        "Relacao geral REME-DF e subsecoes tematicas",
+        "[PDF oficial da REME-DF](https://www.saude.df.gov.br/documents/d/saude/reme-df-2025-com-capa-ascom-versao-final-editada-pdf)",
+        "**Bloqueado para importacao automatica.** A sequencia da relacao principal contem 1.048 itens, mas ha forte evidencia de erros de OCR/deslocamento em codigos e descricoes.",
+        "Reextrair ou corrigir comparando cada campo com o PDF oficial; revisar candidatos a duplicata e codigos divergentes."
+      ],
+      "parse_status": "columns_aligned_unverified",
+      "review_status": "pending",
+      "validation_status": "not_validated_against_authoritative_source",
+      "fields_original": {
+        "Arquivo": "`01_REME_DF_2025_Medicamentos.md`",
+        "Conteudo": "Relacao geral REME-DF e subsecoes tematicas",
+        "Fonte de referencia": "[PDF oficial da REME-DF](https://www.saude.df.gov.br/documents/d/saude/reme-df-2025-com-capa-ascom-versao-final-editada-pdf)",
+        "Estado na auditoria": "**Bloqueado para importacao automatica.** A sequencia da relacao principal contem 1.048 itens, mas ha forte evidencia de erros de OCR/deslocamento em codigos e descricoes.",
+        "Condicao para ingestao": "Reextrair ou corrigir comparando cada campo com o PDF oficial; revisar candidatos a duplicata e codigos divergentes."
+      }
+    },
+    {
+      "record_id": "projeto-guia-dados-assistencia-farmaceutica-df:table:L17:L20",
+      "source_id": "projeto-guia-dados-assistencia-farmaceutica-df",
+      "section": "Guia do conjunto de dados de Assistência Farmaceutica do DF > 2. Inventario e estado das fontes",
+      "table_id": "projeto-guia-dados-assistencia-farmaceutica-df:table:L17",
+      "line_start": 20,
+      "line_end": 20,
+      "raw_row": "| `02_HUB_Farmacia_Escola.md` | Programas, orientacoes e dados operacionais do HUB | [Pagina oficial da Farmacia Escola do HUB](https://www.gov.br/hubrasil/pt-br/hospitais-universitarios/regiao-centro-oeste/hub-unb/saude/farmacia-escola) | **Revisao necessaria.** Estoque e operacao sao temporarios; na pagina consultada em 06/10/2026, o aviso de falta tinha atualizacao posterior a registrada no arquivo. Elenco e orientacoes clinicas precisam de confirmacao. | Atualizar a partir da pagina oficial; marcar data/hora de captura e validade; validar medicamentos, formulacoes e regras com a equipe/fonte competente. |",
+      "headers_original": [
+        "Arquivo",
+        "Conteudo",
+        "Fonte de referencia",
+        "Estado na auditoria",
+        "Condicao para ingestao"
+      ],
+      "cells_original": [
+        "`02_HUB_Farmacia_Escola.md`",
+        "Programas, orientacoes e dados operacionais do HUB",
+        "[Pagina oficial da Farmacia Escola do HUB](https://www.gov.br/hubrasil/pt-br/hospitais-universitarios/regiao-centro-oeste/hub-unb/saude/farmacia-escola)",
+        "**Revisao necessaria.** Estoque e operacao sao temporarios; na pagina consultada em 06/10/2026, o aviso de falta tinha atualizacao posterior a registrada no arquivo. Elenco e orientacoes clinicas precisam de confirmacao.",
+        "Atualizar a partir da pagina oficial; marcar data/hora de captura e validade; validar medicamentos, formulacoes e regras com a equipe/fonte competente."
+      ],
+      "parse_status": "columns_aligned_unverified",
+      "review_status": "pending",
+      "validation_status": "not_validated_against_authoritative_source",
+      "fields_original": {
+        "Arquivo": "`02_HUB_Farmacia_Escola.md`",
+        "Conteudo": "Programas, orientacoes e dados operacionais do HUB",
+        "Fonte de referencia": "[Pagina oficial da Farmacia Escola do HUB](https://www.gov.br/hubrasil/pt-br/hospitais-universitarios/regiao-centro-oeste/hub-unb/saude/farmacia-escola)",
+        "Estado na auditoria": "**Revisao necessaria.** Estoque e operacao sao temporarios; na pagina consultada em 06/10/2026, o aviso de falta tinha atualizacao posterior a registrada no arquivo. Elenco e orientacoes clinicas precisam de confirmacao.",
+        "Condicao para ingestao": "Atualizar a partir da pagina oficial; marcar data/hora de captura e validade; validar medicamentos, formulacoes e regras com a equipe/fonte competente."
+      }
+    },
+    {
+      "record_id": "projeto-guia-dados-assistencia-farmaceutica-df:table:L17:L21",
+      "source_id": "projeto-guia-dados-assistencia-farmaceutica-df",
+      "section": "Guia do conjunto de dados de Assistência Farmaceutica do DF > 2. Inventario e estado das fontes",
+      "table_id": "projeto-guia-dados-assistencia-farmaceutica-df:table:L17",
+      "line_start": 21,
+      "line_end": 21,
+      "raw_row": "| `03_Componente_Especializado_Alto_Custo.md` | Unidades, acesso, cadastro e Medicamento em Casa | [Pagina oficial do CEAF SES-DF](https://www.saude.df.gov.br/componente-especializado) | **Revisao parcial.** A pagina consultada confirma varias informacoes de atendimento, inclusive o aviso de inventario de novembro de 2026. Alguns detalhes documentais, territoriais e de elegibilidade precisam de verificacao especifica. | Vincular cada requisito ao protocolo/formulario vigente; conferir abrangencia regional e distinguir pessoa autorizada de representante legal. |",
+      "headers_original": [
+        "Arquivo",
+        "Conteudo",
+        "Fonte de referencia",
+        "Estado na auditoria",
+        "Condicao para ingestao"
+      ],
+      "cells_original": [
+        "`03_Componente_Especializado_Alto_Custo.md`",
+        "Unidades, acesso, cadastro e Medicamento em Casa",
+        "[Pagina oficial do CEAF SES-DF](https://www.saude.df.gov.br/componente-especializado)",
+        "**Revisao parcial.** A pagina consultada confirma varias informacoes de atendimento, inclusive o aviso de inventario de novembro de 2026. Alguns detalhes documentais, territoriais e de elegibilidade precisam de verificacao especifica.",
+        "Vincular cada requisito ao protocolo/formulario vigente; conferir abrangencia regional e distinguir pessoa autorizada de representante legal."
+      ],
+      "parse_status": "columns_aligned_unverified",
+      "review_status": "pending",
+      "validation_status": "not_validated_against_authoritative_source",
+      "fields_original": {
+        "Arquivo": "`03_Componente_Especializado_Alto_Custo.md`",
+        "Conteudo": "Unidades, acesso, cadastro e Medicamento em Casa",
+        "Fonte de referencia": "[Pagina oficial do CEAF SES-DF](https://www.saude.df.gov.br/componente-especializado)",
+        "Estado na auditoria": "**Revisao parcial.** A pagina consultada confirma varias informacoes de atendimento, inclusive o aviso de inventario de novembro de 2026. Alguns detalhes documentais, territoriais e de elegibilidade precisam de verificacao especifica.",
+        "Condicao para ingestao": "Vincular cada requisito ao protocolo/formulario vigente; conferir abrangencia regional e distinguir pessoa autorizada de representante legal."
+      }
+    },
+    {
+      "record_id": "projeto-guia-dados-assistencia-farmaceutica-df:table:L17:L22",
+      "source_id": "projeto-guia-dados-assistencia-farmaceutica-df",
+      "section": "Guia do conjunto de dados de Assistência Farmaceutica do DF > 2. Inventario e estado das fontes",
+      "table_id": "projeto-guia-dados-assistencia-farmaceutica-df:table:L17",
+      "line_start": 22,
+      "line_end": 22,
+      "raw_row": "| `04_Farmacias_Vivas_Fitoterapicos.md` | Formulacoes, unidades produtoras, UBS e alegacoes de uso | [Pagina oficial de Farmacias Vivas SES-DF](https://www.saude.df.gov.br/farmacias-vivas-fitoterapicos) | **Revisao parcial.** A pagina consultada confirma as duas unidades produtoras, as nove formulacoes e orientacao geral de dispensacao; nao confirma todas as indicacoes terapeuticas descritas nem, por si so, toda a lista de UBS. | Conferir indicacoes no guia tecnico oficial vigente e validar a lista de unidades contra o arquivo oficial de UBS dispensadoras. |",
+      "headers_original": [
+        "Arquivo",
+        "Conteudo",
+        "Fonte de referencia",
+        "Estado na auditoria",
+        "Condicao para ingestao"
+      ],
+      "cells_original": [
+        "`04_Farmacias_Vivas_Fitoterapicos.md`",
+        "Formulacoes, unidades produtoras, UBS e alegacoes de uso",
+        "[Pagina oficial de Farmacias Vivas SES-DF](https://www.saude.df.gov.br/farmacias-vivas-fitoterapicos)",
+        "**Revisao parcial.** A pagina consultada confirma as duas unidades produtoras, as nove formulacoes e orientacao geral de dispensacao; nao confirma todas as indicacoes terapeuticas descritas nem, por si so, toda a lista de UBS.",
+        "Conferir indicacoes no guia tecnico oficial vigente e validar a lista de unidades contra o arquivo oficial de UBS dispensadoras."
+      ],
+      "parse_status": "columns_aligned_unverified",
+      "review_status": "pending",
+      "validation_status": "not_validated_against_authoritative_source",
+      "fields_original": {
+        "Arquivo": "`04_Farmacias_Vivas_Fitoterapicos.md`",
+        "Conteudo": "Formulacoes, unidades produtoras, UBS e alegacoes de uso",
+        "Fonte de referencia": "[Pagina oficial de Farmacias Vivas SES-DF](https://www.saude.df.gov.br/farmacias-vivas-fitoterapicos)",
+        "Estado na auditoria": "**Revisao parcial.** A pagina consultada confirma as duas unidades produtoras, as nove formulacoes e orientacao geral de dispensacao; nao confirma todas as indicacoes terapeuticas descritas nem, por si so, toda a lista de UBS.",
+        "Condicao para ingestao": "Conferir indicacoes no guia tecnico oficial vigente e validar a lista de unidades contra o arquivo oficial de UBS dispensadoras."
+      }
+    },
+    {
+      "record_id": "projeto-guia-dados-assistencia-farmaceutica-df:table:L17:L23",
+      "source_id": "projeto-guia-dados-assistencia-farmaceutica-df",
+      "section": "Guia do conjunto de dados de Assistência Farmaceutica do DF > 2. Inventario e estado das fontes",
+      "table_id": "projeto-guia-dados-assistencia-farmaceutica-df:table:L17",
+      "line_start": 23,
+      "line_end": 23,
+      "raw_row": "| `dados.md` | Indice, regras de qualidade e governanca | Este documento | **Documento de governanca.** | Atualizar junto com cada rodada de auditoria. |",
+      "headers_original": [
+        "Arquivo",
+        "Conteudo",
+        "Fonte de referencia",
+        "Estado na auditoria",
+        "Condicao para ingestao"
+      ],
+      "cells_original": [
+        "`dados.md`",
+        "Indice, regras de qualidade e governanca",
+        "Este documento",
+        "**Documento de governanca.**",
+        "Atualizar junto com cada rodada de auditoria."
+      ],
+      "parse_status": "columns_aligned_unverified",
+      "review_status": "pending",
+      "validation_status": "not_validated_against_authoritative_source",
+      "fields_original": {
+        "Arquivo": "`dados.md`",
+        "Conteudo": "Indice, regras de qualidade e governanca",
+        "Fonte de referencia": "Este documento",
+        "Estado na auditoria": "**Documento de governanca.**",
+        "Condicao para ingestao": "Atualizar junto com cada rodada de auditoria."
+      }
+    },
+    {
+      "record_id": "projeto-guia-dados-assistencia-farmaceutica-df:table:L63:L65",
+      "source_id": "projeto-guia-dados-assistencia-farmaceutica-df",
+      "section": "Guia do conjunto de dados de Assistência Farmaceutica do DF > 4. Modelo recomendado para o banco > 4.1 Fonte e versao",
+      "table_id": "projeto-guia-dados-assistencia-farmaceutica-df:table:L63",
+      "line_start": 65,
+      "line_end": 65,
+      "raw_row": "| `source_id` | Identificador estavel da fonte/documento. |",
+      "headers_original": [
+        "Campo",
+        "Uso"
+      ],
+      "cells_original": [
+        "`source_id`",
+        "Identificador estavel da fonte/documento."
+      ],
+      "parse_status": "columns_aligned_unverified",
+      "review_status": "pending",
+      "validation_status": "not_validated_against_authoritative_source",
+      "fields_original": {
+        "Campo": "`source_id`",
+        "Uso": "Identificador estavel da fonte/documento."
+      }
+    },
+    {
+      "record_id": "projeto-guia-dados-assistencia-farmaceutica-df:table:L63:L66",
+      "source_id": "projeto-guia-dados-assistencia-farmaceutica-df",
+      "section": "Guia do conjunto de dados de Assistência Farmaceutica do DF > 4. Modelo recomendado para o banco > 4.1 Fonte e versao",
+      "table_id": "projeto-guia-dados-assistencia-farmaceutica-df:table:L63",
+      "line_start": 66,
+      "line_end": 66,
+      "raw_row": "| `source_title` | Titulo publicado pela instituicao. |",
+      "headers_original": [
+        "Campo",
+        "Uso"
+      ],
+      "cells_original": [
+        "`source_title`",
+        "Titulo publicado pela instituicao."
+      ],
+      "parse_status": "columns_aligned_unverified",
+      "review_status": "pending",
+      "validation_status": "not_validated_against_authoritative_source",
+      "fields_original": {
+        "Campo": "`source_title`",
+        "Uso": "Titulo publicado pela instituicao."
+      }
+    },
+    {
+      "record_id": "projeto-guia-dados-assistencia-farmaceutica-df:table:L63:L67",
+      "source_id": "projeto-guia-dados-assistencia-farmaceutica-df",
+      "section": "Guia do conjunto de dados de Assistência Farmaceutica do DF > 4. Modelo recomendado para o banco > 4.1 Fonte e versao",
+      "table_id": "projeto-guia-dados-assistencia-farmaceutica-df:table:L63",
+      "line_start": 67,
+      "line_end": 67,
+      "raw_row": "| `source_url` | URL oficial consultada. |",
+      "headers_original": [
+        "Campo",
+        "Uso"
+      ],
+      "cells_original": [
+        "`source_url`",
+        "URL oficial consultada."
+      ],
+      "parse_status": "columns_aligned_unverified",
+      "review_status": "pending",
+      "validation_status": "not_validated_against_authoritative_source",
+      "fields_original": {
+        "Campo": "`source_url`",
+        "Uso": "URL oficial consultada."
+      }
+    },
+    {
+      "record_id": "projeto-guia-dados-assistencia-farmaceutica-df:table:L63:L68",
+      "source_id": "projeto-guia-dados-assistencia-farmaceutica-df",
+      "section": "Guia do conjunto de dados de Assistência Farmaceutica do DF > 4. Modelo recomendado para o banco > 4.1 Fonte e versao",
+      "table_id": "projeto-guia-dados-assistencia-farmaceutica-df:table:L63",
+      "line_start": 68,
+      "line_end": 68,
+      "raw_row": "| `source_version` | Edicao, numero de versao ou data declarada pela fonte. |",
+      "headers_original": [
+        "Campo",
+        "Uso"
+      ],
+      "cells_original": [
+        "`source_version`",
+        "Edicao, numero de versao ou data declarada pela fonte."
+      ],
+      "parse_status": "columns_aligned_unverified",
+      "review_status": "pending",
+      "validation_status": "not_validated_against_authoritative_source",
+      "fields_original": {
+        "Campo": "`source_version`",
+        "Uso": "Edicao, numero de versao ou data declarada pela fonte."
+      }
+    },
+    {
+      "record_id": "projeto-guia-dados-assistencia-farmaceutica-df:table:L63:L69",
+      "source_id": "projeto-guia-dados-assistencia-farmaceutica-df",
+      "section": "Guia do conjunto de dados de Assistência Farmaceutica do DF > 4. Modelo recomendado para o banco > 4.1 Fonte e versao",
+      "table_id": "projeto-guia-dados-assistencia-farmaceutica-df:table:L63",
+      "line_start": 69,
+      "line_end": 69,
+      "raw_row": "| `captured_at` | Data/hora em que o conteudo foi obtido. |",
+      "headers_original": [
+        "Campo",
+        "Uso"
+      ],
+      "cells_original": [
+        "`captured_at`",
+        "Data/hora em que o conteudo foi obtido."
+      ],
+      "parse_status": "columns_aligned_unverified",
+      "review_status": "pending",
+      "validation_status": "not_validated_against_authoritative_source",
+      "fields_original": {
+        "Campo": "`captured_at`",
+        "Uso": "Data/hora em que o conteudo foi obtido."
+      }
+    },
+    {
+      "record_id": "projeto-guia-dados-assistencia-farmaceutica-df:table:L63:L70",
+      "source_id": "projeto-guia-dados-assistencia-farmaceutica-df",
+      "section": "Guia do conjunto de dados de Assistência Farmaceutica do DF > 4. Modelo recomendado para o banco > 4.1 Fonte e versao",
+      "table_id": "projeto-guia-dados-assistencia-farmaceutica-df:table:L63",
+      "line_start": 70,
+      "line_end": 70,
+      "raw_row": "| `valid_from`, `valid_until` | Periodo de validade conhecido; usar nulo quando desconhecido, nunca inventar. |",
+      "headers_original": [
+        "Campo",
+        "Uso"
+      ],
+      "cells_original": [
+        "`valid_from`, `valid_until`",
+        "Periodo de validade conhecido; usar nulo quando desconhecido, nunca inventar."
+      ],
+      "parse_status": "columns_aligned_unverified",
+      "review_status": "pending",
+      "validation_status": "not_validated_against_authoritative_source",
+      "fields_original": {
+        "Campo": "`valid_from`, `valid_until`",
+        "Uso": "Periodo de validade conhecido; usar nulo quando desconhecido, nunca inventar."
+      }
+    },
+    {
+      "record_id": "projeto-guia-dados-assistencia-farmaceutica-df:table:L63:L71",
+      "source_id": "projeto-guia-dados-assistencia-farmaceutica-df",
+      "section": "Guia do conjunto de dados de Assistência Farmaceutica do DF > 4. Modelo recomendado para o banco > 4.1 Fonte e versao",
+      "table_id": "projeto-guia-dados-assistencia-farmaceutica-df:table:L63",
+      "line_start": 71,
+      "line_end": 71,
+      "raw_row": "| `review_status` | `pending`, `verified`, `rejected` ou `superseded`. |",
+      "headers_original": [
+        "Campo",
+        "Uso"
+      ],
+      "cells_original": [
+        "`review_status`",
+        "`pending`, `verified`, `rejected` ou `superseded`."
+      ],
+      "parse_status": "columns_aligned_unverified",
+      "review_status": "pending",
+      "validation_status": "not_validated_against_authoritative_source",
+      "fields_original": {
+        "Campo": "`review_status`",
+        "Uso": "`pending`, `verified`, `rejected` ou `superseded`."
+      }
+    },
+    {
+      "record_id": "projeto-guia-dados-assistencia-farmaceutica-df:table:L63:L72",
+      "source_id": "projeto-guia-dados-assistencia-farmaceutica-df",
+      "section": "Guia do conjunto de dados de Assistência Farmaceutica do DF > 4. Modelo recomendado para o banco > 4.1 Fonte e versao",
+      "table_id": "projeto-guia-dados-assistencia-farmaceutica-df:table:L63",
+      "line_start": 72,
+      "line_end": 72,
+      "raw_row": "| `reviewed_by`, `reviewed_at` | Responsavel e data da revisao humana. |",
+      "headers_original": [
+        "Campo",
+        "Uso"
+      ],
+      "cells_original": [
+        "`reviewed_by`, `reviewed_at`",
+        "Responsavel e data da revisao humana."
+      ],
+      "parse_status": "columns_aligned_unverified",
+      "review_status": "pending",
+      "validation_status": "not_validated_against_authoritative_source",
+      "fields_original": {
+        "Campo": "`reviewed_by`, `reviewed_at`",
+        "Uso": "Responsavel e data da revisao humana."
+      }
+    },
+    {
+      "record_id": "projeto-guia-dados-assistencia-farmaceutica-df:table:L63:L73",
+      "source_id": "projeto-guia-dados-assistencia-farmaceutica-df",
+      "section": "Guia do conjunto de dados de Assistência Farmaceutica do DF > 4. Modelo recomendado para o banco > 4.1 Fonte e versao",
+      "table_id": "projeto-guia-dados-assistencia-farmaceutica-df:table:L63",
+      "line_start": 73,
+      "line_end": 73,
+      "raw_row": "| `source_locator` | Pagina, secao, item, tabela ou URL especifica que sustenta o registro. |",
+      "headers_original": [
+        "Campo",
+        "Uso"
+      ],
+      "cells_original": [
+        "`source_locator`",
+        "Pagina, secao, item, tabela ou URL especifica que sustenta o registro."
+      ],
+      "parse_status": "columns_aligned_unverified",
+      "review_status": "pending",
+      "validation_status": "not_validated_against_authoritative_source",
+      "fields_original": {
+        "Campo": "`source_locator`",
+        "Uso": "Pagina, secao, item, tabela ou URL especifica que sustenta o registro."
+      }
+    }
+  ],
+  "chunks": [
+    {
+      "chunk_id": "projeto-guia-dados-assistencia-farmaceutica-df:L3-L5",
+      "text": "Fonte: projeto-guia-dados-assistencia-farmaceutica-df\nSecao: Guia do conjunto de dados de Assistência Farmaceutica do DF\n\n> **Finalidade:** documentar as fontes em `DADOS/`, seu estado de revisao e as regras para preparar dados para consulta, banco de dados ou chatbot.\n> **Ultima auditoria documental:** 06/10/2026.\n> **Estado geral:** nao importar nem usar estes documentos como fonte clinica automatica sem cumprir os criterios de qualidade e revisao deste guia.",
+      "content_original": "> **Finalidade:** documentar as fontes em `DADOS/`, seu estado de revisao e as regras para preparar dados para consulta, banco de dados ou chatbot.\n> **Ultima auditoria documental:** 06/10/2026.\n> **Estado geral:** nao importar nem usar estes documentos como fonte clinica automatica sem cumprir os criterios de qualidade e revisao deste guia.\n",
+      "metadata": {
+        "source_id": "projeto-guia-dados-assistencia-farmaceutica-df",
+        "section": "Guia do conjunto de dados de Assistência Farmaceutica do DF",
+        "line_start": 3,
+        "line_end": 5,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "projeto-guia-dados-assistencia-farmaceutica-df:L9-L9",
+      "text": "Fonte: projeto-guia-dados-assistencia-farmaceutica-df\nSecao: Guia do conjunto de dados de Assistência Farmaceutica do DF > 1. Objetivo e escopo\n\nO diretorio reune informacoes sobre medicamentos padronizados pela SES-DF, servicos de dispensacao, Componente Especializado e fitoterapicos. Este guia define como interpretar, validar, estruturar e atualizar esses materiais.",
+      "content_original": "O diretorio reune informacoes sobre medicamentos padronizados pela SES-DF, servicos de dispensacao, Componente Especializado e fitoterapicos. Este guia define como interpretar, validar, estruturar e atualizar esses materiais.\n",
+      "metadata": {
+        "source_id": "projeto-guia-dados-assistencia-farmaceutica-df",
+        "section": "Guia do conjunto de dados de Assistência Farmaceutica do DF > 1. Objetivo e escopo",
+        "line_start": 9,
+        "line_end": 9,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "projeto-guia-dados-assistencia-farmaceutica-df:L11-L11",
+      "text": "Fonte: projeto-guia-dados-assistencia-farmaceutica-df\nSecao: Guia do conjunto de dados de Assistência Farmaceutica do DF > 1. Objetivo e escopo\n\nOs documentos sao fontes informativas, nao substituem avaliacao de profissional de saude, bula, protocolo clinico ou confirmacao diretamente com o servico. A presenca de um medicamento em uma lista nao confirma estoque, elegibilidade individual, indicacao clinica nem disponibilidade imediata.",
+      "content_original": "Os documentos sao fontes informativas, nao substituem avaliacao de profissional de saude, bula, protocolo clinico ou confirmacao diretamente com o servico. A presenca de um medicamento em uma lista nao confirma estoque, elegibilidade individual, indicacao clinica nem disponibilidade imediata.\n",
+      "metadata": {
+        "source_id": "projeto-guia-dados-assistencia-farmaceutica-df",
+        "section": "Guia do conjunto de dados de Assistência Farmaceutica do DF > 1. Objetivo e escopo",
+        "line_start": 11,
+        "line_end": 11,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "projeto-guia-dados-assistencia-farmaceutica-df:L13-L13",
+      "text": "Fonte: projeto-guia-dados-assistencia-farmaceutica-df\nSecao: Guia do conjunto de dados de Assistência Farmaceutica do DF > 1. Objetivo e escopo\n\nEste arquivo e um indice e um registro de governanca. As listas detalhadas permanecem em seus documentos de origem; nao devem ser copiadas para ca, pois isso cria versoes divergentes.",
+      "content_original": "Este arquivo e um indice e um registro de governanca. As listas detalhadas permanecem em seus documentos de origem; nao devem ser copiadas para ca, pois isso cria versoes divergentes.\n",
+      "metadata": {
+        "source_id": "projeto-guia-dados-assistencia-farmaceutica-df",
+        "section": "Guia do conjunto de dados de Assistência Farmaceutica do DF > 1. Objetivo e escopo",
+        "line_start": 13,
+        "line_end": 13,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "projeto-guia-dados-assistencia-farmaceutica-df:L19-L19",
+      "text": "Fonte: projeto-guia-dados-assistencia-farmaceutica-df\nSecao: Guia do conjunto de dados de Assistência Farmaceutica do DF > 2. Inventario e estado das fontes\n\nCabecalhos da tabela: Arquivo | Conteudo | Fonte de referencia | Estado na auditoria | Condicao para ingestao\nLinha da tabela: | `01_REME_DF_2025_Medicamentos.md` | Relacao geral REME-DF e subsecoes tematicas | [PDF oficial da REME-DF](https://www.saude.df.gov.br/documents/d/saude/reme-df-2025-com-capa-ascom-versao-final-editada-pdf) | **Bloqueado para importacao automatica.** A sequencia da relacao principal contem 1.048 itens, mas ha forte evidencia de erros de OCR/deslocamento em codigos e descricoes. | Reextrair ou corrigir comparando cada campo com o PDF oficial; revisar candidatos a duplicata e codigos divergentes. |",
+      "content_original": "Cabecalhos da tabela: Arquivo | Conteudo | Fonte de referencia | Estado na auditoria | Condicao para ingestao\nLinha da tabela: | `01_REME_DF_2025_Medicamentos.md` | Relacao geral REME-DF e subsecoes tematicas | [PDF oficial da REME-DF](https://www.saude.df.gov.br/documents/d/saude/reme-df-2025-com-capa-ascom-versao-final-editada-pdf) | **Bloqueado para importacao automatica.** A sequencia da relacao principal contem 1.048 itens, mas ha forte evidencia de erros de OCR/deslocamento em codigos e descricoes. | Reextrair ou corrigir comparando cada campo com o PDF oficial; revisar candidatos a duplicata e codigos divergentes. |",
+      "metadata": {
+        "source_id": "projeto-guia-dados-assistencia-farmaceutica-df",
+        "section": "Guia do conjunto de dados de Assistência Farmaceutica do DF > 2. Inventario e estado das fontes",
+        "line_start": 19,
+        "line_end": 19,
+        "content_type": "table_row",
+        "record_id": "projeto-guia-dados-assistencia-farmaceutica-df:table:L17:L19",
+        "table_id": "projeto-guia-dados-assistencia-farmaceutica-df:table:L17",
+        "parse_status": "columns_aligned_unverified"
+      }
+    },
+    {
+      "chunk_id": "projeto-guia-dados-assistencia-farmaceutica-df:L20-L20",
+      "text": "Fonte: projeto-guia-dados-assistencia-farmaceutica-df\nSecao: Guia do conjunto de dados de Assistência Farmaceutica do DF > 2. Inventario e estado das fontes\n\nCabecalhos da tabela: Arquivo | Conteudo | Fonte de referencia | Estado na auditoria | Condicao para ingestao\nLinha da tabela: | `02_HUB_Farmacia_Escola.md` | Programas, orientacoes e dados operacionais do HUB | [Pagina oficial da Farmacia Escola do HUB](https://www.gov.br/hubrasil/pt-br/hospitais-universitarios/regiao-centro-oeste/hub-unb/saude/farmacia-escola) | **Revisao necessaria.** Estoque e operacao sao temporarios; na pagina consultada em 06/10/2026, o aviso de falta tinha atualizacao posterior a registrada no arquivo. Elenco e orientacoes clinicas precisam de confirmacao. | Atualizar a partir da pagina oficial; marcar data/hora de captura e validade; validar medicamentos, formulacoes e regras com a equipe/fonte competente. |",
+      "content_original": "Cabecalhos da tabela: Arquivo | Conteudo | Fonte de referencia | Estado na auditoria | Condicao para ingestao\nLinha da tabela: | `02_HUB_Farmacia_Escola.md` | Programas, orientacoes e dados operacionais do HUB | [Pagina oficial da Farmacia Escola do HUB](https://www.gov.br/hubrasil/pt-br/hospitais-universitarios/regiao-centro-oeste/hub-unb/saude/farmacia-escola) | **Revisao necessaria.** Estoque e operacao sao temporarios; na pagina consultada em 06/10/2026, o aviso de falta tinha atualizacao posterior a registrada no arquivo. Elenco e orientacoes clinicas precisam de confirmacao. | Atualizar a partir da pagina oficial; marcar data/hora de captura e validade; validar medicamentos, formulacoes e regras com a equipe/fonte competente. |",
+      "metadata": {
+        "source_id": "projeto-guia-dados-assistencia-farmaceutica-df",
+        "section": "Guia do conjunto de dados de Assistência Farmaceutica do DF > 2. Inventario e estado das fontes",
+        "line_start": 20,
+        "line_end": 20,
+        "content_type": "table_row",
+        "record_id": "projeto-guia-dados-assistencia-farmaceutica-df:table:L17:L20",
+        "table_id": "projeto-guia-dados-assistencia-farmaceutica-df:table:L17",
+        "parse_status": "columns_aligned_unverified"
+      }
+    },
+    {
+      "chunk_id": "projeto-guia-dados-assistencia-farmaceutica-df:L21-L21",
+      "text": "Fonte: projeto-guia-dados-assistencia-farmaceutica-df\nSecao: Guia do conjunto de dados de Assistência Farmaceutica do DF > 2. Inventario e estado das fontes\n\nCabecalhos da tabela: Arquivo | Conteudo | Fonte de referencia | Estado na auditoria | Condicao para ingestao\nLinha da tabela: | `03_Componente_Especializado_Alto_Custo.md` | Unidades, acesso, cadastro e Medicamento em Casa | [Pagina oficial do CEAF SES-DF](https://www.saude.df.gov.br/componente-especializado) | **Revisao parcial.** A pagina consultada confirma varias informacoes de atendimento, inclusive o aviso de inventario de novembro de 2026. Alguns detalhes documentais, territoriais e de elegibilidade precisam de verificacao especifica. | Vincular cada requisito ao protocolo/formulario vigente; conferir abrangencia regional e distinguir pessoa autorizada de representante legal. |",
+      "content_original": "Cabecalhos da tabela: Arquivo | Conteudo | Fonte de referencia | Estado na auditoria | Condicao para ingestao\nLinha da tabela: | `03_Componente_Especializado_Alto_Custo.md` | Unidades, acesso, cadastro e Medicamento em Casa | [Pagina oficial do CEAF SES-DF](https://www.saude.df.gov.br/componente-especializado) | **Revisao parcial.** A pagina consultada confirma varias informacoes de atendimento, inclusive o aviso de inventario de novembro de 2026. Alguns detalhes documentais, territoriais e de elegibilidade precisam de verificacao especifica. | Vincular cada requisito ao protocolo/formulario vigente; conferir abrangencia regional e distinguir pessoa autorizada de representante legal. |",
+      "metadata": {
+        "source_id": "projeto-guia-dados-assistencia-farmaceutica-df",
+        "section": "Guia do conjunto de dados de Assistência Farmaceutica do DF > 2. Inventario e estado das fontes",
+        "line_start": 21,
+        "line_end": 21,
+        "content_type": "table_row",
+        "record_id": "projeto-guia-dados-assistencia-farmaceutica-df:table:L17:L21",
+        "table_id": "projeto-guia-dados-assistencia-farmaceutica-df:table:L17",
+        "parse_status": "columns_aligned_unverified"
+      }
+    },
+    {
+      "chunk_id": "projeto-guia-dados-assistencia-farmaceutica-df:L22-L22",
+      "text": "Fonte: projeto-guia-dados-assistencia-farmaceutica-df\nSecao: Guia do conjunto de dados de Assistência Farmaceutica do DF > 2. Inventario e estado das fontes\n\nCabecalhos da tabela: Arquivo | Conteudo | Fonte de referencia | Estado na auditoria | Condicao para ingestao\nLinha da tabela: | `04_Farmacias_Vivas_Fitoterapicos.md` | Formulacoes, unidades produtoras, UBS e alegacoes de uso | [Pagina oficial de Farmacias Vivas SES-DF](https://www.saude.df.gov.br/farmacias-vivas-fitoterapicos) | **Revisao parcial.** A pagina consultada confirma as duas unidades produtoras, as nove formulacoes e orientacao geral de dispensacao; nao confirma todas as indicacoes terapeuticas descritas nem, por si so, toda a lista de UBS. | Conferir indicacoes no guia tecnico oficial vigente e validar a lista de unidades contra o arquivo oficial de UBS dispensadoras. |",
+      "content_original": "Cabecalhos da tabela: Arquivo | Conteudo | Fonte de referencia | Estado na auditoria | Condicao para ingestao\nLinha da tabela: | `04_Farmacias_Vivas_Fitoterapicos.md` | Formulacoes, unidades produtoras, UBS e alegacoes de uso | [Pagina oficial de Farmacias Vivas SES-DF](https://www.saude.df.gov.br/farmacias-vivas-fitoterapicos) | **Revisao parcial.** A pagina consultada confirma as duas unidades produtoras, as nove formulacoes e orientacao geral de dispensacao; nao confirma todas as indicacoes terapeuticas descritas nem, por si so, toda a lista de UBS. | Conferir indicacoes no guia tecnico oficial vigente e validar a lista de unidades contra o arquivo oficial de UBS dispensadoras. |",
+      "metadata": {
+        "source_id": "projeto-guia-dados-assistencia-farmaceutica-df",
+        "section": "Guia do conjunto de dados de Assistência Farmaceutica do DF > 2. Inventario e estado das fontes",
+        "line_start": 22,
+        "line_end": 22,
+        "content_type": "table_row",
+        "record_id": "projeto-guia-dados-assistencia-farmaceutica-df:table:L17:L22",
+        "table_id": "projeto-guia-dados-assistencia-farmaceutica-df:table:L17",
+        "parse_status": "columns_aligned_unverified"
+      }
+    },
+    {
+      "chunk_id": "projeto-guia-dados-assistencia-farmaceutica-df:L23-L23",
+      "text": "Fonte: projeto-guia-dados-assistencia-farmaceutica-df\nSecao: Guia do conjunto de dados de Assistência Farmaceutica do DF > 2. Inventario e estado das fontes\n\nCabecalhos da tabela: Arquivo | Conteudo | Fonte de referencia | Estado na auditoria | Condicao para ingestao\nLinha da tabela: | `dados.md` | Indice, regras de qualidade e governanca | Este documento | **Documento de governanca.** | Atualizar junto com cada rodada de auditoria. |",
+      "content_original": "Cabecalhos da tabela: Arquivo | Conteudo | Fonte de referencia | Estado na auditoria | Condicao para ingestao\nLinha da tabela: | `dados.md` | Indice, regras de qualidade e governanca | Este documento | **Documento de governanca.** | Atualizar junto com cada rodada de auditoria. |",
+      "metadata": {
+        "source_id": "projeto-guia-dados-assistencia-farmaceutica-df",
+        "section": "Guia do conjunto de dados de Assistência Farmaceutica do DF > 2. Inventario e estado das fontes",
+        "line_start": 23,
+        "line_end": 23,
+        "content_type": "table_row",
+        "record_id": "projeto-guia-dados-assistencia-farmaceutica-df:table:L17:L23",
+        "table_id": "projeto-guia-dados-assistencia-farmaceutica-df:table:L17",
+        "parse_status": "columns_aligned_unverified"
+      }
+    },
+    {
+      "chunk_id": "projeto-guia-dados-assistencia-farmaceutica-df:L25-L25",
+      "text": "Fonte: projeto-guia-dados-assistencia-farmaceutica-df\nSecao: Guia do conjunto de dados de Assistência Farmaceutica do DF > 2. Inventario e estado das fontes\n\nOs estados acima descrevem a triagem documental deste projeto, nao certificacao da SES-DF, da EBSERH ou de profissional clinico. Uma fonte oficial pode mudar depois da captura; guardar sempre a data em que foi consultada.",
+      "content_original": "Os estados acima descrevem a triagem documental deste projeto, nao certificacao da SES-DF, da EBSERH ou de profissional clinico. Uma fonte oficial pode mudar depois da captura; guardar sempre a data em que foi consultada.\n",
+      "metadata": {
+        "source_id": "projeto-guia-dados-assistencia-farmaceutica-df",
+        "section": "Guia do conjunto de dados de Assistência Farmaceutica do DF > 2. Inventario e estado das fontes",
+        "line_start": 25,
+        "line_end": 25,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "projeto-guia-dados-assistencia-farmaceutica-df:L31-L36",
+      "text": "Fonte: projeto-guia-dados-assistencia-farmaceutica-df\nSecao: Guia do conjunto de dados de Assistência Farmaceutica do DF > 3. Achados conhecidos e fila de revisao > 3.1 REME-DF\n\n- A relacao principal enumera continuamente os itens de 1 a 1.048. Essa verificacao confirma a sequencia, nao a exatidao dos campos.\n- Na auditoria mecanica, 544 celulas de codigo da tabela principal continham uma letra final suspeita de deslocamento. Ha exemplos em que o nome tambem perdeu a letra inicial ou a apresentacao/dose parece truncada. Nao corrigir por regra automatica: validar contra o PDF.\n- Foram encontrados 18 grupos de descricoes identicas na relacao principal. Muitos pares parecem distinguir componente ou local de dispensacao e podem ser registros legitimos. Albumina humana nos itens 33 e 34 e candidato forte a duplicata, pois descricao, grupo e local coincidem. Exigir decisao humana antes de unir ou excluir.\n- Ha divergencia interna a verificar para suxametonio: codigo `90230` na relacao geral e `230` em carros de emergencia.\n- Algumas celulas nas subsecoes de compra eventual e carros de emergencia terminam com texto aparentemente truncado. Confirmar descricao e apresentacao no documento oficial.\n- As subsecoes repetem medicamentos da relacao geral por finalidade. Essa repeticao entre secoes e contextual, nao e duplicata para eliminar sem preservar a secao e o uso.",
+      "content_original": "- A relacao principal enumera continuamente os itens de 1 a 1.048. Essa verificacao confirma a sequencia, nao a exatidao dos campos.\n- Na auditoria mecanica, 544 celulas de codigo da tabela principal continham uma letra final suspeita de deslocamento. Ha exemplos em que o nome tambem perdeu a letra inicial ou a apresentacao/dose parece truncada. Nao corrigir por regra automatica: validar contra o PDF.\n- Foram encontrados 18 grupos de descricoes identicas na relacao principal. Muitos pares parecem distinguir componente ou local de dispensacao e podem ser registros legitimos. Albumina humana nos itens 33 e 34 e candidato forte a duplicata, pois descricao, grupo e local coincidem. Exigir decisao humana antes de unir ou excluir.\n- Ha divergencia interna a verificar para suxametonio: codigo `90230` na relacao geral e `230` em carros de emergencia.\n- Algumas celulas nas subsecoes de compra eventual e carros de emergencia terminam com texto aparentemente truncado. Confirmar descricao e apresentacao no documento oficial.\n- As subsecoes repetem medicamentos da relacao geral por finalidade. Essa repeticao entre secoes e contextual, nao e duplicata para eliminar sem preservar a secao e o uso.\n",
+      "metadata": {
+        "source_id": "projeto-guia-dados-assistencia-farmaceutica-df",
+        "section": "Guia do conjunto de dados de Assistência Farmaceutica do DF > 3. Achados conhecidos e fila de revisao > 3.1 REME-DF",
+        "line_start": 31,
+        "line_end": 36,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "projeto-guia-dados-assistencia-farmaceutica-df:L40-L43",
+      "text": "Fonte: projeto-guia-dados-assistencia-farmaceutica-df\nSecao: Guia do conjunto de dados de Assistência Farmaceutica do DF > 3. Achados conhecidos e fila de revisao > 3.2 Farmacia Escola HUB\n\n- O arquivo tem verificacao registrada em 01/10/2026 e alerta da unidade datado de 11/09/2026. A pagina oficial consultada em 06/10/2026 apresentava aviso de falta atualizado em 06/10 e incluia insulina ultrarrapida, item ausente daquele alerta no arquivo. Reconsultar antes de publicar qualquer status de disponibilidade.\n- A relacao de antirretrovirais e esquemas precisa de confirmacao de atualidade e de disponibilidade no HUB; nao apresentar automaticamente todos os itens como dispensados atualmente.\n- Regras gerais sobre antimicrobianos, conservacao de produtos, validade de receitas e controle de talidomida precisam de referencia normativa/produto especifica e revisao tecnica.\n- O caminho de automacao citado no final do arquivo e um caminho pessoal local. Nao e uma dependencia reproduzivel do repositorio; documentar uma rotina portavel se ela for mantida.",
+      "content_original": "- O arquivo tem verificacao registrada em 01/10/2026 e alerta da unidade datado de 11/09/2026. A pagina oficial consultada em 06/10/2026 apresentava aviso de falta atualizado em 06/10 e incluia insulina ultrarrapida, item ausente daquele alerta no arquivo. Reconsultar antes de publicar qualquer status de disponibilidade.\n- A relacao de antirretrovirais e esquemas precisa de confirmacao de atualidade e de disponibilidade no HUB; nao apresentar automaticamente todos os itens como dispensados atualmente.\n- Regras gerais sobre antimicrobianos, conservacao de produtos, validade de receitas e controle de talidomida precisam de referencia normativa/produto especifica e revisao tecnica.\n- O caminho de automacao citado no final do arquivo e um caminho pessoal local. Nao e uma dependencia reproduzivel do repositorio; documentar uma rotina portavel se ela for mantida.\n",
+      "metadata": {
+        "source_id": "projeto-guia-dados-assistencia-farmaceutica-df",
+        "section": "Guia do conjunto de dados de Assistência Farmaceutica do DF > 3. Achados conhecidos e fila de revisao > 3.2 Farmacia Escola HUB",
+        "line_start": 40,
+        "line_end": 43,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "projeto-guia-dados-assistencia-farmaceutica-df:L47-L49",
+      "text": "Fonte: projeto-guia-dados-assistencia-farmaceutica-df\nSecao: Guia do conjunto de dados de Assistência Farmaceutica do DF > 3. Achados conhecidos e fila de revisao > 3.3 CEAF\n\n- A pagina oficial consultada confirma informacoes centrais de atendimento, cadastro remoto, telefone, unidades e o fechamento para inventario anunciado para 09 e 10/11/2026, com retomada em 11/11/2026. Avisos com data devem expirar apos o periodo informado.\n- A pagina consultada descreve ate quatro pessoas autorizadas a receber entrega domiciliar; o arquivo as chama de representantes legais. Confirmar e alinhar a terminologia antes de estruturar esse campo.\n- Validade da LME, documentos, abrangencia territorial e excecoes de atendimento devem ser ligados ao protocolo, formulario ou orientacao oficial vigente. Nao assumir que um requisito e universal quando pode depender da condicao ou medicamento.",
+      "content_original": "- A pagina oficial consultada confirma informacoes centrais de atendimento, cadastro remoto, telefone, unidades e o fechamento para inventario anunciado para 09 e 10/11/2026, com retomada em 11/11/2026. Avisos com data devem expirar apos o periodo informado.\n- A pagina consultada descreve ate quatro pessoas autorizadas a receber entrega domiciliar; o arquivo as chama de representantes legais. Confirmar e alinhar a terminologia antes de estruturar esse campo.\n- Validade da LME, documentos, abrangencia territorial e excecoes de atendimento devem ser ligados ao protocolo, formulario ou orientacao oficial vigente. Nao assumir que um requisito e universal quando pode depender da condicao ou medicamento.\n",
+      "metadata": {
+        "source_id": "projeto-guia-dados-assistencia-farmaceutica-df",
+        "section": "Guia do conjunto de dados de Assistência Farmaceutica do DF > 3. Achados conhecidos e fila de revisao > 3.3 CEAF",
+        "line_start": 47,
+        "line_end": 49,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "projeto-guia-dados-assistencia-farmaceutica-df:L53-L55",
+      "text": "Fonte: projeto-guia-dados-assistencia-farmaceutica-df\nSecao: Guia do conjunto de dados de Assistência Farmaceutica do DF > 3. Achados conhecidos e fila de revisao > 3.4 Farmacias Vivas\n\n- A pagina oficial consultada confirma as nove formulacoes e as duas unidades produtoras. As alegacoes detalhadas de indicacao, eficacia, potencia, sintomas ou condicoes nao ficam validadas apenas por essa confirmacao.\n- A lista de UBS deve ser verificada contra o documento oficial de unidades dispensadoras, com data de publicacao/consulta registrada. Enderecos parecidos, como UBS 5 e UBS 6 Taguatinga, sao candidatos para conferencia, nao duplicatas confirmadas.\n- Prescritores habilitados, restricoes, contraindicacoes e modo de uso exigem fonte normativa ou guia clinico oficial. Nao converter texto promocional/descritivo em conselho individual.",
+      "content_original": "- A pagina oficial consultada confirma as nove formulacoes e as duas unidades produtoras. As alegacoes detalhadas de indicacao, eficacia, potencia, sintomas ou condicoes nao ficam validadas apenas por essa confirmacao.\n- A lista de UBS deve ser verificada contra o documento oficial de unidades dispensadoras, com data de publicacao/consulta registrada. Enderecos parecidos, como UBS 5 e UBS 6 Taguatinga, sao candidatos para conferencia, nao duplicatas confirmadas.\n- Prescritores habilitados, restricoes, contraindicacoes e modo de uso exigem fonte normativa ou guia clinico oficial. Nao converter texto promocional/descritivo em conselho individual.\n",
+      "metadata": {
+        "source_id": "projeto-guia-dados-assistencia-farmaceutica-df",
+        "section": "Guia do conjunto de dados de Assistência Farmaceutica do DF > 3. Achados conhecidos e fila de revisao > 3.4 Farmacias Vivas",
+        "line_start": 53,
+        "line_end": 55,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "projeto-guia-dados-assistencia-farmaceutica-df:L59-L59",
+      "text": "Fonte: projeto-guia-dados-assistencia-farmaceutica-df\nSecao: Guia do conjunto de dados de Assistência Farmaceutica do DF > 4. Modelo recomendado para o banco\n\nSeparar entidades diferentes. Evitar uma tabela unica que misture catalogo de produtos, estoque temporario, enderecos e orientacao clinica.",
+      "content_original": "Separar entidades diferentes. Evitar uma tabela unica que misture catalogo de produtos, estoque temporario, enderecos e orientacao clinica.\n",
+      "metadata": {
+        "source_id": "projeto-guia-dados-assistencia-farmaceutica-df",
+        "section": "Guia do conjunto de dados de Assistência Farmaceutica do DF > 4. Modelo recomendado para o banco",
+        "line_start": 59,
+        "line_end": 59,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "projeto-guia-dados-assistencia-farmaceutica-df:L65-L65",
+      "text": "Fonte: projeto-guia-dados-assistencia-farmaceutica-df\nSecao: Guia do conjunto de dados de Assistência Farmaceutica do DF > 4. Modelo recomendado para o banco > 4.1 Fonte e versao\n\nCabecalhos da tabela: Campo | Uso\nLinha da tabela: | `source_id` | Identificador estavel da fonte/documento. |",
+      "content_original": "Cabecalhos da tabela: Campo | Uso\nLinha da tabela: | `source_id` | Identificador estavel da fonte/documento. |",
+      "metadata": {
+        "source_id": "projeto-guia-dados-assistencia-farmaceutica-df",
+        "section": "Guia do conjunto de dados de Assistência Farmaceutica do DF > 4. Modelo recomendado para o banco > 4.1 Fonte e versao",
+        "line_start": 65,
+        "line_end": 65,
+        "content_type": "table_row",
+        "record_id": "projeto-guia-dados-assistencia-farmaceutica-df:table:L63:L65",
+        "table_id": "projeto-guia-dados-assistencia-farmaceutica-df:table:L63",
+        "parse_status": "columns_aligned_unverified"
+      }
+    },
+    {
+      "chunk_id": "projeto-guia-dados-assistencia-farmaceutica-df:L66-L66",
+      "text": "Fonte: projeto-guia-dados-assistencia-farmaceutica-df\nSecao: Guia do conjunto de dados de Assistência Farmaceutica do DF > 4. Modelo recomendado para o banco > 4.1 Fonte e versao\n\nCabecalhos da tabela: Campo | Uso\nLinha da tabela: | `source_title` | Titulo publicado pela instituicao. |",
+      "content_original": "Cabecalhos da tabela: Campo | Uso\nLinha da tabela: | `source_title` | Titulo publicado pela instituicao. |",
+      "metadata": {
+        "source_id": "projeto-guia-dados-assistencia-farmaceutica-df",
+        "section": "Guia do conjunto de dados de Assistência Farmaceutica do DF > 4. Modelo recomendado para o banco > 4.1 Fonte e versao",
+        "line_start": 66,
+        "line_end": 66,
+        "content_type": "table_row",
+        "record_id": "projeto-guia-dados-assistencia-farmaceutica-df:table:L63:L66",
+        "table_id": "projeto-guia-dados-assistencia-farmaceutica-df:table:L63",
+        "parse_status": "columns_aligned_unverified"
+      }
+    },
+    {
+      "chunk_id": "projeto-guia-dados-assistencia-farmaceutica-df:L67-L67",
+      "text": "Fonte: projeto-guia-dados-assistencia-farmaceutica-df\nSecao: Guia do conjunto de dados de Assistência Farmaceutica do DF > 4. Modelo recomendado para o banco > 4.1 Fonte e versao\n\nCabecalhos da tabela: Campo | Uso\nLinha da tabela: | `source_url` | URL oficial consultada. |",
+      "content_original": "Cabecalhos da tabela: Campo | Uso\nLinha da tabela: | `source_url` | URL oficial consultada. |",
+      "metadata": {
+        "source_id": "projeto-guia-dados-assistencia-farmaceutica-df",
+        "section": "Guia do conjunto de dados de Assistência Farmaceutica do DF > 4. Modelo recomendado para o banco > 4.1 Fonte e versao",
+        "line_start": 67,
+        "line_end": 67,
+        "content_type": "table_row",
+        "record_id": "projeto-guia-dados-assistencia-farmaceutica-df:table:L63:L67",
+        "table_id": "projeto-guia-dados-assistencia-farmaceutica-df:table:L63",
+        "parse_status": "columns_aligned_unverified"
+      }
+    },
+    {
+      "chunk_id": "projeto-guia-dados-assistencia-farmaceutica-df:L68-L68",
+      "text": "Fonte: projeto-guia-dados-assistencia-farmaceutica-df\nSecao: Guia do conjunto de dados de Assistência Farmaceutica do DF > 4. Modelo recomendado para o banco > 4.1 Fonte e versao\n\nCabecalhos da tabela: Campo | Uso\nLinha da tabela: | `source_version` | Edicao, numero de versao ou data declarada pela fonte. |",
+      "content_original": "Cabecalhos da tabela: Campo | Uso\nLinha da tabela: | `source_version` | Edicao, numero de versao ou data declarada pela fonte. |",
+      "metadata": {
+        "source_id": "projeto-guia-dados-assistencia-farmaceutica-df",
+        "section": "Guia do conjunto de dados de Assistência Farmaceutica do DF > 4. Modelo recomendado para o banco > 4.1 Fonte e versao",
+        "line_start": 68,
+        "line_end": 68,
+        "content_type": "table_row",
+        "record_id": "projeto-guia-dados-assistencia-farmaceutica-df:table:L63:L68",
+        "table_id": "projeto-guia-dados-assistencia-farmaceutica-df:table:L63",
+        "parse_status": "columns_aligned_unverified"
+      }
+    },
+    {
+      "chunk_id": "projeto-guia-dados-assistencia-farmaceutica-df:L69-L69",
+      "text": "Fonte: projeto-guia-dados-assistencia-farmaceutica-df\nSecao: Guia do conjunto de dados de Assistência Farmaceutica do DF > 4. Modelo recomendado para o banco > 4.1 Fonte e versao\n\nCabecalhos da tabela: Campo | Uso\nLinha da tabela: | `captured_at` | Data/hora em que o conteudo foi obtido. |",
+      "content_original": "Cabecalhos da tabela: Campo | Uso\nLinha da tabela: | `captured_at` | Data/hora em que o conteudo foi obtido. |",
+      "metadata": {
+        "source_id": "projeto-guia-dados-assistencia-farmaceutica-df",
+        "section": "Guia do conjunto de dados de Assistência Farmaceutica do DF > 4. Modelo recomendado para o banco > 4.1 Fonte e versao",
+        "line_start": 69,
+        "line_end": 69,
+        "content_type": "table_row",
+        "record_id": "projeto-guia-dados-assistencia-farmaceutica-df:table:L63:L69",
+        "table_id": "projeto-guia-dados-assistencia-farmaceutica-df:table:L63",
+        "parse_status": "columns_aligned_unverified"
+      }
+    },
+    {
+      "chunk_id": "projeto-guia-dados-assistencia-farmaceutica-df:L70-L70",
+      "text": "Fonte: projeto-guia-dados-assistencia-farmaceutica-df\nSecao: Guia do conjunto de dados de Assistência Farmaceutica do DF > 4. Modelo recomendado para o banco > 4.1 Fonte e versao\n\nCabecalhos da tabela: Campo | Uso\nLinha da tabela: | `valid_from`, `valid_until` | Periodo de validade conhecido; usar nulo quando desconhecido, nunca inventar. |",
+      "content_original": "Cabecalhos da tabela: Campo | Uso\nLinha da tabela: | `valid_from`, `valid_until` | Periodo de validade conhecido; usar nulo quando desconhecido, nunca inventar. |",
+      "metadata": {
+        "source_id": "projeto-guia-dados-assistencia-farmaceutica-df",
+        "section": "Guia do conjunto de dados de Assistência Farmaceutica do DF > 4. Modelo recomendado para o banco > 4.1 Fonte e versao",
+        "line_start": 70,
+        "line_end": 70,
+        "content_type": "table_row",
+        "record_id": "projeto-guia-dados-assistencia-farmaceutica-df:table:L63:L70",
+        "table_id": "projeto-guia-dados-assistencia-farmaceutica-df:table:L63",
+        "parse_status": "columns_aligned_unverified"
+      }
+    },
+    {
+      "chunk_id": "projeto-guia-dados-assistencia-farmaceutica-df:L71-L71",
+      "text": "Fonte: projeto-guia-dados-assistencia-farmaceutica-df\nSecao: Guia do conjunto de dados de Assistência Farmaceutica do DF > 4. Modelo recomendado para o banco > 4.1 Fonte e versao\n\nCabecalhos da tabela: Campo | Uso\nLinha da tabela: | `review_status` | `pending`, `verified`, `rejected` ou `superseded`. |",
+      "content_original": "Cabecalhos da tabela: Campo | Uso\nLinha da tabela: | `review_status` | `pending`, `verified`, `rejected` ou `superseded`. |",
+      "metadata": {
+        "source_id": "projeto-guia-dados-assistencia-farmaceutica-df",
+        "section": "Guia do conjunto de dados de Assistência Farmaceutica do DF > 4. Modelo recomendado para o banco > 4.1 Fonte e versao",
+        "line_start": 71,
+        "line_end": 71,
+        "content_type": "table_row",
+        "record_id": "projeto-guia-dados-assistencia-farmaceutica-df:table:L63:L71",
+        "table_id": "projeto-guia-dados-assistencia-farmaceutica-df:table:L63",
+        "parse_status": "columns_aligned_unverified"
+      }
+    },
+    {
+      "chunk_id": "projeto-guia-dados-assistencia-farmaceutica-df:L72-L72",
+      "text": "Fonte: projeto-guia-dados-assistencia-farmaceutica-df\nSecao: Guia do conjunto de dados de Assistência Farmaceutica do DF > 4. Modelo recomendado para o banco > 4.1 Fonte e versao\n\nCabecalhos da tabela: Campo | Uso\nLinha da tabela: | `reviewed_by`, `reviewed_at` | Responsavel e data da revisao humana. |",
+      "content_original": "Cabecalhos da tabela: Campo | Uso\nLinha da tabela: | `reviewed_by`, `reviewed_at` | Responsavel e data da revisao humana. |",
+      "metadata": {
+        "source_id": "projeto-guia-dados-assistencia-farmaceutica-df",
+        "section": "Guia do conjunto de dados de Assistência Farmaceutica do DF > 4. Modelo recomendado para o banco > 4.1 Fonte e versao",
+        "line_start": 72,
+        "line_end": 72,
+        "content_type": "table_row",
+        "record_id": "projeto-guia-dados-assistencia-farmaceutica-df:table:L63:L72",
+        "table_id": "projeto-guia-dados-assistencia-farmaceutica-df:table:L63",
+        "parse_status": "columns_aligned_unverified"
+      }
+    },
+    {
+      "chunk_id": "projeto-guia-dados-assistencia-farmaceutica-df:L73-L73",
+      "text": "Fonte: projeto-guia-dados-assistencia-farmaceutica-df\nSecao: Guia do conjunto de dados de Assistência Farmaceutica do DF > 4. Modelo recomendado para o banco > 4.1 Fonte e versao\n\nCabecalhos da tabela: Campo | Uso\nLinha da tabela: | `source_locator` | Pagina, secao, item, tabela ou URL especifica que sustenta o registro. |",
+      "content_original": "Cabecalhos da tabela: Campo | Uso\nLinha da tabela: | `source_locator` | Pagina, secao, item, tabela ou URL especifica que sustenta o registro. |",
+      "metadata": {
+        "source_id": "projeto-guia-dados-assistencia-farmaceutica-df",
+        "section": "Guia do conjunto de dados de Assistência Farmaceutica do DF > 4. Modelo recomendado para o banco > 4.1 Fonte e versao",
+        "line_start": 73,
+        "line_end": 73,
+        "content_type": "table_row",
+        "record_id": "projeto-guia-dados-assistencia-farmaceutica-df:table:L63:L73",
+        "table_id": "projeto-guia-dados-assistencia-farmaceutica-df:table:L63",
+        "parse_status": "columns_aligned_unverified"
+      }
+    },
+    {
+      "chunk_id": "projeto-guia-dados-assistencia-farmaceutica-df:L77-L77",
+      "text": "Fonte: projeto-guia-dados-assistencia-farmaceutica-df\nSecao: Guia do conjunto de dados de Assistência Farmaceutica do DF > 4. Modelo recomendado para o banco > 4.2 Medicamento e apresentacao\n\nCampos sugeridos: `ingredient_name_original`, `ingredient_name_normalized`, `description_original`, `dosage_form`, `strength_value`, `strength_unit`, `packaging`, `route` (somente se a fonte informar), `ses_code_original`, `component`, `program`, `dispensing_location`, `eligibility_text`, `cid_codes` e `source_id`.",
+      "content_original": "Campos sugeridos: `ingredient_name_original`, `ingredient_name_normalized`, `description_original`, `dosage_form`, `strength_value`, `strength_unit`, `packaging`, `route` (somente se a fonte informar), `ses_code_original`, `component`, `program`, `dispensing_location`, `eligibility_text`, `cid_codes` e `source_id`.\n",
+      "metadata": {
+        "source_id": "projeto-guia-dados-assistencia-farmaceutica-df",
+        "section": "Guia do conjunto de dados de Assistência Farmaceutica do DF > 4. Modelo recomendado para o banco > 4.2 Medicamento e apresentacao",
+        "line_start": 77,
+        "line_end": 77,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "projeto-guia-dados-assistencia-farmaceutica-df:L79-L79",
+      "text": "Fonte: projeto-guia-dados-assistencia-farmaceutica-df\nSecao: Guia do conjunto de dados de Assistência Farmaceutica do DF > 4. Modelo recomendado para o banco > 4.2 Medicamento e apresentacao\n\nPreservar sempre os valores originais. Campos normalizados sao derivados e devem poder ser rastreados ate a fonte. Nao inferir principio ativo, dose, unidade, via, CID ou elegibilidade a partir de conhecimento externo sem registrar uma fonte apropriada.",
+      "content_original": "Preservar sempre os valores originais. Campos normalizados sao derivados e devem poder ser rastreados ate a fonte. Nao inferir principio ativo, dose, unidade, via, CID ou elegibilidade a partir de conhecimento externo sem registrar uma fonte apropriada.\n",
+      "metadata": {
+        "source_id": "projeto-guia-dados-assistencia-farmaceutica-df",
+        "section": "Guia do conjunto de dados de Assistência Farmaceutica do DF > 4. Modelo recomendado para o banco > 4.2 Medicamento e apresentacao",
+        "line_start": 79,
+        "line_end": 79,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "projeto-guia-dados-assistencia-farmaceutica-df:L83-L83",
+      "text": "Fonte: projeto-guia-dados-assistencia-farmaceutica-df\nSecao: Guia do conjunto de dados de Assistência Farmaceutica do DF > 4. Modelo recomendado para o banco > 4.3 Disponibilidade e servicos\n\nEstoque, falta, horario, fechamento e forma de atendimento devem ser registros temporais independentes: `service_id`, `status`, `details`, `captured_at`, `valid_from`, `valid_until`, `source_id` e `source_locator`. Um aviso sem prazo conhecido deve ser marcado como validade desconhecida e precisa de reconsulta antes de ser apresentado como atual.",
+      "content_original": "Estoque, falta, horario, fechamento e forma de atendimento devem ser registros temporais independentes: `service_id`, `status`, `details`, `captured_at`, `valid_from`, `valid_until`, `source_id` e `source_locator`. Um aviso sem prazo conhecido deve ser marcado como validade desconhecida e precisa de reconsulta antes de ser apresentado como atual.\n",
+      "metadata": {
+        "source_id": "projeto-guia-dados-assistencia-farmaceutica-df",
+        "section": "Guia do conjunto de dados de Assistência Farmaceutica do DF > 4. Modelo recomendado para o banco > 4.3 Disponibilidade e servicos",
+        "line_start": 83,
+        "line_end": 83,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "projeto-guia-dados-assistencia-farmaceutica-df:L87-L87",
+      "text": "Fonte: projeto-guia-dados-assistencia-farmaceutica-df\nSecao: Guia do conjunto de dados de Assistência Farmaceutica do DF > 4. Modelo recomendado para o banco > 4.4 Indicacoes e conteudo clinico\n\nArmazenar alegacoes clinicas separadamente do catalogo administrativo. Cada alegacao deve conter texto, populacao/contexto, tipo de afirmacao (indicacao, contraindicacao, interacao, dose, armazenamento etc.), fonte clinica/normativa, versao/data, trecho de suporte e estado de revisao por pessoa qualificada. Sem esses elementos, nao usar para gerar recomendacao clinica.",
+      "content_original": "Armazenar alegacoes clinicas separadamente do catalogo administrativo. Cada alegacao deve conter texto, populacao/contexto, tipo de afirmacao (indicacao, contraindicacao, interacao, dose, armazenamento etc.), fonte clinica/normativa, versao/data, trecho de suporte e estado de revisao por pessoa qualificada. Sem esses elementos, nao usar para gerar recomendacao clinica.\n",
+      "metadata": {
+        "source_id": "projeto-guia-dados-assistencia-farmaceutica-df",
+        "section": "Guia do conjunto de dados de Assistência Farmaceutica do DF > 4. Modelo recomendado para o banco > 4.4 Indicacoes e conteudo clinico",
+        "line_start": 87,
+        "line_end": 87,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "projeto-guia-dados-assistencia-farmaceutica-df:L91-L96",
+      "text": "Fonte: projeto-guia-dados-assistencia-farmaceutica-df\nSecao: Guia do conjunto de dados de Assistência Farmaceutica do DF > 5. Identificadores, duplicatas e valores ausentes\n\n- Nao usar o numero sequencial `Item` como chave unica: ele reinicia em cada secao.\n- Uma chave de registro de origem pode combinar `source_id + section_id + item_number`. O codigo SES deve ser guardado como valor de origem e validado, nao presumido globalmente unico.\n- Nao remover registros apenas porque principio ativo ou descricao coincidem. Comparar codigo, apresentacao, concentracao, componente, programa, local e vigencia.\n- Registrar duplicatas como candidatos com motivo e decisao humana: `duplicate_candidate`, `duplicate_of`, `decision`, `reviewer` e `reviewed_at`.\n- Diferenciar campo ausente, nao aplicavel, desconhecido e explicitamente nao informado. Nao preencher com zero, texto presumido ou valor deduzido.\n- Em conflitos entre fontes, guardar ambas as afirmacoes, as datas e as fontes; nao escolher silenciosamente uma delas.",
+      "content_original": "- Nao usar o numero sequencial `Item` como chave unica: ele reinicia em cada secao.\n- Uma chave de registro de origem pode combinar `source_id + section_id + item_number`. O codigo SES deve ser guardado como valor de origem e validado, nao presumido globalmente unico.\n- Nao remover registros apenas porque principio ativo ou descricao coincidem. Comparar codigo, apresentacao, concentracao, componente, programa, local e vigencia.\n- Registrar duplicatas como candidatos com motivo e decisao humana: `duplicate_candidate`, `duplicate_of`, `decision`, `reviewer` e `reviewed_at`.\n- Diferenciar campo ausente, nao aplicavel, desconhecido e explicitamente nao informado. Nao preencher com zero, texto presumido ou valor deduzido.\n- Em conflitos entre fontes, guardar ambas as afirmacoes, as datas e as fontes; nao escolher silenciosamente uma delas.\n",
+      "metadata": {
+        "source_id": "projeto-guia-dados-assistencia-farmaceutica-df",
+        "section": "Guia do conjunto de dados de Assistência Farmaceutica do DF > 5. Identificadores, duplicatas e valores ausentes",
+        "line_start": 91,
+        "line_end": 96,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "projeto-guia-dados-assistencia-farmaceutica-df:L100-L107",
+      "text": "Fonte: projeto-guia-dados-assistencia-farmaceutica-df\nSecao: Guia do conjunto de dados de Assistência Farmaceutica do DF > 6. Pipeline de preparacao\n\n1. Guardar uma copia imutavel da fonte original e seus metadados de captura.\n2. Extrair registros preservando secao, item, pagina/trecho e texto original.\n3. Validar colunas, tipos, codigos, unidades, numeros de itens e campos obrigatorios.\n4. Sinalizar OCR, truncamentos, valores fora do padrao e repeticoes para revisao humana.\n5. Comparar campos clinicamente ou operacionalmente sensiveis diretamente com a fonte oficial.\n6. Registrar cada correcao como valor original, valor proposto, justificativa, fonte e revisor; nao sobrescrever a origem.\n7. Publicar apenas registros aprovados para o uso pretendido, com versao e data de validade.\n8. Reexecutar validacoes apos cada atualizacao e manter historico de alteracoes.",
+      "content_original": "1. Guardar uma copia imutavel da fonte original e seus metadados de captura.\n2. Extrair registros preservando secao, item, pagina/trecho e texto original.\n3. Validar colunas, tipos, codigos, unidades, numeros de itens e campos obrigatorios.\n4. Sinalizar OCR, truncamentos, valores fora do padrao e repeticoes para revisao humana.\n5. Comparar campos clinicamente ou operacionalmente sensiveis diretamente com a fonte oficial.\n6. Registrar cada correcao como valor original, valor proposto, justificativa, fonte e revisor; nao sobrescrever a origem.\n7. Publicar apenas registros aprovados para o uso pretendido, com versao e data de validade.\n8. Reexecutar validacoes apos cada atualizacao e manter historico de alteracoes.\n",
+      "metadata": {
+        "source_id": "projeto-guia-dados-assistencia-farmaceutica-df",
+        "section": "Guia do conjunto de dados de Assistência Farmaceutica do DF > 6. Pipeline de preparacao",
+        "line_start": 100,
+        "line_end": 107,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "projeto-guia-dados-assistencia-farmaceutica-df:L109-L109",
+      "text": "Fonte: projeto-guia-dados-assistencia-farmaceutica-df\nSecao: Guia do conjunto de dados de Assistência Farmaceutica do DF > 6. Pipeline de preparacao\n\nValidacoes minimas para catalogos: codigo preservado como texto; concentracao separada de unidade; apresentacao nao vazia; secao e fonte obrigatorias; codigos suspeitos, descricoes truncadas e duplicatas candidatas em fila de revisao. Para avisos, exigir data de captura e verificar vencimento antes de responder.",
+      "content_original": "Validacoes minimas para catalogos: codigo preservado como texto; concentracao separada de unidade; apresentacao nao vazia; secao e fonte obrigatorias; codigos suspeitos, descricoes truncadas e duplicatas candidatas em fila de revisao. Para avisos, exigir data de captura e verificar vencimento antes de responder.\n",
+      "metadata": {
+        "source_id": "projeto-guia-dados-assistencia-farmaceutica-df",
+        "section": "Guia do conjunto de dados de Assistência Farmaceutica do DF > 6. Pipeline de preparacao",
+        "line_start": 109,
+        "line_end": 109,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "projeto-guia-dados-assistencia-farmaceutica-df:L113-L119",
+      "text": "Fonte: projeto-guia-dados-assistencia-farmaceutica-df\nSecao: Guia do conjunto de dados de Assistência Farmaceutica do DF > 7. Uso em busca ou chatbot\n\n- Preferir recuperacao de trechos das fontes (RAG) com citacao da instituicao, secao e data, em vez de treinar o modelo para memorizar horarios, estoques ou regras que mudam.\n- Responder sobre dispensacao somente com registros aprovados e vigentes; dizer quando a fonte nao informa algo e encaminhar para o canal oficial.\n- Distinguir claramente “padronizado”, “dispensado neste servico”, “em falta na data X” e “estoque confirmado agora”. Sao afirmacoes diferentes.\n- Nao recomendar inicio, interrupcao, substituicao, dose ou combinacao de medicamentos. Nao diagnosticar nem extrapolar indicacoes de fitoterapicos.\n- Para casos urgentes, efeitos adversos, gestacao, criancas ou duvida individual de tratamento, orientar contato com profissional/servico de saude adequado; nao improvisar uma conduta.\n- Nao enviar dados pessoais ou dados de pacientes para treinamento. Os documentos atuais devem permanecer sem dados identificaveis de usuarios.\n- Antes de distribuir ou treinar modelos com conteudo de terceiros, verificar licencas, termos de uso, atribuicao e autorizacao aplicaveis. A licenca do repositorio nao deve ser presumida como licenca das fontes oficiais.",
+      "content_original": "- Preferir recuperacao de trechos das fontes (RAG) com citacao da instituicao, secao e data, em vez de treinar o modelo para memorizar horarios, estoques ou regras que mudam.\n- Responder sobre dispensacao somente com registros aprovados e vigentes; dizer quando a fonte nao informa algo e encaminhar para o canal oficial.\n- Distinguir claramente “padronizado”, “dispensado neste servico”, “em falta na data X” e “estoque confirmado agora”. Sao afirmacoes diferentes.\n- Nao recomendar inicio, interrupcao, substituicao, dose ou combinacao de medicamentos. Nao diagnosticar nem extrapolar indicacoes de fitoterapicos.\n- Para casos urgentes, efeitos adversos, gestacao, criancas ou duvida individual de tratamento, orientar contato com profissional/servico de saude adequado; nao improvisar uma conduta.\n- Nao enviar dados pessoais ou dados de pacientes para treinamento. Os documentos atuais devem permanecer sem dados identificaveis de usuarios.\n- Antes de distribuir ou treinar modelos com conteudo de terceiros, verificar licencas, termos de uso, atribuicao e autorizacao aplicaveis. A licenca do repositorio nao deve ser presumida como licenca das fontes oficiais.\n",
+      "metadata": {
+        "source_id": "projeto-guia-dados-assistencia-farmaceutica-df",
+        "section": "Guia do conjunto de dados de Assistência Farmaceutica do DF > 7. Uso em busca ou chatbot",
+        "line_start": 113,
+        "line_end": 119,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "projeto-guia-dados-assistencia-farmaceutica-df:L123-L123",
+      "text": "Fonte: projeto-guia-dados-assistencia-farmaceutica-df\nSecao: Guia do conjunto de dados de Assistência Farmaceutica do DF > 8. Atualizacao e governanca\n\nManter um responsavel pela revisao de cada fonte. A cadencia deve refletir o tipo de dado: alertas de estoque e fechamento exigem consulta na data da resposta; horarios, unidades e regras de acesso exigem revalidacao periodica; catalogos e protocolos devem seguir a edicao oficial vigente.",
+      "content_original": "Manter um responsavel pela revisao de cada fonte. A cadencia deve refletir o tipo de dado: alertas de estoque e fechamento exigem consulta na data da resposta; horarios, unidades e regras de acesso exigem revalidacao periodica; catalogos e protocolos devem seguir a edicao oficial vigente.\n",
+      "metadata": {
+        "source_id": "projeto-guia-dados-assistencia-farmaceutica-df",
+        "section": "Guia do conjunto de dados de Assistência Farmaceutica do DF > 8. Atualizacao e governanca",
+        "line_start": 123,
+        "line_end": 123,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "projeto-guia-dados-assistencia-farmaceutica-df:L125-L125",
+      "text": "Fonte: projeto-guia-dados-assistencia-farmaceutica-df\nSecao: Guia do conjunto de dados de Assistência Farmaceutica do DF > 8. Atualizacao e governanca\n\nPara cada rodada, registrar: URL consultada, data/hora, versao publicada, arquivos alterados, diferencas encontradas, itens aprovados/rejeitados, responsavel e proxima revisao. Nao alterar silenciosamente um dado publicado.",
+      "content_original": "Para cada rodada, registrar: URL consultada, data/hora, versao publicada, arquivos alterados, diferencas encontradas, itens aprovados/rejeitados, responsavel e proxima revisao. Nao alterar silenciosamente um dado publicado.\n",
+      "metadata": {
+        "source_id": "projeto-guia-dados-assistencia-farmaceutica-df",
+        "section": "Guia do conjunto de dados de Assistência Farmaceutica do DF > 8. Atualizacao e governanca",
+        "line_start": 125,
+        "line_end": 125,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "projeto-guia-dados-assistencia-farmaceutica-df:L129-L129",
+      "text": "Fonte: projeto-guia-dados-assistencia-farmaceutica-df\nSecao: Guia do conjunto de dados de Assistência Farmaceutica do DF > 9. Criterios para liberar dados\n\nUm arquivo ou conjunto de registros so deve ser marcado como pronto para uso quando:",
+      "content_original": "Um arquivo ou conjunto de registros so deve ser marcado como pronto para uso quando:\n",
+      "metadata": {
+        "source_id": "projeto-guia-dados-assistencia-farmaceutica-df",
+        "section": "Guia do conjunto de dados de Assistência Farmaceutica do DF > 9. Criterios para liberar dados",
+        "line_start": 129,
+        "line_end": 129,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "projeto-guia-dados-assistencia-farmaceutica-df:L131-L138",
+      "text": "Fonte: projeto-guia-dados-assistencia-farmaceutica-df\nSecao: Guia do conjunto de dados de Assistência Farmaceutica do DF > 9. Criterios para liberar dados\n\n- a fonte e a versao estao identificadas e acessiveis;\n- campos estruturados foram comparados com a fonte original;\n- codigos, doses, unidades e apresentacoes passaram por revisao adequada ao risco;\n- duplicatas candidatas e conflitos possuem decisao registrada;\n- informacoes temporarias possuem data, validade ou regra explicita de reconsulta;\n- afirmacoes clinicas possuem fonte clinica/normativa e revisao qualificada;\n- os testes de importacao e validacao passaram;\n- o consumidor (banco, busca ou chatbot) consegue exibir proveniencia e incerteza.",
+      "content_original": "- a fonte e a versao estao identificadas e acessiveis;\n- campos estruturados foram comparados com a fonte original;\n- codigos, doses, unidades e apresentacoes passaram por revisao adequada ao risco;\n- duplicatas candidatas e conflitos possuem decisao registrada;\n- informacoes temporarias possuem data, validade ou regra explicita de reconsulta;\n- afirmacoes clinicas possuem fonte clinica/normativa e revisao qualificada;\n- os testes de importacao e validacao passaram;\n- o consumidor (banco, busca ou chatbot) consegue exibir proveniencia e incerteza.\n",
+      "metadata": {
+        "source_id": "projeto-guia-dados-assistencia-farmaceutica-df",
+        "section": "Guia do conjunto de dados de Assistência Farmaceutica do DF > 9. Criterios para liberar dados",
+        "line_start": 131,
+        "line_end": 138,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "projeto-guia-dados-assistencia-farmaceutica-df:L140-L140",
+      "text": "Fonte: projeto-guia-dados-assistencia-farmaceutica-df\nSecao: Guia do conjunto de dados de Assistência Farmaceutica do DF > 9. Criterios para liberar dados\n\n**Estado atual de liberacao:** os documentos deste diretorio sao uteis como material de triagem, mas a REME transcrita ainda requer validacao contra o PDF, e os conteudos operacionais/clinicos dos arquivos tematicos devem ser consumidos com os estados e ressalvas registrados acima.",
+      "content_original": "**Estado atual de liberacao:** os documentos deste diretorio sao uteis como material de triagem, mas a REME transcrita ainda requer validacao contra o PDF, e os conteudos operacionais/clinicos dos arquivos tematicos devem ser consumidos com os estados e ressalvas registrados acima.\n",
+      "metadata": {
+        "source_id": "projeto-guia-dados-assistencia-farmaceutica-df",
+        "section": "Guia do conjunto de dados de Assistência Farmaceutica do DF > 9. Criterios para liberar dados",
+        "line_start": 140,
+        "line_end": 140,
+        "content_type": "text"
+      }
+    }
+  ]
+}
