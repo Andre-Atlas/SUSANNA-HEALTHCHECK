@@ -99,7 +99,7 @@ class GovBrSearchTests(unittest.TestCase):
             (DIRECT_PAGES['rename'], rename_html),
         ]
         with patch('govbr_search._serpro_search') as serpro, patch(
-                'govbr_search._read', side_effect=pages) as read:
+                'govbr_search._read', side_effect=lambda url, *_: (url, dict(pages)[url])) as read:
             sources = search_gov_br('tem remédios gratuitos no sus?')
         serpro.assert_not_called()
         self.assertEqual([source['url'] for source in sources], [url for url, _ in pages])
