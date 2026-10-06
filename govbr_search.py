@@ -3,7 +3,9 @@ from datetime import datetime
 from html.parser import HTMLParser
 import http.client
 import json
+import os
 import re
+import ssl
 import unicodedata
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode, urljoin, urlsplit
@@ -19,6 +21,20 @@ MAX_API_BYTES = 1_000_000
 MAX_RESULTS = 3
 MAX_CANDIDATES = 5
 PAGE_TEXT_LIMIT = 2500
+
+
+def _configure_macos_ca_bundle():
+    """Use macOS's installed public CA bundle when Python has no CA store."""
+    if os.environ.get('SSL_CERT_FILE') or os.environ.get('SSL_CERT_DIR'):
+        return
+    macos_bundle = '/etc/ssl/cert.pem'
+    if os.path.isfile(macos_bundle) and not ssl.get_default_verify_paths().cafile:
+        os.environ['SSL_CERT_FILE'] = macos_bundle
+
+
+_configure_macos_ca_bundle()
+
+
 SEARCH_STOP_WORDS = frozenset({
     'a', 'as', 'ao', 'aos', 'da', 'das', 'de', 'do', 'dos', 'e', 'em', 'na',
     'nas', 'no', 'nos', 'o', 'os', 'ou', 'para', 'pela', 'pelas', 'pelo',
@@ -42,6 +58,21 @@ DIRECT_PAGES = {
 
 class GovBrSearchError(Exception):
     """A busca ou leitura das fontes oficiais falhou."""
+
+
+def _network_error_message(exc, service):
+    """Translate common network failures into safe, actionable diagnostics."""
+    reason = getattr(exc, 'reason', exc)
+    if isinstance(exc, HTTPError) and exc.code == 403:
+        return f'A rede ou o portal bloqueou o acesso à página {service} (HTTP 403). Verifique a política de acesso com a TI.'
+    if isinstance(reason, ssl.SSLCertVerificationError):
+        return (f'A conexão com {service} apresentou um certificado que o Python não confia. '
+                'Peça à TI a CA corporativa aprovada e configure-a para o Python; a validação TLS permanece ativa.')
+    if isinstance(reason, ssl.SSLError):
+        return f'Falha na conexão TLS com {service}. Verifique o proxy ou a inspeção HTTPS com a TI.'
+    if isinstance(reason, OSError) and getattr(reason, 'errno', None) == 8:
+        return f'Não foi possível localizar {service} no DNS. Verifique a rede ou VPN corporativa com a TI.'
+    return f'Não foi possível consultar {service}. Verifique a conexão ou a política de rede corporativa.'
 
 
 def is_gov_br_url(url):
@@ -135,7 +166,7 @@ def _serpro_search(query, timeout):
             UnicodeError, json.JSONDecodeError) as exc:
         if job:
             job.check()
-        raise GovBrSearchError('Não foi possível consultar a busca oficial do Ministério agora.') from exc
+        raise GovBrSearchError(_network_error_message(exc, 'a busca oficial do Ministério')) from exc
 
     # API metadata is used only to obtain URLs. Evidence is always re-fetched
     # from gov.br and parsed by the existing HTML reader.
@@ -297,7 +328,7 @@ def _read(url, limit, timeout):
     except (HTTPError, URLError, TimeoutError, OSError, http.client.HTTPException) as exc:
         if job:
             job.check()
-        raise GovBrSearchError('Não foi possível consultar o portal gov.br agora.') from exc
+        raise GovBrSearchError(_network_error_message(exc, 'o portal gov.br')) from exc
     try:
         return final_url, raw.decode(charset, errors='replace')
     except LookupError:
@@ -387,10 +418,12 @@ def search_gov_br(question, *, timeout=5):
         links = [(url, '') for url in _serpro_search(query, timeout)]
     now = datetime.now().astimezone().isoformat(timespec='seconds')
     sources = []
+    last_read_error = None
     for url, _label in links[:MAX_CANDIDATES]:
         try:
             page = _read(url, MAX_PAGE_BYTES, timeout)
-        except GovBrSearchError:
+        except GovBrSearchError as exc:
+            last_read_error = exc
             continue
         if page is None:
             continue
@@ -400,4 +433,6 @@ def search_gov_br(question, *, timeout=5):
             sources.append(parsed)
         if len(sources) >= MAX_RESULTS:
             break
+    if not sources and last_read_error:
+        raise last_read_error
     return sources
