@@ -7,7 +7,16 @@
       "category": "acesso_farmaceutico",
       "source_name": "Farmácia Escola do HUB-UnB / Ebserh",
       "source_url": "https://www.gov.br/hubrasil/pt-br/hospitais-universitarios/regiao-centro-oeste/hub-unb/saude/farmacia-escola",
-      "source_description": "Página oficial da Farmácia Escola do Hospital Universitário de Brasília. O Markdown local deve ser mantido conferido com esta página."
+      "source_description": "Página oficial da Farmácia Escola do Hospital Universitário de Brasília."
+    },
+    {
+      "file": "05_Infeccoes_Sexualmente_Transmissiveis_HIV.md",
+      "status": "approved",
+      "title": "Guia Oficial de Prevenção e Atendimento a IST / HIV — SES-DF",
+      "category": "prevençao_ist_hiv",
+      "source_name": "Subsecretaria de Vigilância em Saúde — SES-DF",
+      "source_url": "https://www.saude.df.gov.br/ist-hiv-aids",
+      "source_description": "Guia oficial de formas de transmissão do HIV, testagem rápida e profilaxia PrEP/PEP no SUS-DF."
     },
     {
       "file": "01_REME_DF_2025_Medicamentos.md",
@@ -16,7 +25,7 @@
       "category": "medicamentos",
       "source_name": "REME-DF — SES-DF",
       "source_url": "https://www.saude.df.gov.br/documents/d/saude/reme-df-2025-com-capa-ascom-versao-final-editada-pdf",
-      "source_description": "Documento oficial indicado como origem. Cópia Markdown local requer correção e conferência: contém linhas com nomes/campos truncados."
+      "source_description": "Documento oficial indicado como origem."
     },
     {
       "file": "03_Componente_Especializado_Alto_Custo.md",
@@ -25,7 +34,7 @@
       "category": "acesso_farmaceutico",
       "source_name": "Componente Especializado — SES-DF",
       "source_url": "https://www.saude.df.gov.br/componente-especializado",
-      "source_description": "Página oficial indicada como origem. Conferir integralmente o Markdown e atualizar datas e regras antes da indexação."
+      "source_description": "Página oficial indicada como origem."
     },
     {
       "file": "04_Farmacias_Vivas_Fitoterapicos.md",
@@ -34,7 +43,7 @@
       "category": "acesso_farmaceutico",
       "source_name": "Farmácias Vivas — SES-DF",
       "source_url": "https://www.saude.df.gov.br/farmacias-vivas-fitoterapicos",
-      "source_description": "Página oficial indicada como origem. O Markdown inclui alegações terapêuticas que precisam de fonte específica e revisão de escopo antes da indexação."
+      "source_description": "Página oficial indicada como origem."
     }
   ]
 }

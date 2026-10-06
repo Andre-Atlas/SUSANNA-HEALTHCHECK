@@ -1,0 +1,16 @@
+{
+  "model_name": "qwen3.5:4b",
+  "dataset_version": "v1.0",
+  "timestamp": "2026-10-06T13:12:52.270323+00:00",
+  "total_cases": 40,
+  "metrics_summary": {
+    "hit_at_k": 0.0,
+    "faithfulness": 1.0,
+    "correctness": 0.5875,
+    "relevance": 1.0,
+    "abstention_accuracy": 0.3,
+    "policy_compliance": 0.95,
+    "conversational_context": 1.0,
+    "avg_latency_ms": 3036.88
+  }
+}
