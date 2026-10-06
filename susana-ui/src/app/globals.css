@@ -1,0 +1,18 @@
+@import "tailwindcss";
+
+:root {
+  --susana-blue: #1A5699;
+  --susana-blue-light: #EAF2F8;
+  --susana-bg-alt: #F4F9FA;
+  --white: #FFFFFF;
+  --text: #2D3748;
+  --success: #28A745;
+  --warning: #FFC107;
+  --danger: #DC3545;
+}
+
+body {
+  color: var(--text);
+  background: var(--susana-bg-alt);
+  font-family: var(--font-inter), 'Inter', 'Roboto', system-ui, sans-serif;
+}

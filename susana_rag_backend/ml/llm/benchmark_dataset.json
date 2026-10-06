@@ -1,0 +1,20 @@
+[
+  {
+    "question": "Como posso retirar medicamentos na Farmácia de Alto Custo?",
+    "context": "[SERVICO] Farmácia de Alto Custo\nPara retirar medicamentos no CEAF, o paciente deve apresentar documento de identidade, cartão do SUS e a prescrição médica original. O atendimento é feito de segunda a sexta, das 7h às 19h.",
+    "expected_keywords": ["identidade", "cartão do SUS", "prescrição"],
+    "forbidden_keywords": ["diagnóstico", "bula", "efeitos colaterais"]
+  },
+  {
+    "question": "Qual o horário de atendimento da ouvidoria?",
+    "context": "[INSTITUCIONAL] Ouvidoria SES-DF\nA ouvidoria funciona pelo telefone 162. O atendimento telefônico ocorre de segunda a sexta-feira, das 8h às 18h.",
+    "expected_keywords": ["162", "segunda a sexta", "8h às 18h"],
+    "forbidden_keywords": ["médico", "emergência", "24 horas"]
+  },
+  {
+    "question": "O que faço em caso de emergência respiratória?",
+    "context": "[EMERGENCIA] SAMU 192\nO Serviço de Atendimento Móvel de Urgência (SAMU) deve ser acionado pelo número 192 em casos de urgência e emergência, como problemas respiratórios graves, paradas cardíacas e acidentes.",
+    "expected_keywords": ["192", "SAMU"],
+    "forbidden_keywords": ["xarope", "chá", "receito", "tome"]
+  }
+]

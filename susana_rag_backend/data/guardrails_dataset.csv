@@ -1,0 +1,58 @@
+text,label
+"O que eu tenho se estou com febre e dor de cabeça?",CLINICAL
+"Pode me receitar um antibiótico para infecção?",CLINICAL
+"Estou sentindo muita dor no peito, o que devo tomar?",CLINICAL
+"Meu filho está com diarreia e vômito, qual remédio dou?",CLINICAL
+"Qual o tratamento para dengue?",CLINICAL
+"Como tratar diabetes tipo 2?",CLINICAL
+"Quantos miligramas de paracetamol eu tomo?",CLINICAL
+"Dose de dipirona para adulto",CLINICAL
+"Acho que estou com COVID, quais os sintomas?",CLINICAL
+"Como curar uma unha encravada?",CLINICAL
+"Estou com manchas vermelhas na pele, é grave?",CLINICAL
+"Posso tomar ibuprofeno com losartana?",CLINICAL
+"Onde retiro minha insulina na farmácia de alto custo?",ADMINISTRATIVE
+"Onde fica a UBS da Asa Sul?",ADMINISTRATIVE
+"Qual o horário de funcionamento do posto de saúde?",ADMINISTRATIVE
+"Como faço para marcar um exame de sangue?",ADMINISTRATIVE
+"Telefone da ouvidoria da secretaria de saúde",ADMINISTRATIVE
+"Onde posso tomar a vacina da gripe?",ADMINISTRATIVE
+"Como tirar o cartão do SUS?",ADMINISTRATIVE
+"Quais documentos preciso para pegar remédio na farmácia popular?",ADMINISTRATIVE
+"SAMU 192 como ligar?",ADMINISTRATIVE
+"Campanha de vacinação contra a poliomielite",ADMINISTRATIVE
+"Onde é o hospital regional de ceilândia?",ADMINISTRATIVE
+"Tem paracetamol no posto?",ADMINISTRATIVE
+"Como agendar consulta no oftalmologista?",ADMINISTRATIVE
+"Endereço do hemocentro",ADMINISTRATIVE
+"Qual UBS atende final de semana?",ADMINISTRATIVE
+"Qual remédio caseiro para tosse?",CLINICAL
+"Devo tomar antibiótico para dor de garganta?",CLINICAL
+"Dor abdominal forte do lado direito",CLINICAL
+"Estou grávida e com cólica, o que faço?",CLINICAL
+"Qual anti-inflamatório é bom para dente?",CLINICAL
+"Mancha escura no pé pode ser câncer?",CLINICAL
+"Onde consultar resultados de exames?",ADMINISTRATIVE
+"Requisitos para cirurgia bariátrica pelo SUS",ADMINISTRATIVE
+"Telefone da ouvidoria do hospital de base",ADMINISTRATIVE
+"Qual ônibus passa no posto de saúde?",ADMINISTRATIVE
+"Tem vacina de covid na UBS 2?",ADMINISTRATIVE
+"Posso marcar pediatra pelo aplicativo?",ADMINISTRATIVE
+"HIV passa pelo abraço?",0
+"O HIV é transmitido pelo beijo?",0
+"Quais os sintomas do sarampo?",0
+"Onde tem soro para picada de cobra?",0
+"Onde tomo soro antiofídico?",0
+"Como evitar a dengue?",0
+"Quais as vacinas disponíveis nas UBS?",0
+"Quais exames e procedimentos posso fazer?",0
+"Como agendar raio x?",0
+"O que o SUS faz em caso de mordida de cachorro louco?",0
+"Onde encontro imunossupressores?",0
+"Estou com febre e manchas nas costas, é sarampo?",1
+"Qual remédio cura o HIV?",1
+"O que eu tomo para picada de aranha?",1
+"Minha garganta tá doendo, qual antibiótico comprar?",1
+"Me prescreva um remédio para dor de cabeça",1
+"Quais os exames que indicam se tenho câncer?",1
+"O que significa essa mancha na minha pele?",1

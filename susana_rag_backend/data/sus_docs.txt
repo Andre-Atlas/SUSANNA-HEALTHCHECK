@@ -1,0 +1,53 @@
+[UNIDADE] UBS 1 Asa Sul
+Endereço: SGAS 602, Lote D, Asa Sul, Brasília - DF.
+Horário: 07:00 às 19:00 (Segunda a Sexta).
+Serviços: Vacinação, Farmácia, Consultas básicas.
+Telefone: (61) 3345-1234.
+
+[UNIDADE] UBS 2 Ceilândia
+Endereço: QNM 17, Área Especial, Ceilândia Sul - DF.
+Horário: 07:00 às 18:00 (Segunda a Sexta).
+Serviços: Vacinação, Saúde da Família, Pré-natal.
+Telefone: (61) 3373-5678.
+
+[UNIDADE] Hospital Regional de Taguatinga (HRT)
+Endereço: QS 1, Rua 1A, Taguatinga Sul - DF.
+Horário: 24 horas (Emergência). Ambulatório: 07:00 às 17:00.
+Serviços: Emergência, Cirurgia, Internação, Exames laboratoriais.
+Telefone: (61) 3354-9000.
+
+[VACINACAO] Calendário Criança (0 a 9 anos)
+BCG: dose única ao nascer.
+Hepatite B: ao nascer, 2 meses, 6 meses.
+Pentavalente (DTP+Hib+HB): 2, 4 e 6 meses.
+Poliomielite (VIP/VOP): 2, 4, 6 meses e reforços.
+Tríplice Viral (SCR): 12 meses e 15 meses.
+
+[VACINACAO] Calendário Idoso (a partir de 60 anos)
+Vacinas essenciais para idosos (a partir de 60 anos): Gripe (anual), COVID-19, Pneumocócica 23-valente, Tétano (dT a cada 10 anos).
+Recomendação: Manter o Cartão de Vacinas atualizado seguindo o Calendário Nacional de Vacinação.
+
+[VACINACAO] Calendário Gestante
+Hepatite B: 3 doses se não vacinada.
+dTpa (Tríplice Acelular): a partir da 20ª semana de gestação.
+Influenza: dose anual durante o período gestacional.
+
+[SERVICO] Medicamentos Básicos - Farmácia Popular
+A farmácia do SUS-DF fornece medicamentos básicos como Paracetamol, Dipirona, Losartana, Metformina, Sinvastatina, Captopril, Enalapril.
+Requisitos: Receita médica válida (até 120 dias) e documento original com foto.
+Programa Farmácia Popular: medicamentos gratuitos para hipertensão, diabetes e asma.
+
+[SERVICO] Cartão Nacional de Saúde (CNS)
+O Cartão SUS é o documento que identifica o usuário do SUS.
+Como solicitar: Comparecer a qualquer UBS com documento de identidade com foto, CPF e comprovante de residência.
+O cartão também pode ser obtido pelo aplicativo Meu SUS Digital.
+
+[SERVICO] Agendamento de Consultas
+O agendamento de consultas especializadas é realizado pela UBS de referência do paciente.
+Processo: O paciente deve comparecer à UBS, ser atendido pelo médico da família, e este encaminhará o pedido de regulação para o especialista.
+Tempo médio de espera: varia conforme a especialidade e a demanda regional.
+
+[EMERGENCIA] SAMU 192
+O SAMU (Serviço de Atendimento Móvel de Urgência) atende emergências médicas 24 horas.
+Telefone: 192 (ligação gratuita).
+Quando ligar: Parada cardíaca, AVC, trauma grave, dificuldade respiratória severa, convulsões.

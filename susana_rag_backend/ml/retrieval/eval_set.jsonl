@@ -1,0 +1,6 @@
+{"query": "Onde fica a Farmácia de Alto Custo?", "expected_tag": "SERVICO"}
+{"query": "Qual o horário do SAMU?", "expected_tag": "EMERGENCIA"}
+{"query": "Como retirar o cartão do SUS?", "expected_tag": "SERVICO"}
+{"query": "Quero falar com a ouvidoria da saúde", "expected_tag": "INSTITUCIONAL"}
+{"query": "Lista de hospitais regionais do DF", "expected_tag": "UNIDADE"}
+{"query": "Onde vacinar meu filho?", "expected_tag": "VACINACAO"}
