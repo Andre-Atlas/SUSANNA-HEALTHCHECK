@@ -16,6 +16,7 @@ class RetrievedChunk:
     text: str
     source: str
     distance: float
+    url: str | None = None
 
 
 @dataclass(frozen=True)

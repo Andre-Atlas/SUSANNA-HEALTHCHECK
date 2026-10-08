@@ -6,23 +6,16 @@ fastapi>=0.115.0
 uvicorn>=0.30.0
 pydantic-settings>=2.0.0
 
-# RAG / NLP
-langchain>=0.3.0
-langchain-core>=0.3.0
-langchain-google-genai>=2.0.0
-
 # Vector store & embeddings
 chromadb>=1.5.0
 sentence-transformers>=5.0.0
+pypdf>=5.0.0                 # leitura de PDF no corpus (develop_gui_sam)
 
 # MLOps
 scikit-learn>=1.5.0
 pandas>=2.2.0
 mlflow>=3.0.0
 dvc>=3.50.0
-
-# Cache (placeholder for semantic cache)
-redis>=7.0.0
 
 # Coleta do corpus (ml/corpus/)
 beautifulsoup4>=4.12.0

@@ -15,5 +15,6 @@ sources:
   - {url: "https://www.saude.df.gov.br/componente-especializado", tag: SERVICO, title: "Farmácia de Alto Custo (CEAF)"}
   - {url: "https://www.saude.df.gov.br/carta-de-servicos", tag: SERVICO, title: "Carta de Serviços"}
   - {url: "https://www.saude.df.gov.br/servicos-ao-cidadao", tag: SERVICO, title: "Serviços ao Cidadão"}
-  - {url: "https://www.saude.df.gov.br/samu", tag: EMERGENCIA, title: "SAMU 192"}
+  # /samu trazia o texto da Atenção Domiciliar (menu/links); a página dedicada é /samu-192-df
+  - {url: "https://www.saude.df.gov.br/samu-192-df", tag: EMERGENCIA, title: "SAMU 192"}
   - {url: "https://www.saude.df.gov.br/ouvidoria", tag: INSTITUCIONAL, title: "Ouvidoria SES-DF"}
