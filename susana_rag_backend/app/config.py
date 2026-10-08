@@ -26,7 +26,7 @@ class Settings(BaseSettings):
     # Retrieval
     embedding_model: str = "paraphrase-multilingual-MiniLM-L12-v2"
     embedding_max_seq_length: int = 512
-    similarity_threshold: float = 0.55
+    similarity_threshold: float = 0.75
     top_k: int = 3
     docs_dir: Path = BACKEND_DIR / "data" / "corpus"
     project_corpus_dir: Path = BACKEND_DIR.parent / "CORPUS"

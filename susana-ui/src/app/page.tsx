@@ -29,14 +29,14 @@ export default function ChatPage() {
     setInput('');
     setIsLoading(true);
 
-    // Placeholder message that will be updated piece by piece
-    setMessages(prev => [...prev, { text: '', isUser: false }]);
-
     try {
-      const res = await fetch('http://localhost:8000/api/chat/stream', {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+      const chatHistory = messages.slice(1).map(m => ({ text: m.text, isUser: m.isUser }));
+      
+      const res = await fetch(`${apiUrl}/api/chat/stream`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: userMsg }),
+        body: JSON.stringify({ message: userMsg, history: chatHistory }),
       });
 
       if (!res.body) throw new Error("Sem corpo na resposta");
@@ -45,39 +45,36 @@ export default function ChatPage() {
       const decoder = new TextDecoder();
       let done = false;
       let streamedText = '';
-
-      setIsLoading(false); // Removemos o skeleton e começamos o streaming texto
+      let buffer = '';
 
       while (!done) {
         const { value, done: readerDone } = await reader.read();
         done = readerDone;
         if (value) {
           const chunk = decoder.decode(value, { stream: true });
-          const lines = chunk.split('\n').filter(line => line.trim() !== '');
+          buffer += chunk;
+          const lines = buffer.split('\n');
+          buffer = lines.pop() || '';
           
           for (const line of lines) {
+            if (!line.trim()) continue;
             try {
               const data = JSON.parse(line);
               
               if (data.type === 'chunk') {
                 streamedText += data.content;
-                setMessages(prev => {
-                  const newMsgs = [...prev];
-                  newMsgs[newMsgs.length - 1] = { ...newMsgs[newMsgs.length - 1], text: streamedText };
-                  return newMsgs;
-                });
               } else if (data.type === 'done') {
-                setMessages(prev => {
-                  const newMsgs = [...prev];
-                  const lastMsg = newMsgs[newMsgs.length - 1];
-                  newMsgs[newMsgs.length - 1] = {
-                    ...lastMsg,
+                setIsLoading(false);
+                setMessages(prev => [
+                  ...prev, 
+                  {
+                    text: streamedText,
+                    isUser: false,
                     isBlocked: data.is_blocked,
                     isWarning: !data.is_blocked && !data.source,
-                    source: data.source ? { title: data.source } : undefined
-                  };
-                  return newMsgs;
-                });
+                    source: data.citations?.length > 0 ? { title: data.citations[0].title, url: data.citations[0].url } : (data.source ? { title: data.source } : undefined)
+                  }
+                ]);
               }
             } catch (e) {
               console.error("Erro no parse do JSON chunk", e);

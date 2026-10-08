@@ -82,14 +82,18 @@ async def lifespan(application: FastAPI):
         mlflow_enabled=settings.mlflow_log_requests,
     )
 
-    # 3. Indexar Corpus
-    corpus_files = discover_corpus_files(
-        [settings.docs_dir, settings.project_corpus_dir, settings.legacy_docs_file]
-    )
-    logger.info("Lendo %d arquivos de corpus", len(corpus_files))
-    blocks = load_corpus(corpus_files)
-    indexed = pipeline.retriever.index(blocks)
-    logger.info("Indexação concluída: %d blocos novos; %d blocos totais.", indexed, pipeline.retriever.count())
+    # 3. Verificação do Corpus e Auto-Indexação Inteligente
+    if pipeline.retriever.count() == 0:
+        logger.info("Índice vazio detectado! Iniciando indexação inicial de bootstrap...")
+        corpus_files = discover_corpus_files([settings.docs_dir, settings.project_corpus_dir, settings.legacy_docs_file])
+        blocks = load_corpus(corpus_files)
+        if blocks:
+            pipeline.retriever.index(blocks)
+            logger.info("Indexação concluída: %d blocos inseridos no ChromaDB.", pipeline.retriever.count())
+        else:
+            logger.warning("Nenhum arquivo encontrado nas pastas do Corpus!")
+    else:
+        logger.info("Índice já preenchido. Contém %d blocos. Inicialização rápida ativada.", pipeline.retriever.count())
 
     # 4. Warm-up LLM
     if llm.is_ready():
