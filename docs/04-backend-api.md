@@ -24,10 +24,13 @@ app/
 │   ├── ollama_adapter.py → implementação do LLMPort falando com o Ollama
 │   └── prompts.py        → prompt de sistema + montagem das mensagens
 └── rag/
-    ├── corpus.py      → lê os .txt e quebra em blocos [TAG] Título
+    ├── corpus.py      → lê txt/md/csv/json/html/pdf (recursivo) e quebra em blocos
     ├── embeddings.py  → Embedder (sentence-transformers)
-    ├── retriever.py   → ChromaRetriever + SemanticCache
+    ├── retriever.py   → ChromaRetriever (busca híbrida + is_relevant) + SemanticCache
     ├── glossary.py    → expansão de siglas (UBS, SAMU, CEAF...) antes da busca
+    ├── emergency.py   → sinais de emergência → SAMU 192 / CVV 188 (RNF06)
+    ├── unit_directory.py → lista unidades por tipo + região (CSVs de CORPUS/Arquivos)
+    ├── answer_policy.py  → descarta trechos com instruções; detecta links escritos pelo LLM
     ├── guardrails.py  → decide() + GuardrailsClassifier (regras + ML)
     └── pipeline.py    → RAGPipeline: guardrail → cache → busca → LLM → fonte → MLflow (usado pelas 2 rotas)
 ```
@@ -40,7 +43,7 @@ A ideia: o núcleo (pipeline) depende de **interfaces**, não de implementaçõe
 
 | Tipo | O que é |
 | --- | --- |
-| `RetrievedChunk` | Um trecho devolvido pela busca: `id`, `text`, `source`, `distance` |
+| `RetrievedChunk` | Um trecho devolvido pela busca: `id`, `text`, `source`, `distance`, `url` |
 | `LLMAnswer` | Resposta completa do LLM: `text`, `model`, `latency_ms` |
 | `LLMUnavailable` | Exceção lançada quando o LLM não responde (conexão, timeout, resposta vazia) |
 | `LLMPort` | Interface de LLM: `generate()`, `stream()`, `is_ready()` |
@@ -83,7 +86,7 @@ pipeline = None
 | 4 | `OllamaAdapter(...)` | Só cria o cliente HTTP, ainda não conecta |
 | 5 | `SemanticCache(max_distance=0.08)` | Cache em memória |
 | 6 | `RAGPipeline(...)` | Junta tudo |
-| 7 | Sincroniza o índice com `data/corpus/*.txt` | Adiciona blocos novos e remove os que saíram do corpus |
+| 7 | Sincroniza o índice com `data/corpus/` + `CORPUS/Arquivos/` | 1.948 blocos (~28 s na 1ª vez); adiciona novos e remove os que saíram |
 | 8 | `llm.is_ready()` → `llm.warm_up()` | Se o modelo não estiver no Ollama, só registra um aviso; a API sobe mesmo assim |
 
 Se o Ollama estiver fora do ar, a API **sobe normalmente**. Cada pergunta cai então no fallback extrativo (texto bruto do trecho).
@@ -104,7 +107,22 @@ Libera qualquer origem, o que é adequado para desenvolvimento e **não deve ir 
 {"status": "ok", "pipeline_ready": true}
 ```
 
-`pipeline_ready` fica `false` enquanto o lifespan não terminou. Não verifica se o Ollama está no ar.
+`pipeline_ready` fica `false` enquanto o lifespan não terminou. Não verifica se o Ollama está no ar; para isso, use a rota abaixo.
+
+### `GET /health/dependencies` (ideia da `develop_sam`)
+
+Separa **falha técnica** de **falta de conteúdo**:
+
+```json
+{"status": "ok", "pipeline_ready": true,
+ "llm": {"model": "llama3.1:8b", "ready": true},
+ "embeddings": {"model": "paraphrase-multilingual-MiniLM-L12-v2", "max_seq_length": 256},
+ "corpus": {"indexed_blocks": 1979, "unit_directory": 340, "roots": ["…/data/corpus", "…/CORPUS/Arquivos"]},
+ "guardrail": {"ml_model_loaded": true, "model_uri": "models:/susana-guardrail@champion", "threshold": 0.4},
+ "similarity_threshold": 0.74}
+```
+
+`status` é `degraded` se o LLM não estiver pronto ou o índice estiver vazio.
 
 ### `POST /api/chat/stream` — usada pelo frontend
 
@@ -114,15 +132,16 @@ Libera qualquer origem, o que é adequado para desenvolvimento e **não deve ir 
 | Evento | Campos | Quando |
 | --- | --- | --- |
 | `chunk` | `content` | Cada pedaço de texto |
-| `done` | `is_blocked`, `source` (opcional), `error` (opcional) | Sempre a última linha |
+| `done` | `status`, `is_blocked`, `source`, `citations` (lista `{ref, id, title, url}`), `cached`/`error`/`warnings` (opcionais) | Sempre a última linha |
 
 Os desfechos possíveis:
 
 | Desfecho | Linhas enviadas |
 | --- | --- |
-| Bloqueio clínico | 1 `chunk` com a recusa + `done {is_blocked: true}` |
+| Possível emergência | 1 `chunk` com SAMU 192 (ou CVV 188) + `done {status: "emergency"}` |
+| Bloqueio clínico | 1 `chunk` com a recusa + `done {is_blocked: true, status: "out_of_scope"}` |
 | Resposta do cache | 1 `chunk` com a resposta guardada + `done {source, cached: true}` |
-| Sem trecho relevante (distância > 0,70) | 1 `chunk` "Não encontrei…" + `done {source: null}` |
+| Sem trecho relevante (nenhum dos 3 com distância ≤ 0,74) | 1 `chunk` "Não encontrei…" + `done {source: null}` |
 | Resposta normal | N `chunk`s do LLM + `done {source: "<trecho citado>"}` (`source: null` se o LLM disse "não encontrei") |
 | LLM falhou (antes ou no meio) | `chunk`s até a falha + `chunk` com aviso ⚠️ e os 3 trechos + `done {error: true}` |
 
@@ -134,7 +153,9 @@ Erros HTTP: **422** (mensagem inválida) e **503** (pipeline inicializando). Uma
 **Saída:**
 
 ```json
-{"response": "...", "source": "... ou null", "is_blocked": false, "latency_ms": 1234}
+{"response": "...", "source": "... ou null",
+ "citations": [{"ref": 1, "id": "…", "title": "[EMERGENCIA] SAMU 192 (parte 3)", "url": "https://…"}],
+ "status": "answered", "is_blocked": false, "latency_ms": 1234}
 ```
 
 Usa `RAGPipeline.query()`, que percorre o **mesmo fluxo** da rota de streaming (`query_stream` com `stream_llm=False`) e junta os eventos. Erros: 422, 503 e **500** (exceção no pipeline).
@@ -166,7 +187,12 @@ Formato: `data | NÍVEL | módulo | mensagem`. Loggers principais:
 
 ## Testes — `tests/test_rag.py`
 
-Testes com `TestClient`, que roda o lifespan de verdade: carrega os modelos, indexa e chama o Ollama. **38 testes, todos passando** em 08/10/2026.
+**86 testes, todos passando** em 08/10/2026, em 4 arquivos:
+
+- `test_rag.py` (61): integração com `TestClient`, que roda o lifespan de verdade (carrega modelos, indexa, chama o Ollama);
+- `test_corpus_ingestion.py` (13), `test_retriever.py` (11) e `test_pipeline_citations.py` (1): vindos da `develop_gui_sam`, **rápidos (~2 s) e sem Ollama**.
+
+Para rodar só os rápidos: `.venv/bin/pytest tests/test_corpus_ingestion.py tests/test_retriever.py tests/test_pipeline_citations.py`.
 
 | Classe | Verifica |
 | --- | --- |
@@ -176,6 +202,15 @@ Testes com `TestClient`, que roda o lifespan de verdade: carrega os modelos, ind
 | `TestStreaming` | Rota do frontend: mensagem de bloqueio com UBS/SAMU 192, `done` com fonte, recusa fora do tema, cache |
 | `TestPickSource` | Fonte = trecho citado; sem citação → mais próximo; recusa do LLM → sem fonte |
 | `TestGlossary` | Expansão de siglas |
+| `TestUnitDirectory` | "Endereço da UBS 1 de Candangolândia" cita o diretório de UBS; o cache não mistura UBS 1 e UBS 2 |
+| `TestBuildCitations` | Citações no fallback (todas), na recusa (nenhuma), título sem URL |
+| `test_corpus_ingestion.py` | Descoberta recursiva, CSV (separador, agrupamento, um bloco por registro), SIA mensal, 3 esquemas de JSON, HTML/PDF, falha em arquivo corrompido |
+| `test_retriever.py` | Remoção de blocos obsoletos, entidade exata à frente de nomes parecidos, "UBS 1" × "UBS 01", entidade fora dos candidatos vetoriais, `is_relevant` |
+| `test_pipeline_citations.py` | Só citações reais (ignora `[99]`) |
+| `TestEmergency` | SAMU 192 / CVV 188 nos relatos graves; perguntas administrativas sobre o SAMU não disparam |
+| `TestUnitDirectoryLookup` | Lista completa por região, unidade numerada sozinha, filtro "farmácia: SIM", sem região → RAG |
+| `TestAnswerPolicy` | Detecção de instruções escondidas e de links escritos pelo LLM |
+| `TestStatusAndHealth` | `status` out_of_scope/no_evidence; `/health/dependencies` |
 | `TestRAGRetrieval` | "SAMU 192" acha fonte com "SAMU"; vacinação e farmácia acham fonte; "bolo de chocolate" fica sem fonte |
 | `TestSemanticCache` | A 2ª chamada da mesma pergunta leva menos de 2 s |
 | `TestInputValidation` | Mensagem vazia ou ausente → 422 |

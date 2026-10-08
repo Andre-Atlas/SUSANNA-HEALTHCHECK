@@ -64,6 +64,8 @@ Verificação:
 ```bash
 curl localhost:8000/health
 # {"status":"ok","pipeline_ready":true}
+
+curl localhost:8000/health/dependencies   # LLM pronto? quantos blocos indexados? guardrail carregado?
 ```
 
 > Sem o passo do `ml.guardrails.train`, o backend sobe normalmente e registra no log
@@ -93,7 +95,8 @@ Lidas de `susana_rag_backend/.env` por [config.py](../susana_rag_backend/app/con
 | `LLM_KEEP_ALIVE` | `30m` | Quanto tempo o Ollama mantém o modelo na memória |
 | `LLM_NUM_PREDICT` | `350` | Máximo de tokens gerados por resposta |
 | `EMBEDDING_MODEL` | `paraphrase-multilingual-MiniLM-L12-v2` | Modelo que transforma texto em vetor |
-| `SIMILARITY_THRESHOLD` | `0.70` | Distância máxima para considerar um trecho relevante (calibrada por `ml/retrieval/calibrate_threshold.py`) |
+| `SIMILARITY_THRESHOLD` | `0.74` | Distância máxima (do trecho mais próximo entre os 3) para considerar a busca relevante (calibrada por `ml/retrieval/calibrate_threshold.py`) |
+| `EMBEDDING_MAX_SEQ_LENGTH` | `256` | Tokens lidos por bloco pelo modelo de embeddings (padrão do modelo: 128) |
 | `TOP_K` | `3` | Quantos trechos a busca entrega ao LLM |
 | `GUARDRAIL_MODEL_URI` | `models:/susana-guardrail@champion` | Qual versão do guardrail carregar do MLflow |
 | `GUARDRAIL_ENABLED_ML` | `true` | `false` usa só as regras (o ML deixa de acrescentar bloqueios) |
@@ -109,8 +112,12 @@ Lidas de `susana_rag_backend/.env` por [config.py](../susana_rag_backend/app/con
 cd susana_rag_backend && .venv/bin/pytest -q
 
 # Interface do MLflow (experimentos e modelos registrados)
-cd susana_rag_backend && .venv/bin/mlflow ui --backend-store-uri sqlite:///mlflow.db
-# → http://localhost:5000
+# porta 5001 porque a 5000 é usada pelo AirPlay do macOS
+cd susana_rag_backend && .venv/bin/mlflow ui --backend-store-uri sqlite:///mlflow.db --port 5001
+# → http://localhost:5001
+
+# Testes com saída detalhada numa janela própria do Terminal (ou duplo clique no Finder)
+open susana_rag_backend/rodar_testes.command
 
 # Testar o chat sem o frontend
 curl -N -X POST localhost:8000/api/chat/stream \

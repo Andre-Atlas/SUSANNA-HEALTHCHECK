@@ -10,7 +10,7 @@ O MLflow guarda o histórico de experimentos (parâmetros + métricas de cada ex
 | --- | --- |
 | Banco de metadados | `susana_rag_backend/mlflow.db` (SQLite) |
 | Artefatos (modelos serializados) | `susana_rag_backend/mlruns/` |
-| Interface web | `.venv/bin/mlflow ui --backend-store-uri sqlite:///mlflow.db` → http://localhost:5000 |
+| Interface web | `.venv/bin/mlflow ui --backend-store-uri sqlite:///mlflow.db --port 5001` → http://localhost:5001 |
 
 Experimentos existentes:
 
@@ -19,7 +19,7 @@ Experimentos existentes:
 | `susana-guardrails-train` | `ml/guardrails/train.py` | Um run por treino do guardrail |
 | `susana-rag` | backend (as duas rotas) | Um run por pergunta (desfecho, latência, distância; sem o texto) |
 | `susana-threshold-calibration` | `ml/retrieval/calibrate_threshold.py` | Um run por calibração do limiar de relevância |
-| `susana-embeddings-benchmark` | `ml/retrieval/benchmark_embeddings.py` | Ainda não executado nesta máquina |
+| `susana-embeddings-benchmark` | `ml/retrieval/benchmark_embeddings.py` | 1ª execução em 08/10/2026 (veja o registro da demonstração) |
 | `susana-llm-benchmark` | `ml/llm/benchmark_llms.py` | Ainda não executado nesta máquina |
 
 `mlflow.db` e `mlruns/` estão no `.gitignore`. **Cada máquina precisa treinar o guardrail localmente**, senão o backend cai para o modo Regex.
@@ -86,15 +86,25 @@ São 111 frases: 53 clínicas e 58 administrativas. O script **recusa** rótulos
 
 ```bash
 cd susana_rag_backend && .venv/bin/python -m ml.retrieval.calibrate_threshold
-# imprime SUGGESTED_SIMILARITY_THRESHOLD=0.70
+# imprime SUGGESTED_SIMILARITY_THRESHOLD=0.74
 ```
 
-1. Lê [threshold_set.jsonl](../susana_rag_backend/ml/retrieval/threshold_set.jsonl) (25 perguntas do tema + 20 de fora).
-2. Calcula a distância de cada pergunta (com siglas expandidas, como em produção) até o bloco mais próximo do corpus atual.
+1. Lê [threshold_set.jsonl](../susana_rag_backend/ml/retrieval/threshold_set.jsonl) (40 perguntas do tema, incluindo unidades, FAQ e medicamentos, + 20 de fora).
+2. Monta um **índice Chroma temporário** com o corpus atual e roda **a mesma busca de produção** (híbrida, siglas expandidas); a aceitação usa `is_relevant` (menor distância entre os 3 trechos + exceção por unidade numerada).
 3. Escolhe o limiar que aceita 100% das perguntas do tema e, entre esses, recusa mais perguntas de fora.
 4. Lista os erros e registra tudo no experimento `susana-threshold-calibration`.
 
 O valor sugerido **não é aplicado sozinho**: copie para `SIMILARITY_THRESHOLD` (no `.env` ou no padrão do `config.py`). Rode de novo sempre que o corpus mudar.
+
+---
+
+## 1c. Benchmark de recuperação por entidade — `ml/retrieval/benchmark_corpus.py` (da `develop_gui_sam`)
+
+```bash
+cd susana_rag_backend && .venv/bin/python -m ml.retrieval.benchmark_corpus
+```
+
+Gera perguntas automaticamente a partir dos diretórios de unidades (331 entidades) e do FAQ (41), indexa `CORPUS/Arquivos` num índice temporário e mede Recall@1/@3, perguntas fora do tema aceitas e latência. Resultado em 08/10/2026 (256 tokens): **Recall@1 0,946 / Recall@3 1,0** (entidades), **1,0 / 1,0** (FAQ), 1 de 12 fora do tema aceita, p95 de 137 ms. Foi usado para escolher `EMBEDDING_MAX_SEQ_LENGTH` (128 × 256 × 512).
 
 ---
 

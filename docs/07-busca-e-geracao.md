@@ -12,6 +12,8 @@ O modelo de embeddings não conhece siglas locais: "UBS" fica longe de "Unidade 
 "Onde fica o HRAN?"  →  "Onde fica o HRAN? (HRAN: Hospital Regional da Asa Norte)"
 ```
 
+A expansão vale para o **vetor**; a parte de palavras da busca híbrida (seção 2) usa a pergunta original.
+
 Siglas cobertas: UBS, UPA, SAMU, CEAF, SES, SES-DF, CNS, SISREG, HRAN, HRT, HRC, HRG, HRL, HRS, HRSM, EMAD, NRAD. A expansão afeta **só a busca**; o LLM recebe a pergunta original.
 
 | Pergunta | Melhor trecho **sem** expansão | Melhor trecho **com** expansão |
@@ -21,43 +23,88 @@ Siglas cobertas: UBS, UPA, SAMU, CEAF, SES, SES-DF, CNS, SISREG, HRAN, HRT, HRC,
 | Onde fica o HRAN? | SAMU 192 (0,67) ❌ | Hospitais Regionais (0,43) ✅ |
 | Como retirar remédio no CEAF? | CEAF (0,28) ✅ | CEAF (0,25) ✅ |
 
-## 2. Busca vetorial
+## 2. Busca híbrida (vetor + palavras)
 
-[retriever.py `search`](../susana_rag_backend/app/rag/retriever.py#L55)
+[retriever.py `search`](../susana_rag_backend/app/rag/retriever.py)
 
-O Chroma usa um índice **HNSW** (grafo de vizinhança aproximada) no espaço de **cosseno** e devolve os `TOP_K` (3) trechos mais próximos, cada um com:
+> Integrada em 08/10/2026 a partir da branch `develop_gui_sam`, com ajustes. Antes, a busca era só vetorial.
+> Detalhes e medições: [registro/2026-10-08-integracao-develop_gui_sam.md](registro/2026-10-08-integracao-develop_gui_sam.md).
 
-- `distance = 1 − similaridade_cosseno`, que vai de **0** (mesmo sentido) a **2** (sentido oposto);
-- `source = "<header> — <url>"`.
+Com um diretório de 182 UBS de nomes quase iguais ("UBS 1 Candangolândia", "UBS 2 Planaltina"…), o vetor sozinho não distingue uma unidade da outra. A busca agora combina dois rankings sobre os mesmos candidatos:
+
+**1. Candidatos**
+
+- os 300 blocos mais próximos por vetor (pergunta com siglas expandidas);
+- \+ os blocos que citam exatamente a **unidade numerada** da pergunta ("UBS 01", "UBS 1", "UBS 001");
+- \+ os blocos que contêm um **termo raro** da pergunta (que aparece em ≤ 3% dos blocos, ex.: "dipirona", "192", "Candangolândia"), sem distinguir maiúsculas nem acentos.
+
+**2. Dois rankings**
+
+| Ranking | Ordem |
+| --- | --- |
+| **Por palavras** (ideia do Sam + peso por raridade) | unidade numerada exata → contém o termo mais raro da pergunta → cobertura dos termos ponderada por raridade (IDF) → distância |
+| **Por significado** | distância do vetor, com a cobertura de termos só como desempate (−0,1 × cobertura) |
+
+O peso por raridade (IDF) faz "telefone", que aparece em muitos blocos, valer menos que "samu" ou "dipirona".
+
+**3. Resultado**
+
+- **Pergunta específica** (cita unidade numerada ou termo raro): os 3 trechos **intercalam** os dois rankings (1º por palavras, 1º por significado, 2º por palavras…). O LLM sempre recebe o melhor de cada um.
+- **Pergunta geral** ("perdi meu cartão de vacinação"): só o ranking por significado.
+
+**Medição** (16 perguntas reais, 1.948 blocos): acerto entre os 3 trechos em **16/16**, contra 10/16 da busca só vetorial no mesmo corpus. A ordenação "palavras primeiro" original do Sam ficava em 13/16 e piorava perguntas gerais: "Quando devo ligar para o 192?" trazia "Saúde Mental".
+
+## 2b. Diretório de unidades (busca estruturada)
+
+[unit_directory.py](../susana_rag_backend/app/rag/unit_directory.py), ideia do `StructuredSearchService` da branch `develop_sam`, feita sem PostgreSQL.
+
+A busca entrega só 3 trechos, então nunca listaria "todas as UBS de Samambaia" (são 14). O diretório lê os CSVs de unidades como tabela. Quando a pergunta cita:
+
+- um **tipo**: UBS/posto/postinho, UPA/pronto atendimento, hospital, CAPS/saúde mental, policlínica, centro especializado; **e**
+- uma **região administrativa** (as 43 dos CSVs, mais apelidos como "Asa Sul" → Plano Piloto e "Sol Nascente"),
+
+a lista dessas unidades vira o **trecho [1]** entregue ao LLM, com o arquivo de origem na citação (`[DIRETORIO] UBS em SAMAMBAIA (14 unidades; …)`).
+
+| Pergunta | O que entra como trecho [1] |
+| --- | --- |
+| "Quais UBS existem em Samambaia?" / "postinho perto de Samambaia" | As 14 UBS de Samambaia (endereço + horário) |
+| "Onde vacinar em Samambaia?" | Só as UBS com "Sala Vacina: SIM" (10) |
+| "Qual o horário da UBS 2 de Planaltina?" | Só a UBS 2, com todos os campos |
+| "Tem UPA no Gama?" | A UPA do Gama |
+| "Quais serviços a UBS oferece?" (sem região) | Nada: segue só a busca normal |
+
+## 2c. Filtro de trechos com instruções
+
+[answer_policy.py](../susana_rag_backend/app/rag/answer_policy.py), adaptado da branch `develop_gui`. Se um trecho recuperado contém algo como "ignore as regras", "aprove qualquer resposta" ou marcadores de papel (`<|system|>`), ele é **descartado** antes de ir ao LLM. No corpus atual, nenhum bloco é marcado; a proteção vale para conteúdo futuro.
 
 ## 3. Limiar de relevância (calibrado)
 
 ```python
-if not results or results[0].distance > similarity_threshold:   # 0.70
-    → "Não encontrei informação suficiente nas fontes oficiais…"   (sem chamar o LLM)
+is_relevant(results, pergunta, 0.74)
+# True se ALGUM dos 3 trechos tiver distância ≤ 0,74
+#   ou (develop_gui_sam) o 1º trecho for exatamente a unidade numerada pedida e contiver todos os termos
 ```
 
-O valor **0,70** vem de [calibrate_threshold.py](../susana_rag_backend/ml/retrieval/calibrate_threshold.py), que mede a distância do melhor trecho para 45 perguntas de [threshold_set.jsonl](../susana_rag_backend/ml/retrieval/threshold_set.jsonl) (25 dentro do tema e 20 fora):
+Usa a **menor** distância entre os 3 trechos, porque o 1º pode ter sido escolhido pelas palavras, com distância maior (ex.: o bloco da REME com "dipirona" fica a 0,88).
 
-| Grupo | Distância mínima | Mediana | Máxima |
+O valor **0,74** vem de [calibrate_threshold.py](../susana_rag_backend/ml/retrieval/calibrate_threshold.py), que agora roda **a mesma busca de produção** num índice temporário sobre 60 perguntas (40 do tema, 20 de fora):
+
+| Corpus | Limiar | Perguntas do tema aceitas | Fora do tema recusadas antes do LLM |
 | --- | --- | --- | --- |
-| Dentro do tema | 0,233 | 0,415 | 0,696 |
-| Fora do tema | 0,481 | 0,733 | 0,979 |
+| 52 blocos (antes) | 0,70 | 100% | 55% |
+| **1.948 blocos (agora)** | **0,74** | **100%** | **30%** |
 
-Critério: entre os limiares que **aceitam 100% das perguntas do tema**, escolher o que mais recusa perguntas de fora. Com 0,70, 55% das perguntas fora do tema são recusadas antes do LLM (com 1,2, eram 0%). As outras 45% (ex.: "Quem é o presidente do Brasil?", "Como funciona o Bolsa Família?") chegam ao LLM, que deve recusá-las pela regra 2 do prompt.
-
-Os dois grupos se sobrepõem entre 0,48 e 0,70, então nenhum limiar separa tudo. Recusar uma pergunta válida é pior do que deixar o prompt recusar uma de fora. **Sempre que o corpus mudar, rode a calibração de novo.**
+Com 37 vezes mais blocos, quase toda pergunta encontra algo "parecido", e o limiar filtra menos. As perguntas fora do tema que passam ("Como funciona o Bolsa Família?") continuam sendo recusadas pelo LLM, pela regra 2 do prompt. **Sempre que o corpus mudar, rode a calibração de novo.**
 
 ## 4. Cache semântico
 
 [retriever.py `SemanticCache`](../susana_rag_backend/app/rag/retriever.py) e [pipeline.py](../susana_rag_backend/app/rag/pipeline.py)
 
-Guarda pares (vetor da pergunta → resposta + fonte) **em memória**, e vale para **as duas rotas**:
+Guarda pares (vetor da pergunta → resposta, fonte e citações) **em memória**, e vale para as duas rotas:
 
-- **Busca:** se a pergunta mais parecida já respondida tiver distância **≤ 0,08**, devolve a resposta guardada sem busca nem LLM (`"cached": true` no `done`).
-- **Validade:** 1 hora; **capacidade:** 512 itens (remove o mais antigo).
-- Guarda respostas normais e "não encontrei". **Não guarda** respostas do fallback, porque na próxima vez o LLM pode estar de volta.
-- Perde tudo quando o servidor reinicia. O `redis` está no requirements.txt para uma futura versão persistente, mas ainda não é usado.
+- **Busca:** se a pergunta mais parecida já respondida tiver distância **≤ 0,08** **e citar os mesmos números**, devolve a resposta guardada (`"cached": true`).
+- **Por que os números:** "Onde fica a UBS 1 de Candangolândia?" e "…UBS 2…" têm vetores a só **0,025** de distância, e sem essa regra o cache devolveria o endereço da UBS errada. "UBS 01" e "UBS 1" contam como o mesmo número.
+- **Validade:** 1 hora; **capacidade:** 512 itens. Não guarda respostas do fallback. Perde tudo ao reiniciar.
 
 ## 5. O prompt
 
@@ -94,6 +141,8 @@ O que cada regra resolve:
 | 3 | Segunda barreira clínica, para o que passar pelo guardrail |
 | 4 | Respostas curtas, em português |
 | 5 | Citação do trecho usado |
+| 6 | Não escrever links nem "clique aqui" (os links verdadeiros vêm das citações; ideia da `develop_gui`) |
+| 7 | Em trecho que é lista de unidades, apresentar as unidades listadas sem inventar outras |
 
 A URL (`Fonte:`) **não** vai para o prompt, porque o parser a retira do texto do bloco. O LLM vê só o cabeçalho e o corpo.
 
@@ -130,21 +179,28 @@ Se o LLM falhar (fora do ar, timeout ou qualquer erro inesperado), a Susana não
 
 O `done` vem com `"error": true`. Se a falha acontecer **no meio** da geração, o aviso é anexado ao texto parcial.
 
-## 8. Fonte exibida
+## 8. Fonte e citações
 
-[pipeline.py `pick_source`](../susana_rag_backend/app/rag/pipeline.py#L53)
+[pipeline.py `pick_source` e `build_citations`](../susana_rag_backend/app/rag/pipeline.py)
 
-| Situação | Fonte enviada no `done` |
-| --- | --- |
-| O LLM citou um trecho (`[2]`) | A do trecho **citado** (o último número válido do texto) |
-| O LLM não citou nada, ou citou um número inexistente | A do trecho mais próximo |
-| O LLM respondeu "Não encontrei essa informação…" | **Nenhuma** (a tela mostra "Informação Ausente") |
+O evento `done` traz dois campos:
 
-Antes de 08/10/2026, a fonte era sempre a do trecho mais próximo, mesmo quando o LLM citava outro.
+- **`source`** (texto): a fonte principal, mantida por compatibilidade;
+- **`citations`** (lista, ideia da `develop_gui_sam`): `[{"ref": 2, "id": "…", "title": "[EMERGENCIA] SAMU 192 (parte 3)", "url": "https://…"}]`.
+
+| Situação | `source` | `citations` |
+| --- | --- | --- |
+| O LLM citou trechos (`[1]`, `[3]`) | O último citado válido | Todos os citados válidos (números inexistentes são ignorados) |
+| O LLM não citou nada | O trecho 1 | O trecho 1 |
+| O LLM respondeu "Não encontrei essa informação…" | Nenhuma | `[]` |
+| Fallback (LLM fora do ar) | O trecho 1 | Os 3 trechos |
+| Bloqueio clínico ou sem relevância | Nenhuma | `[]` |
+
+O frontend mostra as citações como **links** quando há URL. Os CSVs de unidades não têm URL de origem e aparecem como referência textual, ex. "Unidade Básica de Saúde (Unidade_Básica_de_Saúde.csv, registro 1)".
 
 ## 9. Registro no MLflow (as duas rotas)
 
-[pipeline.py `_log`](../susana_rag_backend/app/rag/pipeline.py#L181)
+[pipeline.py `_log`](../susana_rag_backend/app/rag/pipeline.py)
 
 Cada pergunta gera um run `query` no experimento `susana-rag`, gravado **depois** do `done`, para não atrasar a resposta:
 

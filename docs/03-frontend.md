@@ -63,6 +63,7 @@ Cada `ChatMessage` tem:
   isBlocked?: boolean;      // pergunta clínica bloqueada
   isWarning?: boolean;      // sem fonte / erro de conexão
   source?: { title: string; url?: string };
+  citations?: { ref: number; title: string; url?: string | null }[];  // desde 08/10/2026
 }
 ```
 
@@ -90,11 +91,13 @@ O efeito de "digitando" vem do passo 7: a cada `chunk` o React re-renderiza o ú
 
 | Condição no `done` | Resultado na tela |
 | --- | --- |
+| `status: "emergency"` | Fundo e borda vermelhos + "Possível emergência — ligue 192" (`role="alert"`) |
 | `is_blocked: true` | Borda vermelha + "Fora de Escopo / Não Clínico" |
 | `is_blocked: false` e sem `source` | Borda amarela + "Informação Ausente" |
-| `source` presente | Rodapé "Fonte Oficial: <source>" |
+| `citations` com itens | Rodapé "Fonte(s) Oficial(is):" com uma linha `[n] título` por citação, como **link** quando há URL |
+| só `source` presente | Rodapé "Fonte Oficial: <source>" em texto (compatibilidade) |
 
-`source` chega como uma string única (`"[TAG] Título — https://..."`). O frontend a coloca em `title` e nunca preenche `url`, então a fonte aparece como **texto simples, não como link clicável**, apesar de o `SourceCitation` já saber renderizar links.
+Desde a integração com a `develop_gui_sam` (08/10/2026), o backend envia `citations` com título e URL separados, e o componente `CitationList` mostra cada fonte citada como link. Os diretórios de unidades (CSV) não têm URL e aparecem como texto, ex. "[CSV] Unidade Básica de Saúde (Unidade_Básica_de_Saúde.csv, registro 1)".
 
 ### Layout (de cima para baixo)
 
@@ -109,7 +112,8 @@ O efeito de "digitando" vem do passo 7: a cada `chunk` o React re-renderiza o ú
 - Anima a entrada (opacidade 0→1, sobe 10 px, 0,3 s) com `framer-motion`.
 - Aplica a borda e o selo conforme `isBlocked` / `isWarning`.
 - `whitespace-pre-wrap` preserva as quebras de linha que o LLM gera.
-- `SourceCitation` desenha o rodapé "Fonte Oficial", como link se houver `url`.
+- `CitationList` desenha o rodapé com todas as citações (`[1]`, `[3]`…), como links quando há `url`.
+- `SourceCitation` desenha o rodapé antigo (uma fonte), usado só se não vierem `citations`.
 
 ## Limitações conhecidas do frontend
 
@@ -121,3 +125,4 @@ Detalhes e prioridades em [10-problemas-conhecidos.md](10-problemas-conhecidos.m
 - O botão "Enviar" não é desabilitado durante a resposta; enviar de novo no meio do streaming mistura as atualizações dos balões.
 - Sem rolagem automática para a última mensagem.
 - Usa `key={i}` (índice) nos balões.
+- O título das citações vem do cabeçalho do bloco (`[JSON] …`, `[CSV] …`) e ainda não está "limpo" para o cidadão.
