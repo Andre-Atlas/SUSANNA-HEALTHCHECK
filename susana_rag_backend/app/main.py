@@ -76,21 +76,22 @@ async def lifespan(application: FastAPI):
         llm=llm,
         embedder=embedder,
         retriever=retriever,
+        guardrails=guardrails,
         semantic_cache=semantic_cache,
         similarity_threshold=settings.similarity_threshold,
+        top_k=settings.top_k,
         mlflow_enabled=settings.mlflow_log_requests,
+        mlflow_log_query_text=settings.mlflow_log_query_text,
     )
 
-    # 3. Indexar Corpus
-    if True: # Forçar re-indexação para puxar os novos dados
-        logger.info("Lendo corpus de %s", settings.docs_dir)
-        if settings.docs_dir.exists():
-            txt_files = list(settings.docs_dir.glob("*.txt"))
-            blocks = load_corpus(txt_files)
-            indexed = pipeline.retriever.index(blocks)
-            logger.info("Indexação concluída: %d blocos adicionados/atualizados.", indexed)
-        else:
-            logger.warning("Diretório de corpus não encontrado: %s", settings.docs_dir)
+    # 3. Sincronizar índice com o corpus (adiciona novos, remove os que saíram)
+    logger.info("Lendo corpus de %s", settings.docs_dir)
+    if settings.docs_dir.exists():
+        blocks = load_corpus(sorted(settings.docs_dir.glob("*.txt")))
+        indexed = pipeline.retriever.index(blocks)
+        logger.info("Indexação concluída: %d blocos novos.", indexed)
+    else:
+        logger.warning("Diretório de corpus não encontrado: %s", settings.docs_dir)
 
     # 4. Warm-up LLM
     if llm.is_ready():
@@ -151,22 +152,6 @@ async def chat_endpoint(req: ChatRequest):
 
     t0 = time.perf_counter()
     msg = req.message.strip()
-
-    # 1. Guardrails — bloqueia perguntas clínicas
-    if guardrails.is_clinical(msg):
-        latency = int((time.perf_counter() - t0) * 1000)
-        logger.info("BLOCKED clinical query: %s (latency=%dms)", msg[:80], latency)
-        return ChatResponse(
-            response=(
-                "Desculpe, não posso ajudar com essa questão. "
-                "A Susana fornece apenas informações administrativas e institucionais da SES-DF. "
-                "Para orientações clínicas, procure uma Unidade Básica de Saúde (UBS) ou ligue para o SAMU 192."
-            ),
-            is_blocked=True,
-            latency_ms=latency,
-        )
-
-    # 2. RAG — busca vetorial + LLM
     try:
         result = pipeline.query(msg)
     except Exception:
@@ -177,20 +162,17 @@ async def chat_endpoint(req: ChatRequest):
         )
 
     latency = int((time.perf_counter() - t0) * 1000)
-    logger.info(
-        "ANSWERED query: %s | source=%s | latency=%dms",
-        msg[:80],
-        result.get("source", "none"),
-        latency,
-    )
-
+    logger.info("%s | source=%s | latency=%dms",
+                "BLOCKED" if result["is_blocked"] else "ANSWERED", result.get("source"), latency)
     return ChatResponse(
         response=result["response"],
         source=result.get("source"),
-        is_blocked=False,
+        is_blocked=result["is_blocked"],
         latency_ms=latency,
     )
 
+
 # Include streaming router
-from app.routers_stream import router as stream_router
+from app.routers_stream import router as stream_router  # noqa: E402
+
 app.include_router(stream_router)
