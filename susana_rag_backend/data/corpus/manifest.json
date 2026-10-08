@@ -1,27 +1,99 @@
 [
   {
+    "url": "https://www.saude.df.gov.br/unidades-basicas",
+    "title": "Unidades Básicas de Saúde",
+    "tag": "UNIDADE",
+    "fetched_at": "2026-10-08T17:52:45.864757+00:00",
+    "sha256": "15f9623969f93143edb257815611110deaec99f3c1532a422b3180a48a5c5b5c",
+    "n_chars": 7648,
+    "n_blocos": 12
+  },
+  {
     "url": "https://www.saude.df.gov.br/hospitais",
     "title": "Hospitais Regionais",
     "tag": "UNIDADE",
-    "fetched_at": "2026-10-06T12:01:38.295798+00:00",
+    "fetched_at": "2026-10-08T17:52:47.308175+00:00",
     "sha256": "89dd5b0b78a4f7e3aea53f3d1f87e1f824b6666dae3d6dd323791e90251f42f7",
     "n_chars": 2154,
     "n_blocos": 3
   },
   {
+    "url": "https://www.saude.df.gov.br/unidades-de-refer%C3%AAncia-distrital",
+    "title": "Unidades de Referência Distrital",
+    "tag": "UNIDADE",
+    "fetched_at": "2026-10-08T17:52:48.672906+00:00",
+    "sha256": "9b053cdd1540812a7bc7cdc24afd3d5a3d1fbf7a0ff722bef9ee5ba9ca59f5e2",
+    "n_chars": 294,
+    "n_blocos": 1
+  },
+  {
+    "url": "https://www.saude.df.gov.br/atencao-domiciliar",
+    "title": "Atenção Domiciliar",
+    "tag": "SERVICO",
+    "fetched_at": "2026-10-08T17:52:50.120439+00:00",
+    "sha256": "0bdd2478f9c8987abad5abdf4b5ef3df986c5e2dc4bece7fdf73310433c7a10f",
+    "n_chars": 10016,
+    "n_blocos": 14
+  },
+  {
+    "url": "https://www.saude.df.gov.br/locais-de-vacinacao",
+    "title": "Locais de vacinação",
+    "tag": "VACINACAO",
+    "fetched_at": "2026-10-08T17:52:51.518915+00:00",
+    "sha256": "c8583ee9ea3f811fa28b533c896f7f0213ad6886f13f2f79aa5bb9c70ff33a3b",
+    "n_chars": 807,
+    "n_blocos": 1
+  },
+  {
+    "url": "https://www.saude.df.gov.br/campanhas-de-vacinacao",
+    "title": "Campanhas de vacinação",
+    "tag": "VACINACAO",
+    "fetched_at": "2026-10-08T17:52:54.256627+00:00",
+    "sha256": "a084245685ab32c3aca0f88336792646e6cdd16c75dcf4de9ed7da045d3062a2",
+    "n_chars": 594,
+    "n_blocos": 1
+  },
+  {
+    "url": "https://www.gov.br/saude/pt-br/vacinacao/calendario",
+    "title": "Calendário Nacional de Vacinação",
+    "tag": "VACINACAO",
+    "fetched_at": "2026-10-08T17:52:56.935661+00:00",
+    "sha256": "85e80f14134dbefd0410ad5049e688f7b1601f5c3ea7c622f38618948eb9e2de",
+    "n_chars": 1701,
+    "n_blocos": 3
+  },
+  {
+    "url": "https://www.saude.df.gov.br/farmacias",
+    "title": "Farmácias da SES-DF",
+    "tag": "SERVICO",
+    "fetched_at": "2026-10-08T17:52:58.318352+00:00",
+    "sha256": "664eb055de0170c49b2b8deacd71bed6d39b4b9bdb658268102f7743dd802fe6",
+    "n_chars": 642,
+    "n_blocos": 1
+  },
+  {
     "url": "https://www.saude.df.gov.br/componente-especializado",
     "title": "Farmácia de Alto Custo (CEAF)",
     "tag": "SERVICO",
-    "fetched_at": "2026-10-06T12:01:42.611786+00:00",
+    "fetched_at": "2026-10-08T17:52:59.772863+00:00",
     "sha256": "4ba00a1cbb7dd70ebfab6884e559971e71a0b6a19f7365cdefd46d5c61a0665f",
     "n_chars": 3517,
     "n_blocos": 5
   },
   {
+    "url": "https://www.saude.df.gov.br/carta-de-servicos",
+    "title": "Carta de Serviços",
+    "tag": "SERVICO",
+    "fetched_at": "2026-10-08T17:53:01.115790+00:00",
+    "sha256": "086cde019ca44f27d23b9f3733e6f13100d28487fb5597038e1741f29a8d0c1e",
+    "n_chars": 909,
+    "n_blocos": 2
+  },
+  {
     "url": "https://www.saude.df.gov.br/samu",
     "title": "SAMU 192",
     "tag": "EMERGENCIA",
-    "fetched_at": "2026-10-06T12:01:45.736887+00:00",
+    "fetched_at": "2026-10-08T17:53:03.912798+00:00",
     "sha256": "fc6f0c0b7d16ddbe0350702adf773724697f04d7ef0cb826cbce15e136cab02d",
     "n_chars": 5050,
     "n_blocos": 7
@@ -30,18 +102,9 @@
     "url": "https://www.saude.df.gov.br/ouvidoria",
     "title": "Ouvidoria SES-DF",
     "tag": "INSTITUCIONAL",
-    "fetched_at": "2026-10-06T12:01:47.279297+00:00",
+    "fetched_at": "2026-10-08T17:53:05.348439+00:00",
     "sha256": "2a1afa302df180e7fbc1a1af275e592d594dfe3df0ec7fc058e106d12c9d1cb1",
     "n_chars": 1056,
     "n_blocos": 2
-  },
-  {
-    "url": "https://www.gov.br/saude/pt-br/vacinacao/calendario",
-    "title": "Calendário Nacional de Vacinação",
-    "tag": "VACINACAO",
-    "fetched_at": "2026-10-06T12:01:49.676521+00:00",
-    "sha256": "85e80f14134dbefd0410ad5049e688f7b1601f5c3ea7c622f38618948eb9e2de",
-    "n_chars": 1701,
-    "n_blocos": 3
   }
 ]
