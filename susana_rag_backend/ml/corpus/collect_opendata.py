@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 from pathlib import Path
 
 def get_mock_data():
+    """Textos ESCRITOS À MÃO para testes. Não são dados oficiais."""
     return {
         "result": {
             "results": [
@@ -45,41 +46,53 @@ def get_mock_data():
         }
     }
 
-def main():
-    base_url = "https://dados.df.gov.br/api/3/action/package_search"
-    params = {"q": "saude", "rows": 100}
-    
-    try:
-        response = requests.get(base_url, params=params, timeout=5)
-        response.raise_for_status()
-        data = response.json()
-    except Exception as e:
-        print(f"Erro ao acessar API CKAN real: {e}. Usando dados expandidos de fallback locais.")
+def main() -> int:
+    """
+    Coleta descrições de datasets de saúde do portal CKAN dados.df.gov.br.
+
+    Sem a flag --mock, falha (exit 1) se a API estiver indisponível: dados inventados
+    NUNCA devem entrar em data/corpus/, porque tudo ali é exibido como "Fonte Oficial".
+    Com --mock, grava os exemplos em data/mock/ (pasta não indexada), só para testes.
+    """
+    import argparse
+
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--mock", action="store_true", help="gera dados de EXEMPLO em data/mock/ (não indexado)")
+    args = parser.parse_args()
+
+    data_dir = Path(__file__).resolve().parent.parent.parent / "data"
+    if args.mock:
         data = get_mock_data()
+        output_file = data_dir / "mock" / "dados_abertos_EXEMPLO.txt"
+    else:
+        base_url = "https://dados.df.gov.br/api/3/action/package_search"
+        try:
+            response = requests.get(base_url, params={"q": "saude", "rows": 100}, timeout=10)
+            response.raise_for_status()
+            data = response.json()
+        except Exception as e:
+            print(f"ERRO: API CKAN indisponível ({e}). Nada foi gravado no corpus.")
+            print("Use --mock para gerar dados de exemplo fora do corpus.")
+            return 1
+        output_file = data_dir / "corpus" / "dados_abertos.txt"
 
     packages = data.get("result", {}).get("results", [])
-    
-    output_dir = Path(__file__).resolve().parent.parent.parent / "data" / "corpus"
-    output_dir.mkdir(parents=True, exist_ok=True)
-    output_file = output_dir / "dados_abertos.txt"
-    
-    saved_count = 0
+    if not packages:
+        print("ERRO: a API não retornou datasets. Nada foi gravado.")
+        return 1
+
+    output_file.parent.mkdir(parents=True, exist_ok=True)
     with open(output_file, "w", encoding="utf-8") as f:
         for pkg in packages:
             title = pkg.get("title", "")
-            notes = pkg.get("notes", "") or ""
-            name = pkg.get("name", "")
-            url = f"https://dados.df.gov.br/dataset/{name}"
-            
-            soup = BeautifulSoup(notes, "html.parser")
-            clean_notes = soup.get_text(separator="\n").strip()
-            
-            f.write(f"[DADOS_ABERTOS] {title}\n")
-            f.write(f"{clean_notes}\n")
-            f.write(f"Fonte: {url}\n\n")
-            saved_count += 1
-            
-    print(f"Sucesso! {saved_count} datasets (expandidos) foram salvos em {output_file}")
+            notes = BeautifulSoup(pkg.get("notes", "") or "", "html.parser").get_text(separator="\n").strip()
+            if not notes:
+                continue
+            f.write(f"[DADOS_ABERTOS] {title}\n{notes}\nFonte: https://dados.df.gov.br/dataset/{pkg.get('name', '')}\n\n")
+
+    print(f"{len(packages)} datasets gravados em {output_file}")
+    return 0
+
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())
