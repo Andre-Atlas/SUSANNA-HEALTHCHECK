@@ -4,6 +4,7 @@
 # Web framework
 fastapi>=0.115.0
 uvicorn>=0.30.0
+pydantic-settings>=2.0.0
 
 # RAG / NLP
 langchain>=0.3.0
@@ -15,11 +16,18 @@ chromadb>=1.5.0
 sentence-transformers>=5.0.0
 
 # MLOps
+scikit-learn>=1.5.0
+pandas>=2.2.0
 mlflow>=3.0.0
 dvc>=3.50.0
 
 # Cache (placeholder for semantic cache)
 redis>=7.0.0
+
+# Coleta do corpus (ml/corpus/)
+beautifulsoup4>=4.12.0
+pyyaml>=6.0
+requests>=2.31.0
 
 # Testing
 pytest>=8.0.0
