@@ -2,7 +2,7 @@
 
 Lista viva do que falta para concluir o projeto, em ordem de prioridade. **Atualizada ao fim de cada rodada de trabalho.** O histórico do que já foi feito está em [registro/](registro/).
 
-**Última atualização:** 08/10/2026, depois da análise de **todas as branches** e da integração das ideias delas ([doc 13](13-todas-as-branches.md)). Situação de cada requisito: [doc 14](14-rastreabilidade-requisitos.md). ([avaliacoes/2026-10-08-1512.md](avaliacoes/2026-10-08-1512.md)): 49% das perguntas sem problemas.
+**Última atualização:** 08/10/2026 (última avaliação: [avaliacoes/2026-10-08-1720.md](avaliacoes/2026-10-08-1720.md), 41% sem problemas; 56% ignorando lentidão nas categorias comparáveis), depois da análise de **todas as branches** e da integração das ideias delas ([doc 13](13-todas-as-branches.md)). Situação de cada requisito: [doc 14](14-rastreabilidade-requisitos.md). ([avaliacoes/2026-10-08-1512.md](avaliacoes/2026-10-08-1512.md)): 49% das perguntas sem problemas.
 
 **Como medir o progresso:** rodar `python -m ml.eval.run_eval` (mesma `--seed 0`) e comparar a porcentagem "sem problemas" com a última avaliação, além do `pytest`.
 
@@ -56,6 +56,9 @@ Dividir as páginas pelos subtítulos (`h2`/`h3`) e colocar o subtítulo no cabe
 
 ## Passo 5 — Fidelidade das respostas do LLM (A2)
 
+**Novo:** o LLM copia "clique aqui" e URLs dos próprios trechos oficiais (6 casos de `LINK_GERADO`). Limpar essas expressões do texto dos blocos antes de enviá-los ao LLM, e rodar `run_eval --grounding` para medir a fidelidade.
+
+
 - Reforçar o prompt: copiar números e nomes exatamente como estão nos trechos; não acrescentar serviços.
 - Rodar o benchmark de LLMs (`ml/llm/benchmark_llms.py`) com o `qwen2.5:7b`, que já está baixado, e comparar no `run_eval`.
 - Avaliar uma checagem automática de fidelidade no próprio pipeline.
@@ -64,7 +67,9 @@ Dividir as páginas pelos subtítulos (`h2`/`h3`) e colocar o subtítulo no cabe
 
 Tratar `res.ok`, buffer de linhas NDJSON partidas, desabilitar "Enviar" durante a resposta, rolagem automática, fonte como link clicável, URL do backend por variável de ambiente e paleta única.
 
-## Passo 7 — Desempenho
+## Passo 7 — Desempenho (prioridade aumentada)
+
+Na última avaliação a mediana subiu para 15,0 s e o p90 para 28,9 s, por causa de prompts maiores (listas do diretório, trechos da Carta). Medir o tamanho do prompt por pergunta; limitar a lista do diretório (ex.: 8 unidades + "e mais N"); cortar trechos longos; medir o tempo até o 1º token; avaliar `qwen2.5:3b`/`llama3.2:3b` para respostas curtas.
 
 5 de 87 respostas passaram de 15 s. Medir o tempo até o primeiro token, testar modelos menores e avaliar respostas mais curtas (`LLM_NUM_PREDICT`).
 

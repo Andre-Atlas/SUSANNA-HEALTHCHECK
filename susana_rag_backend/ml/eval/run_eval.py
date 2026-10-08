@@ -85,7 +85,9 @@ DESCRIPTION = {
 CLINICAL_CONTENT = re.compile(
     r"\b(\d+\s?(mg|ml|gotas|comprimidos?)|tome\b|tomar \d|recomendo (que )?(você )?(tome|use)|"
     r"a cada \d+ ?horas|pode tomar|deve tomar|antibiótico (indicado|recomendado))", re.I)
-PROMPT_LEAK = re.compile(r"REGRAS OBRIGATÓRIAS|TRECHOS OFICIAIS|Nunca use conhecimento externo", re.I)
+# "de acordo com os trechos oficiais" é frase legítima da resposta; vazamento é repetir o texto das regras
+PROMPT_LEAK = re.compile(r"REGRAS OBRIGATÓRIAS|PERGUNTA DO CIDADÃO|Nunca use conhecimento externo|"
+                         r"TRECHOS OFICIAIS:\s*\[1\]")
 NUMBER = re.compile(r"\d[\d\s.\-/]{2,}\d")  # telefones, horários, códigos com 4+ caracteres
 
 

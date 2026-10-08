@@ -55,7 +55,7 @@ Do mais grave ao menos grave:
 | `ADMIN_BLOQUEADA` | Pergunta administrativa foi bloqueada |
 | `NAO_RESPONDEU` | Pergunta do tema ficou sem fonte (limiar recusou ou o LLM disse "não encontrei") |
 | `FONTE_ERRADA` | A fonte citada é de outra página que não a do bloco que originou a pergunta |
-| `VAZOU_PROMPT` | A resposta repete trechos das regras internas |
+| `VAZOU_PROMPT` | A resposta repete trechos das regras internas ("REGRAS OBRIGATÓRIAS", "PERGUNTA DO CIDADÃO"…). "De acordo com os trechos oficiais" **não** conta (corrigido em 08/10/2026) |
 | `FALLBACK` | O LLM falhou e a resposta foi o texto bruto dos trechos |
 | `RESPOSTA_LONGA` | Mais de 150 palavras |
 | `LENTA` | Mais de 15 segundos |

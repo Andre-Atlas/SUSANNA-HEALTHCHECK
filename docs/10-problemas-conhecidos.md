@@ -65,6 +65,12 @@ Detalhes de cada correção em [registro/2026-10-08-correcoes-guardrail-corpus-l
 
 - **Evidência:** mediana das respostas com LLM subiu de 10,6 s para 14,7 s; 3 respostas caíram no fallback por timeout de 12 s (o LLM recebe trechos maiores: tabelas, listas de telefones).
 - **Feito:** `LLM_TIMEOUT_S` 12 → 30. **Falta:** reduzir o tamanho dos trechos enviados (ex.: cortar blocos de tabela), medir tempo até o 1º token, avaliar modelo menor.
+- **Piorou depois do diretório e da Carta:** mediana 15,0 s, p90 28,9 s ([avaliação 1720](avaliacoes/2026-10-08-1720.md)).
+
+### A14. O LLM copia "clique aqui" e URLs dos trechos
+
+- **Evidência:** 6 respostas com `LINK_GERADO` (ex.: "basta clicar aqui e informar o seu endereço"). O texto vem dos trechos oficiais, e a regra 6 do prompt não basta.
+- **Plano:** limpar essas expressões dos blocos antes de enviá-los ao LLM.
 
 ---
 

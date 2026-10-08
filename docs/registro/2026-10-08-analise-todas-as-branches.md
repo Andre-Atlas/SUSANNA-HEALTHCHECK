@@ -50,6 +50,23 @@ Respostas reais conferidas:
 
 ## Resultado da avaliação
 
-Rodada com o banco atualizado (`--seed 0 --limit 20`) em andamento no momento deste registro; o resultado será acrescentado em [avaliacoes/](../avaliacoes/) e neste arquivo.
+Relatório: [avaliacoes/2026-10-08-1720.md](../avaliacoes/2026-10-08-1720.md) (148 perguntas, `--seed 0 --limit 20`): **41% sem problemas** no total.
+
+Comparação justa, só nas 6 categorias que existiam antes (112 perguntas), contra [2026-10-08-1653](../avaliacoes/2026-10-08-1653.md):
+
+| | Antes | Depois |
+| --- | --- | --- |
+| Sem problemas | 52% | **42%** |
+| Sem problemas, ignorando `LENTA` | 62% | **56%** |
+| Latência (mediana / p90) | 12,6 s / 21,5 s | **15,0 s / 28,9 s** |
+
+Categorias novas: **emergência 6/6** e **clínica 20/20** sem problemas; curado 15% (principalmente `LENTA` e `FATO_AUSENTE`); persona 40%.
+
+**O que piorou e por quê:**
+
+1. **Lentidão**: as listas do diretório e os trechos da Carta deixam o prompt maior; mais respostas passam de 15 s. É o principal efeito colateral desta rodada → passo 7 de PROXIMOS-PASSOS sobe de prioridade.
+2. **`LINK_GERADO` (6)**: agora medido pela primeira vez. O LLM copia "clique aqui"/URLs **dos próprios trechos oficiais**, apesar da regra 6 do prompt.
+3. **`VAZOU_PROMPT` (3)**: era falso positivo da verificação ("de acordo com os trechos oficiais" é frase legítima). Verificação corrigida após a rodada (0 casos com a regra nova).
+4. `ADMIN_BLOQUEADA` (29) segue sendo o maior problema de qualidade (passo 1).
 
 **Próximo passo:** passo 1 de [PROXIMOS-PASSOS.md](../PROXIMOS-PASSOS.md) (bloqueio indevido do guardrail) e passo 2c (RF07, RF06, RF11).
