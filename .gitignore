@@ -17,3 +17,6 @@ dvc-storage/
 # Frontend
 susana-ui/node_modules/
 susana-ui/.next/
+
+# Avaliações do chat — dados brutos (o relatório legível fica em docs/avaliacoes/)
+susana_rag_backend/ml/eval/runs/
