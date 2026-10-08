@@ -32,7 +32,9 @@ class Embedder:
         self.model_name = _resolve(model_name)
         self._model = SentenceTransformer(self.model_name)
         self._q_prefix, self._p_prefix = _PREFIXES.get(_family(self.model_name), ("", ""))
-        self.dim = int(self._model.get_sentence_embedding_dimension() or 0)
+        # sentence-transformers ≥5 renomeou o método; mantém compatibilidade com versões antigas
+        get_dim = getattr(self._model, "get_embedding_dimension", None) or self._model.get_sentence_embedding_dimension
+        self.dim = int(get_dim() or 0)
         logger.info("Embedder carregado: %s (dim=%d)", self.model_name, self.dim)
 
     def _encode(self, texts: Sequence[str]) -> np.ndarray:
