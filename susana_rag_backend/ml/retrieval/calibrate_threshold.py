@@ -3,8 +3,10 @@
 Calibração do limiar de relevância (SIMILARITY_THRESHOLD).
 
 Para cada pergunta de ml/retrieval/threshold_set.jsonl (marcada como dentro ou fora do
-tema), calcula a distância de cosseno até o bloco mais próximo do corpus atual e escolhe
-o limiar que separa melhor os dois grupos, priorizando NÃO recusar perguntas do tema.
+tema), roda a MESMA busca de produção (híbrida, num índice Chroma temporário) e mede a
+menor distância entre os k trechos; a aceitação usa `is_relevant` (que inclui a exceção por
+entidade numerada). Escolhe o limiar que separa melhor os dois grupos, priorizando NÃO
+recusar perguntas do tema.
 
 Critério: entre os limiares que aceitam MIN_IN_DOMAIN_ACCEPTED (100%) das perguntas do tema,
 escolhe o que recusa mais perguntas fora do tema. Registra no MLflow.
@@ -20,8 +22,9 @@ import mlflow
 import numpy as np
 
 from app.config import get_settings
-from app.rag.corpus import load_corpus
+from app.rag.corpus import discover_corpus_files, load_corpus
 from app.rag.embeddings import Embedder
+from app.rag.retriever import ChromaRetriever, is_relevant
 from app.rag.glossary import expand_acronyms
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
@@ -35,16 +38,27 @@ MIN_IN_DOMAIN_ACCEPTED = 1.0  # recusar pergunta válida é pior que deixar o pr
 def main() -> int:
     settings = get_settings()
     items = [json.loads(line) for line in EVAL_FILE.read_text(encoding="utf-8").splitlines() if line.strip()]
-    blocks = load_corpus(sorted(settings.docs_dir.glob("*.txt")))
+    blocks = load_corpus(discover_corpus_files(settings.corpus_roots))
     if not blocks:
         logger.error("Corpus vazio em %s", settings.docs_dir)
         return 1
 
-    embedder = Embedder(settings.embedding_model)
-    # Vetores normalizados: distância de cosseno = 1 - produto escalar (mesma métrica do Chroma)
-    passages = embedder.encode_passages([b.text for b in blocks])
-    queries = embedder.encode_queries([expand_acronyms(it["query"]) for it in items])  # igual à produção
-    dist = 1.0 - (queries @ passages.T).max(axis=1)
+    embedder = Embedder(settings.embedding_model, settings.embedding_max_seq_length)
+    # Índice temporário: não toca no índice de produção (data/chroma_db)
+    import shutil
+    import tempfile
+
+    tmp = Path(tempfile.mkdtemp(prefix="susana-calib-"))
+    try:
+        retriever = ChromaRetriever(embedder, tmp)
+        retriever.index(blocks)
+        queries = embedder.encode_queries([expand_acronyms(it["query"]) for it in items])  # igual à produção
+        results = [retriever.search(v, k=settings.top_k, query_text=it["query"]) for v, it in zip(queries, items)]
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+    # Mesma regra de is_relevant: a menor distância entre os k trechos entregues ao LLM
+    dist = np.array([min(x.distance for x in r) if r else 2.0 for r in results])
+    accepted_at = lambda t: np.array([is_relevant(r, it["query"], t) for r, it in zip(results, items)])
 
     is_in = np.array([it["in_domain"] for it in items])
     d_in, d_out = dist[is_in], dist[~is_in]
@@ -56,20 +70,22 @@ def main() -> int:
     candidates = np.round(np.arange(0.30, 1.21, 0.01), 2)
     best = None
     for t in candidates:
-        accept_in = float((d_in <= t).mean())
-        reject_out = float((d_out > t).mean())
+        acc = accepted_at(t)
+        accept_in = float(acc[is_in].mean())
+        reject_out = float((~acc[~is_in]).mean())
         if accept_in >= MIN_IN_DOMAIN_ACCEPTED and (best is None or reject_out > best[2]):
             best = (t, accept_in, reject_out)
     t, accept_in, reject_out = best
 
     logger.info("Limiar sugerido: %.2f → aceita %.0f%% do tema, recusa %.0f%% fora do tema", t, accept_in * 100, reject_out * 100)
-    for it, d in sorted(zip(items, dist), key=lambda x: x[1]):
-        wrong = (d <= t) != it["in_domain"]
+    acc_best = accepted_at(t)
+    for it, d, a in sorted(zip(items, dist, acc_best), key=lambda x: x[1]):
+        wrong = bool(a) != it["in_domain"]
         if wrong:
             logger.info("  erro com limiar %.2f: d=%.3f %-5s %s", t, d, "TEMA" if it["in_domain"] else "FORA", it["query"])
+    acc_cur = accepted_at(settings.similarity_threshold)
     logger.info("Limiar atual (config): %.2f → aceita %.0f%% do tema, recusa %.0f%% fora",
-                settings.similarity_threshold, (d_in <= settings.similarity_threshold).mean() * 100,
-                (d_out > settings.similarity_threshold).mean() * 100)
+                settings.similarity_threshold, acc_cur[is_in].mean() * 100, (~acc_cur[~is_in]).mean() * 100)
 
     os.makedirs(settings.mlflow_artifact_root, exist_ok=True)
     mlflow.set_tracking_uri(settings.mlflow_tracking_uri)

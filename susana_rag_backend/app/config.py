@@ -20,15 +20,21 @@ class Settings(BaseSettings):
     llm_provider: str = "ollama"
     ollama_base_url: str = "http://localhost:11434"
     ollama_model: str = "llama3.1:8b"
-    llm_timeout_s: float = 12.0
+    # 30 s: com o corpus integrado os trechos são maiores e o 1º token passou de 12 s em 3 de 87 perguntas
+    llm_timeout_s: float = 30.0
     llm_keep_alive: str = "30m"
     llm_num_predict: int = 350
 
     # Retrieval
     embedding_model: str = "paraphrase-multilingual-MiniLM-L12-v2"
-    similarity_threshold: float = 0.70  # calibrado por ml/retrieval/calibrate_threshold.py
+    # Tokens lidos por bloco (padrão do modelo: 128, que cortava 41 de 52 blocos). Vindo da develop_gui_sam.
+    embedding_max_seq_length: int = 256
+    similarity_threshold: float = 0.74  # calibrado por ml/retrieval/calibrate_threshold.py (corpus de 1.948 blocos)
     top_k: int = 3
     docs_dir: Path = BACKEND_DIR / "data" / "corpus"
+    # Corpus curado (CSV/JSON de unidades, FAQ, REME), vindo da develop_gui_sam. As bases de análise
+    # (SIA, óbitos, exames) ficam FORA de propósito — veja docs/12-comparacao-develop_gui_sam.md.
+    project_corpus_dir: Path = BACKEND_DIR.parent / "CORPUS" / "Arquivos"
     chroma_dir: Path = BACKEND_DIR / "data" / "chroma_db"
 
     # Guardrail
@@ -48,6 +54,12 @@ class Settings(BaseSettings):
     mlflow_log_requests: bool = True
     # LGPD: por padrão registra só hash + tamanho da pergunta, nunca o texto
     mlflow_log_query_text: bool = False
+
+
+    @property
+    def corpus_roots(self) -> list[Path]:
+        """Pastas varridas (recursivamente) na indexação."""
+        return [self.docs_dir, self.project_corpus_dir]
 
 
 @lru_cache(maxsize=1)

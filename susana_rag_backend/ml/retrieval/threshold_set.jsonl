@@ -43,3 +43,18 @@
 {"query": "Qual o placar do jogo do Flamengo?", "in_domain": false}
 {"query": "Como funciona o Bolsa Família?", "in_domain": false}
 {"query": "Traduza hello para português", "in_domain": false}
+{"query": "Onde fica a UBS 1 de Candangolândia?", "in_domain": true}
+{"query": "Qual o horário da UBS 2 de Planaltina?", "in_domain": true}
+{"query": "A UBS 1 do Riacho Fundo I tem farmácia?", "in_domain": true}
+{"query": "Qual o endereço da UPA de Samambaia?", "in_domain": true}
+{"query": "Onde fica o CAPS de Taguatinga?", "in_domain": true}
+{"query": "Quais policlínicas existem no DF?", "in_domain": true}
+{"query": "Onde faço teste de HIV no CTA?", "in_domain": true}
+{"query": "Como vejo o resultado dos meus exames no Meu SUS Digital?", "in_domain": true}
+{"query": "Quais maternidades atendem pelo SUS no DF?", "in_domain": true}
+{"query": "A rede pública tem dipirona?", "in_domain": true}
+{"query": "O que são as Farmácias Vivas?", "in_domain": true}
+{"query": "Onde fica a UBS do sistema prisional?", "in_domain": true}
+{"query": "Quais hospitais da rede pública existem no DF?", "in_domain": true}
+{"query": "Como funciona o Consultório na Rua?", "in_domain": true}
+{"query": "O que são práticas integrativas em saúde?", "in_domain": true}

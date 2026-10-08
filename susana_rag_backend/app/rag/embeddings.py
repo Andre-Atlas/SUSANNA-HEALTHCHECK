@@ -26,16 +26,19 @@ def _resolve(model_name: str) -> str:
 
 
 class Embedder:
-    def __init__(self, model_name: str):
+    def __init__(self, model_name: str, max_seq_length: int = 512):
         from sentence_transformers import SentenceTransformer  # import tardio (pesado)
 
         self.model_name = _resolve(model_name)
         self._model = SentenceTransformer(self.model_name)
+        # O padrão do modelo (128 tokens) cortava a maioria dos blocos; limita ao máximo que o modelo suporta
+        model_max_positions = self._model[0].auto_model.config.max_position_embeddings
+        self._model.max_seq_length = min(max_seq_length, model_max_positions)
         self._q_prefix, self._p_prefix = _PREFIXES.get(_family(self.model_name), ("", ""))
         # sentence-transformers ≥5 renomeou o método; mantém compatibilidade com versões antigas
         get_dim = getattr(self._model, "get_embedding_dimension", None) or self._model.get_sentence_embedding_dimension
         self.dim = int(get_dim() or 0)
-        logger.info("Embedder carregado: %s (dim=%d)", self.model_name, self.dim)
+        logger.info("Embedder carregado: %s (dim=%d, max_seq_length=%d)", self.model_name, self.dim, self._model.max_seq_length)
 
     def _encode(self, texts: Sequence[str]) -> np.ndarray:
         return np.asarray(
@@ -51,7 +54,9 @@ class Embedder:
 
     @property
     def slug(self) -> str:
-        return self.model_name.split("/")[-1].lower().replace(".", "-")
+        # Inclui o tamanho de sequência: vetores com tamanhos diferentes não podem dividir a mesma coleção
+        name = self.model_name.split("/")[-1].lower().replace(".", "-")
+        return f"{name}-seq{self._model.max_seq_length}"
 
 
 def to_list(vecs: np.ndarray) -> List[List[float]]:
