@@ -31,10 +31,15 @@ class ChromaRetriever:
     def count(self) -> int:
         return self._collection.count()
 
-    def index(self, blocks: Sequence[CorpusBlock], batch_size: int = 64) -> int:
-        if not blocks:
-            return 0
-        existing = set(self._collection.get(ids=[b.id for b in blocks])["ids"])
+    def index(self, blocks: Sequence[CorpusBlock], batch_size: int = 64, prune: bool = True) -> int:
+        """Sincroniza a coleção com `blocks`: adiciona os novos e, com `prune`, remove os
+        que não existem mais no corpus (ids são hash do conteúdo; um bloco editado ganha id novo)."""
+        current = {b.id for b in blocks}
+        existing = set(self._collection.get(include=[])["ids"])
+        stale = sorted(existing - current) if prune else []
+        if stale:
+            self._collection.delete(ids=stale)
+            logger.info("Indexação: %d blocos removidos (não estão mais no corpus)", len(stale))
         new = [b for b in blocks if b.id not in existing]
         for i in range(0, len(new), batch_size):
             batch = new[i : i + batch_size]
