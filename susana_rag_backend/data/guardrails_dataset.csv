@@ -1,58 +1,112 @@
-text,label
-"O que eu tenho se estou com febre e dor de cabeça?",CLINICAL
-"Pode me receitar um antibiótico para infecção?",CLINICAL
-"Estou sentindo muita dor no peito, o que devo tomar?",CLINICAL
-"Meu filho está com diarreia e vômito, qual remédio dou?",CLINICAL
-"Qual o tratamento para dengue?",CLINICAL
-"Como tratar diabetes tipo 2?",CLINICAL
-"Quantos miligramas de paracetamol eu tomo?",CLINICAL
-"Dose de dipirona para adulto",CLINICAL
-"Acho que estou com COVID, quais os sintomas?",CLINICAL
-"Como curar uma unha encravada?",CLINICAL
-"Estou com manchas vermelhas na pele, é grave?",CLINICAL
-"Posso tomar ibuprofeno com losartana?",CLINICAL
-"Onde retiro minha insulina na farmácia de alto custo?",ADMINISTRATIVE
-"Onde fica a UBS da Asa Sul?",ADMINISTRATIVE
-"Qual o horário de funcionamento do posto de saúde?",ADMINISTRATIVE
-"Como faço para marcar um exame de sangue?",ADMINISTRATIVE
-"Telefone da ouvidoria da secretaria de saúde",ADMINISTRATIVE
-"Onde posso tomar a vacina da gripe?",ADMINISTRATIVE
-"Como tirar o cartão do SUS?",ADMINISTRATIVE
-"Quais documentos preciso para pegar remédio na farmácia popular?",ADMINISTRATIVE
-"SAMU 192 como ligar?",ADMINISTRATIVE
-"Campanha de vacinação contra a poliomielite",ADMINISTRATIVE
-"Onde é o hospital regional de ceilândia?",ADMINISTRATIVE
-"Tem paracetamol no posto?",ADMINISTRATIVE
-"Como agendar consulta no oftalmologista?",ADMINISTRATIVE
-"Endereço do hemocentro",ADMINISTRATIVE
-"Qual UBS atende final de semana?",ADMINISTRATIVE
-"Qual remédio caseiro para tosse?",CLINICAL
-"Devo tomar antibiótico para dor de garganta?",CLINICAL
-"Dor abdominal forte do lado direito",CLINICAL
-"Estou grávida e com cólica, o que faço?",CLINICAL
-"Qual anti-inflamatório é bom para dente?",CLINICAL
-"Mancha escura no pé pode ser câncer?",CLINICAL
-"Onde consultar resultados de exames?",ADMINISTRATIVE
-"Requisitos para cirurgia bariátrica pelo SUS",ADMINISTRATIVE
-"Telefone da ouvidoria do hospital de base",ADMINISTRATIVE
-"Qual ônibus passa no posto de saúde?",ADMINISTRATIVE
-"Tem vacina de covid na UBS 2?",ADMINISTRATIVE
-"Posso marcar pediatra pelo aplicativo?",ADMINISTRATIVE
-"HIV passa pelo abraço?",0
-"O HIV é transmitido pelo beijo?",0
-"Quais os sintomas do sarampo?",0
-"Onde tem soro para picada de cobra?",0
-"Onde tomo soro antiofídico?",0
-"Como evitar a dengue?",0
-"Quais as vacinas disponíveis nas UBS?",0
-"Quais exames e procedimentos posso fazer?",0
-"Como agendar raio x?",0
-"O que o SUS faz em caso de mordida de cachorro louco?",0
-"Onde encontro imunossupressores?",0
-"Estou com febre e manchas nas costas, é sarampo?",1
-"Qual remédio cura o HIV?",1
-"O que eu tomo para picada de aranha?",1
-"Minha garganta tá doendo, qual antibiótico comprar?",1
-"Me prescreva um remédio para dor de cabeça",1
-"Quais os exames que indicam se tenho câncer?",1
-"O que significa essa mancha na minha pele?",1
+text,label,source
+O que eu tenho se estou com febre e dor de cabeça?,1,seed
+Pode me receitar um antibiótico para infecção?,1,seed
+"Estou sentindo muita dor no peito, o que devo tomar?",1,seed
+"Meu filho está com diarreia e vômito, qual remédio dou?",1,seed
+Qual o tratamento para dengue?,1,seed
+Como tratar diabetes tipo 2?,1,seed
+Quantos miligramas de paracetamol eu tomo?,1,seed
+Dose de dipirona para adulto,1,seed
+"Acho que estou com COVID, quais os sintomas?",1,seed
+Como curar uma unha encravada?,1,seed
+"Estou com manchas vermelhas na pele, é grave?",1,seed
+Posso tomar ibuprofeno com losartana?,1,seed
+Onde retiro minha insulina na farmácia de alto custo?,0,seed
+Onde fica a UBS da Asa Sul?,0,seed
+Qual o horário de funcionamento do posto de saúde?,0,seed
+Como faço para marcar um exame de sangue?,0,seed
+Telefone da ouvidoria da secretaria de saúde,0,seed
+Onde posso tomar a vacina da gripe?,0,seed
+Como tirar o cartão do SUS?,0,seed
+Quais documentos preciso para pegar remédio na farmácia popular?,0,seed
+SAMU 192 como ligar?,0,seed
+Campanha de vacinação contra a poliomielite,0,seed
+Onde é o hospital regional de ceilândia?,0,seed
+Tem paracetamol no posto?,0,seed
+Como agendar consulta no oftalmologista?,0,seed
+Endereço do hemocentro,0,seed
+Qual UBS atende final de semana?,0,seed
+Qual remédio caseiro para tosse?,1,seed
+Devo tomar antibiótico para dor de garganta?,1,seed
+Dor abdominal forte do lado direito,1,seed
+"Estou grávida e com cólica, o que faço?",1,seed
+Qual anti-inflamatório é bom para dente?,1,seed
+Mancha escura no pé pode ser câncer?,1,seed
+Onde consultar resultados de exames?,0,seed
+Requisitos para cirurgia bariátrica pelo SUS,0,seed
+Telefone da ouvidoria do hospital de base,0,seed
+Qual ônibus passa no posto de saúde?,0,seed
+Tem vacina de covid na UBS 2?,0,seed
+Posso marcar pediatra pelo aplicativo?,0,seed
+HIV passa pelo abraço?,0,seed
+O HIV é transmitido pelo beijo?,0,seed
+Quais os sintomas do sarampo?,0,seed
+Onde tem soro para picada de cobra?,0,seed
+Onde tomo soro antiofídico?,0,seed
+Como evitar a dengue?,0,seed
+Quais as vacinas disponíveis nas UBS?,0,seed
+Quais exames e procedimentos posso fazer?,0,seed
+Como agendar raio x?,0,seed
+O que o SUS faz em caso de mordida de cachorro louco?,0,seed
+Onde encontro imunossupressores?,0,seed
+"Estou com febre e manchas nas costas, é sarampo?",1,seed
+Qual remédio cura o HIV?,1,seed
+O que eu tomo para picada de aranha?,1,seed
+"Minha garganta tá doendo, qual antibiótico comprar?",1,seed
+Me prescreva um remédio para dor de cabeça,1,seed
+Quais os exames que indicam se tenho câncer?,1,seed
+O que significa essa mancha na minha pele?,1,seed
+Estou sentindo muita febre e dor no corpo,1,synthetic
+"Tenho tosse há duas semanas, é tuberculose?",1,synthetic
+"Minha pressão está 16 por 10, o que faço?",1,synthetic
+"Meu bebê está com febre de 39 graus, dou dipirona?",1,synthetic
+Qual antibiótico é bom para infecção urinária?,1,synthetic
+Posso misturar álcool com amoxicilina?,1,synthetic
+Essa dor de barriga pode ser apendicite?,1,synthetic
+Quanto tempo dura a dengue?,1,synthetic
+"Meu exame deu colesterol alto, é perigoso?",1,synthetic
+Quais remédios tratam ansiedade?,1,synthetic
+Me indica um remédio para dormir,1,synthetic
+"Estou grávida e com sangramento, é normal?",1,synthetic
+Que pomada passo numa queimadura?,1,synthetic
+"Tenho alergia a dipirona, posso tomar paracetamol?",1,synthetic
+Qual o melhor tratamento para enxaqueca?,1,synthetic
+"Minha glicose deu 250, preciso de insulina?",1,synthetic
+Estou com falta de ar e chiado no peito,1,synthetic
+Quantas gotas de dipirona dou para criança de 10 kg?,1,synthetic
+Esse caroço no pescoço é câncer?,1,synthetic
+O que é bom para garganta inflamada?,1,synthetic
+Como baixar a febre rápido?,1,synthetic
+"Meu filho tá com manchas e coceira, o que pode ser?",1,synthetic
+Posso parar de tomar o remédio de pressão?,1,synthetic
+Qual a dose de amoxicilina para adulto?,1,synthetic
+Interpretar meu exame de sangue,1,synthetic
+Estou com vômito e diarreia desde ontem,1,synthetic
+Que chá cura gripe?,1,synthetic
+Como saber se estou com pneumonia?,1,synthetic
+Onde posso tomar a vacina da gripe em Taguatinga?,0,synthetic
+Onde tomar a segunda dose da vacina contra covid?,0,synthetic
+O que eu tenho que levar para fazer o cartão do SUS?,0,synthetic
+Qual o telefone do SAMU?,0,synthetic
+Como funciona a classificação de risco nos hospitais?,0,synthetic
+Quanto tempo de espera para pulseira verde?,0,synthetic
+Como faço para receber remédio em casa pelo programa Medicamento em Casa?,0,synthetic
+Como cadastrar na farmácia de alto custo?,0,synthetic
+Onde fica o Hospital Regional da Asa Norte?,0,synthetic
+Como faço uma reclamação na ouvidoria?,0,synthetic
+Quais vacinas uma criança de 1 ano deve tomar pelo calendário?,0,synthetic
+Precisa agendar para vacinar?,0,synthetic
+Quem pode retirar o medicamento no meu lugar?,0,synthetic
+Qual o número da ouvidoria da saúde?,0,synthetic
+Como marcar uma consulta no SUS-DF?,0,synthetic
+Quais documentos levar para retirar medicamento de alto custo?,0,synthetic
+A UPA atende sem encaminhamento?,0,synthetic
+Como funciona o SISREG?,0,synthetic
+Gestante tem prioridade no atendimento?,0,synthetic
+Qual hospital atende acidente com cobra?,0,synthetic
+Tem dose de reforço da vacina da febre amarela?,0,synthetic
+Como pedir o resultado de exame pela internet?,0,synthetic
+O CEAF entrega remédio em casa?,0,synthetic
+Qual o horário da sala de vacina?,0,synthetic
+Como funciona o atendimento de urgência no DF?,0,synthetic
+Onde faço o teste de HIV gratuito?,0,synthetic
