@@ -18,11 +18,12 @@ from pydantic import BaseModel, Field
 
 from app.config import get_settings
 from app.llm.ollama_adapter import OllamaAdapter
-from app.rag.corpus import load_corpus
+from app.rag.corpus import discover_corpus_files, load_corpus
 from app.rag.embeddings import Embedder
 from app.rag.guardrails import GuardrailsClassifier
 from app.rag.pipeline import RAGPipeline
 from app.rag.retriever import ChromaRetriever, SemanticCache
+from app.rag.unit_directory import UnitDirectory
 
 logging.basicConfig(
     level=logging.INFO,
@@ -56,7 +57,7 @@ async def lifespan(application: FastAPI):
 
     # 2. Inicializar Componentes (Ports)
     logger.info("Carregando Embedder: %s", settings.embedding_model)
-    embedder = Embedder(settings.embedding_model)
+    embedder = Embedder(settings.embedding_model, settings.embedding_max_seq_length)
     
     logger.info("Carregando Retriever em %s", settings.chroma_dir)
     retriever = ChromaRetriever(embedder, settings.chroma_dir)
@@ -82,16 +83,19 @@ async def lifespan(application: FastAPI):
         top_k=settings.top_k,
         mlflow_enabled=settings.mlflow_log_requests,
         mlflow_log_query_text=settings.mlflow_log_query_text,
+        # Lista unidades por tipo + região (ideia da develop_sam), a partir dos CSVs de CORPUS/Arquivos
+        unit_directory=UnitDirectory(settings.project_corpus_dir),
     )
 
     # 3. Sincronizar índice com o corpus (adiciona novos, remove os que saíram)
-    logger.info("Lendo corpus de %s", settings.docs_dir)
-    if settings.docs_dir.exists():
-        blocks = load_corpus(sorted(settings.docs_dir.glob("*.txt")))
+    corpus_files = discover_corpus_files(settings.corpus_roots)
+    logger.info("Lendo %d arquivos de corpus em %s", len(corpus_files), [str(p) for p in settings.corpus_roots])
+    if corpus_files:
+        blocks = load_corpus(corpus_files)
         indexed = pipeline.retriever.index(blocks)
-        logger.info("Indexação concluída: %d blocos novos.", indexed)
+        logger.info("Indexação concluída: %d blocos novos; %d no total.", indexed, pipeline.retriever.count())
     else:
-        logger.warning("Diretório de corpus não encontrado: %s", settings.docs_dir)
+        logger.warning("Nenhum arquivo de corpus encontrado em %s", settings.corpus_roots)
 
     # 4. Warm-up LLM
     if llm.is_ready():
@@ -130,9 +134,18 @@ class ChatRequest(BaseModel):
     message: str = Field(..., min_length=1, max_length=2000)
 
 
+class Citation(BaseModel):
+    ref: int
+    id: str
+    title: str
+    url: str | None = None
+
+
 class ChatResponse(BaseModel):
     response: str
     source: str | None = None
+    citations: list[Citation] = []
+    status: str = "answered"  # emergency | out_of_scope | no_evidence | answered | fallback
     is_blocked: bool = False
     latency_ms: int = 0
 
@@ -143,6 +156,27 @@ class ChatResponse(BaseModel):
 @app.get("/health")
 async def healthcheck():
     return {"status": "ok", "pipeline_ready": pipeline is not None}
+
+
+@app.get("/health/dependencies")
+async def health_dependencies():
+    """Separa falha técnica de falta de conteúdo (ideia de /api/v1/health/dependencies da develop_sam)."""
+    if pipeline is None:
+        return {"status": "starting", "pipeline_ready": False}
+    llm_ready = pipeline.llm.is_ready()
+    indexed = pipeline.retriever.count()
+    units = len(pipeline.unit_directory.units) if pipeline.unit_directory is not None else 0
+    return {
+        "status": "ok" if llm_ready and indexed else "degraded",
+        "pipeline_ready": True,
+        "llm": {"model": settings.ollama_model, "ready": llm_ready},
+        "embeddings": {"model": settings.embedding_model, "max_seq_length": settings.embedding_max_seq_length},
+        "corpus": {"indexed_blocks": indexed, "unit_directory": units,
+                   "roots": [str(p) for p in settings.corpus_roots]},
+        "guardrail": {"ml_model_loaded": guardrails.ml_model is not None,
+                      "model_uri": settings.guardrail_model_uri, "threshold": guardrails.threshold},
+        "similarity_threshold": settings.similarity_threshold,
+    }
 
 
 @app.post("/api/chat", response_model=ChatResponse)
@@ -167,6 +201,8 @@ async def chat_endpoint(req: ChatRequest):
     return ChatResponse(
         response=result["response"],
         source=result.get("source"),
+        citations=result.get("citations", []),
+        status=result.get("status", "answered"),
         is_blocked=result["is_blocked"],
         latency_ms=latency,
     )
