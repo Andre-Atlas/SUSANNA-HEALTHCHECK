@@ -13,8 +13,8 @@ def load_csv(path):
     except:
         return pd.DataFrame()
 
-obitos = load_csv('obitos-ocorridos-no-df/Óbitos Ocorridos no DF - 2022.csv')
-samu = pd.read_csv('Samu/dados_producao_samu-29092026-.csv', encoding='utf-8', on_bad_lines='skip')
+obitos = load_csv('CORPUS/obitos-ocorridos-no-df/Óbitos Ocorridos no DF - 2022.csv')
+samu = pd.read_csv('CORPUS/Samu/dados_producao_samu-29092026-.csv', encoding='utf-8', on_bad_lines='skip')
 samu.columns = [c.strip().lower() for c in samu.columns]
 
 # Print initial shapes

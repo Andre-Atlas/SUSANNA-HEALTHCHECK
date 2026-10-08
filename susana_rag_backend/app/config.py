@@ -17,7 +17,6 @@ class Settings(BaseSettings):
     environment: str = "development"
 
     # LLM local (Ollama)
-    llm_provider: str = "ollama"
     ollama_base_url: str = "http://localhost:11434"
     ollama_model: str = "llama3.1:8b"
     llm_timeout_s: float = 12.0
@@ -26,9 +25,12 @@ class Settings(BaseSettings):
 
     # Retrieval
     embedding_model: str = "paraphrase-multilingual-MiniLM-L12-v2"
-    similarity_threshold: float = 1.2
+    embedding_max_seq_length: int = 512
+    similarity_threshold: float = 0.55
     top_k: int = 3
     docs_dir: Path = BACKEND_DIR / "data" / "corpus"
+    project_corpus_dir: Path = BACKEND_DIR.parent / "CORPUS"
+    legacy_docs_file: Path = BACKEND_DIR / "data" / "sus_docs.txt"
     chroma_dir: Path = BACKEND_DIR / "data" / "chroma_db"
 
     # Guardrail

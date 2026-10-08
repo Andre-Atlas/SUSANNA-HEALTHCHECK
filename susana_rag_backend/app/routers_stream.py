@@ -5,6 +5,7 @@ from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 
 import app.main  # Import the module to get the updated global
+from app.rag.retriever import is_relevant
 
 logger = logging.getLogger("susana.stream")
 router = APIRouter()
@@ -32,9 +33,9 @@ async def chat_stream_endpoint(req: ChatRequest):
     # 2. RAG
     # We will embed and search manually to yield stream from LLMPort
     vec = pipeline.embedder.encode_queries([msg])[0]
-    results = pipeline.retriever.search(vec, k=3)
+    results = pipeline.retriever.search(vec, k=pipeline.top_k, query_text=msg)
 
-    if not results or results[0].distance > pipeline.similarity_threshold:
+    if not is_relevant(results, msg, pipeline.similarity_threshold):
         def no_result_gen():
             yield json.dumps({"type": "chunk", "content": "Não encontrei informação suficiente nas fontes oficiais."}) + "\n"
             yield json.dumps({"type": "done", "source": None, "is_blocked": False}) + "\n"

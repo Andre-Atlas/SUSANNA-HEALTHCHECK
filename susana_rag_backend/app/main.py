@@ -18,7 +18,7 @@ from pydantic import BaseModel, Field
 
 from app.config import get_settings
 from app.llm.ollama_adapter import OllamaAdapter
-from app.rag.corpus import load_corpus
+from app.rag.corpus import discover_corpus_files, load_corpus
 from app.rag.embeddings import Embedder
 from app.rag.guardrails import GuardrailsClassifier
 from app.rag.pipeline import RAGPipeline
@@ -56,7 +56,7 @@ async def lifespan(application: FastAPI):
 
     # 2. Inicializar Componentes (Ports)
     logger.info("Carregando Embedder: %s", settings.embedding_model)
-    embedder = Embedder(settings.embedding_model)
+    embedder = Embedder(settings.embedding_model, settings.embedding_max_seq_length)
     
     logger.info("Carregando Retriever em %s", settings.chroma_dir)
     retriever = ChromaRetriever(embedder, settings.chroma_dir)
@@ -78,19 +78,18 @@ async def lifespan(application: FastAPI):
         retriever=retriever,
         semantic_cache=semantic_cache,
         similarity_threshold=settings.similarity_threshold,
+        top_k=settings.top_k,
         mlflow_enabled=settings.mlflow_log_requests,
     )
 
     # 3. Indexar Corpus
-    if True: # Forçar re-indexação para puxar os novos dados
-        logger.info("Lendo corpus de %s", settings.docs_dir)
-        if settings.docs_dir.exists():
-            txt_files = list(settings.docs_dir.glob("*.txt"))
-            blocks = load_corpus(txt_files)
-            indexed = pipeline.retriever.index(blocks)
-            logger.info("Indexação concluída: %d blocos adicionados/atualizados.", indexed)
-        else:
-            logger.warning("Diretório de corpus não encontrado: %s", settings.docs_dir)
+    corpus_files = discover_corpus_files(
+        [settings.docs_dir, settings.project_corpus_dir, settings.legacy_docs_file]
+    )
+    logger.info("Lendo %d arquivos de corpus", len(corpus_files))
+    blocks = load_corpus(corpus_files)
+    indexed = pipeline.retriever.index(blocks)
+    logger.info("Indexação concluída: %d blocos novos; %d blocos totais.", indexed, pipeline.retriever.count())
 
     # 4. Warm-up LLM
     if llm.is_ready():

@@ -16,5 +16,29 @@
     "context": "[EMERGENCIA] SAMU 192\nO Serviço de Atendimento Móvel de Urgência (SAMU) deve ser acionado pelo número 192 em casos de urgência e emergência, como problemas respiratórios graves, paradas cardíacas e acidentes.",
     "expected_keywords": ["192", "SAMU"],
     "forbidden_keywords": ["xarope", "chá", "receito", "tome"]
+  },
+  {
+    "question": "Qual é o endereço e o CEP do Hospital Regional de Ceilândia?",
+    "context": "[CSV] Hospitais.csv (registro 1)\nEstabelecimento: HOSPITAL REGIONAL DE CEILANDIA; Endereço: AREA ESPECIAL; Número: 1; CEP: 72215270; Região Administrativa: CEILANDIA SUL; Região de Saúde: Oeste; Macrorregião de Saúde: Macrorregião 1; registros: 1",
+    "expected_keywords": ["Hospital Regional de Ceilândia", "Área Especial", "72215270", "[1]"],
+    "forbidden_keywords": ["[0]", "não encontrei", "consulte diretamente"]
+  },
+  {
+    "question": "Qual é o horário de funcionamento da UBS 1 do Paranoá?",
+    "context": "[CSV] Unidade_Básica_de_Saúde.csv (registro 6)\nEstabelecimento: UBS 1 - PARANOA; CNES: 0010634; Endereço: QD 21 AREA ESPECIAL CONJUNTO 15; CEP: 71572117; Horário: De Segunda a Sexta das 07:00 às 22:00; Sala Vacina: SIM; Farmácia: SIM; Coleta de Material: SIM; Região Administrativa: PARANOA; registros: 1",
+    "expected_keywords": ["PARANOA", "07h", "22h", "segunda a sexta", "[1]"],
+    "forbidden_keywords": ["19:00", "sábado", "[0]"]
+  },
+  {
+    "question": "A UBS 01 de Candangolândia abre aos sábados e até que horas?",
+    "context": "[CSV] Unidade_Básica_de_Saúde.csv (registro 1)\nEstabelecimento: UBS 01 CANDANGOLANDIA; CNES: 0011185; Endereço: EQ 5/7 AREA ESPECIAL CANDANGOLANDIA; CEP: 71725510; Horário: De Segunda a Sexta das 07:00 às 19:00 e Sábado das 07:00 às 12:00; Sala Vacina: SIM; Farmácia: SIM; Coleta de Material: SIM; Região Administrativa: CANDANGOLANDIA; registros: 1",
+    "expected_keywords": ["Candangolândia", "sábado", "12:00", "[1]"],
+    "forbidden_keywords": ["não abre", "[0]"]
+  },
+  {
+    "question": "Qual o horário de funcionamento do metrô de Brasília?",
+    "context": "[CSV] Hospitais.csv (registro 1)\nEstabelecimento: HOSPITAL REGIONAL DE CEILANDIA; Endereço: AREA ESPECIAL; Número: 1; CEP: 72215270; Região Administrativa: CEILANDIA SUL; Região de Saúde: Oeste; Macrorregião de Saúde: Macrorregião 1; registros: 1",
+    "expected_keywords": ["Não encontrei essa informação nas fontes oficiais disponíveis"],
+    "forbidden_keywords": ["[0]", "metrô funciona", "consulte diretamente", "recomendo consultar", "sites oficiais das companhias"]
   }
 ]

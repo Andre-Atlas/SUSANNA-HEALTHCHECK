@@ -43,10 +43,10 @@ nb.cells.append(nbf.v4.new_code_cell("""def load_and_clean_csv(file_path, sep=';
     return df
 
 # Carregando as bases de 2022
-obitos = load_and_clean_csv('../obitos-ocorridos-no-df/Óbitos Ocorridos no DF - 2022.csv')
-samu = load_and_clean_csv('../Samu/dados_producao_samu-29092026-.csv', sep=',', encoding='utf-8')
-atendimentos = load_and_clean_csv('../atendimentos-e-consultas/2022 - Atendimentos e Consultas _ambulatório e emergência_.csv')
-cirurgias = load_and_clean_csv('../cirurgias-producao-ambulatorial/2022 - Cirurgias Produção Ambulatorial.csv')
+obitos = load_and_clean_csv('../CORPUS/obitos-ocorridos-no-df/Óbitos Ocorridos no DF - 2022.csv')
+samu = load_and_clean_csv('../CORPUS/Samu/dados_producao_samu-29092026-.csv', sep=',', encoding='utf-8')
+atendimentos = load_and_clean_csv('../CORPUS/atendimentos-e-consultas/2022 - Atendimentos e Consultas _ambulatório e emergência_.csv')
+cirurgias = load_and_clean_csv('../CORPUS/cirurgias-producao-ambulatorial/2022 - Cirurgias Produção Ambulatorial.csv')
 
 print(f"Óbitos: {obitos.shape[0]} registros")
 print(f"SAMU: {samu.shape[0]} registros")"""))

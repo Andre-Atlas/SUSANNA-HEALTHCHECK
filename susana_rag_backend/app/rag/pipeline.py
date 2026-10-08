@@ -4,6 +4,7 @@ RAG Pipeline — Orquestrador do fluxo Susana com LLM Local e Guardrail.
 from __future__ import annotations
 
 import logging
+import re
 import time
 from typing import Dict, Optional, Sequence
 
@@ -11,7 +12,7 @@ import mlflow
 
 from app.ports import LLMPort, LLMUnavailable
 from app.rag.embeddings import Embedder
-from app.rag.retriever import ChromaRetriever, SemanticCache
+from app.rag.retriever import ChromaRetriever, SemanticCache, is_relevant
 
 logger = logging.getLogger("susana.rag")
 
@@ -30,6 +31,7 @@ class RAGPipeline:
         retriever: ChromaRetriever,
         semantic_cache: Optional[SemanticCache] = None,
         similarity_threshold: float = 0.55,
+        top_k: int = 3,
         mlflow_enabled: bool = True,
     ):
         self.llm = llm
@@ -37,6 +39,7 @@ class RAGPipeline:
         self.retriever = retriever
         self.semantic_cache = semantic_cache
         self.similarity_threshold = similarity_threshold
+        self.top_k = top_k
         self.mlflow_enabled = mlflow_enabled
 
     def query(self, message: str) -> Dict[str, object]:
@@ -57,14 +60,19 @@ class RAGPipeline:
             cached = self.semantic_cache.get(vec)
             if cached:
                 logger.info("CACHE HIT: %s...", message[:60])
-                return {"response": cached["response"], "source": cached["source"], "cached": True}
+                return {
+                    "response": cached["response"],
+                    "source": cached["source"],
+                    "citations": cached.get("citations", []),
+                    "cached": True,
+                }
 
         # 3. Busca Vetorial
-        results = self.retriever.search(vec, k=3)
+        results = self.retriever.search(vec, k=self.top_k, query_text=message)
 
-        if not results or results[0].distance > self.similarity_threshold:
+        if not is_relevant(results, message, self.similarity_threshold):
             logger.info("LOW RELEVANCE: (dist > %.2f) para: %s...", self.similarity_threshold, message[:60])
-            out = {"response": NO_RESULT_MESSAGE, "source": None}
+            out = {"response": NO_RESULT_MESSAGE, "source": None, "citations": []}
             if self.semantic_cache is not None:
                 self.semantic_cache.put(vec, out)
             return out
@@ -85,9 +93,27 @@ class RAGPipeline:
             response_text = "⚠️ [Aviso: O gerador de texto está indisponível. Abaixo constam trechos diretos dos documentos.]\n\n"
             response_text += "\n\n".join(r.text for r in results)
 
+        cited_refs = (
+            {int(ref) for ref in re.findall(r"\[(\d+)\]", response_text) if 1 <= int(ref) <= len(results)}
+            if llm_used
+            else set(range(1, len(results) + 1))
+        )
+        citations = [
+            {
+                "ref": ref,
+                "id": results[ref - 1].id,
+                "title": results[ref - 1].source.removesuffix(
+                    f" — {results[ref - 1].url}"
+                ) if results[ref - 1].url else results[ref - 1].source,
+                "url": results[ref - 1].url,
+            }
+            for ref in sorted(cited_refs)
+        ]
+
         out = {
             "response": response_text,
             "source": best_source,
+            "citations": citations,
             "cached": False,
         }
 

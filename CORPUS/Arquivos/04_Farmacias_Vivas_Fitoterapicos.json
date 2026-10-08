@@ -1,0 +1,707 @@
+{
+  "schema_version": "1.0.0",
+  "document": {
+    "source_id": "sesdf-farmacias-vivas",
+    "source_title": "Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF)",
+    "source_file": "04_Farmacias_Vivas_Fitoterapicos.md",
+    "source_url": "https://www.saude.df.gov.br/farmacias-vivas-fitoterapicos",
+    "source_version": null,
+    "captured_at": null,
+    "reference_date_original": "01/10/2026",
+    "review_status": "pending",
+    "ingestion_status": "partial_review",
+    "quality_notes": [
+      "Indicacoes terapeuticas e lista de UBS necessitam validacao em fontes oficiais especificas.",
+      "Nao usar alegacoes clinicas como recomendacao individual."
+    ],
+    "language": "pt-BR",
+    "original_sha256": "1043202c6599898f9d17b00b960e62fb3877e4a79dc9424a5362cac2b3a1ca07",
+    "original_line_count": 161
+  },
+  "original_markdown": "# Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF)\n> **Página Oficial:** [Farmácias Vivas e Fitoterápicos - SES-DF](https://www.saude.df.gov.br/farmacias-vivas-fitoterapicos)  \n> **Data de Referência:** 01/10/2026  \n> **Regulamentação:** Portaria Interministerial nº 2.960/2008, RDC ANVISA nº 18/2013, Portarias de Consolidação GM/MS nº 2 e 5/2017 e Formulário de Fitoterápicos da Farmacopeia Brasileira (ANVISA).\n\n---\n\n## 🌿 O Programa de Fitoterapia do Distrito Federal\n\nA Secretaria de Estado de Saúde do Distrito Federal (SES-DF) possui um dos programas públicos de fitoterapia mais tradicionais e consolidados do Brasil, instituído pioneiramente desde 1989/1990. Integrado à **Política Nacional de Práticas Integrativas e Complementares (PNPIC)** no SUS, o programa cultiva plantas medicinais com controle agronômico rigoroso, manipula formulações fitoterápicas padronizadas em laboratórios próprios e distribui gratuitamente os medicamentos à população da rede pública.\n\n---\n\n## 🏭 Unidades Produtoras / Farmácias Vivas da SES-DF\n\nO Distrito Federal conta com duas unidades manipuladoras com laboratórios farmacêuticos especializados:\n\n### 1. Farmácia Viva do Riacho Fundo\n- **Responsável Técnico:** Farmacêutico Nilton Luz Netto Junior\n- **E-mail de Contato:** `farmaciavivasesdf@saude.df.gov.br`\n- **Atividades:** Cultivo orgânico de espécies medicinais selecionadas, secagem, extração vegetal e produção em escala de xaropes, tinturas e formulações em gel.\n\n### 2. Farmácia Viva do CERPIS (Planaltina)\n- **Localização:** Centro de Referência em Práticas Integrativas em Saúde (CERPIS) – Planaltina/DF\n- **Responsável Técnica:** Farmacêutica Isabele Aguiar\n- **E-mail de Contato:** `cerpis.planaltina@gmail.com`\n- **Atividades:** Manipulação de fitoterápicos oficinais, horto didático-medicinal, capacitação de profissionais e rodas de conversa com a comunidade.\n\n---\n\n## 🧴 Relação dos 9 Fitoterápicos Oficinais Padronizados\n\nAtualmente, a SES-DF produz e oferta à população 9 formulações fitoterápicas oficinais padronizadas, regulamentadas segundo a Farmacopeia Brasileira:\n\n| Nº | Fitoterápico Padronizado | Espécie Botânica (Nome Científico) | Indicação Terapêutica Principal e Propriedades |\n|:---:|---|---|---|\n| **1** | **Xarope de Guaco** | *Mikania laevigata* | Broncodilatador e expectorante. Indicado para tosse produtiva, bronquite, afecções catarrais e sintomas de gripes e resfriados. |\n| **2** | **Tintura de Guaco** | *Mikania laevigata* | Ação antiespasmódica sobre a musculatura lisa respiratória e fluidificante de secreções das vias aéreas. |\n| **3** | **Tintura de Boldo Nacional** | *Plectranthus barbatus* | Digestivo, hepatoprotetor suave e eupéptico. Alívio de dispepsias, azia e desconfortos gástricos e biliares leves. |\n| **4** | **Tintura de Funcho** | *Foeniculum vulgare* | Carminativo e antiespasmódico intestinal. Alívio de cólicas digestivas e meteorismo (gases/flatulência). |\n| **5** | **Gel de Erva-Baleeira** | *Cordia verbenacea* | Potente anti-inflamatório e analgésico tópico (rico em alfa-humuleno). Indicado em dores musculoesqueléticas, contusões, artrites e tendinites. |\n| **6** | **Gel de Confrei** | *Symphytum officinale* | Cicatrizante cutâneo e regenerador tecidual. Uso tópico externo em ferimentos fechados, escoriações e hematomas (não aplicar em lesões abertas profundas). |\n| **7** | **Gel de Babosa** | *Aloe vera* | Hidratante, emoliente, cicatrizante e calmante térmico. Indicado para queimaduras solares ou térmicas leves (1º grau) e irritações cutâneas. |\n| **8** | **Gel de Alecrim-Pimenta** | *Lippia sidoides* | Antisséptico, antimicrobiano e antifúngico tópico potente (rico em timol). Utilizado no cuidado dermatológico de micoses superficiais e infecções bacterianas leves da pele. |\n| **9** | **Tintura de Alecrim-Pimenta** | *Lippia sidoides* | Solução antisséptica tópica concentrada para higienização e bochechos bucais (diluída) no manejo de gengivites e estomatites. |\n\n---\n\n## 📋 Regras de Acesso e Dispensação\n\nPara retirar gratuitamente qualquer um dos fitoterápicos nas unidades de saúde, o usuário deve atender aos seguintes critérios:\n1. **Prescrição Válida:** O uso é condicionado à receita emitida por profissional de saúde devidamente habilitado (médicos, cirurgiões-dentistas e enfermeiros atuantes na APS).\n2. **Duas Vias da Receita:** A prescrição deve ser apresentada em duas vias (uma fica retida na farmácia e a outra com o paciente).\n3. **Documentação Pessoal:** Documento oficial de identidade com foto (RG, CNH) e Cartão Nacional de Saúde (Cartão do SUS).\n\n---\n\n## 📍 Relação Completa de Unidades Básicas de Saúde (UBS) Dispensadoras\n\nConforme levantamento oficial da SES-DF, os fitoterápicos são distribuídos nas seguintes Unidades Básicas de Saúde:\n\n### Região Centro-Sul\n- **Candangolândia:**\n  - UBS 1 Candangolândia — AE 05/07, Área Especial (RA 19)\n- **Estrutural (SCIA):**\n  - UBS 1 Estrutural — Setor Central, Área Especial nº 01\n- **Guará:**\n  - UBS 1 Guará I — QE 06, Lote C, Área Especial s/n, Guará I\n  - UBS 3 Guará II — QE 38, Área Especial, Guará II\n  - UBS 4 Lúcio Costa — EQ 02/03, Lúcio Costa\n- **Núcleo Bandeirante:**\n  - UBS 1 Núcleo Bandeirante — Avenida, Área Especial nº 03\n- **Riacho Fundo I:**\n  - UBS 1 Riacho Fundo I — Área Especial nº 09, Riacho Fundo I (RA 12)\n  - Farmácia do Instituto de Saúde Mental (ISM) — Granja do Riacho Fundo\n- **Riacho Fundo II:**\n  - UBS 1 Riacho Fundo II — QC 06, Conjunto 16, Área Especial\n  - UBS 3 Riacho Fundo II — QN 07 A e B, Lotes 1 e 2, A/E\n- **Cruzeiro:**\n  - UBS 1 do Cruzeiro — SHCES Quadra 611, Lote 01, Cruzeiro Novo\n\n### Região Sul\n- **Gama:**\n  - UBS 2 Gama — Setor Sul, Quadra 11\n  - UBS 5 Gama — Área Especial, Lote 38, Setor Central (Lado Leste)\n- **Santa Maria:**\n  - UBS 1 Santa Maria — Quadra 307, Conjunto T, Lote 02, Área Especial, Santa Maria Sul\n- **Recanto das Emas:**\n  - UBS 2 Recanto das Emas — Quadra 102, Área Especial 01\n  - UBS 4 Recanto das Emas — Avenida Recanto das Emas, Quadra 308, Lote 02\n\n### Região Sudoeste e Oeste\n- **Taguatinga:**\n  - UBS 5 Taguatinga — Setor D Sul, Área Especial nº 23\n  - UBS 6 Taguatinga — Setor D Sul, AE 23\n  - UBS 8 Taguatinga — QNL 24, Área Especial s/n\n- **Samambaia:**\n  - UBS 2 Samambaia — QS 611, AE 2\n  - UBS 3 Samambaia — QN 429, Conjunto F, Lote 1\n  - UBS 4 Samambaia — QN 512, Conjunto 02, Lotes 1/2/3\n- **Ceilândia:**\n  - UBS 2 Ceilândia — QNN 15, Lote F, Área Especial\n\n### Região Leste\n- **São Sebastião:**\n  - UBS 1 São Sebastião — Centro de Múltiplas Atividades, Área Especial s/n, Conjunto 10 NLF-APL Leste\n\n### Região Norte\n- **Lago Norte:**\n  - UBS 1 Lago Norte — SHIN QI 03, Área Especial\n- **Sobradinho I:**\n  - UBS 1 Sobradinho I — Quadra 14, Área Especial nº 22/23\n  - UBS 5 Sobradinho I — Área Especial 01, Lote 01, Associação de Moradores, Vila Basevi\n  - UBS 6 Sobradinho I — DF 001, KM 120, Rua 08, Chácara 187, Lago Oeste\n- **Sobradinho II:**\n  - UBS 1 Sobradinho II — AR 13, Conjunto 07, Lote 01, Área Especial\n  - UBS 2 Sobradinho II — Rodovia DF-420, Complexo de Saúde, Setor de Mansões (ao lado da UPA)\n- **Planaltina:**\n  - UBS 2 Planaltina — Entre Quadras 1/10, Área Especial s/n, Vila Buritis\n  - UBS 4 Planaltina — Estância Nova Planaltina, Quadra 02, Rua A, Área Especial\n  - UBS 7 Planaltina — Entrequadras 03/04, Área Especial 002, Jardim Roriz\n  - UBS 8 Planaltina — Área Especial 01, Vale do Amanhecer\n  - UBS 9 Planaltina — Núcleo Rural Santos Dumont, DF-130, KM 25\n  - UBS 10 Planaltina — Núcleo Rural Taquara, Quadra 1, Área Especial\n  - UBS 11 Planaltina — Rodovia DF-130, KM 11, Assoc. Moradores Rural Rajadinha\n  - UBS 12 Planaltina — Rodovia DF-128, KM 21, Campus IFB\n  - UBS 16 Planaltina — Núcleo Rural Pipiripau II, Área Administrativa\n  - UBS 17 Planaltina — Núcleo Rural Jardim Morumbi, Quadra N, Lote 15, Gleba F, DF-128 KM 03\n  - UBS 18 Planaltina — Setor Recreativo e Cultural, Módulo Esportivo s/n, Centro Olímpico\n  - UBS 19 Planaltina — Setor Residencial Oeste, Vila N. Sra. de Fátima, Parque Sucupira\n  - UBS 20 Planaltina — Área Especial 9 A, Setor Norte\n- **Arapoangas:**\n  - UBS 5 Arapoangas — Quadra 12 D, Conjunto A, Área Especial\n  - UBS 6 Arapoangas — Quadra 08, Conjunto 1, s/n\n\n---\n\n## 📚 Guias Técnicos e Folhetos Informativos\n\nA Secretaria de Saúde disponibiliza materiais educativos para download voltados tanto para a população quanto para profissionais de saúde:\n- **Guias de Plantas Medicinais:**\n  - Guia de Plantas Medicinais – *Ansiedade*\n  - Guia de Plantas Medicinais – *Desconfortos Gastrintestinais*\n  - Guia de Plantas Medicinais – *Resfriados e Gripes Comuns*\n  - Guia de Plantas e Saúde\n  - Cartilha de Plantas Medicinais contraindicadas no *Aleitamento Materno*\n  - Guia de *Interações Medicamentosas* entre plantas e medicamentos alopáticos\n- **Folderes de Espécies Tradicionais:**\n  - Babosa, Goiabeira, Ora-pro-nóbis, Tanchagem, Malvariço, Manjericão, Chá de Colônia, Spray/Difusor de Capim-Citronela.\n- **Manuais e Guias de Prescrição:**\n  - Guia Fitoterápicos Oficinais do Núcleo de Farmácia Viva (11ª Edição).\n  - Guia de Informações da Farmácia Viva do CERPIS Planaltina.\n  - Manual de Prescrição e Uso Seguro de Plantas Medicinais na SES-DF.\n\n---\n\n## ⚖️ Marco Legal e Legislação Vigente\n- **Portaria Interministerial nº 2.960/2008:** Criação do Comitê Nacional de Plantas Medicinais e Fitoterápicos.\n- **RDC ANVISA nº 18/2013:** Boas Práticas de Processamento e Armazenamento em Farmácias Vivas no SUS.\n- **Portaria de Consolidação GM/MS nº 2/2017:** Instituição da Política Nacional de Práticas Integrativas e Complementares (PNPIC).\n- **Portaria de Consolidação GM/MS nº 5/2017 (Art. 570 e 571):** Diretrizes para oferta e financiamento de fitoterápicos no Sistema Único de Saúde.\n",
+  "records": [
+    {
+      "record_id": "sesdf-farmacias-vivas:table:L35:L37",
+      "source_id": "sesdf-farmacias-vivas",
+      "section": "Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 🧴 Relação dos 9 Fitoterápicos Oficinais Padronizados",
+      "table_id": "sesdf-farmacias-vivas:table:L35",
+      "line_start": 37,
+      "line_end": 37,
+      "raw_row": "| **1** | **Xarope de Guaco** | *Mikania laevigata* | Broncodilatador e expectorante. Indicado para tosse produtiva, bronquite, afecções catarrais e sintomas de gripes e resfriados. |",
+      "headers_original": [
+        "Nº",
+        "Fitoterápico Padronizado",
+        "Espécie Botânica (Nome Científico)",
+        "Indicação Terapêutica Principal e Propriedades"
+      ],
+      "cells_original": [
+        "**1**",
+        "**Xarope de Guaco**",
+        "*Mikania laevigata*",
+        "Broncodilatador e expectorante. Indicado para tosse produtiva, bronquite, afecções catarrais e sintomas de gripes e resfriados."
+      ],
+      "parse_status": "columns_aligned_unverified",
+      "review_status": "pending",
+      "validation_status": "not_validated_against_authoritative_source",
+      "fields_original": {
+        "Nº": "**1**",
+        "Fitoterápico Padronizado": "**Xarope de Guaco**",
+        "Espécie Botânica (Nome Científico)": "*Mikania laevigata*",
+        "Indicação Terapêutica Principal e Propriedades": "Broncodilatador e expectorante. Indicado para tosse produtiva, bronquite, afecções catarrais e sintomas de gripes e resfriados."
+      }
+    },
+    {
+      "record_id": "sesdf-farmacias-vivas:table:L35:L38",
+      "source_id": "sesdf-farmacias-vivas",
+      "section": "Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 🧴 Relação dos 9 Fitoterápicos Oficinais Padronizados",
+      "table_id": "sesdf-farmacias-vivas:table:L35",
+      "line_start": 38,
+      "line_end": 38,
+      "raw_row": "| **2** | **Tintura de Guaco** | *Mikania laevigata* | Ação antiespasmódica sobre a musculatura lisa respiratória e fluidificante de secreções das vias aéreas. |",
+      "headers_original": [
+        "Nº",
+        "Fitoterápico Padronizado",
+        "Espécie Botânica (Nome Científico)",
+        "Indicação Terapêutica Principal e Propriedades"
+      ],
+      "cells_original": [
+        "**2**",
+        "**Tintura de Guaco**",
+        "*Mikania laevigata*",
+        "Ação antiespasmódica sobre a musculatura lisa respiratória e fluidificante de secreções das vias aéreas."
+      ],
+      "parse_status": "columns_aligned_unverified",
+      "review_status": "pending",
+      "validation_status": "not_validated_against_authoritative_source",
+      "fields_original": {
+        "Nº": "**2**",
+        "Fitoterápico Padronizado": "**Tintura de Guaco**",
+        "Espécie Botânica (Nome Científico)": "*Mikania laevigata*",
+        "Indicação Terapêutica Principal e Propriedades": "Ação antiespasmódica sobre a musculatura lisa respiratória e fluidificante de secreções das vias aéreas."
+      }
+    },
+    {
+      "record_id": "sesdf-farmacias-vivas:table:L35:L39",
+      "source_id": "sesdf-farmacias-vivas",
+      "section": "Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 🧴 Relação dos 9 Fitoterápicos Oficinais Padronizados",
+      "table_id": "sesdf-farmacias-vivas:table:L35",
+      "line_start": 39,
+      "line_end": 39,
+      "raw_row": "| **3** | **Tintura de Boldo Nacional** | *Plectranthus barbatus* | Digestivo, hepatoprotetor suave e eupéptico. Alívio de dispepsias, azia e desconfortos gástricos e biliares leves. |",
+      "headers_original": [
+        "Nº",
+        "Fitoterápico Padronizado",
+        "Espécie Botânica (Nome Científico)",
+        "Indicação Terapêutica Principal e Propriedades"
+      ],
+      "cells_original": [
+        "**3**",
+        "**Tintura de Boldo Nacional**",
+        "*Plectranthus barbatus*",
+        "Digestivo, hepatoprotetor suave e eupéptico. Alívio de dispepsias, azia e desconfortos gástricos e biliares leves."
+      ],
+      "parse_status": "columns_aligned_unverified",
+      "review_status": "pending",
+      "validation_status": "not_validated_against_authoritative_source",
+      "fields_original": {
+        "Nº": "**3**",
+        "Fitoterápico Padronizado": "**Tintura de Boldo Nacional**",
+        "Espécie Botânica (Nome Científico)": "*Plectranthus barbatus*",
+        "Indicação Terapêutica Principal e Propriedades": "Digestivo, hepatoprotetor suave e eupéptico. Alívio de dispepsias, azia e desconfortos gástricos e biliares leves."
+      }
+    },
+    {
+      "record_id": "sesdf-farmacias-vivas:table:L35:L40",
+      "source_id": "sesdf-farmacias-vivas",
+      "section": "Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 🧴 Relação dos 9 Fitoterápicos Oficinais Padronizados",
+      "table_id": "sesdf-farmacias-vivas:table:L35",
+      "line_start": 40,
+      "line_end": 40,
+      "raw_row": "| **4** | **Tintura de Funcho** | *Foeniculum vulgare* | Carminativo e antiespasmódico intestinal. Alívio de cólicas digestivas e meteorismo (gases/flatulência). |",
+      "headers_original": [
+        "Nº",
+        "Fitoterápico Padronizado",
+        "Espécie Botânica (Nome Científico)",
+        "Indicação Terapêutica Principal e Propriedades"
+      ],
+      "cells_original": [
+        "**4**",
+        "**Tintura de Funcho**",
+        "*Foeniculum vulgare*",
+        "Carminativo e antiespasmódico intestinal. Alívio de cólicas digestivas e meteorismo (gases/flatulência)."
+      ],
+      "parse_status": "columns_aligned_unverified",
+      "review_status": "pending",
+      "validation_status": "not_validated_against_authoritative_source",
+      "fields_original": {
+        "Nº": "**4**",
+        "Fitoterápico Padronizado": "**Tintura de Funcho**",
+        "Espécie Botânica (Nome Científico)": "*Foeniculum vulgare*",
+        "Indicação Terapêutica Principal e Propriedades": "Carminativo e antiespasmódico intestinal. Alívio de cólicas digestivas e meteorismo (gases/flatulência)."
+      }
+    },
+    {
+      "record_id": "sesdf-farmacias-vivas:table:L35:L41",
+      "source_id": "sesdf-farmacias-vivas",
+      "section": "Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 🧴 Relação dos 9 Fitoterápicos Oficinais Padronizados",
+      "table_id": "sesdf-farmacias-vivas:table:L35",
+      "line_start": 41,
+      "line_end": 41,
+      "raw_row": "| **5** | **Gel de Erva-Baleeira** | *Cordia verbenacea* | Potente anti-inflamatório e analgésico tópico (rico em alfa-humuleno). Indicado em dores musculoesqueléticas, contusões, artrites e tendinites. |",
+      "headers_original": [
+        "Nº",
+        "Fitoterápico Padronizado",
+        "Espécie Botânica (Nome Científico)",
+        "Indicação Terapêutica Principal e Propriedades"
+      ],
+      "cells_original": [
+        "**5**",
+        "**Gel de Erva-Baleeira**",
+        "*Cordia verbenacea*",
+        "Potente anti-inflamatório e analgésico tópico (rico em alfa-humuleno). Indicado em dores musculoesqueléticas, contusões, artrites e tendinites."
+      ],
+      "parse_status": "columns_aligned_unverified",
+      "review_status": "pending",
+      "validation_status": "not_validated_against_authoritative_source",
+      "fields_original": {
+        "Nº": "**5**",
+        "Fitoterápico Padronizado": "**Gel de Erva-Baleeira**",
+        "Espécie Botânica (Nome Científico)": "*Cordia verbenacea*",
+        "Indicação Terapêutica Principal e Propriedades": "Potente anti-inflamatório e analgésico tópico (rico em alfa-humuleno). Indicado em dores musculoesqueléticas, contusões, artrites e tendinites."
+      }
+    },
+    {
+      "record_id": "sesdf-farmacias-vivas:table:L35:L42",
+      "source_id": "sesdf-farmacias-vivas",
+      "section": "Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 🧴 Relação dos 9 Fitoterápicos Oficinais Padronizados",
+      "table_id": "sesdf-farmacias-vivas:table:L35",
+      "line_start": 42,
+      "line_end": 42,
+      "raw_row": "| **6** | **Gel de Confrei** | *Symphytum officinale* | Cicatrizante cutâneo e regenerador tecidual. Uso tópico externo em ferimentos fechados, escoriações e hematomas (não aplicar em lesões abertas profundas). |",
+      "headers_original": [
+        "Nº",
+        "Fitoterápico Padronizado",
+        "Espécie Botânica (Nome Científico)",
+        "Indicação Terapêutica Principal e Propriedades"
+      ],
+      "cells_original": [
+        "**6**",
+        "**Gel de Confrei**",
+        "*Symphytum officinale*",
+        "Cicatrizante cutâneo e regenerador tecidual. Uso tópico externo em ferimentos fechados, escoriações e hematomas (não aplicar em lesões abertas profundas)."
+      ],
+      "parse_status": "columns_aligned_unverified",
+      "review_status": "pending",
+      "validation_status": "not_validated_against_authoritative_source",
+      "fields_original": {
+        "Nº": "**6**",
+        "Fitoterápico Padronizado": "**Gel de Confrei**",
+        "Espécie Botânica (Nome Científico)": "*Symphytum officinale*",
+        "Indicação Terapêutica Principal e Propriedades": "Cicatrizante cutâneo e regenerador tecidual. Uso tópico externo em ferimentos fechados, escoriações e hematomas (não aplicar em lesões abertas profundas)."
+      }
+    },
+    {
+      "record_id": "sesdf-farmacias-vivas:table:L35:L43",
+      "source_id": "sesdf-farmacias-vivas",
+      "section": "Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 🧴 Relação dos 9 Fitoterápicos Oficinais Padronizados",
+      "table_id": "sesdf-farmacias-vivas:table:L35",
+      "line_start": 43,
+      "line_end": 43,
+      "raw_row": "| **7** | **Gel de Babosa** | *Aloe vera* | Hidratante, emoliente, cicatrizante e calmante térmico. Indicado para queimaduras solares ou térmicas leves (1º grau) e irritações cutâneas. |",
+      "headers_original": [
+        "Nº",
+        "Fitoterápico Padronizado",
+        "Espécie Botânica (Nome Científico)",
+        "Indicação Terapêutica Principal e Propriedades"
+      ],
+      "cells_original": [
+        "**7**",
+        "**Gel de Babosa**",
+        "*Aloe vera*",
+        "Hidratante, emoliente, cicatrizante e calmante térmico. Indicado para queimaduras solares ou térmicas leves (1º grau) e irritações cutâneas."
+      ],
+      "parse_status": "columns_aligned_unverified",
+      "review_status": "pending",
+      "validation_status": "not_validated_against_authoritative_source",
+      "fields_original": {
+        "Nº": "**7**",
+        "Fitoterápico Padronizado": "**Gel de Babosa**",
+        "Espécie Botânica (Nome Científico)": "*Aloe vera*",
+        "Indicação Terapêutica Principal e Propriedades": "Hidratante, emoliente, cicatrizante e calmante térmico. Indicado para queimaduras solares ou térmicas leves (1º grau) e irritações cutâneas."
+      }
+    },
+    {
+      "record_id": "sesdf-farmacias-vivas:table:L35:L44",
+      "source_id": "sesdf-farmacias-vivas",
+      "section": "Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 🧴 Relação dos 9 Fitoterápicos Oficinais Padronizados",
+      "table_id": "sesdf-farmacias-vivas:table:L35",
+      "line_start": 44,
+      "line_end": 44,
+      "raw_row": "| **8** | **Gel de Alecrim-Pimenta** | *Lippia sidoides* | Antisséptico, antimicrobiano e antifúngico tópico potente (rico em timol). Utilizado no cuidado dermatológico de micoses superficiais e infecções bacterianas leves da pele. |",
+      "headers_original": [
+        "Nº",
+        "Fitoterápico Padronizado",
+        "Espécie Botânica (Nome Científico)",
+        "Indicação Terapêutica Principal e Propriedades"
+      ],
+      "cells_original": [
+        "**8**",
+        "**Gel de Alecrim-Pimenta**",
+        "*Lippia sidoides*",
+        "Antisséptico, antimicrobiano e antifúngico tópico potente (rico em timol). Utilizado no cuidado dermatológico de micoses superficiais e infecções bacterianas leves da pele."
+      ],
+      "parse_status": "columns_aligned_unverified",
+      "review_status": "pending",
+      "validation_status": "not_validated_against_authoritative_source",
+      "fields_original": {
+        "Nº": "**8**",
+        "Fitoterápico Padronizado": "**Gel de Alecrim-Pimenta**",
+        "Espécie Botânica (Nome Científico)": "*Lippia sidoides*",
+        "Indicação Terapêutica Principal e Propriedades": "Antisséptico, antimicrobiano e antifúngico tópico potente (rico em timol). Utilizado no cuidado dermatológico de micoses superficiais e infecções bacterianas leves da pele."
+      }
+    },
+    {
+      "record_id": "sesdf-farmacias-vivas:table:L35:L45",
+      "source_id": "sesdf-farmacias-vivas",
+      "section": "Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 🧴 Relação dos 9 Fitoterápicos Oficinais Padronizados",
+      "table_id": "sesdf-farmacias-vivas:table:L35",
+      "line_start": 45,
+      "line_end": 45,
+      "raw_row": "| **9** | **Tintura de Alecrim-Pimenta** | *Lippia sidoides* | Solução antisséptica tópica concentrada para higienização e bochechos bucais (diluída) no manejo de gengivites e estomatites. |",
+      "headers_original": [
+        "Nº",
+        "Fitoterápico Padronizado",
+        "Espécie Botânica (Nome Científico)",
+        "Indicação Terapêutica Principal e Propriedades"
+      ],
+      "cells_original": [
+        "**9**",
+        "**Tintura de Alecrim-Pimenta**",
+        "*Lippia sidoides*",
+        "Solução antisséptica tópica concentrada para higienização e bochechos bucais (diluída) no manejo de gengivites e estomatites."
+      ],
+      "parse_status": "columns_aligned_unverified",
+      "review_status": "pending",
+      "validation_status": "not_validated_against_authoritative_source",
+      "fields_original": {
+        "Nº": "**9**",
+        "Fitoterápico Padronizado": "**Tintura de Alecrim-Pimenta**",
+        "Espécie Botânica (Nome Científico)": "*Lippia sidoides*",
+        "Indicação Terapêutica Principal e Propriedades": "Solução antisséptica tópica concentrada para higienização e bochechos bucais (diluída) no manejo de gengivites e estomatites."
+      }
+    }
+  ],
+  "chunks": [
+    {
+      "chunk_id": "sesdf-farmacias-vivas:L2-L4",
+      "text": "Fonte: sesdf-farmacias-vivas\nSecao: Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF)\n\n> **Página Oficial:** [Farmácias Vivas e Fitoterápicos - SES-DF](https://www.saude.df.gov.br/farmacias-vivas-fitoterapicos)  \n> **Data de Referência:** 01/10/2026  \n> **Regulamentação:** Portaria Interministerial nº 2.960/2008, RDC ANVISA nº 18/2013, Portarias de Consolidação GM/MS nº 2 e 5/2017 e Formulário de Fitoterápicos da Farmacopeia Brasileira (ANVISA).",
+      "content_original": "> **Página Oficial:** [Farmácias Vivas e Fitoterápicos - SES-DF](https://www.saude.df.gov.br/farmacias-vivas-fitoterapicos)  \n> **Data de Referência:** 01/10/2026  \n> **Regulamentação:** Portaria Interministerial nº 2.960/2008, RDC ANVISA nº 18/2013, Portarias de Consolidação GM/MS nº 2 e 5/2017 e Formulário de Fitoterápicos da Farmacopeia Brasileira (ANVISA).\n",
+      "metadata": {
+        "source_id": "sesdf-farmacias-vivas",
+        "section": "Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF)",
+        "line_start": 2,
+        "line_end": 4,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "sesdf-farmacias-vivas:L6-L6",
+      "text": "Fonte: sesdf-farmacias-vivas\nSecao: Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF)\n\n---",
+      "content_original": "---\n",
+      "metadata": {
+        "source_id": "sesdf-farmacias-vivas",
+        "section": "Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF)",
+        "line_start": 6,
+        "line_end": 6,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "sesdf-farmacias-vivas:L10-L10",
+      "text": "Fonte: sesdf-farmacias-vivas\nSecao: Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 🌿 O Programa de Fitoterapia do Distrito Federal\n\nA Secretaria de Estado de Saúde do Distrito Federal (SES-DF) possui um dos programas públicos de fitoterapia mais tradicionais e consolidados do Brasil, instituído pioneiramente desde 1989/1990. Integrado à **Política Nacional de Práticas Integrativas e Complementares (PNPIC)** no SUS, o programa cultiva plantas medicinais com controle agronômico rigoroso, manipula formulações fitoterápicas padronizadas em laboratórios próprios e distribui gratuitamente os medicamentos à população da rede pública.",
+      "content_original": "A Secretaria de Estado de Saúde do Distrito Federal (SES-DF) possui um dos programas públicos de fitoterapia mais tradicionais e consolidados do Brasil, instituído pioneiramente desde 1989/1990. Integrado à **Política Nacional de Práticas Integrativas e Complementares (PNPIC)** no SUS, o programa cultiva plantas medicinais com controle agronômico rigoroso, manipula formulações fitoterápicas padronizadas em laboratórios próprios e distribui gratuitamente os medicamentos à população da rede pública.\n",
+      "metadata": {
+        "source_id": "sesdf-farmacias-vivas",
+        "section": "Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 🌿 O Programa de Fitoterapia do Distrito Federal",
+        "line_start": 10,
+        "line_end": 10,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "sesdf-farmacias-vivas:L12-L12",
+      "text": "Fonte: sesdf-farmacias-vivas\nSecao: Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 🌿 O Programa de Fitoterapia do Distrito Federal\n\n---",
+      "content_original": "---\n",
+      "metadata": {
+        "source_id": "sesdf-farmacias-vivas",
+        "section": "Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 🌿 O Programa de Fitoterapia do Distrito Federal",
+        "line_start": 12,
+        "line_end": 12,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "sesdf-farmacias-vivas:L16-L16",
+      "text": "Fonte: sesdf-farmacias-vivas\nSecao: Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 🏭 Unidades Produtoras / Farmácias Vivas da SES-DF\n\nO Distrito Federal conta com duas unidades manipuladoras com laboratórios farmacêuticos especializados:",
+      "content_original": "O Distrito Federal conta com duas unidades manipuladoras com laboratórios farmacêuticos especializados:\n",
+      "metadata": {
+        "source_id": "sesdf-farmacias-vivas",
+        "section": "Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 🏭 Unidades Produtoras / Farmácias Vivas da SES-DF",
+        "line_start": 16,
+        "line_end": 16,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "sesdf-farmacias-vivas:L19-L21",
+      "text": "Fonte: sesdf-farmacias-vivas\nSecao: Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 🏭 Unidades Produtoras / Farmácias Vivas da SES-DF > 1. Farmácia Viva do Riacho Fundo\n\n- **Responsável Técnico:** Farmacêutico Nilton Luz Netto Junior\n- **E-mail de Contato:** `farmaciavivasesdf@saude.df.gov.br`\n- **Atividades:** Cultivo orgânico de espécies medicinais selecionadas, secagem, extração vegetal e produção em escala de xaropes, tinturas e formulações em gel.",
+      "content_original": "- **Responsável Técnico:** Farmacêutico Nilton Luz Netto Junior\n- **E-mail de Contato:** `farmaciavivasesdf@saude.df.gov.br`\n- **Atividades:** Cultivo orgânico de espécies medicinais selecionadas, secagem, extração vegetal e produção em escala de xaropes, tinturas e formulações em gel.\n",
+      "metadata": {
+        "source_id": "sesdf-farmacias-vivas",
+        "section": "Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 🏭 Unidades Produtoras / Farmácias Vivas da SES-DF > 1. Farmácia Viva do Riacho Fundo",
+        "line_start": 19,
+        "line_end": 21,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "sesdf-farmacias-vivas:L24-L27",
+      "text": "Fonte: sesdf-farmacias-vivas\nSecao: Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 🏭 Unidades Produtoras / Farmácias Vivas da SES-DF > 2. Farmácia Viva do CERPIS (Planaltina)\n\n- **Localização:** Centro de Referência em Práticas Integrativas em Saúde (CERPIS) – Planaltina/DF\n- **Responsável Técnica:** Farmacêutica Isabele Aguiar\n- **E-mail de Contato:** `cerpis.planaltina@gmail.com`\n- **Atividades:** Manipulação de fitoterápicos oficinais, horto didático-medicinal, capacitação de profissionais e rodas de conversa com a comunidade.",
+      "content_original": "- **Localização:** Centro de Referência em Práticas Integrativas em Saúde (CERPIS) – Planaltina/DF\n- **Responsável Técnica:** Farmacêutica Isabele Aguiar\n- **E-mail de Contato:** `cerpis.planaltina@gmail.com`\n- **Atividades:** Manipulação de fitoterápicos oficinais, horto didático-medicinal, capacitação de profissionais e rodas de conversa com a comunidade.\n",
+      "metadata": {
+        "source_id": "sesdf-farmacias-vivas",
+        "section": "Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 🏭 Unidades Produtoras / Farmácias Vivas da SES-DF > 2. Farmácia Viva do CERPIS (Planaltina)",
+        "line_start": 24,
+        "line_end": 27,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "sesdf-farmacias-vivas:L29-L29",
+      "text": "Fonte: sesdf-farmacias-vivas\nSecao: Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 🏭 Unidades Produtoras / Farmácias Vivas da SES-DF > 2. Farmácia Viva do CERPIS (Planaltina)\n\n---",
+      "content_original": "---\n",
+      "metadata": {
+        "source_id": "sesdf-farmacias-vivas",
+        "section": "Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 🏭 Unidades Produtoras / Farmácias Vivas da SES-DF > 2. Farmácia Viva do CERPIS (Planaltina)",
+        "line_start": 29,
+        "line_end": 29,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "sesdf-farmacias-vivas:L33-L33",
+      "text": "Fonte: sesdf-farmacias-vivas\nSecao: Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 🧴 Relação dos 9 Fitoterápicos Oficinais Padronizados\n\nAtualmente, a SES-DF produz e oferta à população 9 formulações fitoterápicas oficinais padronizadas, regulamentadas segundo a Farmacopeia Brasileira:",
+      "content_original": "Atualmente, a SES-DF produz e oferta à população 9 formulações fitoterápicas oficinais padronizadas, regulamentadas segundo a Farmacopeia Brasileira:\n",
+      "metadata": {
+        "source_id": "sesdf-farmacias-vivas",
+        "section": "Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 🧴 Relação dos 9 Fitoterápicos Oficinais Padronizados",
+        "line_start": 33,
+        "line_end": 33,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "sesdf-farmacias-vivas:L37-L37",
+      "text": "Fonte: sesdf-farmacias-vivas\nSecao: Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 🧴 Relação dos 9 Fitoterápicos Oficinais Padronizados\n\nCabecalhos da tabela: Nº | Fitoterápico Padronizado | Espécie Botânica (Nome Científico) | Indicação Terapêutica Principal e Propriedades\nLinha da tabela: | **1** | **Xarope de Guaco** | *Mikania laevigata* | Broncodilatador e expectorante. Indicado para tosse produtiva, bronquite, afecções catarrais e sintomas de gripes e resfriados. |",
+      "content_original": "Cabecalhos da tabela: Nº | Fitoterápico Padronizado | Espécie Botânica (Nome Científico) | Indicação Terapêutica Principal e Propriedades\nLinha da tabela: | **1** | **Xarope de Guaco** | *Mikania laevigata* | Broncodilatador e expectorante. Indicado para tosse produtiva, bronquite, afecções catarrais e sintomas de gripes e resfriados. |",
+      "metadata": {
+        "source_id": "sesdf-farmacias-vivas",
+        "section": "Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 🧴 Relação dos 9 Fitoterápicos Oficinais Padronizados",
+        "line_start": 37,
+        "line_end": 37,
+        "content_type": "table_row",
+        "record_id": "sesdf-farmacias-vivas:table:L35:L37",
+        "table_id": "sesdf-farmacias-vivas:table:L35",
+        "parse_status": "columns_aligned_unverified"
+      }
+    },
+    {
+      "chunk_id": "sesdf-farmacias-vivas:L38-L38",
+      "text": "Fonte: sesdf-farmacias-vivas\nSecao: Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 🧴 Relação dos 9 Fitoterápicos Oficinais Padronizados\n\nCabecalhos da tabela: Nº | Fitoterápico Padronizado | Espécie Botânica (Nome Científico) | Indicação Terapêutica Principal e Propriedades\nLinha da tabela: | **2** | **Tintura de Guaco** | *Mikania laevigata* | Ação antiespasmódica sobre a musculatura lisa respiratória e fluidificante de secreções das vias aéreas. |",
+      "content_original": "Cabecalhos da tabela: Nº | Fitoterápico Padronizado | Espécie Botânica (Nome Científico) | Indicação Terapêutica Principal e Propriedades\nLinha da tabela: | **2** | **Tintura de Guaco** | *Mikania laevigata* | Ação antiespasmódica sobre a musculatura lisa respiratória e fluidificante de secreções das vias aéreas. |",
+      "metadata": {
+        "source_id": "sesdf-farmacias-vivas",
+        "section": "Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 🧴 Relação dos 9 Fitoterápicos Oficinais Padronizados",
+        "line_start": 38,
+        "line_end": 38,
+        "content_type": "table_row",
+        "record_id": "sesdf-farmacias-vivas:table:L35:L38",
+        "table_id": "sesdf-farmacias-vivas:table:L35",
+        "parse_status": "columns_aligned_unverified"
+      }
+    },
+    {
+      "chunk_id": "sesdf-farmacias-vivas:L39-L39",
+      "text": "Fonte: sesdf-farmacias-vivas\nSecao: Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 🧴 Relação dos 9 Fitoterápicos Oficinais Padronizados\n\nCabecalhos da tabela: Nº | Fitoterápico Padronizado | Espécie Botânica (Nome Científico) | Indicação Terapêutica Principal e Propriedades\nLinha da tabela: | **3** | **Tintura de Boldo Nacional** | *Plectranthus barbatus* | Digestivo, hepatoprotetor suave e eupéptico. Alívio de dispepsias, azia e desconfortos gástricos e biliares leves. |",
+      "content_original": "Cabecalhos da tabela: Nº | Fitoterápico Padronizado | Espécie Botânica (Nome Científico) | Indicação Terapêutica Principal e Propriedades\nLinha da tabela: | **3** | **Tintura de Boldo Nacional** | *Plectranthus barbatus* | Digestivo, hepatoprotetor suave e eupéptico. Alívio de dispepsias, azia e desconfortos gástricos e biliares leves. |",
+      "metadata": {
+        "source_id": "sesdf-farmacias-vivas",
+        "section": "Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 🧴 Relação dos 9 Fitoterápicos Oficinais Padronizados",
+        "line_start": 39,
+        "line_end": 39,
+        "content_type": "table_row",
+        "record_id": "sesdf-farmacias-vivas:table:L35:L39",
+        "table_id": "sesdf-farmacias-vivas:table:L35",
+        "parse_status": "columns_aligned_unverified"
+      }
+    },
+    {
+      "chunk_id": "sesdf-farmacias-vivas:L40-L40",
+      "text": "Fonte: sesdf-farmacias-vivas\nSecao: Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 🧴 Relação dos 9 Fitoterápicos Oficinais Padronizados\n\nCabecalhos da tabela: Nº | Fitoterápico Padronizado | Espécie Botânica (Nome Científico) | Indicação Terapêutica Principal e Propriedades\nLinha da tabela: | **4** | **Tintura de Funcho** | *Foeniculum vulgare* | Carminativo e antiespasmódico intestinal. Alívio de cólicas digestivas e meteorismo (gases/flatulência). |",
+      "content_original": "Cabecalhos da tabela: Nº | Fitoterápico Padronizado | Espécie Botânica (Nome Científico) | Indicação Terapêutica Principal e Propriedades\nLinha da tabela: | **4** | **Tintura de Funcho** | *Foeniculum vulgare* | Carminativo e antiespasmódico intestinal. Alívio de cólicas digestivas e meteorismo (gases/flatulência). |",
+      "metadata": {
+        "source_id": "sesdf-farmacias-vivas",
+        "section": "Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 🧴 Relação dos 9 Fitoterápicos Oficinais Padronizados",
+        "line_start": 40,
+        "line_end": 40,
+        "content_type": "table_row",
+        "record_id": "sesdf-farmacias-vivas:table:L35:L40",
+        "table_id": "sesdf-farmacias-vivas:table:L35",
+        "parse_status": "columns_aligned_unverified"
+      }
+    },
+    {
+      "chunk_id": "sesdf-farmacias-vivas:L41-L41",
+      "text": "Fonte: sesdf-farmacias-vivas\nSecao: Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 🧴 Relação dos 9 Fitoterápicos Oficinais Padronizados\n\nCabecalhos da tabela: Nº | Fitoterápico Padronizado | Espécie Botânica (Nome Científico) | Indicação Terapêutica Principal e Propriedades\nLinha da tabela: | **5** | **Gel de Erva-Baleeira** | *Cordia verbenacea* | Potente anti-inflamatório e analgésico tópico (rico em alfa-humuleno). Indicado em dores musculoesqueléticas, contusões, artrites e tendinites. |",
+      "content_original": "Cabecalhos da tabela: Nº | Fitoterápico Padronizado | Espécie Botânica (Nome Científico) | Indicação Terapêutica Principal e Propriedades\nLinha da tabela: | **5** | **Gel de Erva-Baleeira** | *Cordia verbenacea* | Potente anti-inflamatório e analgésico tópico (rico em alfa-humuleno). Indicado em dores musculoesqueléticas, contusões, artrites e tendinites. |",
+      "metadata": {
+        "source_id": "sesdf-farmacias-vivas",
+        "section": "Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 🧴 Relação dos 9 Fitoterápicos Oficinais Padronizados",
+        "line_start": 41,
+        "line_end": 41,
+        "content_type": "table_row",
+        "record_id": "sesdf-farmacias-vivas:table:L35:L41",
+        "table_id": "sesdf-farmacias-vivas:table:L35",
+        "parse_status": "columns_aligned_unverified"
+      }
+    },
+    {
+      "chunk_id": "sesdf-farmacias-vivas:L42-L42",
+      "text": "Fonte: sesdf-farmacias-vivas\nSecao: Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 🧴 Relação dos 9 Fitoterápicos Oficinais Padronizados\n\nCabecalhos da tabela: Nº | Fitoterápico Padronizado | Espécie Botânica (Nome Científico) | Indicação Terapêutica Principal e Propriedades\nLinha da tabela: | **6** | **Gel de Confrei** | *Symphytum officinale* | Cicatrizante cutâneo e regenerador tecidual. Uso tópico externo em ferimentos fechados, escoriações e hematomas (não aplicar em lesões abertas profundas). |",
+      "content_original": "Cabecalhos da tabela: Nº | Fitoterápico Padronizado | Espécie Botânica (Nome Científico) | Indicação Terapêutica Principal e Propriedades\nLinha da tabela: | **6** | **Gel de Confrei** | *Symphytum officinale* | Cicatrizante cutâneo e regenerador tecidual. Uso tópico externo em ferimentos fechados, escoriações e hematomas (não aplicar em lesões abertas profundas). |",
+      "metadata": {
+        "source_id": "sesdf-farmacias-vivas",
+        "section": "Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 🧴 Relação dos 9 Fitoterápicos Oficinais Padronizados",
+        "line_start": 42,
+        "line_end": 42,
+        "content_type": "table_row",
+        "record_id": "sesdf-farmacias-vivas:table:L35:L42",
+        "table_id": "sesdf-farmacias-vivas:table:L35",
+        "parse_status": "columns_aligned_unverified"
+      }
+    },
+    {
+      "chunk_id": "sesdf-farmacias-vivas:L43-L43",
+      "text": "Fonte: sesdf-farmacias-vivas\nSecao: Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 🧴 Relação dos 9 Fitoterápicos Oficinais Padronizados\n\nCabecalhos da tabela: Nº | Fitoterápico Padronizado | Espécie Botânica (Nome Científico) | Indicação Terapêutica Principal e Propriedades\nLinha da tabela: | **7** | **Gel de Babosa** | *Aloe vera* | Hidratante, emoliente, cicatrizante e calmante térmico. Indicado para queimaduras solares ou térmicas leves (1º grau) e irritações cutâneas. |",
+      "content_original": "Cabecalhos da tabela: Nº | Fitoterápico Padronizado | Espécie Botânica (Nome Científico) | Indicação Terapêutica Principal e Propriedades\nLinha da tabela: | **7** | **Gel de Babosa** | *Aloe vera* | Hidratante, emoliente, cicatrizante e calmante térmico. Indicado para queimaduras solares ou térmicas leves (1º grau) e irritações cutâneas. |",
+      "metadata": {
+        "source_id": "sesdf-farmacias-vivas",
+        "section": "Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 🧴 Relação dos 9 Fitoterápicos Oficinais Padronizados",
+        "line_start": 43,
+        "line_end": 43,
+        "content_type": "table_row",
+        "record_id": "sesdf-farmacias-vivas:table:L35:L43",
+        "table_id": "sesdf-farmacias-vivas:table:L35",
+        "parse_status": "columns_aligned_unverified"
+      }
+    },
+    {
+      "chunk_id": "sesdf-farmacias-vivas:L44-L44",
+      "text": "Fonte: sesdf-farmacias-vivas\nSecao: Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 🧴 Relação dos 9 Fitoterápicos Oficinais Padronizados\n\nCabecalhos da tabela: Nº | Fitoterápico Padronizado | Espécie Botânica (Nome Científico) | Indicação Terapêutica Principal e Propriedades\nLinha da tabela: | **8** | **Gel de Alecrim-Pimenta** | *Lippia sidoides* | Antisséptico, antimicrobiano e antifúngico tópico potente (rico em timol). Utilizado no cuidado dermatológico de micoses superficiais e infecções bacterianas leves da pele. |",
+      "content_original": "Cabecalhos da tabela: Nº | Fitoterápico Padronizado | Espécie Botânica (Nome Científico) | Indicação Terapêutica Principal e Propriedades\nLinha da tabela: | **8** | **Gel de Alecrim-Pimenta** | *Lippia sidoides* | Antisséptico, antimicrobiano e antifúngico tópico potente (rico em timol). Utilizado no cuidado dermatológico de micoses superficiais e infecções bacterianas leves da pele. |",
+      "metadata": {
+        "source_id": "sesdf-farmacias-vivas",
+        "section": "Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 🧴 Relação dos 9 Fitoterápicos Oficinais Padronizados",
+        "line_start": 44,
+        "line_end": 44,
+        "content_type": "table_row",
+        "record_id": "sesdf-farmacias-vivas:table:L35:L44",
+        "table_id": "sesdf-farmacias-vivas:table:L35",
+        "parse_status": "columns_aligned_unverified"
+      }
+    },
+    {
+      "chunk_id": "sesdf-farmacias-vivas:L45-L45",
+      "text": "Fonte: sesdf-farmacias-vivas\nSecao: Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 🧴 Relação dos 9 Fitoterápicos Oficinais Padronizados\n\nCabecalhos da tabela: Nº | Fitoterápico Padronizado | Espécie Botânica (Nome Científico) | Indicação Terapêutica Principal e Propriedades\nLinha da tabela: | **9** | **Tintura de Alecrim-Pimenta** | *Lippia sidoides* | Solução antisséptica tópica concentrada para higienização e bochechos bucais (diluída) no manejo de gengivites e estomatites. |",
+      "content_original": "Cabecalhos da tabela: Nº | Fitoterápico Padronizado | Espécie Botânica (Nome Científico) | Indicação Terapêutica Principal e Propriedades\nLinha da tabela: | **9** | **Tintura de Alecrim-Pimenta** | *Lippia sidoides* | Solução antisséptica tópica concentrada para higienização e bochechos bucais (diluída) no manejo de gengivites e estomatites. |",
+      "metadata": {
+        "source_id": "sesdf-farmacias-vivas",
+        "section": "Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 🧴 Relação dos 9 Fitoterápicos Oficinais Padronizados",
+        "line_start": 45,
+        "line_end": 45,
+        "content_type": "table_row",
+        "record_id": "sesdf-farmacias-vivas:table:L35:L45",
+        "table_id": "sesdf-farmacias-vivas:table:L35",
+        "parse_status": "columns_aligned_unverified"
+      }
+    },
+    {
+      "chunk_id": "sesdf-farmacias-vivas:L47-L47",
+      "text": "Fonte: sesdf-farmacias-vivas\nSecao: Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 🧴 Relação dos 9 Fitoterápicos Oficinais Padronizados\n\n---",
+      "content_original": "---\n",
+      "metadata": {
+        "source_id": "sesdf-farmacias-vivas",
+        "section": "Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 🧴 Relação dos 9 Fitoterápicos Oficinais Padronizados",
+        "line_start": 47,
+        "line_end": 47,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "sesdf-farmacias-vivas:L51-L54",
+      "text": "Fonte: sesdf-farmacias-vivas\nSecao: Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 📋 Regras de Acesso e Dispensação\n\nPara retirar gratuitamente qualquer um dos fitoterápicos nas unidades de saúde, o usuário deve atender aos seguintes critérios:\n1. **Prescrição Válida:** O uso é condicionado à receita emitida por profissional de saúde devidamente habilitado (médicos, cirurgiões-dentistas e enfermeiros atuantes na APS).\n2. **Duas Vias da Receita:** A prescrição deve ser apresentada em duas vias (uma fica retida na farmácia e a outra com o paciente).\n3. **Documentação Pessoal:** Documento oficial de identidade com foto (RG, CNH) e Cartão Nacional de Saúde (Cartão do SUS).",
+      "content_original": "Para retirar gratuitamente qualquer um dos fitoterápicos nas unidades de saúde, o usuário deve atender aos seguintes critérios:\n1. **Prescrição Válida:** O uso é condicionado à receita emitida por profissional de saúde devidamente habilitado (médicos, cirurgiões-dentistas e enfermeiros atuantes na APS).\n2. **Duas Vias da Receita:** A prescrição deve ser apresentada em duas vias (uma fica retida na farmácia e a outra com o paciente).\n3. **Documentação Pessoal:** Documento oficial de identidade com foto (RG, CNH) e Cartão Nacional de Saúde (Cartão do SUS).\n",
+      "metadata": {
+        "source_id": "sesdf-farmacias-vivas",
+        "section": "Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 📋 Regras de Acesso e Dispensação",
+        "line_start": 51,
+        "line_end": 54,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "sesdf-farmacias-vivas:L56-L56",
+      "text": "Fonte: sesdf-farmacias-vivas\nSecao: Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 📋 Regras de Acesso e Dispensação\n\n---",
+      "content_original": "---\n",
+      "metadata": {
+        "source_id": "sesdf-farmacias-vivas",
+        "section": "Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 📋 Regras de Acesso e Dispensação",
+        "line_start": 56,
+        "line_end": 56,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "sesdf-farmacias-vivas:L60-L60",
+      "text": "Fonte: sesdf-farmacias-vivas\nSecao: Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 📍 Relação Completa de Unidades Básicas de Saúde (UBS) Dispensadoras\n\nConforme levantamento oficial da SES-DF, os fitoterápicos são distribuídos nas seguintes Unidades Básicas de Saúde:",
+      "content_original": "Conforme levantamento oficial da SES-DF, os fitoterápicos são distribuídos nas seguintes Unidades Básicas de Saúde:\n",
+      "metadata": {
+        "source_id": "sesdf-farmacias-vivas",
+        "section": "Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 📍 Relação Completa de Unidades Básicas de Saúde (UBS) Dispensadoras",
+        "line_start": 60,
+        "line_end": 60,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "sesdf-farmacias-vivas:L63-L80",
+      "text": "Fonte: sesdf-farmacias-vivas\nSecao: Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 📍 Relação Completa de Unidades Básicas de Saúde (UBS) Dispensadoras > Região Centro-Sul\n\n- **Candangolândia:**\n  - UBS 1 Candangolândia — AE 05/07, Área Especial (RA 19)\n- **Estrutural (SCIA):**\n  - UBS 1 Estrutural — Setor Central, Área Especial nº 01\n- **Guará:**\n  - UBS 1 Guará I — QE 06, Lote C, Área Especial s/n, Guará I\n  - UBS 3 Guará II — QE 38, Área Especial, Guará II\n  - UBS 4 Lúcio Costa — EQ 02/03, Lúcio Costa\n- **Núcleo Bandeirante:**\n  - UBS 1 Núcleo Bandeirante — Avenida, Área Especial nº 03\n- **Riacho Fundo I:**\n  - UBS 1 Riacho Fundo I — Área Especial nº 09, Riacho Fundo I (RA 12)\n  - Farmácia do Instituto de Saúde Mental (ISM) — Granja do Riacho Fundo\n- **Riacho Fundo II:**\n  - UBS 1 Riacho Fundo II — QC 06, Conjunto 16, Área Especial\n  - UBS 3 Riacho Fundo II — QN 07 A e B, Lotes 1 e 2, A/E\n- **Cruzeiro:**\n  - UBS 1 do Cruzeiro — SHCES Quadra 611, Lote 01, Cruzeiro Novo",
+      "content_original": "- **Candangolândia:**\n  - UBS 1 Candangolândia — AE 05/07, Área Especial (RA 19)\n- **Estrutural (SCIA):**\n  - UBS 1 Estrutural — Setor Central, Área Especial nº 01\n- **Guará:**\n  - UBS 1 Guará I — QE 06, Lote C, Área Especial s/n, Guará I\n  - UBS 3 Guará II — QE 38, Área Especial, Guará II\n  - UBS 4 Lúcio Costa — EQ 02/03, Lúcio Costa\n- **Núcleo Bandeirante:**\n  - UBS 1 Núcleo Bandeirante — Avenida, Área Especial nº 03\n- **Riacho Fundo I:**\n  - UBS 1 Riacho Fundo I — Área Especial nº 09, Riacho Fundo I (RA 12)\n  - Farmácia do Instituto de Saúde Mental (ISM) — Granja do Riacho Fundo\n- **Riacho Fundo II:**\n  - UBS 1 Riacho Fundo II — QC 06, Conjunto 16, Área Especial\n  - UBS 3 Riacho Fundo II — QN 07 A e B, Lotes 1 e 2, A/E\n- **Cruzeiro:**\n  - UBS 1 do Cruzeiro — SHCES Quadra 611, Lote 01, Cruzeiro Novo\n",
+      "metadata": {
+        "source_id": "sesdf-farmacias-vivas",
+        "section": "Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 📍 Relação Completa de Unidades Básicas de Saúde (UBS) Dispensadoras > Região Centro-Sul",
+        "line_start": 63,
+        "line_end": 80,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "sesdf-farmacias-vivas:L83-L90",
+      "text": "Fonte: sesdf-farmacias-vivas\nSecao: Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 📍 Relação Completa de Unidades Básicas de Saúde (UBS) Dispensadoras > Região Sul\n\n- **Gama:**\n  - UBS 2 Gama — Setor Sul, Quadra 11\n  - UBS 5 Gama — Área Especial, Lote 38, Setor Central (Lado Leste)\n- **Santa Maria:**\n  - UBS 1 Santa Maria — Quadra 307, Conjunto T, Lote 02, Área Especial, Santa Maria Sul\n- **Recanto das Emas:**\n  - UBS 2 Recanto das Emas — Quadra 102, Área Especial 01\n  - UBS 4 Recanto das Emas — Avenida Recanto das Emas, Quadra 308, Lote 02",
+      "content_original": "- **Gama:**\n  - UBS 2 Gama — Setor Sul, Quadra 11\n  - UBS 5 Gama — Área Especial, Lote 38, Setor Central (Lado Leste)\n- **Santa Maria:**\n  - UBS 1 Santa Maria — Quadra 307, Conjunto T, Lote 02, Área Especial, Santa Maria Sul\n- **Recanto das Emas:**\n  - UBS 2 Recanto das Emas — Quadra 102, Área Especial 01\n  - UBS 4 Recanto das Emas — Avenida Recanto das Emas, Quadra 308, Lote 02\n",
+      "metadata": {
+        "source_id": "sesdf-farmacias-vivas",
+        "section": "Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 📍 Relação Completa de Unidades Básicas de Saúde (UBS) Dispensadoras > Região Sul",
+        "line_start": 83,
+        "line_end": 90,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "sesdf-farmacias-vivas:L93-L102",
+      "text": "Fonte: sesdf-farmacias-vivas\nSecao: Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 📍 Relação Completa de Unidades Básicas de Saúde (UBS) Dispensadoras > Região Sudoeste e Oeste\n\n- **Taguatinga:**\n  - UBS 5 Taguatinga — Setor D Sul, Área Especial nº 23\n  - UBS 6 Taguatinga — Setor D Sul, AE 23\n  - UBS 8 Taguatinga — QNL 24, Área Especial s/n\n- **Samambaia:**\n  - UBS 2 Samambaia — QS 611, AE 2\n  - UBS 3 Samambaia — QN 429, Conjunto F, Lote 1\n  - UBS 4 Samambaia — QN 512, Conjunto 02, Lotes 1/2/3\n- **Ceilândia:**\n  - UBS 2 Ceilândia — QNN 15, Lote F, Área Especial",
+      "content_original": "- **Taguatinga:**\n  - UBS 5 Taguatinga — Setor D Sul, Área Especial nº 23\n  - UBS 6 Taguatinga — Setor D Sul, AE 23\n  - UBS 8 Taguatinga — QNL 24, Área Especial s/n\n- **Samambaia:**\n  - UBS 2 Samambaia — QS 611, AE 2\n  - UBS 3 Samambaia — QN 429, Conjunto F, Lote 1\n  - UBS 4 Samambaia — QN 512, Conjunto 02, Lotes 1/2/3\n- **Ceilândia:**\n  - UBS 2 Ceilândia — QNN 15, Lote F, Área Especial\n",
+      "metadata": {
+        "source_id": "sesdf-farmacias-vivas",
+        "section": "Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 📍 Relação Completa de Unidades Básicas de Saúde (UBS) Dispensadoras > Região Sudoeste e Oeste",
+        "line_start": 93,
+        "line_end": 102,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "sesdf-farmacias-vivas:L105-L106",
+      "text": "Fonte: sesdf-farmacias-vivas\nSecao: Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 📍 Relação Completa de Unidades Básicas de Saúde (UBS) Dispensadoras > Região Leste\n\n- **São Sebastião:**\n  - UBS 1 São Sebastião — Centro de Múltiplas Atividades, Área Especial s/n, Conjunto 10 NLF-APL Leste",
+      "content_original": "- **São Sebastião:**\n  - UBS 1 São Sebastião — Centro de Múltiplas Atividades, Área Especial s/n, Conjunto 10 NLF-APL Leste\n",
+      "metadata": {
+        "source_id": "sesdf-farmacias-vivas",
+        "section": "Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 📍 Relação Completa de Unidades Básicas de Saúde (UBS) Dispensadoras > Região Leste",
+        "line_start": 105,
+        "line_end": 106,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "sesdf-farmacias-vivas:L109-L129",
+      "text": "Fonte: sesdf-farmacias-vivas\nSecao: Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 📍 Relação Completa de Unidades Básicas de Saúde (UBS) Dispensadoras > Região Norte\n\n- **Lago Norte:**\n  - UBS 1 Lago Norte — SHIN QI 03, Área Especial\n- **Sobradinho I:**\n  - UBS 1 Sobradinho I — Quadra 14, Área Especial nº 22/23\n  - UBS 5 Sobradinho I — Área Especial 01, Lote 01, Associação de Moradores, Vila Basevi\n  - UBS 6 Sobradinho I — DF 001, KM 120, Rua 08, Chácara 187, Lago Oeste\n- **Sobradinho II:**\n  - UBS 1 Sobradinho II — AR 13, Conjunto 07, Lote 01, Área Especial\n  - UBS 2 Sobradinho II — Rodovia DF-420, Complexo de Saúde, Setor de Mansões (ao lado da UPA)\n- **Planaltina:**\n  - UBS 2 Planaltina — Entre Quadras 1/10, Área Especial s/n, Vila Buritis\n  - UBS 4 Planaltina — Estância Nova Planaltina, Quadra 02, Rua A, Área Especial\n  - UBS 7 Planaltina — Entrequadras 03/04, Área Especial 002, Jardim Roriz\n  - UBS 8 Planaltina — Área Especial 01, Vale do Amanhecer\n  - UBS 9 Planaltina — Núcleo Rural Santos Dumont, DF-130, KM 25\n  - UBS 10 Planaltina — Núcleo Rural Taquara, Quadra 1, Área Especial\n  - UBS 11 Planaltina — Rodovia DF-130, KM 11, Assoc. Moradores Rural Rajadinha\n  - UBS 12 Planaltina — Rodovia DF-128, KM 21, Campus IFB\n  - UBS 16 Planaltina — Núcleo Rural Pipiripau II, Área Administrativa\n  - UBS 17 Planaltina — Núcleo Rural Jardim Morumbi, Quadra N, Lote 15, Gleba F, DF-128 KM 03\n  - UBS 18 Planaltina — Setor Recreativo e Cultural, Módulo Esportivo s/n, Centro Olímpico",
+      "content_original": "- **Lago Norte:**\n  - UBS 1 Lago Norte — SHIN QI 03, Área Especial\n- **Sobradinho I:**\n  - UBS 1 Sobradinho I — Quadra 14, Área Especial nº 22/23\n  - UBS 5 Sobradinho I — Área Especial 01, Lote 01, Associação de Moradores, Vila Basevi\n  - UBS 6 Sobradinho I — DF 001, KM 120, Rua 08, Chácara 187, Lago Oeste\n- **Sobradinho II:**\n  - UBS 1 Sobradinho II — AR 13, Conjunto 07, Lote 01, Área Especial\n  - UBS 2 Sobradinho II — Rodovia DF-420, Complexo de Saúde, Setor de Mansões (ao lado da UPA)\n- **Planaltina:**\n  - UBS 2 Planaltina — Entre Quadras 1/10, Área Especial s/n, Vila Buritis\n  - UBS 4 Planaltina — Estância Nova Planaltina, Quadra 02, Rua A, Área Especial\n  - UBS 7 Planaltina — Entrequadras 03/04, Área Especial 002, Jardim Roriz\n  - UBS 8 Planaltina — Área Especial 01, Vale do Amanhecer\n  - UBS 9 Planaltina — Núcleo Rural Santos Dumont, DF-130, KM 25\n  - UBS 10 Planaltina — Núcleo Rural Taquara, Quadra 1, Área Especial\n  - UBS 11 Planaltina — Rodovia DF-130, KM 11, Assoc. Moradores Rural Rajadinha\n  - UBS 12 Planaltina — Rodovia DF-128, KM 21, Campus IFB\n  - UBS 16 Planaltina — Núcleo Rural Pipiripau II, Área Administrativa\n  - UBS 17 Planaltina — Núcleo Rural Jardim Morumbi, Quadra N, Lote 15, Gleba F, DF-128 KM 03\n  - UBS 18 Planaltina — Setor Recreativo e Cultural, Módulo Esportivo s/n, Centro Olímpico\n",
+      "metadata": {
+        "source_id": "sesdf-farmacias-vivas",
+        "section": "Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 📍 Relação Completa de Unidades Básicas de Saúde (UBS) Dispensadoras > Região Norte",
+        "line_start": 109,
+        "line_end": 129,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "sesdf-farmacias-vivas:L130-L134",
+      "text": "Fonte: sesdf-farmacias-vivas\nSecao: Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 📍 Relação Completa de Unidades Básicas de Saúde (UBS) Dispensadoras > Região Norte\n\n- UBS 19 Planaltina — Setor Residencial Oeste, Vila N. Sra. de Fátima, Parque Sucupira\n  - UBS 20 Planaltina — Área Especial 9 A, Setor Norte\n- **Arapoangas:**\n  - UBS 5 Arapoangas — Quadra 12 D, Conjunto A, Área Especial\n  - UBS 6 Arapoangas — Quadra 08, Conjunto 1, s/n",
+      "content_original": "  - UBS 19 Planaltina — Setor Residencial Oeste, Vila N. Sra. de Fátima, Parque Sucupira\n  - UBS 20 Planaltina — Área Especial 9 A, Setor Norte\n- **Arapoangas:**\n  - UBS 5 Arapoangas — Quadra 12 D, Conjunto A, Área Especial\n  - UBS 6 Arapoangas — Quadra 08, Conjunto 1, s/n\n",
+      "metadata": {
+        "source_id": "sesdf-farmacias-vivas",
+        "section": "Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 📍 Relação Completa de Unidades Básicas de Saúde (UBS) Dispensadoras > Região Norte",
+        "line_start": 130,
+        "line_end": 134,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "sesdf-farmacias-vivas:L136-L136",
+      "text": "Fonte: sesdf-farmacias-vivas\nSecao: Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 📍 Relação Completa de Unidades Básicas de Saúde (UBS) Dispensadoras > Região Norte\n\n---",
+      "content_original": "---\n",
+      "metadata": {
+        "source_id": "sesdf-farmacias-vivas",
+        "section": "Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 📍 Relação Completa de Unidades Básicas de Saúde (UBS) Dispensadoras > Região Norte",
+        "line_start": 136,
+        "line_end": 136,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "sesdf-farmacias-vivas:L140-L153",
+      "text": "Fonte: sesdf-farmacias-vivas\nSecao: Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 📚 Guias Técnicos e Folhetos Informativos\n\nA Secretaria de Saúde disponibiliza materiais educativos para download voltados tanto para a população quanto para profissionais de saúde:\n- **Guias de Plantas Medicinais:**\n  - Guia de Plantas Medicinais – *Ansiedade*\n  - Guia de Plantas Medicinais – *Desconfortos Gastrintestinais*\n  - Guia de Plantas Medicinais – *Resfriados e Gripes Comuns*\n  - Guia de Plantas e Saúde\n  - Cartilha de Plantas Medicinais contraindicadas no *Aleitamento Materno*\n  - Guia de *Interações Medicamentosas* entre plantas e medicamentos alopáticos\n- **Folderes de Espécies Tradicionais:**\n  - Babosa, Goiabeira, Ora-pro-nóbis, Tanchagem, Malvariço, Manjericão, Chá de Colônia, Spray/Difusor de Capim-Citronela.\n- **Manuais e Guias de Prescrição:**\n  - Guia Fitoterápicos Oficinais do Núcleo de Farmácia Viva (11ª Edição).\n  - Guia de Informações da Farmácia Viva do CERPIS Planaltina.\n  - Manual de Prescrição e Uso Seguro de Plantas Medicinais na SES-DF.",
+      "content_original": "A Secretaria de Saúde disponibiliza materiais educativos para download voltados tanto para a população quanto para profissionais de saúde:\n- **Guias de Plantas Medicinais:**\n  - Guia de Plantas Medicinais – *Ansiedade*\n  - Guia de Plantas Medicinais – *Desconfortos Gastrintestinais*\n  - Guia de Plantas Medicinais – *Resfriados e Gripes Comuns*\n  - Guia de Plantas e Saúde\n  - Cartilha de Plantas Medicinais contraindicadas no *Aleitamento Materno*\n  - Guia de *Interações Medicamentosas* entre plantas e medicamentos alopáticos\n- **Folderes de Espécies Tradicionais:**\n  - Babosa, Goiabeira, Ora-pro-nóbis, Tanchagem, Malvariço, Manjericão, Chá de Colônia, Spray/Difusor de Capim-Citronela.\n- **Manuais e Guias de Prescrição:**\n  - Guia Fitoterápicos Oficinais do Núcleo de Farmácia Viva (11ª Edição).\n  - Guia de Informações da Farmácia Viva do CERPIS Planaltina.\n  - Manual de Prescrição e Uso Seguro de Plantas Medicinais na SES-DF.\n",
+      "metadata": {
+        "source_id": "sesdf-farmacias-vivas",
+        "section": "Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 📚 Guias Técnicos e Folhetos Informativos",
+        "line_start": 140,
+        "line_end": 153,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "sesdf-farmacias-vivas:L155-L155",
+      "text": "Fonte: sesdf-farmacias-vivas\nSecao: Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 📚 Guias Técnicos e Folhetos Informativos\n\n---",
+      "content_original": "---\n",
+      "metadata": {
+        "source_id": "sesdf-farmacias-vivas",
+        "section": "Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > 📚 Guias Técnicos e Folhetos Informativos",
+        "line_start": 155,
+        "line_end": 155,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "sesdf-farmacias-vivas:L158-L161",
+      "text": "Fonte: sesdf-farmacias-vivas\nSecao: Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > ⚖️ Marco Legal e Legislação Vigente\n\n- **Portaria Interministerial nº 2.960/2008:** Criação do Comitê Nacional de Plantas Medicinais e Fitoterápicos.\n- **RDC ANVISA nº 18/2013:** Boas Práticas de Processamento e Armazenamento em Farmácias Vivas no SUS.\n- **Portaria de Consolidação GM/MS nº 2/2017:** Instituição da Política Nacional de Práticas Integrativas e Complementares (PNPIC).\n- **Portaria de Consolidação GM/MS nº 5/2017 (Art. 570 e 571):** Diretrizes para oferta e financiamento de fitoterápicos no Sistema Único de Saúde.",
+      "content_original": "- **Portaria Interministerial nº 2.960/2008:** Criação do Comitê Nacional de Plantas Medicinais e Fitoterápicos.\n- **RDC ANVISA nº 18/2013:** Boas Práticas de Processamento e Armazenamento em Farmácias Vivas no SUS.\n- **Portaria de Consolidação GM/MS nº 2/2017:** Instituição da Política Nacional de Práticas Integrativas e Complementares (PNPIC).\n- **Portaria de Consolidação GM/MS nº 5/2017 (Art. 570 e 571):** Diretrizes para oferta e financiamento de fitoterápicos no Sistema Único de Saúde.\n",
+      "metadata": {
+        "source_id": "sesdf-farmacias-vivas",
+        "section": "Farmácias Vivas e Fitoterápicos — Secretaria de Saúde do Distrito Federal (SES-DF) > ⚖️ Marco Legal e Legislação Vigente",
+        "line_start": 158,
+        "line_end": 161,
+        "content_type": "text"
+      }
+    }
+  ]
+}
