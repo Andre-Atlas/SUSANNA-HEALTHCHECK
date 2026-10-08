@@ -1,0 +1,28 @@
+[DADOS_ABERTOS] Doenças Infecciosas e Transmissão (HIV/ISTs)
+Informações validadas sobre transmissão de doenças. O HIV NÃO é transmitido por interações sociais cotidianas como abraços, beijos, suor, lágrimas ou compartilhamento de talheres. A transmissão ocorre por relações sexuais desprotegidas, compartilhamento de seringas ou de mãe para filho. Prevenção e testagem estão disponíveis nas UBS.
+Fonte: https://dados.df.gov.br/dataset/hiv-transmissao-df
+
+[DADOS_ABERTOS] Soros e Acidentes com Animais Peçonhentos/Silvestres
+Em caso de acidentes com animais peçonhentos (cobras, escorpiões, aranhas) ou mordeduras de animais silvestres (risco de raiva), o paciente deve procurar imediatamente o HRAN (Hospital Regional da Asa Norte) ou HRT (Hospital Regional de Taguatinga), que são os polos de referência para aplicação de soro antiofídico, antiescorpiônico e antirrábico.
+Fonte: https://dados.df.gov.br/dataset/soros-animais-peconhentos
+
+[DADOS_ABERTOS] Procedimentos, Consultas e Exames (SISREG)
+Procedimentos complexos, exames de sangue, radiografias e tomografias devem ser agendados através do sistema SISREG pelas Unidades Básicas de Saúde (UBS). O paciente recebe um comprovante com data e local do exame.
+Fonte: https://dados.df.gov.br/dataset/procedimentos-exames-df
+
+[DADOS_ABERTOS] Campanha e Estoque de Vacinas
+As vacinas disponíveis nas UBS do DF neste mês incluem: BCG, Hepatite B, Poliomielite, Pentavalente, Rotavírus, Febre Amarela, Tríplice Viral e COVID-19. O estoque é reabastecido semanalmente pelo Ministério da Saúde.
+Fonte: https://dados.df.gov.br/dataset/vacinas-disponiveis
+
+[DADOS_ABERTOS] Unidades Básicas de Saúde do DF
+Lista de UBS em funcionamento. A UBS 1 da Asa Sul fica na SGAS 612. A UBS 2 de Ceilândia fica na QNN 15. Atendimento de segunda a sexta, das 7h às 19h.
+Fonte: https://dados.df.gov.br/dataset/ubs-df-lista
+
+[DADOS_ABERTOS] Estoque de Medicamentos - Farmácia de Alto Custo
+A Farmácia de Alto Custo (CEAF) possui disponibilidade de medicamentos especializados, insulina e imunossupressores. A retirada exige receita médica original e documento de identidade.
+Fonte: https://dados.df.gov.br/dataset/estoque-farmacia-alto-custo
+
+[DADOS_ABERTOS] Dados Epidemiológicos - Doenças e Dengue
+Informações sobre sintomas e focos. Sintomas comuns da dengue incluem febre alta, dores musculares e manchas vermelhas. O fumacê está sendo aplicado semanalmente nas regiões com maior incidência.
+Fonte: https://dados.df.gov.br/dataset/casos-dengue-df
+
