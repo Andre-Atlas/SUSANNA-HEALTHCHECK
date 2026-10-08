@@ -4,12 +4,20 @@ import React, { useState } from 'react';
 import { MessageBubble } from '@/components/Chat/MessageBubble';
 import { Info } from 'lucide-react';
 
+interface Citation {
+  ref: number;
+  title: string;
+  url?: string | null;
+}
+
 interface ChatMessage {
   text: string;
   isUser: boolean;
   isBlocked?: boolean;
   isWarning?: boolean;
+  isEmergency?: boolean;
   source?: { title: string; url?: string };
+  citations?: Citation[];
 }
 
 export default function ChatPage() {
@@ -73,8 +81,10 @@ export default function ChatPage() {
                   newMsgs[newMsgs.length - 1] = {
                     ...lastMsg,
                     isBlocked: data.is_blocked,
-                    isWarning: !data.is_blocked && !data.source,
-                    source: data.source ? { title: data.source } : undefined
+                    isEmergency: data.status === 'emergency',
+                    isWarning: !data.is_blocked && !data.source && data.status !== 'emergency',
+                    source: data.source ? { title: data.source } : undefined,
+                    citations: Array.isArray(data.citations) ? data.citations : undefined
                   };
                   return newMsgs;
                 });
