@@ -56,27 +56,82 @@ def main():
 
         pipeline.fit(X_train, y_train)
 
-        # Avaliação
+        # Avaliação no conjunto de teste independente (Hold-Out)
         preds = pipeline.predict(X_test)
-        f1 = f1_score(y_test, preds)
+        probas = pipeline.predict_proba(X_test)[:, 1]
         
+        from sklearn.metrics import accuracy_score, precision_score, recall_score, roc_auc_score, confusion_matrix
+        from sklearn.model_selection import StratifiedKFold, cross_validate
+
+        acc = accuracy_score(y_test, preds)
+        prec = precision_score(y_test, preds)
+        rec = recall_score(y_test, preds)
+        f1 = f1_score(y_test, preds)
+        auc = roc_auc_score(y_test, probas)
+        tn, fp, fn, tp = confusion_matrix(y_test, preds).ravel()
+
+        # Validação Cruzada Estratificada (5 Folds) para estabilidade
+        cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+        cv_scores = cross_validate(
+            pipeline, df["text"], df["target"], cv=cv,
+            scoring=["accuracy", "precision", "recall", "f1"]
+        )
+
         logger.info("\n%s", classification_report(y_test, preds, target_names=["ADMIN", "CLINICAL"]))
+        logger.info("Test Metrics: Acc=%.3f, Prec=%.3f, Rec=%.3f, F1=%.3f, AUC=%.3f", acc, prec, rec, f1, auc)
+        logger.info("5-Fold CV F1: %.3f (+/- %.3f)", cv_scores["test_f1"].mean(), cv_scores["test_f1"].std())
 
         # Exportação direta em .pkl para uso autônomo e entregável
         import joblib
         pkl_path = ROOT / "data" / "guardrail_model.pkl"
         joblib.dump(pipeline, pkl_path)
-        logger.info("Modelo serializado exportado com sucesso em: %s", pkl_path)
+        
+        # Cópia para raiz models/
+        root_models_path = ROOT.parent / "models" / "guardrail_model.pkl"
+        root_models_path.parent.mkdir(parents=True, exist_ok=True)
+        joblib.dump(pipeline, root_models_path)
+        logger.info("Modelo serializado exportado com sucesso em: %s e %s", pkl_path, root_models_path)
 
-        # Logs no MLflow
-        mlflow.log_param("model_type", "LogisticRegression")
-        mlflow.log_param("vectorizer", "TfidfVectorizer")
-        mlflow.log_metric("f1_score", f1)
+        # Logs detalhados no MLflow
+        mlflow.log_params({
+            "model_type": "LogisticRegression",
+            "vectorizer": "TfidfVectorizer",
+            "ngram_range": "(1, 2)",
+            "class_weight": "balanced",
+            "cv_folds": 5,
+            "train_samples": len(X_train),
+            "test_samples": len(X_test),
+            "random_state": 42
+        })
+        
+        mlflow.log_metrics({
+            "test_accuracy": acc,
+            "test_precision": prec,
+            "test_recall_clinical": rec,
+            "test_f1_score": f1,
+            "test_roc_auc": auc,
+            "confusion_tp": int(tp),
+            "confusion_tn": int(tn),
+            "confusion_fp": int(fp),
+            "confusion_fn": int(fn),
+            "cv_f1_mean": float(cv_scores["test_f1"].mean()),
+            "cv_f1_std": float(cv_scores["test_f1"].std()),
+            "cv_accuracy_mean": float(cv_scores["test_accuracy"].mean()),
+            "cv_recall_mean": float(cv_scores["test_recall"].mean()),
+            "cv_precision_mean": float(cv_scores["test_precision"].mean())
+        })
+
+        mlflow.set_tags({
+            "project": "susana-rag",
+            "component": "guardrails",
+            "task": "clinical-intent-classification"
+        })
+
         mlflow.sklearn.log_model(pipeline, "model", registered_model_name="susana-guardrail")
 
         # Promotion Gate (Fase 4 do MLE Workflow)
-        if f1 >= 0.0:
-            logger.info("Modelo APROVADO (F1: %.3f). Promovendo para @champion.", f1)
+        if cv_scores["test_f1"].mean() >= 0.70:
+            logger.info("Modelo APROVADO no Gate (CV F1: %.3f). Promovendo para @champion.", cv_scores["test_f1"].mean())
             client = mlflow.client.MlflowClient()
             model_name = "susana-guardrail"
             
@@ -88,7 +143,7 @@ def main():
             client.set_registered_model_alias(model_name, "champion", str(latest_version))
             logger.info("Alias @champion atribuído à versão %s", latest_version)
         else:
-            logger.warning("Modelo REPROVADO (F1: %.3f). Não promovido.", f1)
+            logger.warning("Modelo REPROVADO no Gate (CV F1: %.3f). Não promovido.", cv_scores["test_f1"].mean())
 
 if __name__ == "__main__":
     main()
