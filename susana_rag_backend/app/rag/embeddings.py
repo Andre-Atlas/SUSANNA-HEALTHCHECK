@@ -34,12 +34,13 @@ class Embedder:
         model_max_positions = self._model[0].auto_model.config.max_position_embeddings
         self._model.max_seq_length = min(max_seq_length, model_max_positions)
         self._q_prefix, self._p_prefix = _PREFIXES.get(_family(self.model_name), ("", ""))
-        self.dim = int(self._model.get_embedding_dimension() or 0)
+        dim_getter = getattr(self._model, "get_sentence_embedding_dimension", getattr(self._model, "get_embedding_dimension", None))
+        self.dim = int(dim_getter() or 0) if dim_getter else 384
         logger.info("Embedder carregado: %s (dim=%d)", self.model_name, self.dim)
 
     def _encode(self, texts: Sequence[str]) -> np.ndarray:
         return np.asarray(
-            self._model.encode(list(texts), normalize_embeddings=True, show_progress_bar=False),
+            self._model.encode(list(texts), batch_size=32, normalize_embeddings=True, show_progress_bar=False),
             dtype=np.float32,
         )
 

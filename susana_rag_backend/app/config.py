@@ -29,7 +29,11 @@ class Settings(BaseSettings):
     similarity_threshold: float = 0.75
     top_k: int = 3
     docs_dir: Path = BACKEND_DIR / "data" / "corpus"
-    project_corpus_dir: Path = BACKEND_DIR.parent / "CORPUS"
+    project_corpus_dir: Path = (
+        (BACKEND_DIR.parent / "CORPUS" / "Arquivos")
+        if (BACKEND_DIR.parent / "CORPUS" / "Arquivos").exists()
+        else (BACKEND_DIR.parent / "CORPUS")
+    )
     legacy_docs_file: Path = BACKEND_DIR / "data" / "sus_docs.txt"
     chroma_dir: Path = BACKEND_DIR / "data" / "chroma_db"
 

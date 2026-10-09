@@ -30,7 +30,7 @@ CLINICAL_PATTERNS: list[tuple[str, re.Pattern]] = [
 ]
 
 ADMINISTRATIVE_OVERRIDES = re.compile(
-    r"\b(horário|endereço|localização|telefone|funciona(mento)?|agenda(mento|r)?|marcar (consulta|exame)|onde (fica|é|tem|posso)|lista de (espera|medicamentos)|retirar (medicamento|remédio)|farmácia (do sus|popular|básica)|cartão (do sus|nacional)|calendário (de vacinação|vacinal)|campanha de vacinação)\b", re.I
+    r"\b(horário|endereço|localização|telefone|funciona(mento)?|agenda(mento|r)?|marcar (consulta|exame)|onde (fica|é|tem|posso)|lista de (espera|medicamentos)|retirar (medicamento|remédio)|farmácia (do sus|popular|básica)|cartão (do sus|nacional)|calendário (de vacinação|vacinal)|campanha de vacinação|vacina(s|ção)?|vacinar|imunização|samu|192)\b", re.I
 )
 
 
