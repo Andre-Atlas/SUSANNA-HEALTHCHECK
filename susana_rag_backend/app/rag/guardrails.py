@@ -54,8 +54,18 @@ class GuardrailsClassifier:
             try:
                 logger.info("Carregando modelo guardrail de %s", self.settings.guardrail_model_uri)
                 self.ml_model = mlflow.sklearn.load_model(self.settings.guardrail_model_uri)
-                logger.info("Modelo ML Guardrail carregado com sucesso.")
+                logger.info("Modelo ML Guardrail carregado com sucesso via MLflow.")
             except Exception as e:
+                # Fallback: tentar carregar diretamente de arquivo .pkl local
+                import joblib
+                pkl_fallback = self.settings.docs_dir.parent / "guardrail_model.pkl"
+                if pkl_fallback.exists():
+                    try:
+                        self.ml_model = joblib.load(pkl_fallback)
+                        logger.info("Modelo ML Guardrail carregado com sucesso do arquivo .pkl local: %s", pkl_fallback)
+                        return
+                    except Exception as pkl_err:
+                        logger.warning("Falha ao carregar .pkl local: %s", pkl_err)
                 logger.warning("Falha ao carregar modelo ML (caindo para Regex): %s", e)
 
     def is_clinical(self, message: str) -> bool:
@@ -73,14 +83,13 @@ class GuardrailsClassifier:
                 # O pipeline prediz 1 (CLINICAL) ou 0 (ADMIN)
                 # O proba no index 1 é a chance de ser CLINICAL
                 probs = self.ml_model.predict_proba([message])[0]
-                if probs[1] > 0.65:
+                if probs[1] >= 0.50:
                     logger.info("BLOCKED by ML Classifier (p=%.2f): %s", probs[1], message[:80])
                     return True
-                return False
             except Exception as e:
                 logger.error("Erro na predição ML (usando regex): %s", e)
 
-        # Fallback Regex
+        # Camada 2 (Defesa em profundidade): Verificação Regex
         for rule_name, pattern in CLINICAL_PATTERNS:
             if pattern.search(message):
                 logger.info("BLOCKED by Regex rule '%s': %s", rule_name, message[:80])

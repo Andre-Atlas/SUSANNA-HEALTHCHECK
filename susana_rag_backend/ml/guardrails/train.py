@@ -34,8 +34,12 @@ def main():
     logger.info("Carregando dataset de %s", DATA_PATH)
     df = pd.read_csv(DATA_PATH)
 
-    # Label encoding: CLINICAL = 1, ADMINISTRATIVE = 0
-    df["target"] = (df["label"] == "CLINICAL").astype(int)
+    # Label encoding robusto: CLINICAL / 1 = 1, ADMINISTRATIVE / 0 = 0
+    label_map = {"CLINICAL": 1, "1": 1, 1: 1, "ADMINISTRATIVE": 0, "0": 0, 0: 0}
+    unknown_labels = set(df["label"].unique()) - set(label_map.keys())
+    if unknown_labels:
+        raise ValueError(f"Rótulos desconhecidos encontrados no dataset: {unknown_labels}")
+    df["target"] = df["label"].map(label_map).astype(int)
 
     X_train, X_test, y_train, y_test = train_test_split(
         df["text"], df["target"], test_size=0.25, random_state=42, stratify=df["target"]
@@ -46,7 +50,7 @@ def main():
 
         # Pipeline: TF-IDF -> Logistic Regression
         pipeline = Pipeline([
-            ("tfidf", TfidfVectorizer(ngram_range=(1, 2), min_df=2)),
+            ("tfidf", TfidfVectorizer(ngram_range=(1, 2))),
             ("clf", LogisticRegression(class_weight="balanced", random_state=42))
         ])
 
@@ -57,6 +61,12 @@ def main():
         f1 = f1_score(y_test, preds)
         
         logger.info("\n%s", classification_report(y_test, preds, target_names=["ADMIN", "CLINICAL"]))
+
+        # Exportação direta em .pkl para uso autônomo e entregável
+        import joblib
+        pkl_path = ROOT / "data" / "guardrail_model.pkl"
+        joblib.dump(pipeline, pkl_path)
+        logger.info("Modelo serializado exportado com sucesso em: %s", pkl_path)
 
         # Logs no MLflow
         mlflow.log_param("model_type", "LogisticRegression")
