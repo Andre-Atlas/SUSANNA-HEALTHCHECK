@@ -192,7 +192,7 @@ Além do guardrail, o MLflow mantém o experimento ativo `susana-rag` (ID: `1`),
 
 ## 5. Principais Desafios Enfrentados e a Pivotação do Projeto
 
-A trajetória de concepção e engenharia da assistente Susana foi marcada por encruzilhadas conceituais e desafios práticos profundos, que exigiram da equipe maturidade técnica, flexibilidade analítica e constante validação com o ecossistema real de saúde pública.
+A trajetória de concepção e engenharia da assistente Susana foi marcada por encruzilhadas conceituais e desafios práticos profundos, que exigiram da nossa equipe maturidade técnica, flexibilidade analítica e constante validação com o ecossistema real de saúde pública.
 
 ### 5.1 O Dilema das Fontes de Dados e o Papel Clarificador da Entrevista com o Sanitarista
 No início do projeto, a equipe enfrentou uma paralisia de decisão substancial diante da vastidão e heterogeneidade dos dados de saúde pública:
@@ -203,10 +203,10 @@ No início do projeto, a equipe enfrentou uma paralisia de decisão substancial 
   2. *Definição Cirúrgica do Corpus Útil:* A partir desse alinhamento, a equipe pôde selecionar exclusivamente fontes com utilidade prática comprovada: a Relação de Medicamentos do DF (REME-DF 2025), dados georreferenciados oficiais das UBS, UPAs, CAPS e Policlínicas, cartilhas de Práticas Integrativas em Saúde (PIS) e o FAQ estruturado do aplicativo *Meu SUS Digital*.
 
 ### 5.2 A Mudança Estratégica de Rumo: De Extensão de Checagem Factual para Chatbot Integrado
-O ponto de inflexão mais crítico de todo o ciclo de vida do projeto foi a mudança radical do seu produto final (pivotação arquitetural):
-* **A Ideia Inicial (Extensão de Navegador para Fact-Checking):** Originalmente, o projeto nasceu com a premissa de desenvolver uma extensão para navegadores web. O fluxo previsto permitia ao usuário selecionar trechos de texto em páginas da internet (redes sociais, portais de notícias ou blogs) para checagem factual de saúde. O sistema identificaria se a alegação continha traços de veracidade ou desinformação sem emitir um aval final ou julgamento taxativo — seu objetivo era fornecer fontes oficiais confiáveis para contextualizar a informação e estimular o pensamento crítico do internauta.
+O ponto de inflexão mais crítico de todo o ciclo de vida do projeto foi a mudança radical do nosso produto final (pivotação arquitetural):
+* **A Ideia Inicial (Extensão de Navegador para Fact-Checking):** Originalmente, o projeto nasceu com a premissa de desenvolver uma extensão para navegadores web. O fluxo previsto permitia ao usuário selecionar trechos de texto em páginas da internet (redes sociais, portais de notícias ou blogs) para checagem factual de saúde. O sistema identificaria se a alegação continha traços de veracidade ou desinformação sem emitir um aval final ou julgamento taxativo, o  objetivo era fornecer fontes oficiais confiáveis para contextualizar a informação e estimular o pensamento crítico do internauta.
 * **A Decisão de Pivotar:** Embora a proposta fosse relevante, a equipe identificou gargalos expressivos de adoção e impacto:
-  1. *Acessibilidade do Público-Alvo:* A população que mais depende do SUS acessa serviços digitais majoritariamente por smartphones e dispositivos móveis, raramente consumindo notícias de saúde via desktop com extensões ativas de navegador.
+  1. *Acessibilidade do Público-Alvo:* A população que mais depende do SUS acessa serviços digitais majoritariamente por smartphones e dispositivos móveis. A proposta de um chat atende melhor o público alvo final.
   2. *Utilidade Direta e Valor Agregado:* Concluiu-se que transformar a solução em um **chatbot interativo** proporcionaria uma aplicabilidade incomparavelmente maior no cotidiano do cidadão. Uma assistente conversacional se encaixa de forma natural e sinérgica como uma funcionalidade central dentro de sistemas governamentais já estabelecidos, como o **Meu SUS Digital**.
 * **Preservação do Core Tecnológico:** A tecnologia central concebida — a combinação entre **Geração Aumentada por Recuperação (RAG)** e **Modelos de Linguagem de Grande Porte (LLMs)** — foi integralmente mantida. Mudou-se apenas o meio de interação: em vez de um consumo passivo de texto em abas do navegador, passou-se a uma assistente ativa, contextual e responsiva.
 * **O Maior Desafio Técnico do Projeto:** Essa pivotação representou a transição mais desafiadora da equipe, pois demandou reconstruir a dinâmica conversacional, gerenciar memória de diálogo, projetar roteadores de intenção em tempo real e, acima de tudo, erguer guardrails rigorosos de segurança para impedir que a assistente emitisse pareceres clínicos não autorizados.
@@ -214,14 +214,14 @@ O ponto de inflexão mais crítico de todo o ciclo de vida do projeto foi a muda
 ### 5.3 O Desafio da Coleta, Limpeza e Curadoria dos Dados da SES-DF
 Mesmo após a delimitação do escopo com o sanitarista, a etapa de ingestão de dados da Secretaria de Saúde do Distrito Federal impôs obstáculos práticos consideráveis:
 * Formatos despadronizados entre diferentes regiões administrativas (endereços com abreviações heterogêneas, telefones descontinuados e ausência de metadados padronizados);
-* Necessidade de desenvolver rotinas de extração automatizada para converter páginas governamentais complexas em arquivos JSON estruturados por unidade de saúde;
+* Necessidade de desenvolver rotinas de extração automatizada para converter páginas governamentais complexas, cartilhas e PDFs em arquivos JSON estruturados por unidade de saúde;
 * Tratamento de codificação de caracteres e normalização fonética/geográfica, essencial para que o modelo de embeddings não sofresse perda de acurácia com termos regionais de Brasília (ex: "Asa Sul", "Gama", "Ceilândia", "Taguatinga").
 
 ---
 
 ## 6. Aprendizados, Lições Adquiridas e Engenharia de Requisitos para Inteligência Artificial
 
-A jornada de desenvolvimento da Susana proporcionou um amadurecimento multidisciplinar à equipe, consolidando pontes entre ciência de dados, saúde pública e engenharia de software avançada.
+A jornada de desenvolvimento da Susana proporcionou um amadurecimento multidisciplinar à equipe, consolidando pontes entre ciência de dados, saúde pública e engenharia de IA.
 
 ### 6.1 Da Análise de Dados à Compreensão Humanizada do Domínio
 O primeiro grande aprendizado foi constatar que, em sistemas de IA voltados a serviços públicos essenciais, a sofisticação do algoritmo é inútil sem a qualidade e a sensibilidade humana sobre os dados (*Data-Centric AI*). Compreender a diferença entre uma UBS (porta de entrada, preventiva) e uma UPA (emergência 24h) não era mero detalhe de negócio: era a fronteira entre uma resposta que salva tempo e orienta o cidadão e uma orientação desastrosa que poderia sobrecarregar o pronto-socorro hospitalar.
@@ -264,7 +264,7 @@ A complexidade de operar um pipeline RAG defensivo trouxe à tona uma classe de 
 * **Privacidade e Minimização de Dados (LGPD):** Bloqueio à retenção de dados sensíveis de saúde ou documentos pessoais que o cidadão insira espontaneamente durante a conversa.
 
 ### 6.5 A Natureza Dinâmica da IA: Mudança de Comportamento sem Alteração de Código
-Talvez a lição mais transformadora para a equipe tenha sido a percepção da volatilidade operacional de sistemas com IA:
+Talvez a lição mais importante para a nossa equipe tenha sido a percepção da volatilidade operacional de sistemas com IA:
 * No desenvolvimento de software tradicional, o sistema só altera seu comportamento se uma linha de código for modificada, compilada e implantada.
 * Em um ecossistema com IA, **o comportamento do sistema pode se transformar profundamente sem que uma única linha de código-fonte seja alterada**. Uma simples atualização no modelo base (ex: um patch na versão do Llama), uma reindexação de documentos com pesos diferentes no ChromaDB ou uma modificação sutil de duas palavras no *system prompt* pode alterar o estilo, a tolerância de recusa ou a acurácia de recuperação do sistema.
 * Essa característica consolidou na equipe a urgência de manter **avaliação e monitoramento contínuos (MLOps e LLMOps)**: o pipeline necessita de testes de regressão automatizados contra datasets de validação a cada mudança de modelo, de dados ou de prompt, garantindo que a assistente nunca regrida em segurança, acurácia ou conformidade legal.
@@ -272,7 +272,7 @@ Talvez a lição mais transformadora para a equipe tenha sido a percepção da v
 ---
 
 ## 7. Conclusão e Próximos Passos
-A arquitetura da Susana transcende o simples conceito de "chatbot de IA", consolidando-se como um pipeline RAG defensivo de alta disponibilidade e governança estrita. A trajetória do projeto — desde a superação das incertezas sobre dados através da mentoria com o sanitarista até a pivotação estratégica de extensão de navegador para assistente conversacional — comprovou o valor do desenvolvimento orientado por especificações (SDD) e da engenharia rigorosa de requisitos para inteligência artificial.
+A arquitetura da Susana transcende o simples conceito de "chatbot de IA", consolidando-se como um pipeline RAG defensivo de alta disponibilidade e governança estrita. A trajetória do projeto, desde a superação das incertezas sobre dados através da mentoria com o sanitarista até a pivotação estratégica de extensão de navegador para assistente conversacional, comprovou o valor do desenvolvimento orientado por especificações (SDD) e da engenharia rigorosa de requisitos para inteligência artificial.
 
 Com um balanceamento sinérgico entre:
 1. **Regressão Logística e TF-IDF** para guardrail semântico com latência de 0.2ms;
