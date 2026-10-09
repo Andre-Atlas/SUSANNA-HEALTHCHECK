@@ -1,0 +1,140 @@
+{
+  "schema_version": "1.0",
+  "document_id": "1afa100074d22111",
+  "metadata": {
+    "url": "https://info.saude.df.gov.br/busca-saude-ubs/",
+    "url_final": "https://info.saude.df.gov.br/busca-saude-ubs/",
+    "url_canonica": "https://info.saude.df.gov.br/busca-saude-ubs/",
+    "titulo": "Busca Saúde UBS -",
+    "descricao": "Encontre a UBS mais próxima de você no Portal Infosaúde.",
+    "autor": null,
+    "data_publicacao": "2024-05-11T16:13:42+00:00",
+    "idioma": "pt-BR",
+    "site_nome": null,
+    "categorias": [],
+    "palavras_chave": [],
+    "encoding": "UTF-8",
+    "data_extracao": "2026-10-09T19:04:16.603504Z"
+  },
+  "conteudo": {
+    "titulo_principal": "Busca Saúde UBS -",
+    "secoes": [
+      {
+        "titulo": null,
+        "nivel": null,
+        "conteudo": [
+          {
+            "tipo": "paragrafo",
+            "texto": "Infosaúde > Busca Saúde"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "A Unidade Básica de Saúde (UBS) é o estabelecimento da Atenção Primária, responsável por cuidar de você e da sua família. Conhecida anteriormente como Centro de Saúde, Posto de Saúde, Clínica da Família ou Postinho, a UBS é a principal porta de entrada na Rede de Atenção à Saúde do SUS."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "As equipes das Unidades Básicas de Saúde são formadas por médicos, enfermeiros, técnicos de enfermagem e agentes comunitários de saúde, e também podem ser compostas por dentistas e técnicos em higiene bucal. Estes profissionais estão organizados em equipes de Saúde da Família (eSF) e equipes de Saúde Bucal (eSB) e oferecem diferentes tipos de atendimentos e procedimentos."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "As equipes estão aptas a atender bebês, crianças, adolescentes, adultos e idosos, ou seja, o acompanhamento com a mesma equipe se dá ao longo das diferentes fases da vida e você e sua família terão sempre uma equipe com quem contar."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Algumas unidades contam também com equipe do Núcleo Ampliado de Saúde da Família e Atenção Básica (NASF-AB), que pode ser formada por psicóloga(o), fisioterapeuta, nutricionista, fonoaudióloga(o), farmacêutica(o), terapeuta ocupacional, assistente social e outros profissionais de saúde."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Todo cidadão tem uma UBS de referência de acordo com o endereço de residência. Você pode descobrir qual é a sua Unidade Básica de Saúde de referência, clicando aqui."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Nas Unidades Básicas de Saúde você conta com as seguintes ações de promoção, prevenção e tratamento:"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "O acolhimento em qualquer Unidade Básica de Saúde está garantido a todo cidadão. Ao chegar na UBS, você será acolhido por um profissional da equipe que avaliará o tipo de atendimento que pode ser imediato (casos agudos e de maior gravidade), vacinação, agendamento ou encaminhamento à unidade de saúde responsável pelo território da sua residência."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Quando houver a necessidade de consultas, exames ou atendimentos com profissionais que não atendem na UBS, como por exemplo, cardiologista, oftalmologista, ortopedista, neurologista, psiquiatra, o profissional da Unidade Básica de Saúde faz a solicitação do agendamento dos atendimentos, via sistema de regulação, que serão realizados em outros estabelecimentos de saúde."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "IMPORTANTE: Para os serviços de vacinação, farmácia básica e em situações de urgência, o cidadão poderá buscar o atendimento em qualquer unidade, independente do endereço residencial."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "IMPORTANTE: O acolhimento não pode ser negado ao cidadão por falta de documentação."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Ao ser cadastrado é muito importante que o cidadão solicite o correto preenchimento do cadastro para pessoas em situação de vulnerabilidade nos Sistemas de Informação da SES/DF, como por exemplo:"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "A qualidade das informações em nossos sistemas são fundamentais para a promoção de políticas de equidade e ampliação do acesso à saúde aos segmentos da população mais vulnerável."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Para mais informações sobre as Unidades Básicas de Saúde do Distrito Federal acesse aqui."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Secretaria de Saúde do Distrito Federal Desenvolvido pela Diretoria de Gestão de Informações Estratégicas – DGIE/SETIS/SES – DF | 2026 Infosaúde | CIEGES-DF"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Cada cidadão tem uma Unidade Básica de Saúde de referência para atendimento e acompanhamento em saúde a partir do seu endereço residencial. Digite o seu endereço ou CEP residencial no campo de pesquisa para encontrar a sua UBS de referência."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Atenção! Para os serviços de vacinação, farmácia básica e em situações de urgência o cidadão poderá buscar o atendimento em qualquer unidade, independente do endereço de moradia."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Este espaço é para você que deseja compreender mais a fundo o funcionamento da Lei Geral de Proteção de Dados e como ela será aplicada nesta secretaria."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Aqui, você terá acesso a todos os tratamentos e medidas de segurança que usamos para proteger seus dados pessoais."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "A Lei Geral de Proteção de Dados (Lei n° 13.709/2018), também conhecida como LGPD, tem o objetivo de defender a nossa privacidade e liberdade, zelando por nossos dados pessoais, sejam eles físicos ou eletrônicos"
+          }
+        ]
+      }
+    ],
+    "texto_plano": "Infosaúde > Busca Saúde\n\nA Unidade Básica de Saúde (UBS) é o estabelecimento da Atenção Primária, responsável por cuidar de você e da sua família. Conhecida anteriormente como Centro de Saúde, Posto de Saúde, Clínica da Família ou Postinho, a UBS é a principal porta de entrada na Rede de Atenção à Saúde do SUS.\n\nAs equipes das Unidades Básicas de Saúde são formadas por médicos, enfermeiros, técnicos de enfermagem e agentes comunitários de saúde, e também podem ser compostas por dentistas e técnicos em higiene bucal. Estes profissionais estão organizados em equipes de Saúde da Família (eSF) e equipes de Saúde Bucal (eSB) e oferecem diferentes tipos de atendimentos e procedimentos.\n\nAs equipes estão aptas a atender bebês, crianças, adolescentes, adultos e idosos, ou seja, o acompanhamento com a mesma equipe se dá ao longo das diferentes fases da vida e você e sua família terão sempre uma equipe com quem contar.\n\nAlgumas unidades contam também com equipe do Núcleo Ampliado de Saúde da Família e Atenção Básica (NASF-AB), que pode ser formada por psicóloga(o), fisioterapeuta, nutricionista, fonoaudióloga(o), farmacêutica(o), terapeuta ocupacional, assistente social e outros profissionais de saúde.\n\nTodo cidadão tem uma UBS de referência de acordo com o endereço de residência. Você pode descobrir qual é a sua Unidade Básica de Saúde de referência, clicando aqui.\n\nNas Unidades Básicas de Saúde você conta com as seguintes ações de promoção, prevenção e tratamento:\n\nO acolhimento em qualquer Unidade Básica de Saúde está garantido a todo cidadão. Ao chegar na UBS, você será acolhido por um profissional da equipe que avaliará o tipo de atendimento que pode ser imediato (casos agudos e de maior gravidade), vacinação, agendamento ou encaminhamento à unidade de saúde responsável pelo território da sua residência.\n\nQuando houver a necessidade de consultas, exames ou atendimentos com profissionais que não atendem na UBS, como por exemplo, cardiologista, oftalmologista, ortopedista, neurologista, psiquiatra, o profissional da Unidade Básica de Saúde faz a solicitação do agendamento dos atendimentos, via sistema de regulação, que serão realizados em outros estabelecimentos de saúde.\n\nIMPORTANTE: Para os serviços de vacinação, farmácia básica e em situações de urgência, o cidadão poderá buscar o atendimento em qualquer unidade, independente do endereço residencial.\n\nIMPORTANTE: O acolhimento não pode ser negado ao cidadão por falta de documentação.\n\nAo ser cadastrado é muito importante que o cidadão solicite o correto preenchimento do cadastro para pessoas em situação de vulnerabilidade nos Sistemas de Informação da SES/DF, como por exemplo:\n\nA qualidade das informações em nossos sistemas são fundamentais para a promoção de políticas de equidade e ampliação do acesso à saúde aos segmentos da população mais vulnerável.\n\nPara mais informações sobre as Unidades Básicas de Saúde do Distrito Federal acesse aqui.\n\nSecretaria de Saúde do Distrito Federal Desenvolvido pela Diretoria de Gestão de Informações Estratégicas – DGIE/SETIS/SES – DF | 2026 Infosaúde | CIEGES-DF\n\nCada cidadão tem uma Unidade Básica de Saúde de referência para atendimento e acompanhamento em saúde a partir do seu endereço residencial. Digite o seu endereço ou CEP residencial no campo de pesquisa para encontrar a sua UBS de referência.\n\nAtenção! Para os serviços de vacinação, farmácia básica e em situações de urgência o cidadão poderá buscar o atendimento em qualquer unidade, independente do endereço de moradia.\n\nEste espaço é para você que deseja compreender mais a fundo o funcionamento da Lei Geral de Proteção de Dados e como ela será aplicada nesta secretaria.\n\nAqui, você terá acesso a todos os tratamentos e medidas de segurança que usamos para proteger seus dados pessoais.\n\nA Lei Geral de Proteção de Dados (Lei n° 13.709/2018), também conhecida como LGPD, tem o objetivo de defender a nossa privacidade e liberdade, zelando por nossos dados pessoais, sejam eles físicos ou eletrônicos"
+  },
+  "recursos": {
+    "links": [],
+    "imagens": []
+  },
+  "extracao": {
+    "metodo": "trafilatura_xml",
+    "metodo_aquisicao": "requests",
+    "conteudo_encontrado": true,
+    "status_http": 200,
+    "hash_conteudo": "3dfa8a96c80133ee28873c7f8bdb0e2956094be185e753f4c4c23e97d88d2510",
+    "observacoes": [],
+    "qualidade": {
+      "pontuacao": 100,
+      "nivel": "alto",
+      "fatores": [
+        "conteudo_principal_encontrado",
+        "extracao_estruturada_trafilatura"
+      ]
+    },
+    "redirecionamentos": 0,
+    "tempo_download_s": 6.092,
+    "estatisticas": {
+      "caracteres": 4005,
+      "palavras": 620,
+      "secoes": 1,
+      "links": 0,
+      "imagens": 0
+    }
+  }
+}

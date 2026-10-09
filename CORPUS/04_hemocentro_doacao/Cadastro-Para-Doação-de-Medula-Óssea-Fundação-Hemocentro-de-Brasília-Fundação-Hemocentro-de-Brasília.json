@@ -1,0 +1,303 @@
+{
+  "schema_version": "1.0",
+  "document_id": "54315c5d4313eb2c",
+  "metadata": {
+    "url": "https://fhb.df.gov.br/doacao-de-medula-ossea/",
+    "url_final": "https://fhb.df.gov.br/doacao-de-medula-ossea/",
+    "url_canonica": "https://fhb.df.gov.br/doacao-de-medula-ossea",
+    "titulo": "Cadastro Para Doação de Medula Óssea - Fundação Hemocentro de Brasília - Fundação Hemocentro de Brasília",
+    "descricao": null,
+    "autor": null,
+    "data_publicacao": null,
+    "idioma": "pt-BR",
+    "site_nome": "Fundação Hemocentro de Brasília",
+    "categorias": [],
+    "palavras_chave": [],
+    "encoding": "UTF-8",
+    "data_extracao": "2026-10-09T18:59:13.286358Z"
+  },
+  "conteudo": {
+    "titulo_principal": "Cadastro Para Doação de Medula Óssea - Fundação Hemocentro de Brasília - Fundação Hemocentro de Brasília",
+    "secoes": [
+      {
+        "titulo": "Cadastro Para Doação de Medula Óssea",
+        "nivel": 3,
+        "conteudo": [
+          {
+            "tipo": "paragrafo",
+            "texto": "⚠️ Atenção — concursos públicos: Atestados ou laudos que comprovem doação de medula óssea referem-se a quem passou pelo processo completo de doação para transplante, não ao simples cadastro no Redome. O Hemocentro de Brasília não emite esse documento para pessoas apenas cadastradas."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Quero Doar — Medula Óssea"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Ao se cadastrar, você entra para o Registro Nacional de Doadores (Redome) e pode salvar a vida de alguém que aguarda um transplante compatível. O processo começa aqui, com uma simples coleta de sangue."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "01"
+          }
+        ]
+      },
+      {
+        "titulo": "Quem pode se cadastrar",
+        "nivel": 2,
+        "conteudo": [
+          {
+            "tipo": "paragrafo",
+            "texto": "✔ Pode se cadastrar"
+          },
+          {
+            "tipo": "lista",
+            "itens": [
+              "Ter entre 18 e 35 anos (até 35 anos, 8 meses e 29 dias)",
+              "Estar em bom estado geral de saúde",
+              "Não ter doença infecciosa ou incapacitante"
+            ]
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Por que até 35 anos para o cadastro?"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "O limite existe porque o processo de busca e confirmação de compatibilidade pode levar anos. Ao restringir o cadastro a doadores mais jovens, o Redome garante que, quando um paciente compatível for encontrado, o doador ainda esteja dentro da faixa etária ideal para a doação — que vai até os 60 anos. Ou seja: cadastro até 35 anos, doação possível até os 60."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "✖ Impedimentos"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Algumas condições de saúde impedem o cadastro. Consulte a lista completa no site do Redome antes de comparecer."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "É uma coisa tão distante, que a gente só percebe a importância quando acontece na família da gente. Quem puder doar, faça, porque salva uma vida."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Nara Rodrigues — mãe de Miguel, receptor de medula óssea"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "02"
+          }
+        ]
+      },
+      {
+        "titulo": "Como fazer o cadastro",
+        "nivel": 2,
+        "conteudo": [
+          {
+            "tipo": "paragrafo",
+            "texto": "O processo é simples e rápido. Siga os passos abaixo:"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Agende pelo site"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Acesse agenda.df.gov.br e marque seu atendimento individual. O agendamento não é feito por telefone."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Compareça no dia e horário agendados"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Leve um documento de identidade oficial com foto. Nenhum outro documento é exigido."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Coleta de sangue e exame HLA"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Uma pequena amostra de sangue é coletada para o exame de histocompatibilidade (HLA), que mapeia suas características genéticas."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Inclusão no Redome"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Seus dados genéticos e cadastrais são enviados ao Registro Nacional de Doadores Voluntários de Medula Óssea (Redome) e ficam disponíveis para cruzamento com pacientes que aguardam transplante. Você permanece no registro até completar 60 anos."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Mantenha seus dados atualizados! É fundamental manter telefone e endereço atualizados no Redome para que você seja localizado caso haja um paciente compatível. Atualize pelo site redome.inca.gov.br."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "03"
+          }
+        ]
+      },
+      {
+        "titulo": "Horários e tempo de espera",
+        "nivel": 2,
+        "conteudo": [
+          {
+            "tipo": "tabela",
+            "cabecalho": [],
+            "linhas": [
+              [
+                "Atendimento 7h30 às 11h00 13h30 às 17h00 Segunda a sexta-feira, exceto feriados Agendamento prévio obrigatório Tempo estimado: do registro até o fim da coleta, aproximadamente 30 minutos.",
+                "Prioridade de atendimento Pessoas com deficiência têm prioridade de atendimento, conforme previsto em lei. Setor responsável Gerência de Registro, Orientação e Captação de Doadores"
+              ]
+            ]
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "04"
+          }
+        ]
+      },
+      {
+        "titulo": "Comprovante e carteirinha de doador",
+        "nivel": 2,
+        "conteudo": [
+          {
+            "tipo": "paragrafo",
+            "texto": "A carteira de doador de medula óssea é emitida pelo próprio Redome — não pelo Hemocentro de Brasília."
+          },
+          {
+            "tipo": "tabela",
+            "cabecalho": [],
+            "linhas": [
+              [
+                "Quando fica disponível A partir de 3 dias úteis após o cadastro no Hemocentro, você já pode acessar e baixar a carteirinha e a declaração de doador.",
+                "Como acessar Pelo aplicativo Redome — gratuito e disponível para Android e iOS. Busque por \"Redome\" na loja de aplicativos do seu celular. O app também permite atualizar seus dados cadastrais."
+              ]
+            ]
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "05"
+          }
+        ]
+      },
+      {
+        "titulo": "Como ocorre a doação de medula óssea",
+        "nivel": 2,
+        "conteudo": [
+          {
+            "tipo": "paragrafo",
+            "texto": "Importante: o Hemocentro de Brasília realiza apenas a coleta de sangue e o envio dos dados genéticos ao Redome. A doação real e o transplante não ocorrem aqui."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Após o cadastro, seus dados ficam no Redome e são cruzados continuamente com os de pacientes que aguardam transplante. Se houver compatibilidade, você será contactado pela equipe do Redome para as etapas seguintes — incluindo exames confirmatórios e, se tudo estiver certo, a doação em si."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Para entender em detalhes como a medula óssea é extraída, os tipos de procedimento e outras informações sobre o processo, acesse o site oficial do Redome:"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "06"
+          }
+        ]
+      },
+      {
+        "titulo": "Perguntas frequentes",
+        "nivel": 2,
+        "conteudo": [
+          {
+            "tipo": "tabela",
+            "cabecalho": [],
+            "linhas": [
+              [
+                "Horário de atendimento 7h30 – 11h00 13h30 – 17h00 Segunda a sexta-feira Exceto feriados | Agendamento obrigatório",
+                "Fale conosco (61) 3327-4413 (61) 3327-4447 WhatsApp: (61) 9 9136-2495 → E-mail: hemocentro@fhb.df.gov.br"
+              ]
+            ]
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Localização"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Setor Médico Hospitalar Norte (SMHN), Quadra 3, Conjunto A, Bloco 3 — Asa Norte, Brasília-DF | CEP 70.710-908"
+          }
+        ]
+      },
+      {
+        "titulo": "Pronto para salvar uma vida?",
+        "nivel": 2,
+        "conteudo": [
+          {
+            "tipo": "paragrafo",
+            "texto": "O cadastro é gratuito, voluntário e leva cerca de 30 minutos. Agende agora pelo site oficial do GDF."
+          },
+          {
+            "tipo": "tabela",
+            "cabecalho": [],
+            "linhas": [
+              [
+                "Agendar cadastro →",
+                "Saiba mais no Redome"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
+    "texto_plano": "Cadastro Para Doação de Medula Óssea\n\n⚠️ Atenção — concursos públicos: Atestados ou laudos que comprovem doação de medula óssea referem-se a quem passou pelo processo completo de doação para transplante, não ao simples cadastro no Redome. O Hemocentro de Brasília não emite esse documento para pessoas apenas cadastradas.\n\nQuero Doar — Medula Óssea\n\nAo se cadastrar, você entra para o Registro Nacional de Doadores (Redome) e pode salvar a vida de alguém que aguarda um transplante compatível. O processo começa aqui, com uma simples coleta de sangue.\n\n01\n\nQuem pode se cadastrar\n\n✔ Pode se cadastrar\n\nTer entre 18 e 35 anos (até 35 anos, 8 meses e 29 dias)\n\nEstar em bom estado geral de saúde\n\nNão ter doença infecciosa ou incapacitante\n\nPor que até 35 anos para o cadastro?\n\nO limite existe porque o processo de busca e confirmação de compatibilidade pode levar anos. Ao restringir o cadastro a doadores mais jovens, o Redome garante que, quando um paciente compatível for encontrado, o doador ainda esteja dentro da faixa etária ideal para a doação — que vai até os 60 anos. Ou seja: cadastro até 35 anos, doação possível até os 60.\n\n✖ Impedimentos\n\nAlgumas condições de saúde impedem o cadastro. Consulte a lista completa no site do Redome antes de comparecer.\n\nÉ uma coisa tão distante, que a gente só percebe a importância quando acontece na família da gente. Quem puder doar, faça, porque salva uma vida.\n\nNara Rodrigues — mãe de Miguel, receptor de medula óssea\n\n02\n\nComo fazer o cadastro\n\nO processo é simples e rápido. Siga os passos abaixo:\n\nAgende pelo site\n\nAcesse agenda.df.gov.br e marque seu atendimento individual. O agendamento não é feito por telefone.\n\nCompareça no dia e horário agendados\n\nLeve um documento de identidade oficial com foto. Nenhum outro documento é exigido.\n\nColeta de sangue e exame HLA\n\nUma pequena amostra de sangue é coletada para o exame de histocompatibilidade (HLA), que mapeia suas características genéticas.\n\nInclusão no Redome\n\nSeus dados genéticos e cadastrais são enviados ao Registro Nacional de Doadores Voluntários de Medula Óssea (Redome) e ficam disponíveis para cruzamento com pacientes que aguardam transplante. Você permanece no registro até completar 60 anos.\n\nMantenha seus dados atualizados! É fundamental manter telefone e endereço atualizados no Redome para que você seja localizado caso haja um paciente compatível. Atualize pelo site redome.inca.gov.br.\n\n03\n\nHorários e tempo de espera\n\nAtendimento 7h30 às 11h00 13h30 às 17h00 Segunda a sexta-feira, exceto feriados Agendamento prévio obrigatório Tempo estimado: do registro até o fim da coleta, aproximadamente 30 minutos. | Prioridade de atendimento Pessoas com deficiência têm prioridade de atendimento, conforme previsto em lei. Setor responsável Gerência de Registro, Orientação e Captação de Doadores\n\n04\n\nComprovante e carteirinha de doador\n\nA carteira de doador de medula óssea é emitida pelo próprio Redome — não pelo Hemocentro de Brasília.\n\nQuando fica disponível A partir de 3 dias úteis após o cadastro no Hemocentro, você já pode acessar e baixar a carteirinha e a declaração de doador. | Como acessar Pelo aplicativo Redome — gratuito e disponível para Android e iOS. Busque por \"Redome\" na loja de aplicativos do seu celular. O app também permite atualizar seus dados cadastrais.\n\n05\n\nComo ocorre a doação de medula óssea\n\nImportante: o Hemocentro de Brasília realiza apenas a coleta de sangue e o envio dos dados genéticos ao Redome. A doação real e o transplante não ocorrem aqui.\n\nApós o cadastro, seus dados ficam no Redome e são cruzados continuamente com os de pacientes que aguardam transplante. Se houver compatibilidade, você será contactado pela equipe do Redome para as etapas seguintes — incluindo exames confirmatórios e, se tudo estiver certo, a doação em si.\n\nPara entender em detalhes como a medula óssea é extraída, os tipos de procedimento e outras informações sobre o processo, acesse o site oficial do Redome:\n\n06\n\nPerguntas frequentes\n\nHorário de atendimento 7h30 – 11h00 13h30 – 17h00 Segunda a sexta-feira Exceto feriados | Agendamento obrigatório | Fale conosco (61) 3327-4413 (61) 3327-4447 WhatsApp: (61) 9 9136-2495 → E-mail: hemocentro@fhb.df.gov.br\n\nLocalização\n\nSetor Médico Hospitalar Norte (SMHN), Quadra 3, Conjunto A, Bloco 3 — Asa Norte, Brasília-DF | CEP 70.710-908\n\nPronto para salvar uma vida?\n\nO cadastro é gratuito, voluntário e leva cerca de 30 minutos. Agende agora pelo site oficial do GDF.\n\nAgendar cadastro → | Saiba mais no Redome"
+  },
+  "recursos": {
+    "links": [
+      {
+        "texto": "Agendar cadastro →",
+        "url": "https://agenda.df.gov.br"
+      },
+      {
+        "texto": "Ver lista de doenças impeditivas →",
+        "url": "http://redome.inca.gov.br/doador/doencas-impeditivas-do-cadastro-e-da-doacao/"
+      },
+      {
+        "texto": "redome.inca.gov.br",
+        "url": "http://redome.inca.gov.br/doador-atualize-seu-cadastro/"
+      },
+      {
+        "texto": "Acessar site do Redome →",
+        "url": "http://redome.inca.gov.br"
+      },
+      {
+        "texto": "WhatsApp: (61) 9 9136-2495 →",
+        "url": "https://wa.me/5561991362495"
+      }
+    ],
+    "imagens": []
+  },
+  "extracao": {
+    "metodo": "trafilatura_xml",
+    "metodo_aquisicao": "requests",
+    "conteudo_encontrado": true,
+    "status_http": 200,
+    "hash_conteudo": "9b0a6be6ae367d107469c294829fb5aeb501ed1068cacbbc47a8f68f75da2517",
+    "observacoes": [],
+    "qualidade": {
+      "pontuacao": 90,
+      "nivel": "alto",
+      "fatores": [
+        "conteudo_principal_encontrado",
+        "extracao_estruturada_trafilatura"
+      ]
+    },
+    "redirecionamentos": 0,
+    "tempo_download_s": 0.866,
+    "estatisticas": {
+      "caracteres": 4507,
+      "palavras": 724,
+      "secoes": 8,
+      "links": 5,
+      "imagens": 0
+    }
+  }
+}

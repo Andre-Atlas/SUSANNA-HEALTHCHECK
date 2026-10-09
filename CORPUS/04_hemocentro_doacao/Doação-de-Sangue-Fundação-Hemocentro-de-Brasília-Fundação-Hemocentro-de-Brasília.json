@@ -1,0 +1,369 @@
+{
+  "schema_version": "1.0",
+  "document_id": "1fdf15c832ad6f90",
+  "metadata": {
+    "url": "https://fhb.df.gov.br/doacao-de-sangue/",
+    "url_final": "https://fhb.df.gov.br/doacao-de-sangue/",
+    "url_canonica": "https://fhb.df.gov.br/doacao-de-sangue",
+    "titulo": "Doação de Sangue - Fundação Hemocentro de Brasília - Fundação Hemocentro de Brasília",
+    "descricao": null,
+    "autor": null,
+    "data_publicacao": null,
+    "idioma": "pt-BR",
+    "site_nome": "Fundação Hemocentro de Brasília",
+    "categorias": [],
+    "palavras_chave": [],
+    "encoding": "UTF-8",
+    "data_extracao": "2026-10-09T18:59:11.596814Z"
+  },
+  "conteudo": {
+    "titulo_principal": "Doação de Sangue - Fundação Hemocentro de Brasília - Fundação Hemocentro de Brasília",
+    "secoes": [
+      {
+        "titulo": "Doação de Sangue",
+        "nivel": 3,
+        "conteudo": [
+          {
+            "tipo": "paragrafo",
+            "texto": "Horário de funcionamento"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Segunda a sábado7h15 – 18h"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Domingo e feriadosFechado"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Segunda, terça e quarta têm menor tempo de espera"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Localização"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "SMHN Quadra 3, Conjunto A, Bloco 3 Asa Norte — Brasília, DF · CEP 70.710-908"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Quem pode doar"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Critérios básicos"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "16 a 69 anosMenor de 18: autorização do responsável. De 61 a 69: deve ter doado antes dos 61 anos. 70 ou mais: pode continuar quem fez 2 ou mais doações nos últimos 12 meses, com avaliação médica anual."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "A partir de 50 kg*IMC mínimo de 18,5. O vestuário é descontado na pesagem."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Boa saúde geralSem febre, sem infecção ativa. Avaliação feita na triagem no dia da doação."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Documento com fotoRG, CNH, CTPS, passaporte ou carteira profissional. Versões digitais oficiais são aceitas."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Ao menos 6h de sonoNa noite anterior à doação."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Sem álcool nas 12h anterioresE sem fumar nas 2h antes da doação."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "*Peso máximo de 150kg. Por limitação do fabricante, a cadeira de coleta suporta esse limite. Visando à segurança do doador, respeitamos o peso máximo recomendado pelo fabricante, a fim de evitar acidentes durante a doação de sangue."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Documentos aceitos"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Carteira de identidade CNH Carteira de trabalho Passaporte Certificado de reservista Carteira profissional de classe Versões digitais em apps oficiais Crachá funcional Carteira estudantil Certidão de nascimento Print de documento"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "\""
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Eu me cuido para poder doar sangue a cada dois meses."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Antes de doar"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Dicas para o dia da doação"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Hidrate-se bem Beba bastante água antes de ir ao hemocentro."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Coma, mas levemente Nada de jejum. Evite alimentos gordurosos nas 3h antes."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Durma bem Mínimo 6 horas na noite anterior."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Roupa confortável Manga que suba facilmente até o cotovelo."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Leve seu documento Original com foto. Digitais em apps oficiais são aceitos."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Sem cigarro Não fume nas 2 horas antes da doação."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Se for almoçar antes, aguarde 2 horas e prefira refeição leve: carnes grelhadas, salada, arroz e feijão sem carnes gordurosas."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Impedimentos para doação"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Todas as doações passam por exames sorológicos (HIV, HTLV, Hepatite B e C, sífilis e Chagas). Existe um período chamado janela imunológica em que infecções recentes podem não ser detectadas. Por isso, a triagem clínica é essencial — responda com sinceridade."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Há dezenas de situações que podem gerar impedimento temporário ou definitivo — doenças, medicamentos, cirurgias, vacinas, viagens e comportamentos de risco. Use o verificador para checar sua situação antes de vir."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Veja também o que mudou nos critérios em 30/09/2026 e as dúvidas frequentes."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Tempo de atendimento"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Duração média"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "90 min"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Inclui registro, pré-triagem, triagem clínica, coleta e lanche. O tempo pode variar conforme o movimento do dia."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Dias de menor movimento"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Segunda-feira"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Terça-feira"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Quarta-feira"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Após a doação"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Cuidados pós-doação"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Aguarde 15 minFique na área de doação antes de sair."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Hidrate-seBeba bastante líquido nas 24h seguintes."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Sem álcoolEvite bebidas alcoólicas por 24h."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Esforço leveEvite atividade física intensa nas 12h seguintes."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Sem veículos pesadosNão dirija ônibus ou caminhão após a doação."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "1ª doação: sem motoSe for sua primeira vez, não pilote moto."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Meu filho teve anemia e precisou de transfusões, mas todas as vezes quando ele recebia a bolsinha de sangue e ficava coradinho, meu coração renovava em esperança."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Intervalo entre doações"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Homens"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "60"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "dias entre doações"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Máx. 4 vezes ao ano"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Mulheres"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "90"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Máx. 3 vezes ao ano"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Os prazos consideram o sexo designado no nascimento, para garantir a segurança do doador e do receptor."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Doação em grupo"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Para empresas e organizações"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Organize uma campanha com colegas, equipe ou comunidade"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "A FHB oferece transporte gratuito para grupos com mínimo de 10 doadores, material informativo e apoio na organização."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Gerência de Captação"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Telefone(61) 3327-4413 / 3327-4447"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "E-mailhemocentro@fhb.df.gov.br"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "WhatsApp(61) 9 9136-2495"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Seg a sáb, 7h15 – 18h"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Inclusão e respeito"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Para todos"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "O Hemocentro acolhe doadores de todas as orientações sexuais e identidades de gênero"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "A triagem é individual e baseada em critérios do Ministério da Saúde e da Anvisa para garantir a segurança de doadores e pacientes."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "A avaliação final de aptidão é sempre realizada por profissional de saúde durante a triagem clínica presencial no dia da doação."
+          }
+        ]
+      }
+    ],
+    "texto_plano": "Doação de Sangue\n\nHorário de funcionamento\n\nSegunda a sábado7h15 – 18h\n\nDomingo e feriadosFechado\n\nSegunda, terça e quarta têm menor tempo de espera\n\nLocalização\n\nSMHN Quadra 3, Conjunto A, Bloco 3 Asa Norte — Brasília, DF · CEP 70.710-908\n\nQuem pode doar\n\nCritérios básicos\n\n16 a 69 anosMenor de 18: autorização do responsável. De 61 a 69: deve ter doado antes dos 61 anos. 70 ou mais: pode continuar quem fez 2 ou mais doações nos últimos 12 meses, com avaliação médica anual.\n\nA partir de 50 kg*IMC mínimo de 18,5. O vestuário é descontado na pesagem.\n\nBoa saúde geralSem febre, sem infecção ativa. Avaliação feita na triagem no dia da doação.\n\nDocumento com fotoRG, CNH, CTPS, passaporte ou carteira profissional. Versões digitais oficiais são aceitas.\n\nAo menos 6h de sonoNa noite anterior à doação.\n\nSem álcool nas 12h anterioresE sem fumar nas 2h antes da doação.\n\n*Peso máximo de 150kg. Por limitação do fabricante, a cadeira de coleta suporta esse limite. Visando à segurança do doador, respeitamos o peso máximo recomendado pelo fabricante, a fim de evitar acidentes durante a doação de sangue.\n\nDocumentos aceitos\n\nCarteira de identidade CNH Carteira de trabalho Passaporte Certificado de reservista Carteira profissional de classe Versões digitais em apps oficiais Crachá funcional Carteira estudantil Certidão de nascimento Print de documento\n\n\"\n\nEu me cuido para poder doar sangue a cada dois meses.\n\nAntes de doar\n\nDicas para o dia da doação\n\nHidrate-se bem Beba bastante água antes de ir ao hemocentro.\n\nComa, mas levemente Nada de jejum. Evite alimentos gordurosos nas 3h antes.\n\nDurma bem Mínimo 6 horas na noite anterior.\n\nRoupa confortável Manga que suba facilmente até o cotovelo.\n\nLeve seu documento Original com foto. Digitais em apps oficiais são aceitos.\n\nSem cigarro Não fume nas 2 horas antes da doação.\n\nSe for almoçar antes, aguarde 2 horas e prefira refeição leve: carnes grelhadas, salada, arroz e feijão sem carnes gordurosas.\n\nImpedimentos para doação\n\nTodas as doações passam por exames sorológicos (HIV, HTLV, Hepatite B e C, sífilis e Chagas). Existe um período chamado janela imunológica em que infecções recentes podem não ser detectadas. Por isso, a triagem clínica é essencial — responda com sinceridade.\n\nHá dezenas de situações que podem gerar impedimento temporário ou definitivo — doenças, medicamentos, cirurgias, vacinas, viagens e comportamentos de risco. Use o verificador para checar sua situação antes de vir.\n\nVeja também o que mudou nos critérios em 30/09/2026 e as dúvidas frequentes.\n\nTempo de atendimento\n\nDuração média\n\n90 min\n\nInclui registro, pré-triagem, triagem clínica, coleta e lanche. O tempo pode variar conforme o movimento do dia.\n\nDias de menor movimento\n\nSegunda-feira\n\nTerça-feira\n\nQuarta-feira\n\nApós a doação\n\nCuidados pós-doação\n\nAguarde 15 minFique na área de doação antes de sair.\n\nHidrate-seBeba bastante líquido nas 24h seguintes.\n\nSem álcoolEvite bebidas alcoólicas por 24h.\n\nEsforço leveEvite atividade física intensa nas 12h seguintes.\n\nSem veículos pesadosNão dirija ônibus ou caminhão após a doação.\n\n1ª doação: sem motoSe for sua primeira vez, não pilote moto.\n\nMeu filho teve anemia e precisou de transfusões, mas todas as vezes quando ele recebia a bolsinha de sangue e ficava coradinho, meu coração renovava em esperança.\n\nIntervalo entre doações\n\nHomens\n\n60\n\ndias entre doações\n\nMáx. 4 vezes ao ano\n\nMulheres\n\n90\n\nMáx. 3 vezes ao ano\n\nOs prazos consideram o sexo designado no nascimento, para garantir a segurança do doador e do receptor.\n\nDoação em grupo\n\nPara empresas e organizações\n\nOrganize uma campanha com colegas, equipe ou comunidade\n\nA FHB oferece transporte gratuito para grupos com mínimo de 10 doadores, material informativo e apoio na organização.\n\nGerência de Captação\n\nTelefone(61) 3327-4413 / 3327-4447\n\nE-mailhemocentro@fhb.df.gov.br\n\nWhatsApp(61) 9 9136-2495\n\nSeg a sáb, 7h15 – 18h\n\nInclusão e respeito\n\nPara todos\n\nO Hemocentro acolhe doadores de todas as orientações sexuais e identidades de gênero\n\nA triagem é individual e baseada em critérios do Ministério da Saúde e da Anvisa para garantir a segurança de doadores e pacientes.\n\nA avaliação final de aptidão é sempre realizada por profissional de saúde durante a triagem clínica presencial no dia da doação."
+  },
+  "recursos": {
+    "links": [
+      {
+        "texto": "Ver no mapa",
+        "url": "https://maps.google.com/?q=Fundação+Hemocentro+de+Brasília"
+      },
+      {
+        "texto": "Verificar minha aptidão →",
+        "url": "https://www.fhb.df.gov.br/verificador-de-aptidao"
+      },
+      {
+        "texto": "o que mudou nos critérios em 30/09/2026",
+        "url": "https://www.fhb.df.gov.br/novas-regras"
+      },
+      {
+        "texto": "dúvidas frequentes",
+        "url": "https://www.fhb.df.gov.br/category/duvidas-frequentes"
+      },
+      {
+        "texto": "Saiba como organizar →",
+        "url": "https://fhb.df.gov.br/doacao-em-grupo"
+      }
+    ],
+    "imagens": []
+  },
+  "extracao": {
+    "metodo": "trafilatura_xml",
+    "metodo_aquisicao": "requests",
+    "conteudo_encontrado": true,
+    "status_http": 200,
+    "hash_conteudo": "43d97d1d483833edd7701b2bac73ebe73ea25601be14006ab377570fbc7232e0",
+    "observacoes": [],
+    "qualidade": {
+      "pontuacao": 90,
+      "nivel": "alto",
+      "fatores": [
+        "conteudo_principal_encontrado",
+        "extracao_estruturada_trafilatura"
+      ]
+    },
+    "redirecionamentos": 0,
+    "tempo_download_s": 3.491,
+    "estatisticas": {
+      "caracteres": 4267,
+      "palavras": 669,
+      "secoes": 1,
+      "links": 5,
+      "imagens": 0
+    }
+  }
+}

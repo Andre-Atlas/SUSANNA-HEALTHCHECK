@@ -14,7 +14,7 @@
     "categorias": [],
     "palavras_chave": [],
     "encoding": "UTF-8",
-    "data_extracao": "2026-10-06T19:50:53.531236Z"
+    "data_extracao": "2026-10-09T19:04:27.627919Z"
   },
   "conteudo": {
     "titulo_principal": "Busca Saúde CEPAV -",
@@ -84,7 +84,7 @@
       ]
     },
     "redirecionamentos": 0,
-    "tempo_download_s": 6.57,
+    "tempo_download_s": 2.431,
     "estatisticas": {
       "caracteres": 2107,
       "palavras": 302,

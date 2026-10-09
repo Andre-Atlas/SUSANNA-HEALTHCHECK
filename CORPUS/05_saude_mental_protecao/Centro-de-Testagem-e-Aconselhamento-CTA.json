@@ -14,7 +14,7 @@
     "categorias": [],
     "palavras_chave": [],
     "encoding": "UTF-8",
-    "data_extracao": "2026-10-06T19:51:13.155774Z"
+    "data_extracao": "2026-10-09T19:04:41.905336Z"
   },
   "conteudo": {
     "titulo_principal": "Centro de Testagem e Aconselhamento - CTA -",
@@ -100,7 +100,7 @@
       ]
     },
     "redirecionamentos": 0,
-    "tempo_download_s": 6.784,
+    "tempo_download_s": 4.64,
     "estatisticas": {
       "caracteres": 2321,
       "palavras": 371,

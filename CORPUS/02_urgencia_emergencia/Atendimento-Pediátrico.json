@@ -1,0 +1,92 @@
+{
+  "schema_version": "1.0",
+  "document_id": "6451e5f20a663bc0",
+  "metadata": {
+    "url": "https://info.saude.df.gov.br/atendimento-pediatrico/",
+    "url_final": "https://info.saude.df.gov.br/atendimento-pediatrico/",
+    "url_canonica": "https://info.saude.df.gov.br/atendimento-pediatrico/",
+    "titulo": "Atendimento Pediátrico -",
+    "descricao": "Infosaúde > Busca Saúde × Atendimento Pediátrico Esta ferramenta tem o objetivo de indicar os Estabelecimentos de Saúde com atendimento […]",
+    "autor": null,
+    "data_publicacao": "2024-05-11T17:10:20+00:00",
+    "idioma": "pt-BR",
+    "site_nome": null,
+    "categorias": [],
+    "palavras_chave": [],
+    "encoding": "UTF-8",
+    "data_extracao": "2026-10-09T19:04:31.508824Z"
+  },
+  "conteudo": {
+    "titulo_principal": "Atendimento Pediátrico -",
+    "secoes": [
+      {
+        "titulo": null,
+        "nivel": null,
+        "conteudo": [
+          {
+            "tipo": "paragrafo",
+            "texto": "Infosaúde > Busca Saúde"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Secretaria de Saúde do Distrito Federal Desenvolvido pela Diretoria de Gestão de Informações Estratégicas – DGIE/SETIS/SES – DF | 2026 Infosaúde | CIEGES-DF"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Esta ferramenta tem o objetivo de indicar os Estabelecimentos de Saúde com atendimento pediátrico mais próximos à sua localidade, para casos de urgência e emergência."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Para acompanhamento de saúde e atendimentos de rotina, procure sua Unidade Básica de Saúde de referência, por meio da ferramenta Busca Saúde – UBS https://info.saude.df.gov.br/busca-saude-ubs/"
+          }
+        ]
+      }
+    ],
+    "texto_plano": "Infosaúde > Busca Saúde\n\nSecretaria de Saúde do Distrito Federal Desenvolvido pela Diretoria de Gestão de Informações Estratégicas – DGIE/SETIS/SES – DF | 2026 Infosaúde | CIEGES-DF\n\nEsta ferramenta tem o objetivo de indicar os Estabelecimentos de Saúde com atendimento pediátrico mais próximos à sua localidade, para casos de urgência e emergência.\n\nPara acompanhamento de saúde e atendimentos de rotina, procure sua Unidade Básica de Saúde de referência, por meio da ferramenta Busca Saúde – UBS https://info.saude.df.gov.br/busca-saude-ubs/"
+  },
+  "recursos": {
+    "links": [
+      {
+        "texto": "Voltar",
+        "url": "https://info.saude.df.gov.br/"
+      }
+    ],
+    "imagens": [
+      {
+        "url": "https://info.saude.df.gov.br/wp-content/uploads/2024/05/Logo-INFOSaude_350-1.png",
+        "alt": null,
+        "legenda": null
+      },
+      {
+        "url": "https://info.saude.df.gov.br/wp-content/uploads/2024/05/Logo_GDF-60x71-1.png",
+        "alt": null,
+        "legenda": null
+      }
+    ]
+  },
+  "extracao": {
+    "metodo": "trafilatura_xml",
+    "metodo_aquisicao": "requests",
+    "conteudo_encontrado": true,
+    "status_http": 200,
+    "hash_conteudo": "1a39a93982ee1a907f4fdf85f32702a7de9b8aac0232db8ab26ac7c428b19742",
+    "observacoes": [],
+    "qualidade": {
+      "pontuacao": 100,
+      "nivel": "alto",
+      "fatores": [
+        "conteudo_principal_encontrado",
+        "extracao_estruturada_trafilatura"
+      ]
+    },
+    "redirecionamentos": 0,
+    "tempo_download_s": 3.642,
+    "estatisticas": {
+      "caracteres": 543,
+      "palavras": 77,
+      "secoes": 1,
+      "links": 1,
+      "imagens": 2
+    }
+  }
+}

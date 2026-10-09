@@ -1,0 +1,84 @@
+{
+  "schema_version": "1.0",
+  "document_id": "6f1d7f0baf5d0220",
+  "metadata": {
+    "url": "https://info.saude.df.gov.br/hospitais-ses/",
+    "url_final": "https://info.saude.df.gov.br/hospitais-ses/",
+    "url_canonica": "https://info.saude.df.gov.br/hospitais-ses/",
+    "titulo": "Hospitais SES -",
+    "descricao": "A rede hospitalar da Secretaria de Saúde do Distrito Federal conta com 11 (onze) Hospitais Regionais e 05 (cinco) Unidades […]",
+    "autor": null,
+    "data_publicacao": "2024-05-11T16:52:27+00:00",
+    "idioma": "pt-BR",
+    "site_nome": null,
+    "categorias": [],
+    "palavras_chave": [],
+    "encoding": "UTF-8",
+    "data_extracao": "2026-10-09T19:04:21.874640Z"
+  },
+  "conteudo": {
+    "titulo_principal": "Hospitais SES -",
+    "secoes": [
+      {
+        "titulo": null,
+        "nivel": null,
+        "conteudo": [
+          {
+            "tipo": "paragrafo",
+            "texto": "A rede hospitalar da Secretaria de Saúde do Distrito Federal conta com 11 (onze) Hospitais Regionais e 05 (cinco) Unidades de Referência Distrital, totalizando 16 (dezesseis) hospitais em toda a rede do SUS no DF."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Secretaria de Saúde do Distrito Federal Desenvolvido pela Diretoria de Gestão de Informações Estratégicas – DGIE/SETIS/SES – DF | 2026 Infosaúde | CIEGES-DF"
+          }
+        ]
+      }
+    ],
+    "texto_plano": "A rede hospitalar da Secretaria de Saúde do Distrito Federal conta com 11 (onze) Hospitais Regionais e 05 (cinco) Unidades de Referência Distrital, totalizando 16 (dezesseis) hospitais em toda a rede do SUS no DF.\n\nSecretaria de Saúde do Distrito Federal Desenvolvido pela Diretoria de Gestão de Informações Estratégicas – DGIE/SETIS/SES – DF | 2026 Infosaúde | CIEGES-DF"
+  },
+  "recursos": {
+    "links": [
+      {
+        "texto": "Voltar",
+        "url": "https://info.saude.df.gov.br/"
+      }
+    ],
+    "imagens": [
+      {
+        "url": "https://info.saude.df.gov.br/wp-content/uploads/2024/05/Logo-INFOSaude_350-1.png",
+        "alt": null,
+        "legenda": null
+      },
+      {
+        "url": "https://info.saude.df.gov.br/wp-content/uploads/2024/05/Logo_GDF-60x71-1.png",
+        "alt": null,
+        "legenda": null
+      }
+    ]
+  },
+  "extracao": {
+    "metodo": "trafilatura_xml",
+    "metodo_aquisicao": "requests",
+    "conteudo_encontrado": true,
+    "status_http": 200,
+    "hash_conteudo": "77b54a72baf6f424400b0c65903fff237ae0de0e60d5ce23a92e93a765f8e531",
+    "observacoes": [],
+    "qualidade": {
+      "pontuacao": 90,
+      "nivel": "alto",
+      "fatores": [
+        "conteudo_principal_encontrado",
+        "extracao_estruturada_trafilatura"
+      ]
+    },
+    "redirecionamentos": 0,
+    "tempo_download_s": 2.567,
+    "estatisticas": {
+      "caracteres": 371,
+      "palavras": 58,
+      "secoes": 1,
+      "links": 1,
+      "imagens": 2
+    }
+  }
+}

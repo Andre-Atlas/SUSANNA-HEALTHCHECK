@@ -1,0 +1,131 @@
+{
+  "schema_version": "1.0",
+  "document_id": "9c0d341cafeaff0e",
+  "metadata": {
+    "url": "https://info.saude.df.gov.br/sindromes-gripais/",
+    "url_final": "https://info.saude.df.gov.br/sindromes-gripais/",
+    "url_canonica": "https://info.saude.df.gov.br/sindromes-gripais/",
+    "titulo": "Síndromes Gripais -",
+    "descricao": "Acompanhe a página de Síndromes Gripais do Distrito Federal no Porta Infosaúde.",
+    "autor": null,
+    "data_publicacao": "2024-05-08T18:12:16+00:00",
+    "idioma": "pt-BR",
+    "site_nome": null,
+    "categorias": [],
+    "palavras_chave": [],
+    "encoding": "UTF-8",
+    "data_extracao": "2026-10-09T19:05:41.715819Z"
+  },
+  "conteudo": {
+    "titulo_principal": "Síndromes Gripais -",
+    "secoes": [
+      {
+        "titulo": null,
+        "nivel": null,
+        "conteudo": [
+          {
+            "tipo": "paragrafo",
+            "texto": "Sala de Monitoramento"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Início » Síndromes Gripais"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Informações Gerais"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Painéis"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Mapa"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Secretaria de Saúde do Distrito Federal Desenvolvido pela Diretoria de Gestão de Informações Estratégicas – DGIE/CCONS/SUPLANS/SEGEA/SES – DF | 2025 Infosaúde | CIEGES-DF"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Portal COVID-19"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Pontos de Vacinação"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Boletins Informativos Gripes"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Resumo Executivo COVID-19"
+          }
+        ]
+      }
+    ],
+    "texto_plano": "Sala de Monitoramento\n\nInício » Síndromes Gripais\n\nInformações Gerais\n\nPainéis\n\nMapa\n\nSecretaria de Saúde do Distrito Federal Desenvolvido pela Diretoria de Gestão de Informações Estratégicas – DGIE/CCONS/SUPLANS/SEGEA/SES – DF | 2025 Infosaúde | CIEGES-DF\n\nPortal COVID-19\n\nPontos de Vacinação\n\nBoletins Informativos Gripes\n\nResumo Executivo COVID-19"
+  },
+  "recursos": {
+    "links": [
+      {
+        "texto": "Início",
+        "url": "https://info.saude.df.gov.br/"
+      }
+    ],
+    "imagens": [
+      {
+        "url": "https://info.saude.df.gov.br/wp-content/uploads/2024/05/Logo-INFOSaude_350-1.png",
+        "alt": null,
+        "legenda": null
+      },
+      {
+        "url": "https://info.saude.df.gov.br/wp-content/uploads/2024/05/Logo_GDF-60x71-1.png",
+        "alt": null,
+        "legenda": null
+      },
+      {
+        "url": "https://info.saude.df.gov.br/wp-content/uploads/2024/08/sindromesgripais-1.png",
+        "alt": null,
+        "legenda": null
+      },
+      {
+        "url": "https://info.saude.df.gov.br/wp-content/uploads/2024/09/ico_informacoesgerais_sg.png",
+        "alt": null,
+        "legenda": null
+      },
+      {
+        "url": "https://info.saude.df.gov.br/wp-content/uploads/2024/09/ico_paineis_sg.png",
+        "alt": null,
+        "legenda": null
+      }
+    ]
+  },
+  "extracao": {
+    "metodo": "trafilatura_xml",
+    "metodo_aquisicao": "requests",
+    "conteudo_encontrado": true,
+    "status_http": 200,
+    "hash_conteudo": "dd9bfab3c7122fd44814766fd038ae3eb2f48b6f994ef6c8b5e9e9a05e33ce86",
+    "observacoes": [],
+    "qualidade": {
+      "pontuacao": 90,
+      "nivel": "alto",
+      "fatores": [
+        "conteudo_principal_encontrado",
+        "extracao_estruturada_trafilatura"
+      ]
+    },
+    "redirecionamentos": 0,
+    "tempo_download_s": 3.495,
+    "estatisticas": {
+      "caracteres": 351,
+      "palavras": 45,
+      "secoes": 1,
+      "links": 1,
+      "imagens": 5
+    }
+  }
+}

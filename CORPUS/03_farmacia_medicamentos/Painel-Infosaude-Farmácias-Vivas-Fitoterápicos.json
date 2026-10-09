@@ -1,0 +1,89 @@
+{
+  "schema_version": "1.0",
+  "document_id": "d5340c09d25b8c3f",
+  "metadata": {
+    "url": "https://info.saude.df.gov.br/saude-do-cidadao/painel-infosaude-farmacias-vivas-fitoterapicos/",
+    "url_final": "https://info.saude.df.gov.br/saude-do-cidadao/painel-infosaude-farmacias-vivas-fitoterapicos/",
+    "url_canonica": "https://info.saude.df.gov.br/saude-do-cidadao/painel-infosaude-farmacias-vivas-fitoterapicos/",
+    "titulo": "Painel Infosaude - Farmácias Vivas - Fitoterápicos -",
+    "descricao": "Infosaúde > Saúde do Cidadão > Medicamentos Farmácias Vivas – Fitoterápicos O que são as Farmácias Vivas? A Secretaria de […]",
+    "autor": null,
+    "data_publicacao": "2024-05-27T18:37:14+00:00",
+    "idioma": "pt-BR",
+    "site_nome": null,
+    "categorias": [],
+    "palavras_chave": [],
+    "encoding": "UTF-8",
+    "data_extracao": "2026-10-09T19:05:17.054247Z"
+  },
+  "conteudo": {
+    "titulo_principal": "Painel Infosaude - Farmácias Vivas - Fitoterápicos -",
+    "secoes": [
+      {
+        "titulo": null,
+        "nivel": null,
+        "conteudo": [
+          {
+            "tipo": "paragrafo",
+            "texto": "Infosaúde > Saúde do Cidadão > Medicamentos"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "A Secretaria de Saúde do Distrito Federal possui duas Farmácias Vivas que são unidades responsáveis pela produção de 9 fitoterápicos (produtos feitos a partir da manipulação de plantas medicinais) para atendimento à população."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Qualquer paciente poderá receber os fitoterápicos produzidos pelas Farmácias Vivas. As receitas possuem o prazo de validade de 30 dias e podem ser emitidas pelo SUS ou nos serviços privados."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Para a retirada do fitoterápico, você deve comparecer na farmácia dispensadora de fitoterápico de uma Unidade Básica de Saúde (UBS) e apresentar a receita original com cópia, o nº SES e documento de identificação pessoal."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Para consultar as farmácias que dispensam medicamentos fitoterápicos clique aqui."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Secretaria de Saúde do Distrito Federal Desenvolvido pela Diretoria de Gestão de Informações Estratégicas – DGIE/SETIS/SES – DF | 2026 Infosaúde | CIEGES-DF"
+          }
+        ]
+      }
+    ],
+    "texto_plano": "Infosaúde > Saúde do Cidadão > Medicamentos\n\nA Secretaria de Saúde do Distrito Federal possui duas Farmácias Vivas que são unidades responsáveis pela produção de 9 fitoterápicos (produtos feitos a partir da manipulação de plantas medicinais) para atendimento à população.\n\nQualquer paciente poderá receber os fitoterápicos produzidos pelas Farmácias Vivas. As receitas possuem o prazo de validade de 30 dias e podem ser emitidas pelo SUS ou nos serviços privados.\n\nPara a retirada do fitoterápico, você deve comparecer na farmácia dispensadora de fitoterápico de uma Unidade Básica de Saúde (UBS) e apresentar a receita original com cópia, o nº SES e documento de identificação pessoal.\n\nPara consultar as farmácias que dispensam medicamentos fitoterápicos clique aqui.\n\nSecretaria de Saúde do Distrito Federal Desenvolvido pela Diretoria de Gestão de Informações Estratégicas – DGIE/SETIS/SES – DF | 2026 Infosaúde | CIEGES-DF"
+  },
+  "recursos": {
+    "links": [
+      {
+        "texto": "clique aqui.",
+        "url": "https://www.saude.df.gov.br/farmacias-vivas-fitoterapicos/"
+      }
+    ],
+    "imagens": []
+  },
+  "extracao": {
+    "metodo": "trafilatura_xml",
+    "metodo_aquisicao": "requests",
+    "conteudo_encontrado": true,
+    "status_http": 200,
+    "hash_conteudo": "ec9685e9aea741e672c3d770be133b9f9a4514d59a373f3b4cfe27193a376824",
+    "observacoes": [],
+    "qualidade": {
+      "pontuacao": 100,
+      "nivel": "alto",
+      "fatores": [
+        "conteudo_principal_encontrado",
+        "extracao_estruturada_trafilatura"
+      ]
+    },
+    "redirecionamentos": 0,
+    "tempo_download_s": 7.062,
+    "estatisticas": {
+      "caracteres": 927,
+      "palavras": 138,
+      "secoes": 1,
+      "links": 1,
+      "imagens": 0
+    }
+  }
+}

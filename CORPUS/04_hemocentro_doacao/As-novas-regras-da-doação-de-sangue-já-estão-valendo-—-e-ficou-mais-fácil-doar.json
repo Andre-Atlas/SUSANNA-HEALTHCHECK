@@ -1,0 +1,468 @@
+{
+  "schema_version": "1.0",
+  "document_id": "70bde5dcb1c7890d",
+  "metadata": {
+    "url": "https://fhb.df.gov.br/novas-regras/",
+    "url_final": "https://fhb.df.gov.br/novas-regras/",
+    "url_canonica": "https://fhb.df.gov.br/novas-regras",
+    "titulo": "As novas regras da doação de sangue já estão valendo — e ficou mais fácil doar",
+    "descricao": null,
+    "autor": null,
+    "data_publicacao": null,
+    "idioma": "pt-BR",
+    "site_nome": "Fundação Hemocentro de Brasília",
+    "categorias": [],
+    "palavras_chave": [],
+    "encoding": "UTF-8",
+    "data_extracao": "2026-10-09T19:05:48.400834Z"
+  },
+  "conteudo": {
+    "titulo_principal": "As novas regras da doação de sangue já estão valendo — e ficou mais fácil doar",
+    "secoes": [
+      {
+        "titulo": "Novas regras",
+        "nivel": 3,
+        "conteudo": [
+          {
+            "tipo": "paragrafo",
+            "texto": "Doação de sangue"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "✓ Em vigor desde 30/09/2026"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Desde 30 de setembro de 2026, valem em todo o país os novos critérios de triagem clínica do Ministério da Saúde (Portaria GM/MS nº 11.685/2026). Vários prazos de espera caíram e alguns critérios ficaram mais precisos. Resultado: mais gente apta a doar. Se você já foi impedido de doar, confira se agora pode."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Já sabe que pode doar? Agende sua doação"
+          },
+          {
+            "tipo": "tabela",
+            "cabecalho": [],
+            "linhas": [
+              [
+                "📅 Em vigor desde 30 de setembro de 2026",
+                "🩸 O que mudou Prazos mais curtos na maioria dos casos",
+                "📞 Dúvidas (Captação) (61) 3020-4447 / 4413 WhatsApp: (61) 99136-2495"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "titulo": "Resumo rápido",
+        "nivel": 2,
+        "conteudo": [
+          {
+            "tipo": "lista",
+            "itens": [
+              "Doador de repetição* com mais de 70 anos: pode continuar doando, com avaliação médica anual",
+              "Peso mínimo caiu de 51 kg para 50 kg, e o volume coletado passou a ser de 400 a 470 ml",
+              "Tatuagem, piercing, acupuntura, maquiagem definitiva ou procedimento estético (botox, preenchimento, microagulhamento): 7 dias com comprovação, ou 4 meses sem",
+              "Situações de risco sexual, como novo parceiro ou parceiro ocasional: caíram para 4 meses (antes, 12 meses, ou 6 meses para novo parceiro único)",
+              "Uso de anabolizantes ou hormônios injetáveis sem prescrição médica: 4 meses",
+              "Hipotireoidismo, hipertireoidismo, tireoidite de Hashimoto ou Doença de Graves: deixaram de ser impedimento automático quando tratados e estáveis"
+            ]
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "*Doação de repetição: doação obtida de um indivíduo que doou sangue duas ou mais vezes no período de doze meses."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Por que os critérios mudaram"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "O regulamento anterior estava em vigor desde 2016. Nesse tempo, os testes de laboratório usados para detectar doenças transmissíveis pelo sangue ficaram mais sensíveis e rápidos — o que permite avaliar cada candidato de forma individual, em vez de excluir grupos inteiros por precaução. A expectativa de vida da população também aumentou, e parte dos critérios antigos, como o teto de idade, não refletia mais a realidade de quem doa."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "No conjunto, o objetivo é uma triagem mais precisa, com decisões caso a caso em vez de exclusões automáticas por categoria."
+          },
+          {
+            "tipo": "tabela",
+            "cabecalho": [],
+            "linhas": [
+              [
+                "1",
+                "Testes laboratoriais mais sensíveis permitem avaliação individual em vez de exclusão por categoria"
+              ],
+              [
+                "2",
+                "Regulamento reúne exigências de rastreabilidade e controle de qualidade num único documento"
+              ],
+              [
+                "3",
+                "Critérios antigos, como teto de idade, foram revisados junto ao aumento da expectativa de vida"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "titulo": "A segurança da transfusão não muda",
+        "nivel": 2,
+        "conteudo": [
+          {
+            "tipo": "paragrafo",
+            "texto": "Os prazos ficaram mais curtos, mas nenhuma etapa de segurança foi removida. Toda doação continua passando por:"
+          },
+          {
+            "tipo": "lista",
+            "itens": [
+              "Entrevista clínica individual e confidencial, feita por profissional de saúde, em toda doação — não só na primeira vez",
+              "Exames obrigatórios de triagem sorológica em cada bolsa coletada, incluindo métodos moleculares (NAT), já usados pelo Hemocentro de Brasília",
+              "Descarte automático de qualquer bolsa com resultado alterado, e busca ativa do doador para orientação",
+              "Rastreabilidade completa, do braço do doador até o paciente que recebe a transfusão"
+            ]
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Um ponto importante: a doação de sangue não é um exame de infecção sexualmente transmissível. Existe um período em que uma infecção recente ainda não aparece nos exames, o que pode gerar um resultado falso negativo e colocar em risco quem recebe o sangue. Os exames do Hemocentro levam cerca de 20 dias para sair — quem quer se testar deve procurar a UTAI (Unidade de Testagem, Aconselhamento e Imunização) ou uma UBS, onde o teste rápido sai em cerca de 30 minutos."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "A doação também é sempre voluntária: a nova portaria proíbe expressamente seu uso como forma de cumprir pena alternativa."
+          }
+        ]
+      },
+      {
+        "titulo": "Como era x como ficou",
+        "nivel": 2,
+        "conteudo": [
+          {
+            "tipo": "tabela",
+            "cabecalho": [],
+            "linhas": [
+              [
+                "Critério",
+                "Antes",
+                "Agora"
+              ],
+              [
+                "Doador de repetição* com mais de 70 anos",
+                "precisava parar aos 69a11m29d",
+                "pode continuar, com avaliação médica anual"
+              ],
+              [
+                "Peso mínimo",
+                "51 kg",
+                "50 kg"
+              ],
+              [
+                "Tatuagem, piercing, acupuntura ou procedimento estético",
+                "12 meses (6 com comprovação)",
+                "4 meses (7 dias com comprovação)"
+              ],
+              [
+                "Endoscopia ou colonoscopia",
+                "6 meses",
+                "4 meses"
+              ],
+              [
+                "Gripe ou resfriado",
+                "15 dias após os sintomas",
+                "3 dias após os sintomas"
+              ],
+              [
+                "Hepatite A — idade de corte para impedimento definitivo",
+                "após os 11 anos",
+                "após os 13 anos"
+              ],
+              [
+                "Anabolizantes ou hormônios injetáveis sem prescrição médica",
+                "critério não detalhado",
+                "4 meses (com prescrição, não impede)"
+              ],
+              [
+                "Hipotireoidismo, hipertireoidismo, Hashimoto ou Doença de Graves",
+                "impedimento definitivo",
+                "apto se tratado e estável"
+              ],
+              [
+                "Cirurgia bariátrica (qualquer tipo)",
+                "1 ano, ou definitivo p/ disabsortiva/mista",
+                "6 meses, com peso estável"
+              ]
+            ]
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Algum desses critérios já impediu você de doar?"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Responda algumas perguntas no verificador de aptidão e veja se você já pode doar com as regras atuais."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Tatuagem, piercing, acupuntura e procedimentos estéticos"
+          }
+        ]
+      },
+      {
+        "titulo": "Como reduzir o prazo para 7 dias",
+        "nivel": 2,
+        "conteudo": [
+          {
+            "tipo": "paragrafo",
+            "texto": "O prazo padrão de 4 meses cai para 7 dias quando é possível comprovar que o procedimento foi feito em um estabelecimento regularizado. Leve estes documentos no dia da triagem:"
+          },
+          {
+            "tipo": "lista",
+            "itens": [
+              "Nota fiscal do procedimento, com data",
+              "Foto do registro sanitário do estabelecimento"
+            ]
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Sem essa comprovação, o prazo é de 4 meses. Exceção: piercing na cavidade oral ou na região genital tem prazo de 4 meses após a retirada, independentemente de comprovação, por causa do risco permanente de infecção."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Situações de risco sexual"
+          }
+        ]
+      },
+      {
+        "titulo": "Inaptidão temporária de 4 meses",
+        "nivel": 2,
+        "conteudo": [
+          {
+            "tipo": "paragrafo",
+            "texto": "O prazo caiu de 12 meses (ou 6 meses no caso de novo parceiro único) para 4 meses nestas situações — para a pessoa e, quando for o caso, para seus parceiros sexuais:"
+          },
+          {
+            "tipo": "lista",
+            "itens": [
+              "Relação sexual em troca de dinheiro ou drogas",
+              "Relação sexual com parceiro ocasional ou desconhecido",
+              "Ter sido vítima de violência sexual",
+              "Início de relação com um novo parceiro (contado a partir do primeiro contato sexual)",
+              "Relação sexual com pessoa com HIV, hepatite B, hepatite C ou outra infecção sexualmente transmissível",
+              "Situação de encarceramento ou confinamento obrigatório por mais de 72 horas",
+              "Ser parceiro sexual de paciente em diálise ou com histórico de transfusão",
+              "Acidente com material biológico, com contato de mucosa ou pele não íntegra",
+              "Ter recebido transfusão de sangue ou hemocomponentes"
+            ]
+          }
+        ]
+      },
+      {
+        "titulo": "Faixas de hemoglobina e hematócrito",
+        "nivel": 3,
+        "conteudo": [
+          {
+            "tipo": "paragrafo",
+            "texto": "Antes, só havia um limite máximo (Hb acima de 18 g/dL ou Ht acima de 54%, igual para homens e mulheres). Agora, existem faixas específicas: mulheres entre 12,5 e 16,5 g/dL de Hb (ou 38% a 50% de Ht); homens entre 13,0 e 18,5 g/dL de Hb (ou 39% a 54% de Ht). Fora dessas faixas, para cima ou para baixo, a inaptidão temporária é de 60 dias."
+          }
+        ]
+      },
+      {
+        "titulo": "Viagens a áreas de risco",
+        "nivel": 3,
+        "conteudo": [
+          {
+            "tipo": "paragrafo",
+            "texto": "Quem esteve em regiões endêmicas ou com epidemia confirmada de doença infecciosa fora da região da doação fica inapto por 30 dias. No caso dos Estados Unidos, isso vale para quem permaneceu um dia ou mais no Arizona, na Califórnia ou no Texas, áreas endêmicas para o vírus do Oeste do Nilo."
+          }
+        ]
+      },
+      {
+        "titulo": "Malária",
+        "nivel": 3,
+        "conteudo": [
+          {
+            "tipo": "paragrafo",
+            "texto": "Depois de cura comprovada, o prazo depende do tipo de parasita: Plasmodium falciparum, 12 meses; Plasmodium vivax ou ovale, 3 anos; Plasmodium malariae, inaptidão definitiva. Sem laudo que comprove o tipo, o prazo padrão é de 12 meses."
+          }
+        ]
+      },
+      {
+        "titulo": "CBD, ayahuasca e cigarro eletrônico",
+        "nivel": 3,
+        "conteudo": [
+          {
+            "tipo": "paragrafo",
+            "texto": "Essas substâncias ganharam prazos próprios, bem menores do que os 12 meses aplicados antes: canabidiol (CBD), 9 dias; ayahuasca (Santo Daime), 48 horas após o consumo, sem sintomas no momento da triagem; cigarro eletrônico ou vape, 30 dias."
+          }
+        ]
+      },
+      {
+        "titulo": "Fui considerado inapto antes de 30/09. Ainda estou impedido?",
+        "nivel": null,
+        "conteudo": [
+          {
+            "tipo": "paragrafo",
+            "texto": "Depende do motivo. Se o critério que impediu sua doação mudou, você pode estar apto agora. Confira no verificador de aptidão ou fale com a Captação de Doadores: (61) 3020-4447 / 4413 ou WhatsApp (61) 99136-2495."
+          }
+        ]
+      },
+      {
+        "titulo": "Já doei sangue a vida toda e parei quando completei 70 anos. Posso voltar?",
+        "nivel": null,
+        "conteudo": [
+          {
+            "tipo": "paragrafo",
+            "texto": "Sim, se você fez 2 ou mais doações nos últimos 12 meses. Desde 30/09, doadores de repetição nessa condição podem continuar doando depois dos 70 anos, com avaliação médica anual no Ambulatório do Doador e relatório do seu médico assistente sobre suas condições de saúde. Fale com o Núcleo de Triagem para retomar seu cadastro."
+          }
+        ]
+      },
+      {
+        "titulo": "Fiz tatuagem, piercing ou acupuntura recentemente. Posso doar?",
+        "nivel": null,
+        "conteudo": [
+          {
+            "tipo": "paragrafo",
+            "texto": "Se você tem a nota fiscal com data e uma foto do registro sanitário do estabelecimento, o prazo cai para 7 dias. Sem essa comprovação, o prazo é de 4 meses. Se for piercing na cavidade oral ou na região genital, o prazo é sempre de 4 meses após a retirada."
+          }
+        ]
+      },
+      {
+        "titulo": "Comecei a namorar recentemente. Isso me impede de doar?",
+        "nivel": null,
+        "conteudo": [
+          {
+            "tipo": "paragrafo",
+            "texto": "Se você iniciou uma relação com um novo parceiro, o prazo de espera caiu de 6 para 4 meses, contado a partir do primeiro contato sexual. Outras situações de risco sexual também caíram, de 12 para 4 meses."
+          }
+        ]
+      },
+      {
+        "titulo": "Estou gripado ou resfriado. Quando posso doar?",
+        "nivel": null,
+        "conteudo": [
+          {
+            "tipo": "paragrafo",
+            "texto": "Agora, o prazo é de 3 dias após o desaparecimento completo dos sintomas — antes, eram 15 dias."
+          }
+        ]
+      },
+      {
+        "titulo": "Tive hepatite quando era criança. Ainda estou impedido para sempre?",
+        "nivel": null,
+        "conteudo": [
+          {
+            "tipo": "paragrafo",
+            "texto": "Depende do tipo de hepatite e da idade em que você teve. A mudança vale só para hepatite A: desde 30/09, o impedimento definitivo vale apenas para hepatite A ocorrida após os 13 anos de idade — antes, o corte era 11 anos. Se você teve hepatite A antes dos 13 anos, procure o Núcleo de Triagem para uma avaliação individual. Os critérios para hepatite B e hepatite C não mudaram."
+          }
+        ]
+      },
+      {
+        "titulo": "Tenho hipotireoidismo ou hipertireoidismo. Posso doar?",
+        "nivel": null,
+        "conteudo": [
+          {
+            "tipo": "paragrafo",
+            "texto": "Sim, na maioria dos casos. Quem tem hipotireoidismo, hipertireoidismo, tireoidite de Hashimoto ou Doença de Graves e está tratado, clinicamente estável e com a tireoide compensada pode doar. Em caso de dúvida, o Núcleo de Triagem pode pedir um relatório médico."
+          }
+        ]
+      },
+      {
+        "titulo": "O que continua igual",
+        "nivel": 2,
+        "conteudo": [
+          {
+            "tipo": "paragrafo",
+            "texto": "Nem tudo mudou. Estes critérios seguem exatamente como antes:"
+          },
+          {
+            "tipo": "lista",
+            "itens": [
+              "Primeira doação: limite de idade até 60 anos, 11 meses e 29 dias",
+              "Intervalo entre doações: homens a cada 60 dias (até 4 por ano); mulheres a cada 90 dias (até 3 por ano)",
+              "Profissões ou atividades de risco (ex.: trabalho em altura, esportes de contato): só pode retomar 12 horas após a doação"
+            ]
+          }
+        ]
+      },
+      {
+        "titulo": "Cuidados depois da doação",
+        "nivel": 2,
+        "conteudo": [
+          {
+            "tipo": "paragrafo",
+            "texto": "Depois de doar, alguns cuidados simples ajudam na recuperação:"
+          },
+          {
+            "tipo": "lista",
+            "itens": [
+              "Faça um lanche e se hidrate antes de sair do Hemocentro",
+              "Permaneça pelo menos 15 minutos no local em observação",
+              "Se estiver dirigindo ou de moto e sentir mal-estar, pare imediatamente",
+              "Espere 60 minutos para fumar ou usar produtos fumígenos",
+              "Evite esforço físico intenso, principalmente com o braço da punção, por cerca de 12 horas",
+              "Se houver sangramento ou hematoma no local, mantenha a compressão"
+            ]
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Entre em contato com o Hemocentro se, depois de doar, você tiver febre ou diarreia (em até 14 dias) ou for diagnosticado com malária (em até 30 dias)."
+          }
+        ]
+      },
+      {
+        "titulo": "Se antes você não pôde doar, talvez agora possa",
+        "nivel": 2,
+        "conteudo": [
+          {
+            "tipo": "paragrafo",
+            "texto": "Confira no verificador de aptidão se você já pode doar com as regras atuais."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Já sabe que pode? Agende em agenda.df.gov.br ou ligue 160, opção 2 — segunda a sábado, das 7h15 às 18h"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Fonte: Portaria GM/MS nº 11.685, de 2 de julho de 2026, e documentos técnicos internos da FHB (GCRO, GCOL, GTRIC). Critérios em vigor desde 30/09/2026."
+          }
+        ]
+      }
+    ],
+    "texto_plano": "Novas regras\n\nDoação de sangue\n\n✓ Em vigor desde 30/09/2026\n\nDesde 30 de setembro de 2026, valem em todo o país os novos critérios de triagem clínica do Ministério da Saúde (Portaria GM/MS nº 11.685/2026). Vários prazos de espera caíram e alguns critérios ficaram mais precisos. Resultado: mais gente apta a doar. Se você já foi impedido de doar, confira se agora pode.\n\nJá sabe que pode doar? Agende sua doação\n\n📅 Em vigor desde 30 de setembro de 2026 | 🩸 O que mudou Prazos mais curtos na maioria dos casos | 📞 Dúvidas (Captação) (61) 3020-4447 / 4413 WhatsApp: (61) 99136-2495\n\nResumo rápido\n\nDoador de repetição* com mais de 70 anos: pode continuar doando, com avaliação médica anual\n\nPeso mínimo caiu de 51 kg para 50 kg, e o volume coletado passou a ser de 400 a 470 ml\n\nTatuagem, piercing, acupuntura, maquiagem definitiva ou procedimento estético (botox, preenchimento, microagulhamento): 7 dias com comprovação, ou 4 meses sem\n\nSituações de risco sexual, como novo parceiro ou parceiro ocasional: caíram para 4 meses (antes, 12 meses, ou 6 meses para novo parceiro único)\n\nUso de anabolizantes ou hormônios injetáveis sem prescrição médica: 4 meses\n\nHipotireoidismo, hipertireoidismo, tireoidite de Hashimoto ou Doença de Graves: deixaram de ser impedimento automático quando tratados e estáveis\n\n*Doação de repetição: doação obtida de um indivíduo que doou sangue duas ou mais vezes no período de doze meses.\n\nPor que os critérios mudaram\n\nO regulamento anterior estava em vigor desde 2016. Nesse tempo, os testes de laboratório usados para detectar doenças transmissíveis pelo sangue ficaram mais sensíveis e rápidos — o que permite avaliar cada candidato de forma individual, em vez de excluir grupos inteiros por precaução. A expectativa de vida da população também aumentou, e parte dos critérios antigos, como o teto de idade, não refletia mais a realidade de quem doa.\n\nNo conjunto, o objetivo é uma triagem mais precisa, com decisões caso a caso em vez de exclusões automáticas por categoria.\n\n1 | Testes laboratoriais mais sensíveis permitem avaliação individual em vez de exclusão por categoria\n\n2 | Regulamento reúne exigências de rastreabilidade e controle de qualidade num único documento\n\n3 | Critérios antigos, como teto de idade, foram revisados junto ao aumento da expectativa de vida\n\nA segurança da transfusão não muda\n\nOs prazos ficaram mais curtos, mas nenhuma etapa de segurança foi removida. Toda doação continua passando por:\n\nEntrevista clínica individual e confidencial, feita por profissional de saúde, em toda doação — não só na primeira vez\n\nExames obrigatórios de triagem sorológica em cada bolsa coletada, incluindo métodos moleculares (NAT), já usados pelo Hemocentro de Brasília\n\nDescarte automático de qualquer bolsa com resultado alterado, e busca ativa do doador para orientação\n\nRastreabilidade completa, do braço do doador até o paciente que recebe a transfusão\n\nUm ponto importante: a doação de sangue não é um exame de infecção sexualmente transmissível. Existe um período em que uma infecção recente ainda não aparece nos exames, o que pode gerar um resultado falso negativo e colocar em risco quem recebe o sangue. Os exames do Hemocentro levam cerca de 20 dias para sair — quem quer se testar deve procurar a UTAI (Unidade de Testagem, Aconselhamento e Imunização) ou uma UBS, onde o teste rápido sai em cerca de 30 minutos.\n\nA doação também é sempre voluntária: a nova portaria proíbe expressamente seu uso como forma de cumprir pena alternativa.\n\nComo era x como ficou\n\nCritério | Antes | Agora\n\nDoador de repetição* com mais de 70 anos | precisava parar aos 69a11m29d | pode continuar, com avaliação médica anual\n\nPeso mínimo | 51 kg | 50 kg\n\nTatuagem, piercing, acupuntura ou procedimento estético | 12 meses (6 com comprovação) | 4 meses (7 dias com comprovação)\n\nEndoscopia ou colonoscopia | 6 meses | 4 meses\n\nGripe ou resfriado | 15 dias após os sintomas | 3 dias após os sintomas\n\nHepatite A — idade de corte para impedimento definitivo | após os 11 anos | após os 13 anos\n\nAnabolizantes ou hormônios injetáveis sem prescrição médica | critério não detalhado | 4 meses (com prescrição, não impede)\n\nHipotireoidismo, hipertireoidismo, Hashimoto ou Doença de Graves | impedimento definitivo | apto se tratado e estável\n\nCirurgia bariátrica (qualquer tipo) | 1 ano, ou definitivo p/ disabsortiva/mista | 6 meses, com peso estável\n\nAlgum desses critérios já impediu você de doar?\n\nResponda algumas perguntas no verificador de aptidão e veja se você já pode doar com as regras atuais.\n\nTatuagem, piercing, acupuntura e procedimentos estéticos\n\nComo reduzir o prazo para 7 dias\n\nO prazo padrão de 4 meses cai para 7 dias quando é possível comprovar que o procedimento foi feito em um estabelecimento regularizado. Leve estes documentos no dia da triagem:\n\nNota fiscal do procedimento, com data\n\nFoto do registro sanitário do estabelecimento\n\nSem essa comprovação, o prazo é de 4 meses. Exceção: piercing na cavidade oral ou na região genital tem prazo de 4 meses após a retirada, independentemente de comprovação, por causa do risco permanente de infecção.\n\nSituações de risco sexual\n\nInaptidão temporária de 4 meses\n\nO prazo caiu de 12 meses (ou 6 meses no caso de novo parceiro único) para 4 meses nestas situações — para a pessoa e, quando for o caso, para seus parceiros sexuais:\n\nRelação sexual em troca de dinheiro ou drogas\n\nRelação sexual com parceiro ocasional ou desconhecido\n\nTer sido vítima de violência sexual\n\nInício de relação com um novo parceiro (contado a partir do primeiro contato sexual)\n\nRelação sexual com pessoa com HIV, hepatite B, hepatite C ou outra infecção sexualmente transmissível\n\nSituação de encarceramento ou confinamento obrigatório por mais de 72 horas\n\nSer parceiro sexual de paciente em diálise ou com histórico de transfusão\n\nAcidente com material biológico, com contato de mucosa ou pele não íntegra\n\nTer recebido transfusão de sangue ou hemocomponentes\n\nFaixas de hemoglobina e hematócrito\n\nAntes, só havia um limite máximo (Hb acima de 18 g/dL ou Ht acima de 54%, igual para homens e mulheres). Agora, existem faixas específicas: mulheres entre 12,5 e 16,5 g/dL de Hb (ou 38% a 50% de Ht); homens entre 13,0 e 18,5 g/dL de Hb (ou 39% a 54% de Ht). Fora dessas faixas, para cima ou para baixo, a inaptidão temporária é de 60 dias.\n\nViagens a áreas de risco\n\nQuem esteve em regiões endêmicas ou com epidemia confirmada de doença infecciosa fora da região da doação fica inapto por 30 dias. No caso dos Estados Unidos, isso vale para quem permaneceu um dia ou mais no Arizona, na Califórnia ou no Texas, áreas endêmicas para o vírus do Oeste do Nilo.\n\nMalária\n\nDepois de cura comprovada, o prazo depende do tipo de parasita: Plasmodium falciparum, 12 meses; Plasmodium vivax ou ovale, 3 anos; Plasmodium malariae, inaptidão definitiva. Sem laudo que comprove o tipo, o prazo padrão é de 12 meses.\n\nCBD, ayahuasca e cigarro eletrônico\n\nEssas substâncias ganharam prazos próprios, bem menores do que os 12 meses aplicados antes: canabidiol (CBD), 9 dias; ayahuasca (Santo Daime), 48 horas após o consumo, sem sintomas no momento da triagem; cigarro eletrônico ou vape, 30 dias.\n\nFui considerado inapto antes de 30/09. Ainda estou impedido?\n\nDepende do motivo. Se o critério que impediu sua doação mudou, você pode estar apto agora. Confira no verificador de aptidão ou fale com a Captação de Doadores: (61) 3020-4447 / 4413 ou WhatsApp (61) 99136-2495.\n\nJá doei sangue a vida toda e parei quando completei 70 anos. Posso voltar?\n\nSim, se você fez 2 ou mais doações nos últimos 12 meses. Desde 30/09, doadores de repetição nessa condição podem continuar doando depois dos 70 anos, com avaliação médica anual no Ambulatório do Doador e relatório do seu médico assistente sobre suas condições de saúde. Fale com o Núcleo de Triagem para retomar seu cadastro.\n\nFiz tatuagem, piercing ou acupuntura recentemente. Posso doar?\n\nSe você tem a nota fiscal com data e uma foto do registro sanitário do estabelecimento, o prazo cai para 7 dias. Sem essa comprovação, o prazo é de 4 meses. Se for piercing na cavidade oral ou na região genital, o prazo é sempre de 4 meses após a retirada.\n\nComecei a namorar recentemente. Isso me impede de doar?\n\nSe você iniciou uma relação com um novo parceiro, o prazo de espera caiu de 6 para 4 meses, contado a partir do primeiro contato sexual. Outras situações de risco sexual também caíram, de 12 para 4 meses.\n\nEstou gripado ou resfriado. Quando posso doar?\n\nAgora, o prazo é de 3 dias após o desaparecimento completo dos sintomas — antes, eram 15 dias.\n\nTive hepatite quando era criança. Ainda estou impedido para sempre?\n\nDepende do tipo de hepatite e da idade em que você teve. A mudança vale só para hepatite A: desde 30/09, o impedimento definitivo vale apenas para hepatite A ocorrida após os 13 anos de idade — antes, o corte era 11 anos. Se você teve hepatite A antes dos 13 anos, procure o Núcleo de Triagem para uma avaliação individual. Os critérios para hepatite B e hepatite C não mudaram.\n\nTenho hipotireoidismo ou hipertireoidismo. Posso doar?\n\nSim, na maioria dos casos. Quem tem hipotireoidismo, hipertireoidismo, tireoidite de Hashimoto ou Doença de Graves e está tratado, clinicamente estável e com a tireoide compensada pode doar. Em caso de dúvida, o Núcleo de Triagem pode pedir um relatório médico.\n\nO que continua igual\n\nNem tudo mudou. Estes critérios seguem exatamente como antes:\n\nPrimeira doação: limite de idade até 60 anos, 11 meses e 29 dias\n\nIntervalo entre doações: homens a cada 60 dias (até 4 por ano); mulheres a cada 90 dias (até 3 por ano)\n\nProfissões ou atividades de risco (ex.: trabalho em altura, esportes de contato): só pode retomar 12 horas após a doação\n\nCuidados depois da doação\n\nDepois de doar, alguns cuidados simples ajudam na recuperação:\n\nFaça um lanche e se hidrate antes de sair do Hemocentro\n\nPermaneça pelo menos 15 minutos no local em observação\n\nSe estiver dirigindo ou de moto e sentir mal-estar, pare imediatamente\n\nEspere 60 minutos para fumar ou usar produtos fumígenos\n\nEvite esforço físico intenso, principalmente com o braço da punção, por cerca de 12 horas\n\nSe houver sangramento ou hematoma no local, mantenha a compressão\n\nEntre em contato com o Hemocentro se, depois de doar, você tiver febre ou diarreia (em até 14 dias) ou for diagnosticado com malária (em até 30 dias).\n\nSe antes você não pôde doar, talvez agora possa\n\nConfira no verificador de aptidão se você já pode doar com as regras atuais.\n\nJá sabe que pode? Agende em agenda.df.gov.br ou ligue 160, opção 2 — segunda a sábado, das 7h15 às 18h\n\nFonte: Portaria GM/MS nº 11.685, de 2 de julho de 2026, e documentos técnicos internos da FHB (GCRO, GCOL, GTRIC). Critérios em vigor desde 30/09/2026."
+  },
+  "recursos": {
+    "links": [
+      {
+        "texto": "Verificar se posso doar →",
+        "url": "https://www.fhb.df.gov.br/verificador-de-aptidao"
+      },
+      {
+        "texto": "Agende sua doação",
+        "url": "https://agenda.df.gov.br"
+      }
+    ],
+    "imagens": []
+  },
+  "extracao": {
+    "metodo": "trafilatura_xml",
+    "metodo_aquisicao": "requests",
+    "conteudo_encontrado": true,
+    "status_http": 200,
+    "hash_conteudo": "c2c9adde57a23ea5128fc895432af1a830e8221fa81d2a47d6df8be0f16522ef",
+    "observacoes": [],
+    "qualidade": {
+      "pontuacao": 90,
+      "nivel": "alto",
+      "fatores": [
+        "conteudo_principal_encontrado",
+        "extracao_estruturada_trafilatura"
+      ]
+    },
+    "redirecionamentos": 0,
+    "tempo_download_s": 0.763,
+    "estatisticas": {
+      "caracteres": 10749,
+      "palavras": 1794,
+      "secoes": 20,
+      "links": 2,
+      "imagens": 0
+    }
+  }
+}

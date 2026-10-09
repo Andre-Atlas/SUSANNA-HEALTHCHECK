@@ -1,0 +1,84 @@
+{
+  "schema_version": "1.0",
+  "document_id": "66dc69f19b97eea9",
+  "metadata": {
+    "url": "https://info.saude.df.gov.br/saude-do-cidadao/painel-infosaude-farmacias-de-alto-custo/estoque-de-medicamentos/",
+    "url_final": "https://info.saude.df.gov.br/saude-do-cidadao/painel-infosaude-farmacias-de-alto-custo/estoque-de-medicamentos/",
+    "url_canonica": "https://info.saude.df.gov.br/saude-do-cidadao/painel-infosaude-farmacias-de-alto-custo/estoque-de-medicamentos/",
+    "titulo": "Painel Infosaude - Estoque de Medicamentos -",
+    "descricao": "Confira o Estoque de Medicamentos na Rede Pública do Distrito Federal aqui no Portal Infosaúde.",
+    "autor": null,
+    "data_publicacao": "2024-05-27T18:31:42+00:00",
+    "idioma": "pt-BR",
+    "site_nome": null,
+    "categorias": [],
+    "palavras_chave": [],
+    "encoding": "UTF-8",
+    "data_extracao": "2026-10-09T19:05:24.887894Z"
+  },
+  "conteudo": {
+    "titulo_principal": "Painel Infosaude - Estoque de Medicamentos -",
+    "secoes": [
+      {
+        "titulo": null,
+        "nivel": null,
+        "conteudo": [
+          {
+            "tipo": "paragrafo",
+            "texto": "Infosaúde > Saúde do Cidadão > Medicamentos"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Secretaria de Saúde do Distrito Federal Desenvolvido pela Diretoria de Gestão de Informações Estratégicas – DGIE/SETIS/SES – DF | 2026 Infosaúde | CIEGES-DF"
+          }
+        ]
+      }
+    ],
+    "texto_plano": "Infosaúde > Saúde do Cidadão > Medicamentos\n\nSecretaria de Saúde do Distrito Federal Desenvolvido pela Diretoria de Gestão de Informações Estratégicas – DGIE/SETIS/SES – DF | 2026 Infosaúde | CIEGES-DF"
+  },
+  "recursos": {
+    "links": [
+      {
+        "texto": "Voltar",
+        "url": "https://info.saude.df.gov.br/"
+      }
+    ],
+    "imagens": [
+      {
+        "url": "https://info.saude.df.gov.br/wp-content/uploads/2024/05/Logo-INFOSaude_350-1.png",
+        "alt": null,
+        "legenda": null
+      },
+      {
+        "url": "https://info.saude.df.gov.br/wp-content/uploads/2024/05/Logo_GDF-60x71-1.png",
+        "alt": null,
+        "legenda": null
+      }
+    ]
+  },
+  "extracao": {
+    "metodo": "trafilatura_xml",
+    "metodo_aquisicao": "requests",
+    "conteudo_encontrado": true,
+    "status_http": 200,
+    "hash_conteudo": "81d1fce862be57d060888f761c9bc158d9bb0cf94d5d571410a3edc1e63a9df8",
+    "observacoes": [],
+    "qualidade": {
+      "pontuacao": 90,
+      "nivel": "alto",
+      "fatores": [
+        "conteudo_principal_encontrado",
+        "extracao_estruturada_trafilatura"
+      ]
+    },
+    "redirecionamentos": 0,
+    "tempo_download_s": 7.572,
+    "estatisticas": {
+      "caracteres": 201,
+      "palavras": 30,
+      "secoes": 1,
+      "links": 1,
+      "imagens": 2
+    }
+  }
+}

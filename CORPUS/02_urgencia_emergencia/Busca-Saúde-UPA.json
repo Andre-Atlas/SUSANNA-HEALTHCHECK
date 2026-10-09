@@ -1,0 +1,100 @@
+{
+  "schema_version": "1.0",
+  "document_id": "d21ca7964c3559ba",
+  "metadata": {
+    "url": "https://info.saude.df.gov.br/busca-saude-upa/",
+    "url_final": "https://info.saude.df.gov.br/busca-saude-upa/",
+    "url_canonica": "https://info.saude.df.gov.br/busca-saude-upa/",
+    "titulo": "Busca Saúde UPA -",
+    "descricao": "Unidade de Pronto Atendimento – UPA O que é e como funciona o atendimento na UPA? A Unidade de Pronto […]",
+    "autor": null,
+    "data_publicacao": "2024-05-11T16:48:27+00:00",
+    "idioma": "pt-BR",
+    "site_nome": null,
+    "categorias": [],
+    "palavras_chave": [],
+    "encoding": "UTF-8",
+    "data_extracao": "2026-10-09T19:04:19.067638Z"
+  },
+  "conteudo": {
+    "titulo_principal": "Busca Saúde UPA -",
+    "secoes": [
+      {
+        "titulo": null,
+        "nivel": null,
+        "conteudo": [
+          {
+            "tipo": "paragrafo",
+            "texto": "Início » Busca Saúde UPA"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "A Unidade de Pronto Atendimento (UPA) é o estabelecimento de urgência e emergência para serviços de média a alta complexidade. Ela possui mais recursos que uma Unidade Básica de Saúde (UBS), porém, menos recursos que um Hospital. A classificação de risco do atendimento determina a rapidez e prioridade com que o paciente será atendido."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Comparecimento espontâneo ao guichê de atendimento da UPA ou entrada pelo Serviço de Atendimento Móvel de Urgência (SAMU 192)."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Funciona 7 (sete) dias por semana, 24 (vinte e quatro) horas por dia."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "A classificação de risco (a cor da pulseira) é feita conforme a gravidade de cada caso e segue a seguinte ordem:"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Febre, dor no peito, dores no corpo, paralisia no rosto, mal-estar, enjoo, vômito, tosse, desconforto respiratório, dormência/formigamento nos braços ou pernas, acidentes com perfurocortantes, perda de consciência (desmaio), quedas, sangramentos, coceira, inchaços, dentre outras urgências."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Sintomas de Acidente Vascular Cerebral (AVC): Dificuldade de enxergar, forte dor de cabeça súbita, formigamento ou fraqueza em algum lado do corpo (face, braço ou perna), desvio na boca, dificuldade para falar."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Sintomas de Infarto Agudo do Miocárdio (IAM): Suor frio, tontura, falta de ar, dor no ombro, braço ou costas, dor abdominal, palpitações cardíacas, palidez, náuseas ou vômitos, cansaço e dificuldade para dormir"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Para saber mais sobre as Unidades de Pronto Atendimento acesse aqui."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Secretaria de Saúde do Distrito Federal Desenvolvido pela Diretoria de Gestão de Informações Estratégicas – DGIE/SETIS/SES – DF | 2026 Infosaúde | CIEGES-DF"
+          }
+        ]
+      }
+    ],
+    "texto_plano": "Início » Busca Saúde UPA\n\nA Unidade de Pronto Atendimento (UPA) é o estabelecimento de urgência e emergência para serviços de média a alta complexidade. Ela possui mais recursos que uma Unidade Básica de Saúde (UBS), porém, menos recursos que um Hospital. A classificação de risco do atendimento determina a rapidez e prioridade com que o paciente será atendido.\n\nComparecimento espontâneo ao guichê de atendimento da UPA ou entrada pelo Serviço de Atendimento Móvel de Urgência (SAMU 192).\n\nFunciona 7 (sete) dias por semana, 24 (vinte e quatro) horas por dia.\n\nA classificação de risco (a cor da pulseira) é feita conforme a gravidade de cada caso e segue a seguinte ordem:\n\nFebre, dor no peito, dores no corpo, paralisia no rosto, mal-estar, enjoo, vômito, tosse, desconforto respiratório, dormência/formigamento nos braços ou pernas, acidentes com perfurocortantes, perda de consciência (desmaio), quedas, sangramentos, coceira, inchaços, dentre outras urgências.\n\nSintomas de Acidente Vascular Cerebral (AVC): Dificuldade de enxergar, forte dor de cabeça súbita, formigamento ou fraqueza em algum lado do corpo (face, braço ou perna), desvio na boca, dificuldade para falar.\n\nSintomas de Infarto Agudo do Miocárdio (IAM): Suor frio, tontura, falta de ar, dor no ombro, braço ou costas, dor abdominal, palpitações cardíacas, palidez, náuseas ou vômitos, cansaço e dificuldade para dormir\n\nPara saber mais sobre as Unidades de Pronto Atendimento acesse aqui.\n\nSecretaria de Saúde do Distrito Federal Desenvolvido pela Diretoria de Gestão de Informações Estratégicas – DGIE/SETIS/SES – DF | 2026 Infosaúde | CIEGES-DF"
+  },
+  "recursos": {
+    "links": [],
+    "imagens": []
+  },
+  "extracao": {
+    "metodo": "trafilatura_xml",
+    "metodo_aquisicao": "requests",
+    "conteudo_encontrado": true,
+    "status_http": 200,
+    "hash_conteudo": "ac5277f33eccc44f4856ba3d0ef7eb2d28817236c39018d6776580ac0043eae0",
+    "observacoes": [],
+    "qualidade": {
+      "pontuacao": 100,
+      "nivel": "alto",
+      "fatores": [
+        "conteudo_principal_encontrado",
+        "extracao_estruturada_trafilatura"
+      ]
+    },
+    "redirecionamentos": 0,
+    "tempo_download_s": 2.276,
+    "estatisticas": {
+      "caracteres": 1619,
+      "palavras": 245,
+      "secoes": 1,
+      "links": 0,
+      "imagens": 0
+    }
+  }
+}

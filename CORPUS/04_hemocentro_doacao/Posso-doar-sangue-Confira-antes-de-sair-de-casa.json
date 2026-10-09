@@ -1,0 +1,85 @@
+{
+  "schema_version": "1.0",
+  "document_id": "c00b9ba7a7a72c83",
+  "metadata": {
+    "url": "https://fhb.df.gov.br/verificador-de-aptidao/",
+    "url_final": "https://fhb.df.gov.br/verificador-de-aptidao/",
+    "url_canonica": "https://fhb.df.gov.br/verificador-de-aptidao",
+    "titulo": "Posso doar sangue? Confira antes de sair de casa",
+    "descricao": null,
+    "autor": null,
+    "data_publicacao": null,
+    "idioma": "pt-BR",
+    "site_nome": "Fundação Hemocentro de Brasília",
+    "categorias": [],
+    "palavras_chave": [],
+    "encoding": "UTF-8",
+    "data_extracao": "2026-10-09T19:05:49.590740Z"
+  },
+  "conteudo": {
+    "titulo_principal": "Posso doar sangue? Confira antes de sair de casa",
+    "secoes": [
+      {
+        "titulo": null,
+        "nivel": null,
+        "conteudo": [
+          {
+            "tipo": "paragrafo",
+            "texto": "Doação de sangue"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Responda algumas perguntas e veja se algo impede sua doação agora — e por quanto tempo. A decisão final é sempre da equipe de triagem clínica, no dia da doação."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Critérios atualizados em 30/09/2026. Vários prazos de espera ficaram menores. Se você já foi impedido de doar, vale conferir de novo."
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Por onde você quer começar?"
+          },
+          {
+            "tipo": "paragrafo",
+            "texto": "Ferramenta informativa, baseada no Manual de Triagem Clínica da FHB (MA Gtric 01, versão 7) e na Portaria GM/MS nº 11.685/2026. Ela não guarda suas respostas. A aptidão só é confirmada pela equipe de triagem clínica, em entrevista individual, no dia da doação. Dúvidas: (61) 3020-4447 / 4413 ou WhatsApp (61) 99136-2495."
+          }
+        ]
+      }
+    ],
+    "texto_plano": "Doação de sangue\n\nResponda algumas perguntas e veja se algo impede sua doação agora — e por quanto tempo. A decisão final é sempre da equipe de triagem clínica, no dia da doação.\n\nCritérios atualizados em 30/09/2026. Vários prazos de espera ficaram menores. Se você já foi impedido de doar, vale conferir de novo.\n\nPor onde você quer começar?\n\nFerramenta informativa, baseada no Manual de Triagem Clínica da FHB (MA Gtric 01, versão 7) e na Portaria GM/MS nº 11.685/2026. Ela não guarda suas respostas. A aptidão só é confirmada pela equipe de triagem clínica, em entrevista individual, no dia da doação. Dúvidas: (61) 3020-4447 / 4413 ou WhatsApp (61) 99136-2495."
+  },
+  "recursos": {
+    "links": [
+      {
+        "texto": "Ver o que mudou",
+        "url": "https://www.fhb.df.gov.br/novas-regras"
+      }
+    ],
+    "imagens": []
+  },
+  "extracao": {
+    "metodo": "trafilatura_xml",
+    "metodo_aquisicao": "requests",
+    "conteudo_encontrado": true,
+    "status_http": 200,
+    "hash_conteudo": "977dc21111998ceee4dd01bd42090223a075a8c5bbe372c2a0eeaac7428f4af5",
+    "observacoes": [],
+    "qualidade": {
+      "pontuacao": 90,
+      "nivel": "alto",
+      "fatores": [
+        "conteudo_principal_encontrado",
+        "extracao_estruturada_trafilatura"
+      ]
+    },
+    "redirecionamentos": 0,
+    "tempo_download_s": 0.935,
+    "estatisticas": {
+      "caracteres": 664,
+      "palavras": 111,
+      "secoes": 1,
+      "links": 1,
+      "imagens": 0
+    }
+  }
+}
