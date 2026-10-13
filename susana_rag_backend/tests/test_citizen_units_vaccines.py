@@ -11,6 +11,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from app.citizen.validators import validate_cns, validate_cpf
+from app.citizen.schemas import CitizenRegisterRequest
 from app.main import app
 
 client = TestClient(app)
@@ -77,6 +78,18 @@ def _generate_valid_cpf() -> str:
 # ===========================================================================
 # 2. Testes de Cadastro, Login e Perfil do Cidadão (SQLite Real)
 # ===========================================================================
+def test_citizen_registration_accepts_prefer_not_to_say_sex():
+    request = CitizenRegisterRequest(
+        nome_completo="Alex Santos",
+        cpf="12345678909",
+        data_nascimento="1994-05-15",
+        sexo_biologico="N",
+        ra_residencia="ceilandia",
+    )
+
+    assert request.sexo_biologico == "N"
+
+
 def test_citizen_registration_and_login_flow():
     # Usar CPF matematicamente válido gerado dinamicamente para evitar colisões
     cpf_valido = _generate_valid_cpf()

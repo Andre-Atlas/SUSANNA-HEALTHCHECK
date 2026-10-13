@@ -83,6 +83,50 @@ interface VaccineItem {
   onde_tomar: string;
 }
 
+function formatApiError(detail: unknown, fallback: string): string {
+  if (typeof detail === 'string' && detail.trim()) return detail;
+
+  if (Array.isArray(detail)) {
+    const fieldLabels: Record<string, string> = {
+      bairro_ou_setor: 'Bairro ou setor',
+      cns: 'Cartão SUS',
+      cpf: 'CPF',
+      data_nascimento: 'Data de nascimento',
+      gestante: 'Gestação',
+      nome_completo: 'Nome completo',
+      ra_residencia: 'Região Administrativa',
+      sexo_biologico: 'Sexo biológico',
+      telefone: 'Telefone',
+    };
+    const messages = detail.flatMap((item: unknown) => {
+      if (typeof item === 'string') return [item];
+      if (!item || typeof item !== 'object') return [];
+
+      const issue = item as { loc?: unknown[]; msg?: unknown };
+      if (typeof issue.msg !== 'string' || !issue.msg.trim()) return [];
+
+      const field = issue.loc
+        ?.filter((part): part is string => typeof part === 'string' && part !== 'body')
+        .at(-1);
+      const rawMessage = issue.msg === 'Field required'
+        ? 'campo obrigatório'
+        : issue.msg.replace(/^Value error,\s*/, '');
+      const message = rawMessage.replace(/[.!?\s]+$/, '');
+      return [field ? `${fieldLabels[field] ?? field}: ${message}` : message];
+    });
+
+    if (messages.length) return `${messages.join('. ')}.`;
+  }
+
+  if (detail && typeof detail === 'object') {
+    const issue = detail as { message?: unknown; msg?: unknown };
+    if (typeof issue.message === 'string') return issue.message;
+    if (typeof issue.msg === 'string') return issue.msg;
+  }
+
+  return fallback;
+}
+
 // Epidemiological Data for Dengue
 const DENGUE_CASES = [22, 30, 28, 41, 55, 49, 62, 58, 44, 36];
 const REGION_BARS = [
@@ -120,7 +164,8 @@ export default function Home() {
   // Citizen Profile & Auth State
   const [citizen, setCitizen] = useState<CitizenProfile | null>(null);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [authMode, setAuthMode] = useState<'cadastro' | 'login'>('cadastro');
+  const [authMode, setAuthMode] = useState<'cadastro' | 'login'>('login');
+  const [chatRegistrationDismissed, setChatRegistrationDismissed] = useState(false);
   const [authLoading, setAuthLoading] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
   const [authSuccess, setAuthSuccess] = useState<string | null>(null);
@@ -129,12 +174,12 @@ export default function Home() {
   const [formNome, setFormNome] = useState('');
   const [formCpf, setFormCpf] = useState('');
   const [formCns, setFormCns] = useState('');
-  const [formDataNasc, setFormDataNasc] = useState('1994-05-18');
-  const [formSexo, setFormSexo] = useState('F');
+  const [formDataNasc, setFormDataNasc] = useState('');
+  const [formSexo, setFormSexo] = useState('');
   const [formGestante, setFormGestante] = useState(false);
-  const [formRa, setFormRa] = useState('ceilandia');
-  const [formBairro, setFormBairro] = useState('Ceilândia Sul');
-  const [formTelefone, setFormTelefone] = useState('(61) 98765-4321');
+  const [formRa, setFormRa] = useState('');
+  const [formBairro, setFormBairro] = useState('');
+  const [formTelefone, setFormTelefone] = useState('');
 
   // Citizen Login Form
   const [loginDoc, setLoginDoc] = useState('');
@@ -177,41 +222,18 @@ export default function Home() {
   // Carregamento Inicial do Cidadão e RAs
   // -------------------------------------------------------------------------
   useEffect(() => {
-    // 1. Carregar perfil do cidadão salvo ou buscar do backend
-    const savedCitizen = localStorage.getItem('susana_citizen');
-    if (savedCitizen) {
-      try {
-        const parsed = JSON.parse(savedCitizen);
-        setCitizen(parsed);
-      } catch {
-        fetchDefaultCitizen();
-      }
-    } else {
-      fetchDefaultCitizen();
-    }
+    // O perfil não é restaurado do cache; é carregado somente após login ou cadastro.
+    localStorage.removeItem('susana_citizen');
 
-    // 2. Carregar lista de RAs oficiais do DF
+    // Carregar lista de RAs oficiais do DF
     fetchRasList();
 
-    // 3. Carregar sessões de chat
+    // Carregar sessões de chat
     fetchChatSessions();
 
-    // 4. Carregar guia oficial de vacinas
+    // Carregar guia oficial de vacinas
     fetchVaccineGuide('todas');
   }, []);
-
-  const fetchDefaultCitizen = async () => {
-    try {
-      const res = await fetch('http://localhost:8000/api/citizen/me');
-      if (res.ok) {
-        const data: CitizenProfile = await res.json();
-        setCitizen(data);
-        localStorage.setItem('susana_citizen', JSON.stringify(data));
-      }
-    } catch (err) {
-      console.warn('Backend ainda iniciando ou inacessível para cidadão padrão:', err);
-    }
-  };
 
   const fetchRasList = async () => {
     try {
@@ -437,6 +459,8 @@ export default function Home() {
   // Sync com Hash Routing
   // -------------------------------------------------------------------------
   useEffect(() => {
+    let isInitialRoute = true;
+
     const handleHash = () => {
       const hash = window.location.hash.replace('#/', '').replace('#', '');
       if (!hash || hash === 'landing') {
@@ -452,8 +476,13 @@ export default function Home() {
         };
         if (tabMap[hash] !== undefined) {
           setActiveTab(tabMap[hash]);
+          if (isInitialRoute && !citizen) {
+            setAuthMode(hash === 'assistente' ? 'cadastro' : 'login');
+            setIsAuthModalOpen(true);
+          }
         }
       }
+      isInitialRoute = false;
     };
 
     handleHash();
@@ -480,6 +509,12 @@ export default function Home() {
 
   const navigateToTab = (index: number) => {
     setActiveTab(index);
+    if (index === 1 && !citizen && !chatRegistrationDismissed) {
+      setAuthMode('cadastro');
+      setAuthError(null);
+      setAuthSuccess(null);
+      setIsAuthModalOpen(true);
+    }
     const tabs = ['inicio', 'assistente', 'servicos', 'monitoramento', 'historico'];
     window.location.hash = `#/${tabs[index]}`;
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -487,7 +522,22 @@ export default function Home() {
 
   const enterApp = (tabIndex: number = 0) => {
     setViewMode('app');
+    if (!citizen && tabIndex !== 1) {
+      setAuthMode('login');
+      setAuthError(null);
+      setAuthSuccess(null);
+      setIsAuthModalOpen(true);
+    }
     navigateToTab(tabIndex);
+  };
+
+  const closeAuthModal = () => {
+    if (activeTab === 1) {
+      setChatRegistrationDismissed(true);
+    }
+    setIsAuthModalOpen(false);
+    setAuthError(null);
+    setAuthSuccess(null);
   };
 
   const exitApp = () => {
@@ -733,11 +783,10 @@ export default function Home() {
 
       const data = await res.json();
       if (!res.ok) {
-        throw new Error(data.detail || 'Erro ao realizar cadastro.');
+        throw new Error(formatApiError(data.detail, 'Erro ao realizar cadastro.'));
       }
 
       setCitizen(data);
-      localStorage.setItem('susana_citizen', JSON.stringify(data));
       setAuthSuccess('Cadastro realizado com sucesso!');
       setTimeout(() => {
         setIsAuthModalOpen(false);
@@ -769,11 +818,10 @@ export default function Home() {
 
       const data = await res.json();
       if (!res.ok) {
-        throw new Error(data.detail || 'Documento ou data de nascimento incorretos.');
+        throw new Error(formatApiError(data.detail, 'Documento ou data de nascimento incorretos.'));
       }
 
       setCitizen(data);
-      localStorage.setItem('susana_citizen', JSON.stringify(data));
       setAuthSuccess(`Bem-vindo de volta, ${data.primeiro_nome}!`);
       setTimeout(() => {
         setIsAuthModalOpen(false);
@@ -943,6 +991,7 @@ export default function Home() {
 
             {/* Cartão de Identificação do Cidadão no Sidebar */}
             <div
+              className="citizen-card"
               style={{
                 padding: '10px 12px',
                 margin: '0 0 16px',
@@ -961,7 +1010,7 @@ export default function Home() {
                   letterSpacing: '0.04em',
                 }}
               >
-                Cidadão do DF
+                {citizen ? 'Cidadão do DF' : 'Acesso ao cidadão'}
               </div>
               <div
                 style={{
@@ -974,7 +1023,7 @@ export default function Home() {
                   marginTop: '2px',
                 }}
               >
-                {citizen ? citizen.nome_completo : 'Cidadão não identificado'}
+                {citizen ? citizen.nome_completo : 'Entrar ou fazer cadastro'}
               </div>
               <div style={{ fontSize: '11px', color: '#2563eb', marginTop: '2px', display: 'flex', alignItems: 'center', gap: '4px' }}>
                 <span>📍</span>
@@ -987,6 +1036,7 @@ export default function Home() {
               )}
               <button
                 type="button"
+                className="citizen-card-action"
                 onClick={() => {
                   setAuthMode(citizen ? 'cadastro' : 'login');
                   setIsAuthModalOpen(true);
@@ -1005,7 +1055,7 @@ export default function Home() {
                   transition: 'all 0.2s ease',
                 }}
               >
-                {citizen ? '👤 Alterar dados / Perfil' : '🔐 Identificar / Cadastrar'}
+                {citizen ? '👤 Alterar dados / Perfil' : 'Entrar'}
               </button>
             </div>
 
@@ -1107,7 +1157,6 @@ export default function Home() {
                   className="c g hv q"
                   onClick={() => {
                     navigateToTab(1);
-                    handleSendMessage('Quais são as vacinas e serviços recomendados para a minha idade?');
                   }}
                 >
                   <b>Falar com a Suzanna</b>
@@ -1989,6 +2038,9 @@ export default function Home() {
         >
           <div
             className="g"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="citizen-auth-title"
             style={{
               width: '100%',
               maxWidth: '520px',
@@ -2004,7 +2056,8 @@ export default function Home() {
             {/* Fechar Modal */}
             <button
               type="button"
-              onClick={() => setIsAuthModalOpen(false)}
+              onClick={closeAuthModal}
+              aria-label="Fechar janela de identificação"
               style={{
                 position: 'absolute',
                 top: '16px',
@@ -2019,30 +2072,34 @@ export default function Home() {
               ✕
             </button>
 
-            <h2 style={{ margin: '0 0 6px', fontSize: '20px', color: '#0a1b3d' }}>
-              Identificação do <b>Cidadão SUS-DF</b>
+            <h2 id="citizen-auth-title" style={{ margin: '0 0 6px', fontSize: '20px', color: '#0a1b3d' }}>
+              {authMode === 'login' ? 'Entrar no SUS Digital' : <>Identificação do <b>Cidadão SUS-DF</b></>}
             </h2>
             <p style={{ margin: '0 0 16px', fontSize: '13px', color: '#64748b' }}>
-              Validação algorítmica oficial de CPF (módulo 11) e Cartão SUS (DATASUS).
+              {authMode === 'login'
+                ? 'Acesse com seu CPF ou Cartão SUS e data de nascimento.'
+                : 'Validação algorítmica oficial de CPF (módulo 11) e Cartão SUS (DATASUS).'}
             </p>
 
             {/* Alternância de Abas: Cadastro vs Login */}
-            <div className="tabs g" style={{ marginBottom: '16px', width: '100%' }}>
+            <div className="auth-tabs" role="tablist" aria-label="Acesso do cidadão">
               <button
                 type="button"
-                className={authMode === 'cadastro' ? 'on' : ''}
+                role="tab"
+                aria-selected={authMode === 'cadastro'}
+                className={authMode === 'cadastro' ? 'auth-tab on' : 'auth-tab'}
                 onClick={() => setAuthMode('cadastro')}
-                style={{ flex: 1 }}
               >
                 Novo Cadastro
               </button>
               <button
                 type="button"
-                className={authMode === 'login' ? 'on' : ''}
+                role="tab"
+                aria-selected={authMode === 'login'}
+                className={authMode === 'login' ? 'auth-tab on' : 'auth-tab'}
                 onClick={() => setAuthMode('login')}
-                style={{ flex: 1 }}
               >
-                Já Cadastrado (Login)
+                Entrar
               </button>
             </div>
 
@@ -2145,8 +2202,10 @@ export default function Home() {
                       onChange={(e) => setFormSexo(e.target.value)}
                       style={{ width: '100%', padding: '8px 12px', borderRadius: '8px', border: '1px solid var(--b2)', fontSize: '13px' }}
                     >
+                      <option value="" disabled>Selecione</option>
                       <option value="F">Feminino</option>
                       <option value="M">Masculino</option>
+                      <option value="N">Prefiro não informar</option>
                     </select>
                   </div>
                 </div>
@@ -2172,10 +2231,12 @@ export default function Home() {
                       Região Administrativa (RA) *
                     </label>
                     <select
+                      required
                       value={formRa}
                       onChange={(e) => setFormRa(e.target.value)}
                       style={{ width: '100%', padding: '8px 12px', borderRadius: '8px', border: '1px solid var(--b2)', fontSize: '13px' }}
                     >
+                      <option value="" disabled>Selecione uma região</option>
                       {raList.map((r) => (
                         <option key={r.ra} value={r.ra}>
                           {r.ra_display}

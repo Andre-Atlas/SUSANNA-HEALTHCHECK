@@ -13,7 +13,7 @@ class CitizenRegisterRequest(BaseModel):
     cpf: str = Field(..., description="CPF válido com 11 dígitos")
     cns: Optional[str] = Field(None, description="Cartão Nacional de Saúde (15 dígitos)")
     data_nascimento: str = Field(..., description="Data de nascimento no formato YYYY-MM-DD")
-    sexo_biologico: str = Field("F", pattern="^(M|F)$", description="Sexo biológico (M ou F)")
+    sexo_biologico: str = Field("F", pattern="^(M|F|N)$", description="Sexo biológico (M, F ou N para não informado)")
     gestante: bool = Field(False, description="Indicador se a cidadã está gestante")
     ra_residencia: str = Field(..., min_length=2, max_length=60, description="Região Administrativa do DF")
     bairro_ou_setor: Optional[str] = Field(None, max_length=100)

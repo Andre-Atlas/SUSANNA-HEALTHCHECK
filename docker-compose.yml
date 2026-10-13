@@ -6,6 +6,8 @@ services:
       context: ./susana_rag_backend
       dockerfile: Dockerfile
     container_name: susana-backend
+    env_file:
+      - ./susana_rag_backend/.env
     restart: unless-stopped
     ports:
       - "8000:8000"
