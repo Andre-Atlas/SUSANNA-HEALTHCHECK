@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from functools import lru_cache
 from pathlib import Path
+from typing import Optional
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -26,7 +27,7 @@ class Settings(BaseSettings):
     # Retrieval
     embedding_model: str = "paraphrase-multilingual-MiniLM-L12-v2"
     embedding_max_seq_length: int = 512
-    similarity_threshold: float = 0.75
+    similarity_threshold: float = 0.65
     top_k: int = 3
     docs_dir: Path = BACKEND_DIR / "data" / "corpus"
     project_corpus_dir: Path = (
@@ -40,6 +41,16 @@ class Settings(BaseSettings):
     # Guardrail
     guardrail_model_uri: str = "models:/susana-guardrail@champion"
     guardrail_enabled_ml: bool = True
+
+    # Ingestão Autônoma & Segurança
+    ingestion_api_key: Optional[str] = "susana-ingest-secret-2026"
+    relevance_confident_threshold: float = 0.35
+
+    # Pesquisa Online Assíncrona & Complementação de Base
+    online_search_enabled: bool = True
+    online_search_timeout_s: float = 3.5
+    online_search_max_results: int = 3
+    online_search_auto_ingest: bool = True
 
     # MLOps
     mlflow_tracking_uri: str = "sqlite:///" + str(BACKEND_DIR / "mlflow.db")

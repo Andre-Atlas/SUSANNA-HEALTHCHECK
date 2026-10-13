@@ -8,17 +8,18 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Susana — Assistente de Saúde SUS-DF",
+  title: "SUS Digital · Suzanna",
   description: "Assistente virtual do SUS-DF para informações administrativas e institucionais.",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <html
-      lang="pt-BR"
-      className={`${inter.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col">{children}</body>
+    <html lang="pt-BR" className={`${inter.variable} h-full antialiased`}>
+      <body className="min-h-full antialiased">{children}</body>
     </html>
   );
 }

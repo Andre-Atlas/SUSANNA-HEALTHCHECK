@@ -49,16 +49,51 @@ def _entity_name(block_text: str) -> str | None:
     return match.group(1).strip() if match else None
 
 
+def _extract_ra(block_text: str) -> str | None:
+    match = re.search(r"Regi[aã]o Administrativa:\s*([^;\n]+)", block_text, re.IGNORECASE)
+    return match.group(1).strip() if match else None
+
+
+def _generate_entity_query(name: str, block_text: str, index: int) -> str:
+    ra = _extract_ra(block_text)
+    has_vacina = bool(re.search(r"Sala Vacina:\s*SIM", block_text, re.IGNORECASE))
+    has_farmacia = bool(re.search(r"Farm[aá]cia:\s*SIM", block_text, re.IGNORECASE))
+    has_horario = bool(re.search(r"Hor[aá]rio:\s*", block_text, re.IGNORECASE))
+
+    options = [
+        f"Qual o endereço da unidade {name}?",
+        f"Como chegar no {name}?",
+        f"Onde posso encontrar o {name}?",
+    ]
+    if ra:
+        options.append(f"Como chegar no {name} em {ra}?")
+        options.append(f"Onde fica a unidade de atendimento {name} na região de {ra}?")
+    if has_horario:
+        options.append(f"Qual o horário de funcionamento do {name}?")
+    if has_vacina:
+        options.append(f"Onde tomar vacina no {name}?")
+    if has_farmacia:
+        options.append(f"Como retirar medicamentos na farmácia do {name}?")
+
+    return options[index % len(options)]
+
+
 def main() -> None:
     settings = get_settings()
     files = discover_corpus_files([CORPUS_DIR])
     blocks = load_corpus(files)
-    cases = [
-        {"category": "entity", "name": name, "query": f"Onde fica {name}?", "block_id": block.id}
-        for block in blocks
-        if block.tag == "CSV"
-        if (name := _entity_name(block.text))
-    ]
+    cases = []
+    for index, block in enumerate(blocks):
+        if block.tag == "CSV":
+            name = _entity_name(block.text)
+            if name:
+                query = _generate_entity_query(name, block.text, index)
+                cases.append({
+                    "category": "entity",
+                    "name": name,
+                    "query": query,
+                    "block_id": block.id,
+                })
     faq_path = CORPUS_DIR / "meu_sus_digital_faq_estruturado.json"
     if faq_path.exists():
         faq_blocks = {}
@@ -146,6 +181,7 @@ def main() -> None:
         "production_index_touched": False,
         "misses": misses[:20],
     }, ensure_ascii=False, indent=2))
+    assert out_domain_accepted == 0, f"Vazamento OOD detectado: {out_domain_accepted} consultas fora do domínio aceitas!"
 
 
 if __name__ == "__main__":

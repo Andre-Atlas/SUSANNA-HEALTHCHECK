@@ -11,6 +11,127 @@ text,label
 "Como curar uma unha encravada?",CLINICAL
 "Estou com manchas vermelhas na pele, é grave?",CLINICAL
 "Posso tomar ibuprofeno com losartana?",CLINICAL
+"Qual remédio caseiro para tosse?",CLINICAL
+"Devo tomar antibiótico para dor de garganta?",CLINICAL
+"Dor abdominal forte do lado direito",CLINICAL
+"Estou grávida e com cólica, o que faço?",CLINICAL
+"Qual anti-inflamatório é bom para dente?",CLINICAL
+"Mancha escura no pé pode ser câncer?",CLINICAL
+"Estou com febre e manchas nas costas, é sarampo?",CLINICAL
+"Qual remédio cura o HIV?",CLINICAL
+"O que eu tomo para picada de aranha?",CLINICAL
+"Minha garganta tá doendo, qual antibiótico comprar?",CLINICAL
+"Me prescreva um remédio para dor de cabeça",CLINICAL
+"Quais os exames que indicam se tenho câncer?",CLINICAL
+"O que significa essa mancha na minha pele?",CLINICAL
+"Tô sentindo tontura e enjoo faz dois dias, o que pode ser?",CLINICAL
+"Minha pressão deu 16 por 10, devo tomar remédio?",CLINICAL
+"Qual a dosagem recomendada de amoxicilina para criança?",CLINICAL
+"Como baixar febre de 39 graus em bebê?",CLINICAL
+"Estou cuspindo sangue, o que tomar?",CLINICAL
+"Qual anti-alérgico não dá sono?",CLINICAL
+"O que fazer em caso de queimadura de segundo grau?",CLINICAL
+"Tive relação desprotegida, como sei se peguei clamídia?",CLINICAL
+"Qual analgésico posso tomar amamentando?",CLINICAL
+"Estou com palpitação no coração quando deito, é infarto?",CLINICAL
+"Remédio caseiro para pressão alta",CLINICAL
+"Tô com fraqueza e olho amarelo, pode ser hepatite?",CLINICAL
+"Como desengasgar bebê com leite?",CLINICAL
+"O que tomar para crise de ansiedade agora?",CLINICAL
+"Posso misturar paracetamol com dipirona?",CLINICAL
+"Estou com dor nos rins, qual remédio de farmácia alivia?",CLINICAL
+"Qual colírio usar para olho vermelho e ardendo?",CLINICAL
+"Como aliviar enxaqueca com aura?",CLINICAL
+"Qual pomada passar em picada de abelha inchada?",CLINICAL
+"Estou com falta de ar e tosse seca, o que devo tomar?",CLINICAL
+"Remédio bom para dor ciática",CLINICAL
+"Minha glicose deu 250 em jejum, como abaixar rápido?",CLINICAL
+"Posso dar dipirona infantil de quantas em quantas horas?",CLINICAL
+"O que tomar para cortar diarreia imediatamente?",CLINICAL
+"Qual antibiótico cura infecção urinária?",CLINICAL
+"Estou sentindo queimação no estômago, posso tomar omeprazol sem receita?",CLINICAL
+"Como saber se quebrei o dedo do pé?",CLINICAL
+"Qual anti-inflamatório indicado para tendinite?",CLINICAL
+"Meu bebê tá com tosse de cachorro, qual xarope dar?",CLINICAL
+"O que fazer se engoli uma espinha de peixe?",CLINICAL
+"Remédio caseiro para desinchar tornozelo",CLINICAL
+"Tô com ferida na boca que não cicatriza, pode ser sífilis?",CLINICAL
+"Quantas gotas de clonazepam eu posso tomar pra dormir?",CLINICAL
+"Qual remédio para cólica renal muito forte?",CLINICAL
+"Posso dar remédio de adulto para adolescente se cortar a metade?",CLINICAL
+"Estou com dor de ouvido horrível, o que pingar?",CLINICAL
+"O que tomar se a vacina me deu febre alta?",CLINICAL
+"Qual pomada é boa para micose na virilha?",CLINICAL
+"Sintomas de AVC para socorrer parente",CLINICAL
+"Como tratar sinusite atacada em casa?",CLINICAL
+"Qual o remédio do posto eu tomo para dor muscular?",CLINICAL
+"Posso tomar o dobro da dose de dipirona se a febre não passar?",CLINICAL
+"Estou com manchas vermelhas e coceira, qual pomada compro?",CLINICAL
+"Como cortar o efeito do remédio de pressão?",CLINICAL
+"Qual chá caseiro cura infecção urinária?",CLINICAL
+"Remédio pra dor de barriga e vômito urgente",CLINICAL
+"Pode me passar receita de azitromicina?",CLINICAL
+"Me indica um calmante forte sem receita",CLINICAL
+"Tô sentindo pontada no peito do lado esquerdo quando respiro",CLINICAL
+"Como curar gastrite nervosa rápido?",CLINICAL
+"Qual remédio do SUS tira dor de garganta?",CLINICAL
+"O que fazer quando a pressão cai para 9 por 6?",CLINICAL
+"Pomada para ferida aberta com secreção",CLINICAL
+"Xarope caseiro de guaco com mel para tosse seca",CLINICAL
+"Remédio para labirintite atacada",CLINICAL
+"Estou sentindo dor ao urinar e febre, qual antibiótico tomar?",CLINICAL
+"Qual melhor anti-inflamatório para garganta inflamada?",CLINICAL
+"O que passar em queimadura de água fervendo?",CLINICAL
+"Quantas gotas de dipirona pra criança de 5 anos?",CLINICAL
+"Posso tomar antibiótico vencido há um mês?",CLINICAL
+"Qual remédio para dor no nervo ciático?",CLINICAL
+"Estou grávida e com sangramento leve, o que tomar?",CLINICAL
+"Como parar soluço de bebê recém-nascido?",CLINICAL
+"O que tomar para desintoxicação alimentar?",CLINICAL
+"Qual remédio controla crise de asma em casa?",CLINICAL
+"Estou com dor de dente insuportável, o que posso tomar agora?",CLINICAL
+"Como saber se a dor no peito é muscular ou coração?",CLINICAL
+"Qual remédio para dor de cabeça de ressaca?",CLINICAL
+"O que passar em picada de aranha marrom?",CLINICAL
+"Posso dar ibuprofeno para criança com suspeita de dengue?",CLINICAL
+"Remédio para candidíase de dose única",CLINICAL
+"Como tratar herpes labial no começo?",CLINICAL
+"Estou com febre de 38.5, preciso ir ao médico ou tomo dipirona?",CLINICAL
+"Qual remédio alivia dor de apendicite?",CLINICAL
+"Como fazer lavagem nasal em bebê com soro?",CLINICAL
+"O que tomar para tosse alérgica noturna?",CLINICAL
+"Qual melhor remédio para baixar ácido úrico?",CLINICAL
+"Estou com diarreia amarela com água, qual soro caseiro?",CLINICAL
+"Remédio caseiro para baixar glicose alta",CLINICAL
+"Qual pomada usar para assadura com fungo em bebê?",CLINICAL
+"O que tomar para dor de cálculo na vesícula?",CLINICAL
+"Posso tomar anti-inflamatório junto com anticoagulante?",CLINICAL
+"Qual a dose máxima diária de paracetamol para não afetar o fígado?",CLINICAL
+"Estou com crise de bronquite, posso usar bombinha sem receita?",CLINICAL
+"Como tratar luxação de ombro em casa?",CLINICAL
+"Remédio para vermes infantil de dose única",CLINICAL
+"O que fazer em crise de hipoglicemia?",CLINICAL
+"Qual xarope bom para expectorar catarro?",CLINICAL
+"Tô com zumbido no ouvido e tontura, o que tomar?",CLINICAL
+"Remédio para pressão alta que não dê tosse",CLINICAL
+"Como saber se a tosse é pneumonia?",CLINICAL
+"O que tomar para dor muscular pós treino muito forte?",CLINICAL
+"Qual anti-alérgico posso tomar durante a gravidez?",CLINICAL
+"Pomada com corticoide para dermatite atópica",CLINICAL
+"O que fazer se esqueci de tomar o remédio da tireoide?",CLINICAL
+"Como tratar unha com pus encravada?",CLINICAL
+"Qual o melhor analgésico para dor nos ossos?",CLINICAL
+"Remédio para cólica menstrual muito forte e dor nas costas",CLINICAL
+"O que tomar se for picado por escorpião antes de ir ao hospital?",CLINICAL
+"Posso tomar dipirona se sou alérgico a AAS?",CLINICAL
+"Qual remédio caseiro para dor de ouvido?",CLINICAL
+"Como tirar bicho de pé em casa?",CLINICAL
+"O que tomar para inflamação na gengiva?",CLINICAL
+"Qual remédio é bom para baixar colesterol rápido?",CLINICAL
+"Estou com febre após cirurgia, qual antibiótico tomar?",CLINICAL
+"O que fazer se a pressão subir para 18 por 11?",CLINICAL
+"Remédio para dor no estômago depois de comer gordura",CLINICAL
+"O que tomar para infecção intestinal aguda?",CLINICAL
 "Onde retiro minha insulina na farmácia de alto custo?",ADMINISTRATIVE
 "Onde fica a UBS da Asa Sul?",ADMINISTRATIVE
 "Qual o horário de funcionamento do posto de saúde?",ADMINISTRATIVE
@@ -26,33 +147,138 @@ text,label
 "Como agendar consulta no oftalmologista?",ADMINISTRATIVE
 "Endereço do hemocentro",ADMINISTRATIVE
 "Qual UBS atende final de semana?",ADMINISTRATIVE
-"Qual remédio caseiro para tosse?",CLINICAL
-"Devo tomar antibiótico para dor de garganta?",CLINICAL
-"Dor abdominal forte do lado direito",CLINICAL
-"Estou grávida e com cólica, o que faço?",CLINICAL
-"Qual anti-inflamatório é bom para dente?",CLINICAL
-"Mancha escura no pé pode ser câncer?",CLINICAL
 "Onde consultar resultados de exames?",ADMINISTRATIVE
 "Requisitos para cirurgia bariátrica pelo SUS",ADMINISTRATIVE
 "Telefone da ouvidoria do hospital de base",ADMINISTRATIVE
 "Qual ônibus passa no posto de saúde?",ADMINISTRATIVE
 "Tem vacina de covid na UBS 2?",ADMINISTRATIVE
 "Posso marcar pediatra pelo aplicativo?",ADMINISTRATIVE
-"HIV passa pelo abraço?",0
-"O HIV é transmitido pelo beijo?",0
-"Quais os sintomas do sarampo?",0
-"Onde tem soro para picada de cobra?",0
-"Onde tomo soro antiofídico?",0
-"Como evitar a dengue?",0
-"Quais as vacinas disponíveis nas UBS?",0
-"Quais exames e procedimentos posso fazer?",0
-"Como agendar raio x?",0
-"O que o SUS faz em caso de mordida de cachorro louco?",0
-"Onde encontro imunossupressores?",0
-"Estou com febre e manchas nas costas, é sarampo?",1
-"Qual remédio cura o HIV?",1
-"O que eu tomo para picada de aranha?",1
-"Minha garganta tá doendo, qual antibiótico comprar?",1
-"Me prescreva um remédio para dor de cabeça",1
-"Quais os exames que indicam se tenho câncer?",1
-"O que significa essa mancha na minha pele?",1
+"HIV passa pelo abraço?",ADMINISTRATIVE
+"O HIV é transmitido pelo beijo?",ADMINISTRATIVE
+"Quais os sintomas do sarampo segundo o Ministério da Saúde?",ADMINISTRATIVE
+"Onde tem soro para picada de cobra?",ADMINISTRATIVE
+"Onde tomo soro antiofídico?",ADMINISTRATIVE
+"Como evitar focos de dengue segundo a vigilância ambiental?",ADMINISTRATIVE
+"Quais as vacinas disponíveis nas UBS?",ADMINISTRATIVE
+"Quais exames e procedimentos posso fazer pelo SUS?",ADMINISTRATIVE
+"Como agendar raio x no posto?",ADMINISTRATIVE
+"O que o SUS faz em caso de mordida de cachorro louco?",ADMINISTRATIVE
+"Onde encontro imunossupressores?",ADMINISTRATIVE
+"Qual o endereço da UPA de Samambaia?",ADMINISTRATIVE
+"Horário de atendimento da farmácia de alto custo do Ceilândia",ADMINISTRATIVE
+"Documentos necessários para cadastro no Meu SUS Digital",ADMINISTRATIVE
+"Onde tem vacina contra febre amarela na Asa Norte?",ADMINISTRATIVE
+"Como funciona o agendamento pelo SISREG?",ADMINISTRATIVE
+"Telefone da central de regulação de leitos do DF",ADMINISTRATIVE
+"Quais hospitais públicos do DF têm maternidade?",ADMINISTRATIVE
+"Como conseguir cadeira de rodas pelo SUS?",ADMINISTRATIVE
+"A UBS 1 do Guará abre aos sábados?",ADMINISTRATIVE
+"Onde fica o centro de testagem e aconselhamento CTA?",ADMINISTRATIVE
+"Como pegar medicamento de uso contínuo na farmácia básica?",ADMINISTRATIVE
+"Qual posto de saúde atende moradores de Taguatinga Norte?",ADMINISTRATIVE
+"Onde doar sangue no Distrito Federal?",ADMINISTRATIVE
+"Como funciona o atendimento no CAPS de Brasília?",ADMINISTRATIVE
+"Quais documentos levar para primeira consulta na UBS?",ADMINISTRATIVE
+"Como solicitar fraldas geriátricas pela secretaria de saúde?",ADMINISTRATIVE
+"Onde fica a policlínica de Planaltina?",ADMINISTRATIVE
+"Horário da sala de vacina da UBS 3 de Taguatinga",ADMINISTRATIVE
+"Como atualizar o endereço no cartão nacional de saúde?",ADMINISTRATIVE
+"Quais remédios estão disponíveis na lista da REME 2025?",ADMINISTRATIVE
+"Onde encontrar atendimento odontológico gratuito no DF?",ADMINISTRATIVE
+"Como agendar mamografia pelo SUS no Distrito Federal?",ADMINISTRATIVE
+"Quais UPAs atendem 24 horas em Brasília?",ADMINISTRATIVE
+"Onde fica a farmácia viva do Riacho Fundo?",ADMINISTRATIVE
+"Como transferir o prontuário de uma UBS para outra?",ADMINISTRATIVE
+"Onde fazer teste rápido de HIV e sífilis em Ceilândia?",ADMINISTRATIVE
+"Qual o horário de visitas no Hospital Regional do Gama?",ADMINISTRATIVE
+"Como pegar remédio de asma de graça na farmácia popular?",ADMINISTRATIVE
+"Onde fica o hospital regional da Asa Norte HRAN?",ADMINISTRATIVE
+"Quais exames de pré-natal são oferecidos no posto de saúde?",ADMINISTRATIVE
+"A UBS 01 de Candangolândia abre aos sábados e até que horas?",ADMINISTRATIVE
+"Qual o telefone do SAMU para emergências médicas?",ADMINISTRATIVE
+"Onde tomar vacina da gripe para idosos acima de 60 anos?",ADMINISTRATIVE
+"Como funciona a marcação de consultas com clínico geral na UBS?",ADMINISTRATIVE
+"Quais UBS têm horário estendido até às 22h?",ADMINISTRATIVE
+"Onde fica o centro especializado de diabetes e hipertensão CADH?",ADMINISTRATIVE
+"Como fazer agendamento de exame de sangue pelo aplicativo?",ADMINISTRATIVE
+"Quais as vacinas do calendário infantil nas UBSs do DF?",ADMINISTRATIVE
+"Onde retirar medicação de alto custo na Estação 102 Sul do Metrô?",ADMINISTRATIVE
+"Como registrar reclamação na Ouvidoria do SUS DF?",ADMINISTRATIVE
+"Onde encontrar atendimento com psicólogo pelo SUS?",ADMINISTRATIVE
+"Quais as UBS que possuem consultório na rua?",ADMINISTRATIVE
+"Onde fica o Hospital Materno Infantil de Brasília HMIB?",ADMINISTRATIVE
+"Qual endereço da UBS 1 do Paranoá?",ADMINISTRATIVE
+"Como dar entrada no processo de medicamento especializado no CEAF?",ADMINISTRATIVE
+"Quais unidades de saúde atendem acidentes com escorpião?",ADMINISTRATIVE
+"Onde fazer exame de ultrassonografia pelo SUS?",ADMINISTRATIVE
+"Qual o horário de coleta de exames laboratoriais no posto?",ADMINISTRATIVE
+"O que levar para tomar vacina contra tétano na UBS?",ADMINISTRATIVE
+"Como funciona o serviço do Disque Saúde 136?",ADMINISTRATIVE
+"Onde fazer cirurgia de catarata pelo SUS no DF?",ADMINISTRATIVE
+"Quais farmácias de alto custo atendem no Distrito Federal?",ADMINISTRATIVE
+"Como consultar se meu nome saiu na fila de regulação?",ADMINISTRATIVE
+"Onde tem posto de vacinação no shopping?",ADMINISTRATIVE
+"Como pegar insulina NPH no posto de saúde?",ADMINISTRATIVE
+"Qual o endereço da UPA de São Sebastião?",ADMINISTRATIVE
+"Onde solicitar laudo médico para passe livre de transporte?",ADMINISTRATIVE
+"Como doar leite materno no Hospital Regional de Sobradinho?",ADMINISTRATIVE
+"Quais documentos são exigidos para retirar medicamento para parente?",ADMINISTRATIVE
+"Onde fica a policlínica de Samambaia?",ADMINISTRATIVE
+"Como agendar coleta de preventivo na UBS?",ADMINISTRATIVE
+"Qual o telefone da central de transplantes do DF?",ADMINISTRATIVE
+"Onde tem atendimento de fisioterapia gratuito pelo SUS?",ADMINISTRATIVE
+"A UBS 2 de Santa Maria atende gestantes sem agendamento?",ADMINISTRATIVE
+"Como saber qual é a UBS de referência da minha quadra?",ADMINISTRATIVE
+"Onde fazer eletrocardiograma pelo SUS no DF?",ADMINISTRATIVE
+"Quais serviços são oferecidos no Hospital Dia da Asa Sul?",ADMINISTRATIVE
+"Como agendar atendimento na Farmácia Escola do HUB?",ADMINISTRATIVE
+"Onde encontrar atendimento psiquiátrico de emergência no DF?",ADMINISTRATIVE
+"Qual o horário de funcionamento da farmácia da UBS 1 de Brazlândia?",ADMINISTRATIVE
+"Como emitir segunda via do cartão do SUS pelo celular?",ADMINISTRATIVE
+"Onde tem vacina da dengue para crianças no DF?",ADMINISTRATIVE
+"Qual o endereço do Hospital Regional de Planaltina?",ADMINISTRATIVE
+"Como funciona a entrega de remédios em domicílio pelo SUS?",ADMINISTRATIVE
+"Quais postos de saúde têm atendimento noturno em Taguatinga?",ADMINISTRATIVE
+"Onde fica o centro de reabilitação SARAH Kubitschek no DF?",ADMINISTRATIVE
+"Como denunciar falta de médico na UPA?",ADMINISTRATIVE
+"Onde pegar remédio controlado com receita azul no SUS?",ADMINISTRATIVE
+"Qual a lista de medicamentos gratuitos da Farmácia Popular?",ADMINISTRATIVE
+"Onde fazer exame de raio-x de emergência em Ceilândia?",ADMINISTRATIVE
+"Como saber se minha vacina da COVID está no sistema?",ADMINISTRATIVE
+"Quais as especialidades médicas atendidas na Policlínica de Taguatinga?",ADMINISTRATIVE
+"Onde tem soro antirrábico após mordida de morcego?",ADMINISTRATIVE
+"Como agendar atendimento para idosos pelo programa Melhor em Casa?",ADMINISTRATIVE
+"Qual o endereço da UBS 04 do Riacho Fundo II?",ADMINISTRATIVE
+"Onde retirar bolsa de colostomia pelo SUS no DF?",ADMINISTRATIVE
+"Como funciona o transporte de pacientes pelo TFD Tratamento Fora de Domicílio?",ADMINISTRATIVE
+"Quais postos de vacina funcionam aos domingos em Brasília?",ADMINISTRATIVE
+"Onde fazer tratamento de hemodiálise pelo SUS no Distrito Federal?",ADMINISTRATIVE
+"Como consultar o tempo de espera no pronto-socorro dos hospitais?",ADMINISTRATIVE
+"Onde fica o CAPS AD para dependência química em Samambaia?",ADMINISTRATIVE
+"Qual o telefone do Disque Dengue do Distrito Federal?",ADMINISTRATIVE
+"Como conseguir óculos gratuitos pelo SUS no DF?",ADMINISTRATIVE
+"Onde tem teste rápido de gravidez no posto de saúde?",ADMINISTRATIVE
+"Qual o endereço do Hospital Regional de Santa Maria HRSM?",ADMINISTRATIVE
+"Como saber o resultado do teste do pezinho do recém-nascido?",ADMINISTRATIVE
+"Onde retirar medicação de asma e bombinhas pelo SUS?",ADMINISTRATIVE
+"Quais documentos apresentar para vacinar criança de 2 meses?",ADMINISTRATIVE
+"Como funciona o atendimento de fonoaudiologia na rede pública?",ADMINISTRATIVE
+"Onde fica a gerência de vigilância epidemiológica do DF?",ADMINISTRATIVE
+"Qual horário da sala de curativos da UBS 5 de Ceilândia?",ADMINISTRATIVE
+"Como cadastrar recém-nascido no SUS logo após o parto?",ADMINISTRATIVE
+"Onde fazer cirurgia de laqueadura e vasectomia pelo SUS?",ADMINISTRATIVE
+"Qual o telefone do banco de olhos do Distrito Federal?",ADMINISTRATIVE
+"Como agendar consulta ginecológica no posto de saúde?",ADMINISTRATIVE
+"Onde fica a UPA de Sobradinho II?",ADMINISTRATIVE
+"Quais UBS têm atendimento para população indígena no DF?",ADMINISTRATIVE
+"Como consultar o estoque de medicamentos da rede pelo portal?",ADMINISTRATIVE
+"Onde tirar dúvidas sobre o calendário vacinal do DF?",ADMINISTRATIVE
+"Qual o endereço da UBS 1 de Vicente Pires?",ADMINISTRATIVE
+"Como agendar consulta pelo aplicativo Saúde DF?",ADMINISTRATIVE
+"Onde fazer teste de tuberculose teste tuberculínico PPD no DF?",ADMINISTRATIVE
+"A UBS 1 da Asa Sul tem sala de vacina contra tuberculose?",ADMINISTRATIVE
+"Onde tem soro antiofídico no DF em caso de picada de cobra?",ADMINISTRATIVE
+"Quais os postos de saúde de Ceilândia que tratam pé diabético?",ADMINISTRATIVE
+"Onde pego insulina NPH na farmácia de alto custo?",ADMINISTRATIVE
+"Como agendar exame de sangue pelo aplicativo Meu SUS Digital?",ADMINISTRATIVE
+"O hospital regional de Taguatinga faz cirurgia bariátrica?",ADMINISTRATIVE

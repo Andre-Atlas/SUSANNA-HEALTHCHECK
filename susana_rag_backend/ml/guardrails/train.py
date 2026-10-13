@@ -51,7 +51,7 @@ def main():
         # Pipeline: TF-IDF -> Logistic Regression
         pipeline = Pipeline([
             ("tfidf", TfidfVectorizer(ngram_range=(1, 2))),
-            ("clf", LogisticRegression(class_weight="balanced", random_state=42))
+            ("clf", LogisticRegression(class_weight="balanced", solver="liblinear", random_state=42))
         ])
 
         pipeline.fit(X_train, y_train)
@@ -77,6 +77,9 @@ def main():
             scoring=["accuracy", "precision", "recall", "f1"]
         )
 
+        print("\n" + classification_report(y_test, preds, target_names=["ADMIN", "CLINICAL"]))
+        print(f"Test Metrics: Acc={acc:.3f}, Prec={prec:.3f}, Rec={rec:.3f}, F1={f1:.3f}, AUC={auc:.3f}")
+        print(f"5-Fold CV F1: {cv_scores['test_f1'].mean():.3f} (+/- {cv_scores['test_f1'].std():.3f})")
         logger.info("\n%s", classification_report(y_test, preds, target_names=["ADMIN", "CLINICAL"]))
         logger.info("Test Metrics: Acc=%.3f, Prec=%.3f, Rec=%.3f, F1=%.3f, AUC=%.3f", acc, prec, rec, f1, auc)
         logger.info("5-Fold CV F1: %.3f (+/- %.3f)", cv_scores["test_f1"].mean(), cv_scores["test_f1"].std())
@@ -129,21 +132,35 @@ def main():
 
         mlflow.sklearn.log_model(pipeline, "model", registered_model_name="susana-guardrail")
 
-        # Promotion Gate (Fase 4 do MLE Workflow)
-        if cv_scores["test_f1"].mean() >= 0.70:
-            logger.info("Modelo APROVADO no Gate (CV F1: %.3f). Promovendo para @champion.", cv_scores["test_f1"].mean())
-            client = mlflow.client.MlflowClient()
-            model_name = "susana-guardrail"
-            
-            # Buscar a última versão registrada
+        # Promotion Gate Relativo (Fase 4 do MLE Workflow / MLOps)
+        client = mlflow.client.MlflowClient()
+        model_name = "susana-guardrail"
+        champion_f1 = 0.85
+        try:
+            champ_version_info = client.get_model_version_by_alias(model_name, "champion")
+            champ_run = client.get_run(champ_version_info.run_id)
+            champion_f1 = float(champ_run.data.metrics.get("cv_f1_mean", 0.85))
+            logger.info("Champion atual encontrado (v%s, CV F1: %.3f)", champ_version_info.version, champion_f1)
+        except Exception:
+            logger.info("Nenhum champion anterior com métricas encontrado. Utilizando baseline de referência: %.3f", champion_f1)
+
+        candidate_f1 = float(cv_scores["test_f1"].mean())
+        # Requisitos: F1 >= Champion - 0.02 e Recall Clínico no Teste >= 0.95 (Fail-closed de segurança clínica)
+        approved = (candidate_f1 >= (champion_f1 - 0.02)) and (rec >= 0.95) and (candidate_f1 >= 0.85)
+
+        if approved:
+            msg = f"Modelo APROVADO no Gate Relativo (CV F1: {candidate_f1:.3f} vs Champ: {champion_f1:.3f}, Rec Clínico: {rec:.3f}). Promovendo para @champion."
+            print(msg)
+            logger.info(msg)
             versions = client.search_model_versions(f"name='{model_name}'")
             latest_version = max(int(v.version) for v in versions)
-            
-            # Definir o alias @champion
             client.set_registered_model_alias(model_name, "champion", str(latest_version))
+            print(f"Alias @champion atribuído à versão {latest_version}")
             logger.info("Alias @champion atribuído à versão %s", latest_version)
         else:
-            logger.warning("Modelo REPROVADO no Gate (CV F1: %.3f). Não promovido.", cv_scores["test_f1"].mean())
+            msg = f"Modelo REPROVADO no Gate (CV F1: {candidate_f1:.3f} vs Champ: {champion_f1:.3f}, Rec Clínico: {rec:.3f}). Não promovido."
+            print(msg)
+            logger.warning(msg)
 
 if __name__ == "__main__":
     main()

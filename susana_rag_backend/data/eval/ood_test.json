@@ -1,0 +1,17 @@
+[
+  {"id": "ood-test-01", "query": "Como tirar a segunda via do IPTU de imóvel no DF?"},
+  {"id": "ood-test-02", "query": "Qual o horário de funcionamento do Parque da Cidade Dona Sarah Kubitschek?"},
+  {"id": "ood-test-03", "query": "Onde comprar materiais de construção baratos em Samambaia?"},
+  {"id": "ood-test-04", "query": "Qual é a melhor marca de pneu aro 15 para automóvel?"},
+  {"id": "ood-test-05", "query": "Como formatar o computador e reinstalar o sistema operacional Windows?"},
+  {"id": "ood-test-06", "query": "Qual é a receita caseira para amaciar carne de churrasco?"},
+  {"id": "ood-test-07", "query": "Onde fica o cartório de registro civil em Taguatinga Centro?"},
+  {"id": "ood-test-08", "query": "Quem ganhou a corrida de Fórmula 1 no último final de semana?"},
+  {"id": "ood-test-09", "query": "Como abrir uma microempresa MEI pelo portal gov.br?"},
+  {"id": "ood-test-10", "query": "Qual a velocidade máxima permitida na via EPTG em horário de pico?"},
+  {"id": "ood-test-11", "query": "Como trocar a resistência de um chuveiro elétrico com segurança?"},
+  {"id": "ood-test-12", "query": "Qual a previsão da maré e ondas para o litoral da Bahia?"},
+  {"id": "ood-test-13", "query": "Onde posso adotar filhotes de cachorro e gato resgatados em Brasília?"},
+  {"id": "ood-test-14", "query": "Qual é a taxa Selic fixada pelo Banco Central nesta semana?"},
+  {"id": "ood-test-15", "query": "Como agendar atendimento presencial no Na Hora da Rodoviária?"}
+]

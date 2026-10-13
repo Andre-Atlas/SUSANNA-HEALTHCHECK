@@ -26,3 +26,6 @@ Fonte: https://dados.df.gov.br/dataset/estoque-farmacia-alto-custo
 Informações sobre sintomas e focos. Sintomas comuns da dengue incluem febre alta, dores musculares e manchas vermelhas. O fumacê está sendo aplicado semanalmente nas regiões com maior incidência.
 Fonte: https://dados.df.gov.br/dataset/casos-dengue-df
 
+[DADOS_ABERTOS] Banco de Leite Humano e Postos de Coleta de Leite Materno (SES-DF)
+A Rede de Bancos de Leite Humano do Distrito Federal realiza a coleta, pasteurização e distribuição de leite materno para recém-nascidos internados em UTIs neonatais. Mães que estão amamentando e produzem leite excedente podem ser doadoras. A coleta pode ser agendada pelo telefone 160 (opção 4) e conta com apoio do Corpo de Bombeiros Militar do DF (CBMDF), que busca os frascos de leite materno diretamente na residência da doadora. Além da coleta domiciliar, há postos de coleta de leite materno e bancos de leite nas maternidades dos hospitais públicos do DF: HMIB (Hospital Materno Infantil de Brasília), HRT (Hospital Regional de Taguatinga), HRS (Hospital Regional de Sobradinho), HRAN (Hospital Regional da Asa Norte), HRC (Hospital Regional de Ceilândia) e Hospital Regional de Santa Maria (HRSM).
+Fonte: https://dados.df.gov.br/dataset/banco-de-leite-humano-df
