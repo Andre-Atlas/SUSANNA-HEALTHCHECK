@@ -12,6 +12,11 @@ susana_rag_backend/data/chroma_db/
 susana_rag_backend/mlruns/
 susana_rag_backend/mlflow.db
 susana_rag_backend/models/
+susana_rag_backend/data/*.db
+susana_rag_backend/data/*.db-shm
+susana_rag_backend/data/*.db-wal
+*.db-shm
+*.db-wal
 dvc-storage/
 
 # Frontend

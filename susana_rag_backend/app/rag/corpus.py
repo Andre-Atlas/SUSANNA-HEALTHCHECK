@@ -30,16 +30,144 @@ class CorpusBlock:
     tag: str             # "UNIDADE"
     text: str            # bloco completo (inclui cabeçalho)
     url: Optional[str]
+    metadata: Optional[dict[str, Any]] = None
+
+
+def extract_block_metadata(text: str, header: str = "", tag: str = "") -> dict[str, str]:
+    """Extrai metadados estruturados (cluster, ra, tipo_unidade, servicos) a partir do texto do bloco."""
+    text_norm = unicodedata.normalize("NFKD", f"{header} {text}").casefold()
+
+    # 1. Região Administrativa (RA)
+    ra_map = {
+        "ceilandia": "ceilandia",
+        "taguatinga": "taguatinga",
+        "samambaia": "samambaia",
+        "plano piloto": "plano_piloto",
+        "asa sul": "plano_piloto",
+        "asa norte": "plano_piloto",
+        "vila planalto": "plano_piloto",
+        "vila telebrasilia": "plano_piloto",
+        "gama": "gama",
+        "guara": "guara",
+        "sobradinho ii": "sobradinho_ii",
+        "sobradinho 2": "sobradinho_ii",
+        "sobradinho": "sobradinho",
+        "planaltina": "planaltina",
+        "santa maria": "santa_maria",
+        "sao sebastiao": "sao_sebastiao",
+        "recanto das emas": "recanto_das_emas",
+        "paranoa": "paranoa",
+        "nucleo bandeirante": "nucleo_bandeirante",
+        "brazlandia": "brazlandia",
+        "riacho fundo ii": "riacho_fundo_ii",
+        "riacho fundo 2": "riacho_fundo_ii",
+        "riacho fundo i": "riacho_fundo",
+        "riacho fundo": "riacho_fundo",
+        "cruzeiro": "cruzeiro",
+        "aguas claras": "aguas_claras",
+        "vicente pires": "vicente_pires",
+        "estrutural": "scia_estrutural",
+        "scia": "scia_estrutural",
+        "sol nascente": "sol_nascente_por_do_sol",
+        "por do sol": "sol_nascente_por_do_sol",
+        "itapoa": "itapoa",
+        "lago sul": "lago_sul",
+        "lago norte": "lago_norte",
+        "candangolandia": "candangolandia",
+        "sudoeste": "sudoeste_octogonal",
+        "octogonal": "sudoeste_octogonal",
+        "varjao": "varjao",
+        "park way": "park_way",
+        "jardim botanico": "jardim_botanico",
+        "mangueiral": "jardim_botanico",
+        "sia": "sia",
+        "fercal": "fercal",
+        "arniqueira": "arniqueira",
+    }
+
+    detected_ra = "geral_df"
+    for pattern, ra_code in ra_map.items():
+        if re.search(rf"\b{pattern}\b", text_norm):
+            detected_ra = ra_code
+            break
+
+    # 2. Cluster Semântico
+    if any(k in text_norm for k in ["vacina", "vacinacao", "imunizacao", "sala de vacina", "gotinha"]):
+        cluster = "vacinacao"
+    elif any(k in text_norm for k in ["prenatal", "pre-natal", "puericultura", "teste do pezinho", "recem-nascido", "recem nascido", "gestante", "parto", "maternidade", "aleitamento"]):
+        cluster = "saude_materno_infantil"
+    elif any(k in text_norm for k in ["medicamento", "medicamentos", "remedio", "remedios", "farmacia", "reme", "ceaf", "alto custo"]):
+        cluster = "medicamentos_farmacia"
+    elif any(k in text_norm for k in ["upa", "pronto atendimento", "emergencia", "urgencia", "samu", "trauma"]):
+        cluster = "urgencia_emergencia"
+    elif any(k in text_norm for k in ["caps", "saude mental", "alcool e drogas", "psiquiatria"]):
+        cluster = "saude_mental_caps"
+    elif any(k in text_norm for k in ["ubs", "unidade basica", "saude da familia", "acolhimento", "postinho"]):
+        cluster = "atencao_primaria"
+    else:
+        cluster = "geral"
+
+    # 3. Tipo de Unidade
+    if "upa" in text_norm or "pronto atendimento" in text_norm:
+        tipo = "upa"
+    elif "hospital" in text_norm:
+        tipo = "hospital"
+    elif "ubs" in text_norm or "unidade basica" in text_norm:
+        tipo = "ubs"
+    elif "policlinica" in text_norm:
+        tipo = "policlinica"
+    elif "farmacia de alto custo" in text_norm or "ceaf" in text_norm:
+        tipo = "farmacia_alto_custo"
+    else:
+        tipo = "unidade"
+
+    # 4. Tags de Serviços
+    servicos = []
+    if "vacina" in text_norm:
+        servicos.append("vacinacao")
+    if "prenatal" in text_norm or "pre-natal" in text_norm:
+        servicos.append("prenatal")
+    if "puericultura" in text_norm:
+        servicos.append("puericultura")
+    if "teste do pezinho" in text_norm:
+        servicos.append("teste_do_pezinho")
+    if "farmacia" in text_norm or "medicamento" in text_norm or "remedio" in text_norm:
+        servicos.append("farmacia")
+    if "odontologia" in text_norm or "saude bucal" in text_norm:
+        servicos.append("odontologia")
+    if "saude na hora" in text_norm:
+        servicos.append("saude_na_hora")
+    if "curativo" in text_norm or "curativos" in text_norm:
+        servicos.append("curativos")
+
+    return {
+        "cluster": cluster,
+        "ra": detected_ra,
+        "tipo_unidade": tipo,
+        "servicos": ",".join(servicos),
+    }
 
 
 def _block_id(text: str) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()[:16]
 
 
-def _make_block(header: str, tag: str, text: str, url: Optional[str] = None) -> CorpusBlock:
+def _make_block(
+    header: str,
+    tag: str,
+    text: str,
+    url: Optional[str] = None,
+    metadata: Optional[dict[str, Any]] = None,
+) -> CorpusBlock:
     block_text = f"{header}\n{text}".strip()
+    meta = metadata or extract_block_metadata(text, header, tag)
     return CorpusBlock(
-        id=_block_id(f"{block_text}\n{url or ''}"), header=header, tag=tag, text=block_text, url=url
+        id=_block_id(f"{block_text}\n{url or ''}"),
+        header=header,
+        tag=tag,
+        text=block_text,
+        url=url,
+        metadata=meta,
     )
 
 
@@ -51,7 +179,15 @@ def parse_corpus_text(raw: str, source_id: str = "") -> List[CorpusBlock]:
         if header and lines:
             text = "\n".join(lines).strip()
             block_id = _block_id(f"{source_id}\n{text}\n{url or ''}")
-            blocks.append(CorpusBlock(id=block_id, header=header, tag=tag, text=text, url=url))
+            meta = extract_block_metadata(text, header, tag)
+            blocks.append(CorpusBlock(
+                id=block_id,
+                header=header,
+                tag=tag,
+                text=text,
+                url=url,
+                metadata=meta,
+            ))
 
     for raw_line in raw.splitlines():
         line = raw_line.strip()
@@ -118,6 +254,27 @@ def _json_blocks(path: Path) -> List[CorpusBlock]:
     data = json.loads(path.read_text(encoding="utf-8-sig"))
     if not isinstance(data, (dict, list)):
         return []
+
+    if isinstance(data, dict) and isinstance(data.get("blocks"), list):
+        blocks = []
+        for entry in data["blocks"]:
+            if not isinstance(entry, dict):
+                continue
+            header = entry.get("header", "[UNIDADE] Saúde DF")
+            tag = entry.get("tag", "UNIDADE")
+            text = entry.get("text", "")
+            url = entry.get("url")
+            meta = entry.get("metadata") or extract_block_metadata(text, header, tag)
+            block_id = _block_id(f"{header}\n{text}\n{url or ''}")
+            blocks.append(CorpusBlock(
+                id=block_id,
+                header=header,
+                tag=tag,
+                text=f"{header}\n{text}".strip(),
+                url=url,
+                metadata=meta,
+            ))
+        return blocks
 
     if isinstance(data, dict) and isinstance(data.get("chunks"), list):
         document = data.get("document") or {}

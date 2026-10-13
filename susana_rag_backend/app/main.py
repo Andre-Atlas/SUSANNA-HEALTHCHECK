@@ -15,6 +15,7 @@ import mlflow
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
+from starlette.concurrency import run_in_threadpool
 
 from app.config import get_settings
 from app.llm.ollama_adapter import OllamaAdapter
@@ -72,14 +73,32 @@ async def lifespan(application: FastAPI):
     
     semantic_cache = SemanticCache(max_distance=0.08)
     
+    from app.ingestion.processor import IngestionProcessor
+    from app.rag.online_search import ScopedOnlineSearchComplementer
+
+    ingestion_processor = IngestionProcessor(
+        retriever=retriever,
+        storage_dir=settings.docs_dir,
+        cache_invalidator=semantic_cache.clear,
+    )
+    online_search = ScopedOnlineSearchComplementer(
+        retriever=retriever,
+        ingestion_processor=ingestion_processor,
+        guardrails=guardrails,
+        timeout_seconds=settings.online_search_timeout_s,
+        max_results=settings.online_search_max_results,
+    )
+
     pipeline = RAGPipeline(
         llm=llm,
         embedder=embedder,
         retriever=retriever,
         semantic_cache=semantic_cache,
         similarity_threshold=settings.similarity_threshold,
+        confident_threshold=settings.relevance_confident_threshold,
         top_k=settings.top_k,
         mlflow_enabled=settings.mlflow_log_requests,
+        online_search=online_search,
     )
 
     # 3. Verificação do Corpus e Auto-Indexação Inteligente
@@ -155,8 +174,8 @@ async def chat_endpoint(req: ChatRequest):
     t0 = time.perf_counter()
     msg = req.message.strip()
 
-    # 1. Guardrails — bloqueia perguntas clínicas
-    if guardrails.is_clinical(msg):
+    # 1. Guardrails — bloqueia perguntas clínicas (non-blocking threadpool)
+    if await run_in_threadpool(guardrails.is_clinical, msg):
         latency = int((time.perf_counter() - t0) * 1000)
         logger.info("BLOCKED clinical query: %s (latency=%dms)", msg[:80], latency)
         return ChatResponse(
@@ -169,9 +188,9 @@ async def chat_endpoint(req: ChatRequest):
             latency_ms=latency,
         )
 
-    # 2. RAG — busca vetorial + LLM
+    # 2. RAG — busca vetorial + LLM (non-blocking threadpool)
     try:
-        result = pipeline.query(msg)
+        result = await run_in_threadpool(pipeline.query, msg)
     except Exception:
         logger.exception("Erro no pipeline RAG para query: %s", msg[:80])
         raise HTTPException(
@@ -197,3 +216,52 @@ async def chat_endpoint(req: ChatRequest):
 # Include streaming router
 from app.routers_stream import router as stream_router
 app.include_router(stream_router)
+
+# Include autonomous ingestion webhook router
+from app.ingestion.webhook import router as ingestion_router
+app.include_router(ingestion_router)
+
+# Include citizen identity and profile router
+from app.citizen.router import router as citizen_router
+app.include_router(citizen_router)
+
+# Include multi-session chat history router
+from app.chat_sessions.router import router as chat_sessions_router
+app.include_router(chat_sessions_router)
+
+# Include healthcare units and RA directory router
+from app.units.router import router as units_router
+app.include_router(units_router)
+
+# Include official PNI vaccine guide router
+from app.vaccines.router import router as vaccines_router
+app.include_router(vaccines_router)
+
+
+class OnlineSearchRequest(BaseModel):
+    query: str = Field(..., min_length=3, max_length=500)
+    auto_ingest: bool = True
+
+
+@app.post("/api/search/online")
+async def online_search_endpoint(req: OnlineSearchRequest):
+    if pipeline is None or getattr(pipeline, "online_search", None) is None:
+        raise HTTPException(status_code=503, detail="Mecanismo de pesquisa online não disponível.")
+
+    query = req.query.strip()
+    if await run_in_threadpool(guardrails.is_clinical, query):
+        return {
+            "query": query,
+            "results_found": 0,
+            "is_blocked": True,
+            "message": "Consulta clínica bloqueada por diretrizes éticas e de segurança do SUS.",
+            "chunks": [],
+        }
+
+    chunks = await pipeline.online_search.search_async(query)
+    return {
+        "query": query,
+        "results_found": len(chunks),
+        "is_blocked": False,
+        "chunks": [{"id": c.id, "source": c.source, "url": c.url, "text": c.text} for c in chunks],
+    }

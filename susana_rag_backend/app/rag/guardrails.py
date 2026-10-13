@@ -30,7 +30,15 @@ CLINICAL_PATTERNS: list[tuple[str, re.Pattern]] = [
 ]
 
 ADMINISTRATIVE_OVERRIDES = re.compile(
-    r"\b(horário|endereço|localização|telefone|funciona(mento)?|agenda(mento|r)?|marcar (consulta|exame)|onde (fica|é|tem|posso)|lista de (espera|medicamentos)|retirar (medicamento|remédio)|farmácia (do sus|popular|básica)|cartão (do sus|nacional)|calendário (de vacinação|vacinal)|campanha de vacinação|vacina(s|ção)?|vacinar|imunização|samu|192)\b", re.I
+    r"\b(horário|endereço|localização|telefone|funciona(mento)?|agenda(mento|r)?|"
+    r"marcar (consulta|exame)|onde (fica|é|tem|posso)|lista de (espera|medicamentos)|"
+    r"retirar (medicamento|remédio)|farmácia (do sus|popular|básica)|cartão (do sus|nacional)|"
+    r"calendário (de vacinação|vacinal)|campanha de vacinação|vacina(s|ção)?|vacinar|"
+    r"imunização|samu|192|postinho(s)?|posto(s)?|ubs|upa|verifique|mostre|exiba|listar|"
+    r"opç(ão|ões)|primeir[oa]|segund[oa]|terceir[oa]|"
+    r"como (chegar|marcar|agendar|retirar|funciona|fazer)|"
+    r"quais (documentos|ubs|postos|horários|vacinas|serviços))\b|^[0-9]{1,2}$",
+    re.I,
 )
 
 
@@ -72,27 +80,47 @@ class GuardrailsClassifier:
         """
         Retorna True se for clínica, False se administrativa.
         """
-        # Override administrativo tem prioridade absoluta em ambas abordagens
-        if ADMINISTRATIVE_OVERRIDES.search(message):
-            logger.debug("ALLOWED by admin override: %s", message[:80])
+        clean = message.strip()
+        if not clean:
             return False
 
-        # Se ML carregado, usar
+        # 1. Mensagens ultra-curtas de navegação ("1", "2", "sim", "não", "ok") nunca são clínicas
+        if clean.isdigit() or clean.lower() in {"sim", "nao", "não", "ok", "certo", "concordo", "mostre", "verifique", "ajuda"}:
+            return False
+
+        # 2. Perguntas sobre vacinas do calendário público e imunização são administrativas do SUS
+        is_vaccine_query = bool(re.search(r"\b(vacina|vacinas|vacina[cç][aã]o|vacinar|gotinha|imuniza[cç][aã]o)\b", clean, re.I))
+
+        # 3. Checagem estrita de padrões clínicos explícitos (sintomas, prescrição médica, diagnóstico)
+        for name, pattern in CLINICAL_PATTERNS:
+            if name == "prescricao" and is_vaccine_query:
+                # Perguntas sobre tomar vacinas do calendário público não configuram prescrição de remédios
+                continue
+            if pattern.search(clean):
+                logger.info("BLOCKED by clinical regex pattern (%s): %s", name, clean[:80])
+                return True
+
+        # 3. Override administrativo específico (endereços, horários, agendamento de consulta administrativa)
+        if ADMINISTRATIVE_OVERRIDES.search(clean):
+            logger.debug("ALLOWED by admin override: %s", clean[:80])
+            return False
+
+        # 3. Se ML carregado, usar com limiar calibrado (0.60 para evitar falsos positivos de OOV que pontuam ~0.507)
         if self.ml_model is not None:
             try:
                 # O pipeline prediz 1 (CLINICAL) ou 0 (ADMIN)
                 # O proba no index 1 é a chance de ser CLINICAL
-                probs = self.ml_model.predict_proba([message])[0]
-                if probs[1] >= 0.50:
-                    logger.info("BLOCKED by ML Classifier (p=%.2f): %s", probs[1], message[:80])
+                probs = self.ml_model.predict_proba([clean])[0]
+                if probs[1] >= 0.60:
+                    logger.info("BLOCKED by ML Classifier (p=%.2f): %s", probs[1], clean[:80])
                     return True
             except Exception as e:
                 logger.error("Erro na predição ML (usando regex): %s", e)
 
-        # Camada 2 (Defesa em profundidade): Verificação Regex
+        # 4. Camada 2 (Defesa em profundidade): Verificação Regex
         for rule_name, pattern in CLINICAL_PATTERNS:
-            if pattern.search(message):
-                logger.info("BLOCKED by Regex rule '%s': %s", rule_name, message[:80])
+            if pattern.search(clean):
+                logger.info("BLOCKED by Regex rule '%s': %s", rule_name, clean[:80])
                 return True
 
         return False
