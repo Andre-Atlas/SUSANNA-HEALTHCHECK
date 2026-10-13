@@ -37,7 +37,7 @@ from sklearn.metrics import (
     f1_score,
 )
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parents[2]
 DATA_PATH = ROOT / "susana_rag_backend" / "data" / "guardrails_dataset.csv"
 PKL_BACKEND_PATH = ROOT / "susana_rag_backend" / "data" / "guardrail_model.pkl"
 PKL_MODELS_PATH = ROOT / "models" / "guardrail_model.pkl"

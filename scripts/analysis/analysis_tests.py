@@ -1,16 +1,20 @@
+from pathlib import Path
+
 import pandas as pd
 import scipy.stats as stats
 
-obitos = pd.read_csv('CORPUS/obitos-ocorridos-no-df/Óbitos Ocorridos no DF - 2022.csv', sep=';', encoding='iso-8859-1', on_bad_lines='skip')
+ROOT_DIR = Path(__file__).resolve().parents[2]
+
+obitos = pd.read_csv(ROOT_DIR / 'CORPUS/obitos-ocorridos-no-df/Óbitos Ocorridos no DF - 2022.csv', sep=';', encoding='iso-8859-1', on_bad_lines='skip')
 obitos.columns = [c.strip().lower() for c in obitos.columns]
 
-samu = pd.read_csv('CORPUS/Samu/dados_producao_samu-29092026-.csv', sep=',', encoding='utf-8', on_bad_lines='skip')
+samu = pd.read_csv(ROOT_DIR / 'CORPUS/Samu/dados_producao_samu-29092026-.csv', sep=',', encoding='utf-8', on_bad_lines='skip')
 samu.columns = [c.strip().lower() for c in samu.columns]
 
-atend = pd.read_csv('CORPUS/atendimentos-e-consultas/2022 - Atendimentos e Consultas _ambulatório e emergência_.csv', sep=';', encoding='iso-8859-1', on_bad_lines='skip')
+atend = pd.read_csv(ROOT_DIR / 'CORPUS/atendimentos-e-consultas/2022 - Atendimentos e Consultas _ambulatório e emergência_.csv', sep=';', encoding='iso-8859-1', on_bad_lines='skip')
 atend.columns = [c.strip().lower() for c in atend.columns]
 
-cirurgias = pd.read_csv('CORPUS/cirurgias-producao-ambulatorial/2022 - Cirurgias Produção Ambulatorial.csv', sep=';', encoding='iso-8859-1', on_bad_lines='skip')
+cirurgias = pd.read_csv(ROOT_DIR / 'CORPUS/cirurgias-producao-ambulatorial/2022 - Cirurgias Produção Ambulatorial.csv', sep=';', encoding='iso-8859-1', on_bad_lines='skip')
 cirurgias.columns = [c.strip().lower() for c in cirurgias.columns]
 
 print("# Teste 1: Temporal (Agrupado por Mês)")
