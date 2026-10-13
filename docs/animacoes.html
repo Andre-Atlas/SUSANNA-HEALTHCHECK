@@ -1,0 +1,1291 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Susana — animações 3D</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #0b1220; color: #e5e7eb; font-family: system-ui, sans-serif; overflow: hidden; }
+  nav { height: 52px; display: flex; gap: 6px; align-items: center; padding: 0 10px; box-sizing: border-box; border-bottom: 1px solid #1e293b; overflow-x: auto; }
+  button { flex: 0 0 auto; white-space: nowrap; background: #1e293b; color: #cbd5e1; border: 1px solid #334155; border-radius: 6px; padding: 7px 11px; font: inherit; font-size: 13px; cursor: pointer; }
+  button.on { background: #2563eb; border-color: #2563eb; color: #fff; }
+  button#voz { border-color: #f59e0b; color: #fcd34d; }
+  button#voz.on { background: #b45309; border-color: #f59e0b; color: #fff; }
+  #note { height: 30px; line-height: 30px; padding: 0 12px; box-sizing: border-box; font-size: 12px; color: #94a3b8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border-bottom: 1px solid #1e293b; }
+  #note b { color: #e2e8f0; font-weight: 600; }
+  #note i { color: #fbbf24; font-style: normal; }
+  canvas { display: block; }
+</style>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+</head>
+<body>
+<nav></nav>
+<div id="note"></div>
+
+<script src="animacoes-narracao.js"></script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+const width = window.innerWidth, height = window.innerHeight - 82;
+
+// ───────────── utilitários compartilhados ─────────────
+const ease = m => m * m * (3 - 2 * m);
+const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
+const V = (x, y, z = 0) => new THREE.Vector3(x, y, z);
+const pulse = now => 0.6 + 0.3 * Math.sin(now / 150);
+
+// ───────────── narração ─────────────
+// Cada passo tem um texto próprio em animacoes-narracao.js e um áudio já gerado em animacoes-audio/.
+// Se o áudio não existir, a fala cai para a voz do navegador.
+const synth = window.speechSynthesis;
+const NARR = window.NARR || {};
+const player = new Audio();
+const voice = { on: false, busy: false, token: 0, idx: 0, key: null, current: null };
+function spoken(text) {
+  return text.replace(/\n/g, ' ').replace(/\[…\]/g, ' ').replace(/✓/g, 'Correto: ').replace(/✗/g, '')
+    .replace(/>=|≥/g, ' maior ou igual a ').replace(/≤/g, ' menor ou igual a ').replace(/≈/g, ' cerca de ')
+    .replace(/ > /g, ' maior que ').replace(/ < /g, ' menor que ').replace(/ = /g, ' igual a ')
+    .replace(/→/g, ', então ').replace(/×/g, ' versus ').replace(/—/g, ', ').replace(/·/g, ', ')
+    .replace(/@/g, ' arroba ').replace(/&&/g, ' e ').replace(/_/g, ' ').replace(/\s+/g, ' ').trim();
+}
+function pickVoice() {
+  const vs = synth.getVoices().filter(v => /^pt/i.test(v.lang));
+  const br = vs.filter(v => /pt[-_]BR/i.test(v.lang));
+  const pool = br.length ? br : vs;
+  return pool.find(v => /Luciana|Francisca|Google/i.test(v.name)) || pool.find(v => v.localService) || pool[0] || null;
+}
+function stopSound() {
+  player.onended = player.onerror = null; player.pause();
+  if (synth) synth.cancel();
+}
+function say(item) {
+  stopSound();
+  const my = ++voice.token; let fell = false;
+  voice.busy = true;
+  const finish = () => { if (my === voice.token) setTimeout(() => { if (my === voice.token) voice.busy = false; }, 700); };
+  const fallback = () => {
+    if (fell || my !== voice.token) return;
+    fell = true;
+    if (!synth) return finish();
+    const u = new SpeechSynthesisUtterance(spoken(item.text)), v = pickVoice();
+    u.lang = 'pt-BR'; if (v) u.voice = v;
+    u.onend = finish; u.onerror = finish;
+    synth.speak(u);
+  };
+  if (!item.src) return fallback();
+  player.onended = finish; player.onerror = fallback;
+  player.src = item.src;
+  const pr = player.play(); if (pr) pr.catch(fallback);
+}
+function pauseSound(stop) {
+  if (stop) { player.pause(); if (synth) synth.pause(); return; }
+  if (voice.busy && player.currentTime > 0 && !player.ended) { const pr = player.play(); if (pr) pr.catch(() => {}); }
+  if (synth) synth.resume();
+}
+// Chamado sempre que uma cena entra num passo novo
+function narrate(title, cap) {
+  const text = (NARR[voice.key] || [])[voice.idx];
+  voice.current = text
+    ? { src: 'animacoes-audio/' + voice.key + '-' + String(voice.idx + 1).padStart(2, '0') + '.m4a', text }
+    : { src: null, text: title + '. ' + cap };
+  if (voice.on) say(voice.current);
+}
+function hushVoice() { voice.token++; voice.busy = false; voice.current = null; stopSound(); }
+// Com a narração ligada, o passo só avança quando a fala termina (com um teto de segurança),
+// e a animação do passo se repete enquanto isso
+const voiceHolds = elapsed => voice.on && voice.busy && elapsed < 120000;
+const loopP = (elapsed, dur) => (voice.on ? elapsed % (dur + 1500) : elapsed) / dur;
+
+function textSprite(w, h) {
+  const c = document.createElement('canvas'); c.width = w; c.height = h;
+  const ctx = c.getContext('2d');
+  const tex = new THREE.CanvasTexture(c);
+  const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false }));
+  sp.renderOrder = 10;
+  function set(text, color, font) {
+    ctx.clearRect(0, 0, w, h);
+    ctx.font = '600 ' + font + 'px system-ui, sans-serif';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = color;
+    const lines = [];
+    text.split('\n').forEach(par => {
+      let cur = '';
+      par.split(' ').forEach(word => {
+        const t = cur ? cur + ' ' + word : word;
+        if (ctx.measureText(t).width > w - 30 && cur) { lines.push(cur); cur = word; } else cur = t;
+      });
+      lines.push(cur);
+    });
+    const lh = font * 1.25;
+    lines.forEach((l, k) => ctx.fillText(l, w / 2, h / 2 + (k - (lines.length - 1) / 2) * lh));
+    tex.needsUpdate = true;
+  }
+  return { sp, set };
+}
+
+// Só uma cena fica viva por vez: o navegador limita o número de contextos WebGL abertos
+let liveRenderer = null;
+
+// Cena base: câmera, luzes, controles e HUD (título em cima, legenda embaixo)
+function base(canvas, capH = 150) {
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 300);
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.setSize(width, height);
+  renderer.setClearColor(0x0b1220);
+  liveRenderer = renderer;
+  scene.add(camera);
+  scene.add(new THREE.AmbientLight(0xffffff, 0.7));
+  const dl = new THREE.DirectionalLight(0xffffff, 0.9); dl.position.set(4, 8, 10); scene.add(dl);
+  const controls = new OrbitControls(camera, renderer.domElement); controls.enableDamping = true;
+  const D = 10, vh = 2 * D * Math.tan(Math.PI * 25 / 180), vw = vh * width / height;
+  const hudW = Math.min(vw * 0.95, 13);
+  const title = textSprite(1024, 110); title.sp.scale.set(hudW, hudW * 110 / 1024, 1);
+  title.sp.position.set(0, vh / 2 - hudW * 55 / 1024 - 0.15, -D); camera.add(title.sp);
+  const cap = textSprite(1024, capH); cap.sp.scale.set(hudW, hudW * capH / 1024, 1);
+  cap.sp.position.set(0, -vh / 2 + hudW * capH / 2048 + 0.15, -D); camera.add(cap.sp);
+  const titleFrac = (hudW * 110 / 1024 + 0.15) / vh, capFrac = (hudW * capH / 1024 + 0.15) / vh;
+  return { scene, camera, renderer, controls, title, cap, titleFrac, capFrac };
+}
+
+function mesh(parent, geo, color, pos, extra = {}) {
+  const m = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ color, emissive: color, emissiveIntensity: 0.15, roughness: 0.5, ...extra }));
+  m.position.copy(pos); parent.add(m); return m;
+}
+function ball(parent, r, color) {
+  const m = new THREE.Mesh(new THREE.SphereGeometry(r, 18, 14), new THREE.MeshBasicMaterial({ color }));
+  parent.add(m); return m;
+}
+function label(parent, text, css, pos, w = 3, font = 34, cw = 512, ch = 128) {
+  const l = textSprite(cw, ch); l.set(text, css, font);
+  l.sp.scale.set(w, w * ch / cw, 1); l.sp.position.copy(pos); parent.add(l.sp); return l;
+}
+function segment(parent, a, b, color, opacity = 0.5) {
+  const l = new THREE.Line(new THREE.BufferGeometry().setFromPoints([a, b]), new THREE.LineBasicMaterial({ color, transparent: true, opacity }));
+  parent.add(l); return l;
+}
+// Enquadra o conteúdo entre o título e a legenda
+function camFit(S, cx, yTop, yBot, span) {
+  const band = 1 - S.capFrac - S.titleFrac;
+  const vis = Math.max((yTop - yBot) / band, span / (width / height));
+  const ty = (yTop + yBot) / 2 - (S.capFrac - S.titleFrac) / 2 * vis;
+  S.camera.position.set(cx, ty, vis / 0.9326); S.controls.target.set(cx, ty, 0);
+}
+function fly(obj, a, b, p, frac = 0.55, arc = 1) {
+  const m = clamp(p / frac), e = ease(m);
+  obj.position.lerpVectors(a, b, e); obj.position.y += Math.sin(Math.PI * e) * arc;
+  return m >= 1;
+}
+function along(pts, p) {
+  let total = 0; const lens = [];
+  for (let k = 0; k < pts.length - 1; k++) { const d = pts[k].distanceTo(pts[k + 1]); lens.push(d); total += d; }
+  let d = clamp(p) * total;
+  for (let k = 0; k < lens.length; k++) {
+    if (d <= lens[k] || k === lens.length - 1) return pts[k].clone().lerp(pts[k + 1], lens[k] ? Math.min(d / lens[k], 1) : 0);
+    d -= lens[k];
+  }
+}
+function stepper(steps, onEnter, dflt = 4800) {
+  let idx = -1, t0 = 0;
+  return now => {
+    if (idx < 0 || (now - t0 > (steps[idx].dur || dflt) && !voiceHolds(now - t0))) { idx = (idx + 1) % steps.length; t0 = now; voice.idx = idx; onEnter(steps[idx], idx); }
+    return { s: steps[idx], i: idx, p: loopP(now - t0, steps[idx].dur || dflt) };
+  };
+}
+const hud = S => s => { S.title.set(s.t, s.tc || '#e2e8f0', 34); S.cap.set(s.cap, s.cc || '#f1f5f9', 27); narrate(s.t, s.cap); };
+const draw = S => { S.controls.update(); S.renderer.render(S.scene, S.camera); };
+
+// ───────────── README: as duas metades ─────────────
+function sceneVisao(canvas) {
+  const S = base(canvas, 180), { scene } = S;
+  const L = -4.6, R = 4.6;
+  mesh(scene, new THREE.BoxGeometry(6.4, 0.3, 4), 0x134e4a, V(L, -1.2));
+  mesh(scene, new THREE.BoxGeometry(6.4, 0.3, 4), 0x3b2f63, V(R, -1.2));
+  const left = [
+    mesh(scene, new THREE.BoxGeometry(1.8, 1.4, 1.4), 0x60a5fa, V(L - 1.5, -0.35)),
+    mesh(scene, new THREE.BoxGeometry(2.2, 1.8, 1.6), 0x34d399, V(L + 1.3, -0.15))
+  ];
+  label(scene, 'susana-ui/', '#93c5fd', V(L - 1.5, 0.75), 2.4);
+  label(scene, 'susana_rag_backend/', '#6ee7b7', V(L + 1.3, 1.15), 3.2);
+  const right = [];
+  for (let k = 0; k < 5; k++) right.push(mesh(scene, new THREE.BoxGeometry(1.8, 0.22, 1.4), 0xa78bfa, V(R - 1.4, -0.9 + k * 0.3)));
+  right.push(mesh(scene, new THREE.BoxGeometry(1.5, 1.5, 1.2), 0xfbbf24, V(R + 1.4, -0.3)));
+  label(scene, 'CSVs do SUS-DF', '#c4b5fd', V(R - 1.4, 0.85), 2.8);
+  label(scene, 'notebooks/ e scripts .py', '#fcd34d', V(R + 1.5, 0.95), 3.2);
+  label(scene, 'Assistente Susana\nchat + API + RAG + MLOps', '#6ee7b7', V(L, 2.6), 4.6);
+  label(scene, 'Análise exploratória (EDA)\nbases abertas do SUS-DF', '#c4b5fd', V(R, 2.6), 4.6);
+  const pq = ball(scene, 0.25, 0xfbbf24);
+  const pqL = label(scene, '.parquet', '#fcd34d', V(0, 0), 1.8, 40, 256, 64);
+  const big = label(scene, '', '#f8fafc', V(0, -2.7), 9, 54, 1024, 128);
+
+  const T = 'README — o projeto e as duas metades do repositório';
+  const steps = [
+    { t: T, hi: 'L', cap: 'A Susana é uma assistente virtual administrativa da Secretaria de Saúde do DF: responde em linguagem natural com um LLM que roda na própria máquina, só com trechos de páginas oficiais e citando a fonte.' },
+    { t: T, hi: 'L', cap: 'Primeira metade: chat web + API + RAG + MLOps, em susana-ui/ e susana_rag_backend/. Perguntas clínicas devem ser barradas antes de chegar ao modelo.' },
+    { t: T, hi: 'R', cap: 'Segunda metade: a análise exploratória (EDA) das bases abertas do SUS-DF — CSVs, notebooks e scripts na raiz. Foi a primeira etapa do trabalho.' },
+    { t: T, pq: true, cap: 'As duas metades não se conectam em tempo de execução. A EDA exporta arquivos .parquet descritos como “para o RAG”, mas o RAG não os lê.' },
+    { t: T, hi: 'L', big: '27 trechos · 384 dimensões · k = 3', cap: 'Números do README: 27 trechos indexados no banco vetorial, vetores de 384 dimensões, 3 trechos recuperados por pergunta, Llama 3.1 8B (Q4_K_M, 4,9 GB).' },
+    { t: T, hi: 'L', big: 'F1 0,571 · 13 de 14 testes', cap: 'Guardrail: 57 exemplos no dataset, F1 de 0,571, bloqueio com probabilidade > 0,65. Testes: 14 (13 passam, 1 falha). Latência de 3,4 a 4,8 s.' },
+    { t: T, cap: 'Com pouco tempo, a ordem de leitura sugerida é 01, 04, 05, 09 e 10. O 09 (limitações) é o mais importante para uma banca.' }
+  ];
+  camFit(S, 0, 3.3, -3.3, 17);
+  const enter = hud(S);
+  const next = stepper(steps, s => { enter(s); big.set(s.big || '', '#f8fafc', 54); });
+  return now => {
+    const { s, p } = next(now);
+    left.forEach(m => { m.material.emissiveIntensity = s.hi === 'L' ? pulse(now) * 0.7 : 0.12; });
+    right.forEach(m => { m.material.emissiveIntensity = s.hi === 'R' ? pulse(now) * 0.7 : 0.12; });
+    pq.visible = pqL.sp.visible = !!s.pq;
+    if (s.pq) {
+      pq.position.lerpVectors(V(R - 1.4, 0.8), V(0, 0.8), ease(clamp(p / 0.45)));
+      pq.material.color.setHex(p > 0.45 ? 0xf87171 : 0xfbbf24);
+      if (p > 0.45) pq.position.y -= (p - 0.45) * 7;
+      pqL.sp.position.copy(pq.position); pqL.sp.position.y += 0.5;
+    }
+    draw(S);
+  };
+}
+
+// ───────────── 01: caminho de uma pergunta ─────────────
+function sceneFluxo(canvas) {
+  const { scene, camera, renderer, controls, title, cap } = base(canvas);
+  const nodes = {};
+  function addNode(key, name, x, color, geo) {
+    const m = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ color, emissive: color, emissiveIntensity: 0.15, roughness: 0.5 }));
+    m.position.set(x, 0, 0); scene.add(m);
+    const l = textSprite(512, 128); l.set(name, '#e5e7eb', 34);
+    l.sp.scale.set(3, 0.75, 1); l.sp.position.set(x, -1.45, 0); scene.add(l.sp);
+    nodes[key] = m;
+  }
+  addNode('N', 'Navegador\nNext.js :3000', -7.5, 0x60a5fa, new THREE.BoxGeometry(1.3, 1.0, 0.3));
+  addNode('F', 'FastAPI\nrouters_stream.py', -3.6, 0x34d399, new THREE.BoxGeometry(1.1, 1.1, 1.1));
+  addNode('G', 'Guardrail\nscikit-learn', -0.6, 0xfbbf24, new THREE.OctahedronGeometry(0.75));
+  addNode('E', 'Embedder\nMiniLM 384d', 2.2, 0xa78bfa, new THREE.IcosahedronGeometry(0.7, 1));
+  addNode('C', 'ChromaDB\n27 blocos', 5.0, 0x22d3ee, new THREE.CylinderGeometry(0.65, 0.65, 1.0, 24));
+  addNode('O', 'Ollama :11434\nllama3.1:8b', 9.0, 0xf472b6, new THREE.SphereGeometry(0.85, 32, 24));
+
+  const boxGeo = new THREE.BoxGeometry(11.2, 3.6, 2.6);
+  const box = new THREE.Mesh(boxGeo, new THREE.MeshBasicMaterial({ color: 0x34d399, transparent: true, opacity: 0.05, depthWrite: false }));
+  box.position.set(0.7, -0.4, 0); scene.add(box);
+  const edges = new THREE.LineSegments(new THREE.EdgesGeometry(boxGeo), new THREE.LineBasicMaterial({ color: 0x34d399, transparent: true, opacity: 0.5 }));
+  edges.position.copy(box.position); scene.add(edges);
+  const bl = textSprite(1024, 80); bl.set('um único processo: backend FastAPI :8000', '#6ee7b7', 40);
+  bl.sp.scale.set(7, 7 * 80 / 1024, 1); bl.sp.position.set(0.7, 1.75, 0); scene.add(bl.sp);
+
+  const packet = new THREE.Mesh(new THREE.SphereGeometry(0.28, 20, 16), new THREE.MeshBasicMaterial({ color: 0xffffff }));
+  scene.add(packet);
+  const tokens = [];
+  for (let k = 0; k < 9; k++) {
+    const tk = new THREE.Mesh(new THREE.SphereGeometry(0.14, 12, 10), new THREE.MeshBasicMaterial({ color: 0xf9a8d4 }));
+    tk.visible = false; scene.add(tk); tokens.push(tk);
+  }
+  const P = k => nodes[k].position.clone();
+  const streamPath = [P('O'), new THREE.Vector3(2.7, 2.6, 0), P('F'), P('N')];
+
+  const T1 = '01 — pergunta administrativa: “Telefone do Hospital Regional de Taguatinga”';
+  const T2 = '01 — pergunta clínica: “Que remédio devo tomar para dor de cabeça?”';
+  const W = 0xffffff, R = 0xf87171, GR = 0x4ade80;
+  const steps = [
+    { t: T1, a: 'N', b: 'F', c: W, cap: 'O navegador chama o backend direto: POST /api/chat/stream. Pydantic valida (1 a 2000 caracteres).' },
+    { t: T1, a: 'F', b: 'G', c: W, cap: 'Guardrail: is_clinical(mensagem)? Não é clínica → a pergunta segue.' },
+    { t: T1, a: 'G', b: 'E', c: GR, cap: 'Embedder: encode_queries([mensagem]) → vetor de 384 números com norma 1.' },
+    { t: T1, a: 'E', b: 'C', c: 0xa78bfa, cap: 'ChromaDB: busca os 3 blocos mais próximos. Distância do 1º = 0,249 (Hospitais Regionais).' },
+    { t: T1, a: 'C', b: 'O', c: 0x22d3ee, cap: 'HTTP para o Ollama: prompt de sistema + 3 trechos + pergunta (temperature 0,1, stream).' },
+    { t: T1, stream: true, dur: 5500, cap: 'O Llama gera token a token; o backend repassa cada {"type":"chunk"} e fecha com {"type":"done","source":...}.' },
+    { t: T2, a: 'N', b: 'F', c: W, cap: 'Mesma rota: POST /api/chat/stream.' },
+    { t: T2, a: 'F', b: 'G', c: W, cap: 'Guardrail: P(clínica) = 0,66 > 0,65 → BLOQUEIA. Embedder, ChromaDB e Ollama nem são chamados.' },
+    { t: T2, a: 'G', b: 'F', c: R, cap: 'O backend monta a recusa sem usar o LLM.' },
+    { t: T2, a: 'F', b: 'N', c: R, cap: 'Resposta: chunk “Desculpe...” + done {is_blocked: true} (HTTP 200).' }
+  ];
+
+  camera.position.set(0.7, 2.2, Math.max(13, 19.5 / (0.9326 * width / height)));
+  controls.target.set(0.7, 0, 0);
+
+  let idx = -1, t0 = 0;
+  return now => {
+    if (idx < 0 || (now - t0 > (steps[idx].dur || 3400) && !voiceHolds(now - t0))) {
+      idx = (idx + 1) % steps.length; t0 = now;
+      title.set(steps[idx].t, idx < 6 ? '#93c5fd' : '#fca5a5', 34);
+      cap.set(steps[idx].cap, '#f1f5f9', 32);
+      voice.idx = idx; narrate(steps[idx].t, steps[idx].cap);
+    }
+    const s = steps[idx], p = loopP(now - t0, s.dur || 3400);
+    Object.keys(nodes).forEach(k => { nodes[k].material.emissiveIntensity = 0.15; nodes[k].rotation.y += 0.004; });
+    if (s.stream) {
+      packet.visible = false;
+      nodes.O.material.emissiveIntensity = 0.6 + 0.3 * Math.sin(now / 120);
+      tokens.forEach((tk, k) => {
+        const q = p * 1.9 - k * 0.1;
+        tk.visible = q > 0 && q < 1;
+        if (tk.visible) tk.position.copy(along(streamPath, q));
+      });
+    } else {
+      tokens.forEach(tk => { tk.visible = false; });
+      packet.visible = true; packet.material.color.setHex(s.c);
+      const m = Math.min(p / 0.55, 1), e = m * m * (3 - 2 * m);
+      packet.position.copy(P(s.a).lerp(P(s.b), e));
+      packet.position.y += Math.sin(Math.PI * e) * 1.1;
+      if (m >= 1) nodes[s.b].material.emissiveIntensity = 0.6 + 0.3 * Math.sin(now / 120);
+    }
+    controls.update();
+    renderer.render(scene, camera);
+  };
+}
+
+// ───────────── 02: frontend e streaming NDJSON ─────────────
+function sceneFrontend(canvas) {
+  const S = base(canvas, 180), { scene } = S;
+  const flat = (w, h, color, pos, extra = {}) => {
+    const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, 0.08), new THREE.MeshBasicMaterial({ color, ...extra }));
+    m.position.copy(pos); scene.add(m); return m;
+  };
+  flat(7.2, 6.4, 0x111c33, V(-3.6, 0.3, -0.3));
+  label(scene, 'navegador — page.tsx (“use client”)', '#93c5fd', V(-3.6, 3.85), 5.5, 36, 768, 64);
+  flat(6.4, 0.6, 0x1e293b, V(-3.6, -2.4, -0.2));
+  label(scene, 'Digite sua dúvida…   [Enter envia]', '#64748b', V(-3.6, -2.4), 4.5, 32, 640, 64);
+  const ub = flat(3.9, 0.8, 0xbae6fd, V(-2.2, 2.4, 0));
+  const ubT = label(scene, '', '#0c4a6e', V(-2.2, 2.4, 0.1), 3.8, 30, 608, 96);
+  const border = flat(5.1, 1.9, 0xcbd5e1, V(-4.3, 0.5, -0.1));
+  const inner = flat(4.9, 1.7, 0xf8fafc, V(-4.3, 0.5, 0), { transparent: true });
+  const abT = label(scene, '', '#0f172a', V(-4.3, 0.5, 0.1), 4.7, 34, 640, 224);
+  const foot = label(scene, '', '#93c5fd', V(-4.3, -0.85, 0.1), 5, 30, 704, 64);
+  mesh(scene, new THREE.BoxGeometry(2.2, 2.8, 1.6), 0x34d399, V(6, 0.5));
+  label(scene, 'Backend :8000\nPOST /api/chat/stream', '#6ee7b7', V(6, -1.6), 3.8, 36);
+  const pk = ball(scene, 0.22, 0xffffff);
+  const chunks = [];
+  for (let k = 0; k < 5; k++) {
+    const c = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.3, 0.1), new THREE.MeshBasicMaterial({ color: 0xf9a8d4 }));
+    c.visible = false; scene.add(c); chunks.push(c);
+  }
+  const A = V(4.8, 0.5, 0.3), B = V(-1.7, 0.5, 0.3), MID = V(1.6, 0.5, 0.3);
+  const Q = 'Qual o telefone do HRT?', words = ['O', ' telefone', ' é', ' (61)', ' 3449-6534'];
+  const T = '02 — frontend: sendMessage e a leitura do streaming';
+  const steps = [
+    { t: T, cap: 'sendMessage: ignora entrada vazia, acrescenta a mensagem do cidadão ao histórico (estado messages) e limpa a caixa de texto.' },
+    { t: T, mode: 'load', cap: 'Liga isLoading e acrescenta um balão vazio da assistente, que será preenchido aos poucos. Enquanto isso aparece o esqueleto pulsante.' },
+    { t: T, mode: 'post', cap: 'fetch com POST para http://localhost:8000/api/chat/stream enviando {"message": "..."}. A chamada parte do navegador, por isso o backend precisa de CORS.' },
+    { t: T, mode: 'stream', dur: 6500, cap: 'res.body.getReader() + TextDecoder: lê bytes, divide por quebra de linha e faz JSON.parse. Cada {"type":"chunk"} concatena content ao último balão. O formato é NDJSON, não SSE.' },
+    { t: T, txt: words.join(''), foot: 'Fonte Oficial: Hospitais Regionais (parte 1)', cap: '{"type":"done"} grava os metadados finais no último balão: is_blocked, isWarning e source, que vira o rodapé “Fonte Oficial”.' },
+    { t: T, q: 'Que remédio tomo para dor de cabeça?', txt: 'Desculpe, não posso ajudar...', foot: 'Fora de Escopo / Não Clínico', footC: '#fca5a5', border: 0xef4444, cap: 'MessageBubble: is_blocked → borda vermelha e o aviso “Fora de Escopo / Não Clínico”. É o que aparece quando o guardrail barra a pergunta.' },
+    { t: T, q: '(pergunta sem trecho na base)', txt: 'Não encontrei informação suficiente...', foot: 'Informação Ausente', footC: '#fcd34d', border: 0xf59e0b, cap: 'isWarning = !is_blocked && !source → borda amarela e “Informação Ausente”: resposta não bloqueada, mas sem fonte.' },
+    { t: T, mode: 'cut', txt: 'O telefone é […] 3449-6534', cc: '#fdba74', cap: 'Fragilidade: o código faz split("\\n") em cada pacote recebido. Se uma linha JSON chegar cortada entre dois pacotes, o JSON.parse falha e aquele pedaço de texto é descartado.' },
+    { t: T, txt: words.join(''), cap: 'Outras fragilidades: sem checar res.ok (um 503 deixa o balão vazio), URL do backend fixa no código e envio não bloqueado durante a resposta. O histórico vive só na memória do navegador.' }
+  ];
+  camFit(S, 0.3, 4.1, -2.9, 16.5);
+  const enter = hud(S);
+  let last = -1;
+  const next = stepper(steps, s => {
+    enter(s); last = -1;
+    ubT.set(s.q || Q, '#0c4a6e', 30); abT.set(s.txt || '', '#0f172a', 34); foot.set(s.foot || '', s.footC || '#93c5fd', 30);
+  });
+  return now => {
+    const { s, i, p } = next(now);
+    ub.scale.setScalar(i === 0 ? Math.max(ease(clamp(p / 0.3)), 0.001) : 1);
+    border.visible = inner.visible = abT.sp.visible = foot.sp.visible = i > 0;
+    inner.material.opacity = s.mode === 'load' ? 0.5 + 0.3 * Math.sin(now / 180) : 1;
+    border.material.color.setHex(s.border || 0xcbd5e1);
+    pk.visible = s.mode === 'post';
+    if (pk.visible) fly(pk, V(-2.2, 2.4, 0.3), A, p, 0.6, 1);
+    chunks.forEach((c, k) => {
+      c.visible = false; c.scale.setScalar(1);
+      if (s.mode === 'stream') {
+        const q = (p - k * 0.15) / 0.25;
+        if (q > 0 && q < 1) { c.visible = true; c.material.color.setHex(0xf9a8d4); fly(c, A, B, q, 1, 1); }
+      } else if (s.mode === 'cut' && k < 2) {
+        const sc = 1 - ease(clamp((p - 0.5) / 0.3));
+        c.visible = sc > 0.02; c.scale.setScalar(Math.max(sc, 0.02)); c.material.color.setHex(0xf87171);
+        c.position.lerpVectors(A, MID, ease(clamp((p - k * 0.1) / 0.4))); c.position.x += k * 0.7;
+      }
+    });
+    if (s.mode === 'stream') {
+      const count = p < 0.25 ? 0 : clamp(Math.floor((p - 0.25) / 0.15) + 1, 0, 5);
+      if (count !== last) { last = count; abT.set(words.slice(0, count).join(''), '#0f172a', 34); }
+    }
+    draw(S);
+  };
+}
+
+// ───────────── 03: inicialização e as duas rotas ─────────────
+function sceneBackend(canvas) {
+  const S = base(canvas, 180), { scene } = S;
+  const gA = new THREE.Group(), gB = new THREE.Group(); scene.add(gA, gB);
+  const names = ['MLflow\nsusana-rag', 'Embeddings\n2 a 5 s', 'ChromaDB\ndata/chroma_db', 'OllamaAdapter', 'SemanticCache\n0,08', 'RAGPipeline', 'Indexação\n0 novos / 27', 'Warm-up\nOllama'];
+  const blocks = names.map((n, k) => {
+    const m = mesh(gA, new THREE.BoxGeometry(1.3, 1.3, 1.3), 0x334155, V(-7.3 + 2 * k, 0.3));
+    label(gA, n, '#e5e7eb', V(-7.3 + 2 * k, -1.0), 1.95, 36, 320, 128);
+    label(gA, String(k + 1), '#f8fafc', V(-7.3 + 2 * k, 0.3, 0.7), 0.6, 80, 128, 128);
+    return m;
+  });
+  const status = label(gA, '', '#fca5a5', V(-0.3, 2.7), 9, 50, 1024, 128);
+
+  const xs = [-3.5, -1, 1.5, 4, 6.5], lanes = [1.8, -1.2], ghosts = [];
+  const sn = ['Guardrail', 'Cache\nsemântico', 'Busca\nvetorial', 'LLM\n(Ollama)', 'Registro\nMLflow'];
+  const sc = [0xfbbf24, 0x22d3ee, 0xa78bfa, 0xf472b6, 0x60a5fa];
+  lanes.forEach((y, li) => xs.forEach((x, k) => {
+    const ghost = li === 1 && (k === 1 || k === 4);
+    const m = mesh(gB, new THREE.BoxGeometry(1.1, 1.1, 1.1), ghost ? 0xf87171 : sc[k], V(x, y), ghost ? { transparent: true, opacity: 0.18 } : {});
+    label(gB, ghost ? (k === 1 ? '✗ sem cache' : '✗ sem MLflow') : sn[k], ghost ? '#fca5a5' : '#e5e7eb', V(x, y - 1.0), 2.2, 36, 352, 128);
+    if (ghost) ghosts.push(m);
+  }));
+  label(gB, 'POST /api/chat\nusada pelo pytest', '#86efac', V(-7, 1.8), 3.2, 36, 448, 128);
+  label(gB, 'POST /api/chat/stream\nusada pela tela', '#93c5fd', V(-7, -1.2), 3.2, 36, 448, 128);
+  const pk = ball(gB, 0.25, 0xffffff), pk2 = ball(gB, 0.25, 0xf87171);
+
+  const TA = '03 — backend: o que acontece na subida (lifespan)', TB = '03 — backend: as duas rotas não fazem a mesma coisa';
+  const steps = [
+    { t: TA, ph: 'A', lit: 0, from: 0, cap: 'Na importação de main.py, antes de aceitar conexões: settings = get_settings() e guardrails = GuardrailsClassifier(), que carrega o modelo do MLflow. pipeline ainda vale None.' },
+    { t: TA, ph: 'A', lit: 2, from: 0, cap: 'lifespan, passos 1 e 2: configura o MLflow (experimento susana-rag) e carrega o modelo de embeddings — o passo mais lento, de 2 a 5 s.' },
+    { t: TA, ph: 'A', lit: 6, from: 2, cap: 'Passos 3 a 6: abre o ChromaDB, cria o OllamaAdapter e o SemanticCache (distância máxima 0,08) e monta o RAGPipeline com essas peças.' },
+    { t: TA, ph: 'A', lit: 7, from: 6, cap: 'Passo 7: lê os .txt do corpus e indexa só os blocos cujo id ainda não existe. No log: “Indexação: 0 novos / 27 total”.' },
+    { t: TA, ph: 'A', lit: 8, from: 7, ok: true, cap: 'Passo 8: warm-up — um prompt vazio ao Ollama força o carregamento dos 4,9 GB antes do primeiro usuário. Até aqui as rotas de chat respondiam 503.' },
+    { t: TB, ph: 'B', lane: 1, cap: 'POST /api/chat devolve a resposta completa e chama RAGPipeline.query: guardrail → cache semântico → busca → LLM → registro no MLflow. Quem usa essa rota são os testes, não a tela.' },
+    { t: TB, ph: 'B', lane: 2, cap: 'A tela usa POST /api/chat/stream (routers_stream.py), com a lógica de RAG escrita de novo à mão: sem cache semântico e sem registro no MLflow.' },
+    { t: TB, ph: 'B', lane: 2, gh: true, cc: '#fdba74', cap: 'Consequência: o que o usuário usa na tela não passa pelo cache, não é registrado no MLflow e não é coberto por nenhum teste.' },
+    { t: TB, ph: 'B', lane: 2, block: true, cap: 'Assíncrono na assinatura, síncrono por dentro: as rotas são async def, mas embedding, busca e httpx.Client bloqueiam o laço de eventos. Enquanto uma pergunta é processada, as outras esperam — até o /health.' },
+    { t: TB, ph: 'B', cap: 'Códigos de status: 200 (inclusive pergunta bloqueada, via is_blocked), 422 para corpo inválido, 500 para erro interno em /api/chat e 503 enquanto o pipeline inicializa.' }
+  ];
+  camFit(S, -0.3, 3.3, -2.7, 18);
+  const enter = hud(S);
+  const next = stepper(steps, s => {
+    enter(s);
+    status.set(s.ok ? 'Pipeline pronto. 27 docs na coleção. → 200' : 'pipeline = None → rotas de chat respondem 503', s.ok ? '#86efac' : '#fca5a5', 50);
+  });
+  return now => {
+    const { s, p } = next(now);
+    gA.visible = s.ph === 'A'; gB.visible = s.ph === 'B';
+    if (s.ph === 'A') blocks.forEach((m, k) => {
+      const on = k < s.lit, hex = on ? 0x34d399 : 0x334155;
+      m.material.color.setHex(hex); m.material.emissive.setHex(hex);
+      m.material.emissiveIntensity = on && k >= s.from ? pulse(now) : on ? 0.3 : 0.05;
+    });
+    pk.visible = !!s.lane;
+    if (s.lane) pk.position.set(-5.2 + ease(clamp(p / 0.7)) * 12.6, lanes[s.lane - 1], 0.9);
+    pk2.visible = !!s.block;
+    if (s.block) { pk2.position.set(-5.2, lanes[0], 0.9); pk2.scale.setScalar(1 + 0.25 * Math.sin(now / 120)); }
+    ghosts.forEach(g => { g.material.opacity = s.gh ? 0.3 + 0.25 * Math.sin(now / 140) : 0.18; });
+    draw(S);
+  };
+}
+
+// ───────────── 04: busca vetorial ─────────────
+function sceneVetores(canvas) {
+  const { scene, camera, renderer, controls, title, cap } = base(canvas);
+  controls.autoRotate = true; controls.autoRotateSpeed = 1.0;
+
+  // Esfera unitária: todo embedding tem norma 1 (posições ilustrativas, não os vetores reais)
+  const RAD = 3;
+  scene.add(new THREE.LineSegments(
+    new THREE.WireframeGeometry(new THREE.SphereGeometry(RAD, 24, 16)),
+    new THREE.LineBasicMaterial({ color: 0x64748b, transparent: true, opacity: 0.16 })));
+  scene.add(new THREE.Mesh(new THREE.SphereGeometry(0.07, 12, 10), new THREE.MeshBasicMaterial({ color: 0x94a3b8 })));
+
+  let seed = 7;
+  const rnd = () => { seed = (seed * 1664525 + 1013904223) % 4294967296; return seed / 4294967296 - 0.5; };
+
+  const clusters = [
+    { tag: 'UNIDADE (3)', n: 3, col: 0x60a5fa, css: '#93c5fd', v: [0.5, 0.4, 1] },
+    { tag: 'EMERGENCIA (7)', n: 7, col: 0xf87171, css: '#fca5a5', v: [-0.6, 0.3, 1] },
+    { tag: 'SERVICO (5)', n: 5, col: 0x34d399, css: '#6ee7b7', v: [0, -0.5, 1] },
+    { tag: 'VACINACAO (3)', n: 3, col: 0xfbbf24, css: '#fcd34d', v: [0.9, -0.3, 0.8] },
+    { tag: 'INSTITUCIONAL (2)', n: 2, col: 0xa78bfa, css: '#c4b5fd', v: [-0.5, -0.6, 0.9] },
+    { tag: 'DADOS_ABERTOS (7)', n: 7, col: 0x22d3ee, css: '#67e8f9', v: [0.1, 0.9, 0.8] }
+  ];
+  const pts = [];
+  clusters.forEach(c => {
+    const center = new THREE.Vector3(...c.v).normalize();
+    for (let k = 0; k < c.n; k++) {
+      const d = center.clone().add(new THREE.Vector3(rnd(), rnd(), rnd()).multiplyScalar(0.36)).normalize();
+      const m = new THREE.Mesh(new THREE.SphereGeometry(0.1, 14, 10), new THREE.MeshBasicMaterial({ color: c.col }));
+      m.position.copy(d.multiplyScalar(RAD)); scene.add(m); pts.push(m);
+    }
+    const l = textSprite(512, 64); l.set(c.tag, c.css, 36);
+    l.sp.scale.set(2.4, 0.3, 1); l.sp.position.copy(center.multiplyScalar(RAD + 0.75)); scene.add(l.sp);
+  });
+
+  const queries = [
+    new THREE.Vector3(0.75, 0.75, 0.75).normalize().multiplyScalar(RAD),
+    new THREE.Vector3(-0.6, -0.5, -1).normalize().multiplyScalar(RAD)
+  ];
+  const qMesh = new THREE.Mesh(new THREE.SphereGeometry(0.17, 18, 14), new THREE.MeshBasicMaterial({ color: 0xffffff }));
+  scene.add(qMesh);
+  const qLine = new THREE.Line(new THREE.BufferGeometry(), new THREE.LineBasicMaterial({ color: 0xffffff }));
+  scene.add(qLine);
+  const nLines = [0, 1, 2].map(() => {
+    const l = new THREE.Line(new THREE.BufferGeometry(), new THREE.LineBasicMaterial({ color: 0xffffff }));
+    scene.add(l); return l;
+  });
+  const nearest = q => pts.slice().sort((a, b) => a.position.distanceTo(q) - b.position.distanceTo(q)).slice(0, 3);
+
+  const T1 = '04 — dentro do domínio: “Telefone do Hospital Regional de Taguatinga”';
+  const T2 = '04 — fora do domínio: “Como fazer bolo de chocolate?”';
+  const steps = [
+    { q: 0, n: false, t: T1, cap: 'embeddings.py: o texto vira um vetor de 384 números com norma 1 — um ponto na superfície da esfera (aqui projetada em 3D).' },
+    { q: 0, n: true, col: 0x4ade80, t: T1, cap: 'retriever.py: ChromaDB devolve os 3 blocos mais próximos. Distância = 1 − cos(θ) = 0,249 → ângulo pequeno, mesmo assunto.' },
+    { q: 1, n: false, t: T2, cap: 'A pergunta sobre bolo cai longe de todos os 27 blocos do corpus.' },
+    { q: 1, n: true, col: 0xf87171, t: T2, cap: 'Mesmo assim sempre existem “3 mais próximos”: distância 1,004 (vetores quase ortogonais) → bloco da Ouvidoria.' },
+    { q: 1, n: true, col: 0xfb923c, t: T2, cap: 'O limiar em config.py é 1,2. Como 1,004 < 1,2, ele nunca dispara: os 3 trechos sem relação vão ao LLM. Um limiar de 0,6 a 0,7 separaria os dois casos.' }
+  ];
+
+  camera.position.set(0, 1.2, Math.max(11.5, 9.5 / (0.9326 * width / height) * 1.6));
+  const DUR = 5200;
+  let idx = -1, t0 = 0, nb = [];
+  return now => {
+    if (idx < 0 || (now - t0 > DUR && !voiceHolds(now - t0))) {
+      idx = (idx + 1) % steps.length; t0 = now;
+      const s0 = steps[idx];
+      title.set(s0.t, s0.q === 0 ? '#86efac' : '#fca5a5', 34);
+      cap.set(s0.cap, '#f1f5f9', 31);
+      voice.idx = idx; narrate(s0.t, s0.cap);
+      nb = nearest(queries[s0.q]);
+      pts.forEach(m => m.scale.setScalar(1));
+    }
+    const s = steps[idx], p = loopP(now - t0, DUR), q = queries[s.q];
+    const tip = q.clone().multiplyScalar(s.n ? 1 : Math.min(p / 0.4, 1));
+    qMesh.position.copy(tip);
+    qMesh.scale.setScalar(1 + 0.2 * Math.sin(now / 150));
+    qLine.geometry.setFromPoints([new THREE.Vector3(), tip]);
+    nLines.forEach((l, k) => {
+      l.visible = s.n;
+      if (s.n) {
+        const e = Math.min(Math.max(p / 0.35 - k * 0.25, 0), 1);
+        l.geometry.setFromPoints([q, q.clone().lerp(nb[k].position, e)]);
+        l.material.color.setHex(s.col);
+        nb[k].scale.setScalar(1 + e * (0.8 + 0.3 * Math.sin(now / 150)));
+      }
+    });
+    controls.update();
+    renderer.render(scene, camera);
+  };
+}
+
+// ───────────── 05: guardrail ─────────────
+function sceneGuardrail(canvas) {
+  const { scene, camera, renderer, controls, title, cap } = base(canvas);
+
+  function lab(text, css, x, y, w) {
+    const l = textSprite(512, 128); l.set(text, css, 34);
+    l.sp.scale.set(w, w / 4, 1); l.sp.position.set(x, y, 0); scene.add(l.sp);
+  }
+  function gate(x, color, text, css, opacity) {
+    const m = new THREE.Mesh(new THREE.TorusGeometry(0.85, 0.12, 12, 40),
+      new THREE.MeshStandardMaterial({ color, emissive: color, emissiveIntensity: 0.2, transparent: true, opacity }));
+    m.rotation.y = Math.PI / 2; m.position.set(x, 1.5, 0); scene.add(m);
+    lab(text, css, x, 3.0, 3.2);
+    return m;
+  }
+  const g1 = gate(-3.2, 0x60a5fa, 'Camada 1\nregex ADMINISTRATIVA', '#93c5fd', 1);
+  const g2 = gate(0.6, 0xfbbf24, 'Camada 2\nML: P(clínica) > 0,65?', '#fcd34d', 1);
+  gate(4.4, 0x64748b, 'Camada 3: regex CLÍNICA\n(só se o ML não carregar)', '#94a3b8', 0.35);
+
+  function slab(x, color, text, css) {
+    const m = new THREE.Mesh(new THREE.BoxGeometry(2.8, 0.4, 1.8),
+      new THREE.MeshStandardMaterial({ color, emissive: color, emissiveIntensity: 0.2 }));
+    m.position.set(x, -1.9, 0); scene.add(m);
+    lab(text, css, x, -2.75, 3.0);
+    return m;
+  }
+  const libera = slab(-1.3, 0x22c55e, 'LIBERA\nsegue para o RAG e o LLM', '#86efac');
+  const bloqueia = slab(3.2, 0xef4444, 'BLOQUEIA\nrecusa sem chamar o LLM', '#fca5a5');
+
+  scene.add(new THREE.Line(
+    new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-7, 1.5, 0), new THREE.Vector3(5.6, 1.5, 0)]),
+    new THREE.LineBasicMaterial({ color: 0x475569, transparent: true, opacity: 0.5 })));
+
+  const packet = new THREE.Mesh(new THREE.SphereGeometry(0.3, 20, 16), new THREE.MeshBasicMaterial({ color: 0xffffff }));
+  scene.add(packet);
+
+  const S0 = new THREE.Vector3(-7, 1.5, 0), G1 = g1.position, G2 = g2.position;
+  const L = new THREE.Vector3(-1.3, -1.5, 0), B = new THREE.Vector3(3.2, -1.5, 0);
+  const W = 0xffffff, OK = 0x4ade80, BL = 0xf87171, ERR = 0xfb923c;
+  const steps = [];
+  function msg(text, right, segs) {
+    segs.forEach(s => steps.push({ t: '05 — is_clinical(“' + text + '”)', right, a: s[0], b: s[1], c: s[2], cap: s[3], hit: s[4] }));
+  }
+  msg('Qual o horário de funcionamento da UBS?', true, [
+    [S0, G1, W, 'A mensagem entra no guardrail (guardrails.py), antes de qualquer chamada ao LLM.', g1],
+    [G1, L, OK, '✓ Casa com a regex administrativa (“horário”) → liberada na hora, com prioridade absoluta. Decisão correta.', libera]
+  ]);
+  msg('Que remédio devo tomar para dor de cabeça?', true, [
+    [S0, G1, W, 'Nenhum termo administrativo → passa para a camada 2.', g1],
+    [G1, G2, W, 'TF-IDF + regressão logística (61 termos de vocabulário): P(clínica) = 0,66.', g2],
+    [G2, B, BL, '✓ 0,66 > 0,65 → bloqueada. Decisão correta, mas por 0,01 de margem.', bloqueia]
+  ]);
+  msg('Estou sentindo muita febre e dor no corpo', false, [
+    [S0, G1, W, 'Nenhum termo administrativo → passa para a camada 2.', g1],
+    [G1, G2, W, 'O modelo dá P(clínica) = 0,60, abaixo do limiar de 0,65.', g2],
+    [G2, L, ERR, '✗ ERRO: liberada. A regex clínica “estou sentindo” pegaria, mas a camada 3 nunca é consultada quando o ML está carregado. É o teste test_blocks_symptom_report que falha.', libera]
+  ]);
+  msg('Qual a dose de dipirona e onde fica a UBS?', false, [
+    [S0, G1, W, 'A mensagem mistura um pedido clínico (dose) com um administrativo (onde fica).', g1],
+    [G1, L, ERR, '✗ ERRO: “onde fica” casa com a regex administrativa e libera tudo. A parte clínica chega intacta ao LLM.', libera]
+  ]);
+
+  camera.position.set(-0.8, 0.6, Math.max(12.5, 15 / (0.9326 * width / height)));
+  controls.target.set(-0.8, 0.2, 0);
+
+  const DUR = 4600, parts = [g1, g2, libera, bloqueia];
+  let idx = -1, t0 = 0;
+  return now => {
+    if (idx < 0 || (now - t0 > DUR && !voiceHolds(now - t0))) {
+      idx = (idx + 1) % steps.length; t0 = now;
+      title.set(steps[idx].t, steps[idx].right ? '#e2e8f0' : '#fdba74', 34);
+      cap.set(steps[idx].cap, steps[idx].c === ERR ? '#fdba74' : '#f1f5f9', 30);
+      voice.idx = idx; narrate(steps[idx].t, steps[idx].cap);
+    }
+    const s = steps[idx], p = loopP(now - t0, DUR);
+    const m = Math.min(p / 0.45, 1), e = m * m * (3 - 2 * m);
+    parts.forEach(o => { o.material.emissiveIntensity = 0.2; });
+    packet.material.color.setHex(s.c);
+    packet.position.copy(s.a.clone().lerp(s.b, e));
+    if (m >= 1) s.hit.material.emissiveIntensity = 0.7 + 0.3 * Math.sin(now / 120);
+    g1.rotation.x += 0.01; g2.rotation.x += 0.01;
+    controls.update();
+    renderer.render(scene, camera);
+  };
+}
+
+// ───────────── 06: treino, gate e registro de modelos ─────────────
+function sceneMlops(canvas) {
+  const S = base(canvas, 180), { scene } = S;
+  const P = [V(-8, 1), V(-5, 1), V(-2, 1), V(1, 1), V(3.8, 1), V(7, 0.75)], BE = V(7, -2.1);
+  const st = [
+    mesh(scene, new THREE.BoxGeometry(1.1, 1.4, 0.25), 0x22d3ee, P[0]),
+    mesh(scene, new THREE.BoxGeometry(1.2, 1.0, 1.0), 0x60a5fa, P[1]),
+    mesh(scene, new THREE.IcosahedronGeometry(0.7, 1), 0xa78bfa, P[2]),
+    mesh(scene, new THREE.SphereGeometry(0.65, 24, 18), 0xf472b6, P[3]),
+    mesh(scene, new THREE.TorusGeometry(0.7, 0.11, 12, 36), 0xfb923c, P[4]),
+    mesh(scene, new THREE.BoxGeometry(1.7, 0.8, 1.0), 0x34d399, P[5])
+  ];
+  st[4].rotation.y = Math.PI / 2;
+  ['guardrails_dataset.csv\n57 frases', 'treino 42 · teste 15\nestratificado', 'TF-IDF +\nregressão logística', 'F1 = 0,571\n(15 exemplos)', 'promotion gate\nif f1 >= 0.0', 'Model Registry\nsusana-guardrail']
+    .forEach((n, k) => label(scene, n, '#e5e7eb', V(P[k].x, -0.2), 2.8, 34, 448, 128));
+  label(scene, 'v1', '#052e16', V(7, 0.75, 0.6), 0.8, 60, 128, 64);
+  const v2 = mesh(scene, new THREE.BoxGeometry(1.7, 0.8, 1.0), 0x94a3b8, V(7, 1.75), { transparent: true, opacity: 0.4 });
+  const v2L = label(scene, 'v2 (exemplo)', '#e2e8f0', V(7, 1.75, 0.6), 1.9, 40, 304, 64);
+  const flag = label(scene, '◀ @champion', '#fcd34d', V(9, 0.75), 2.2, 36, 352, 64);
+  const be = mesh(scene, new THREE.BoxGeometry(1.7, 0.9, 1.0), 0x34d399, BE);
+  label(scene, 'Backend carrega\nmodels:/susana-guardrail@champion', '#6ee7b7', V(3.9, -2.1), 4, 30, 640, 128);
+  const gT = new THREE.Group(); scene.add(gT);
+  mesh(gT, new THREE.BoxGeometry(3.45, 0.4, 0.4), 0x60a5fa, V(-8.5 + 3.45 / 2, -1.7));
+  mesh(gT, new THREE.BoxGeometry(3.43, 0.4, 0.4), 0xf472b6, V(-8.5 + 3.43 / 2, -2.4));
+  label(gT, 'latência total: 3,45 s', '#93c5fd', V(-2.9, -1.7), 3.6, 34, 576, 64);
+  label(gT, 'só o LLM: 3,43 s', '#f9a8d4', V(-2.9, -2.4), 3.6, 34, 576, 64);
+  const pk = ball(scene, 0.24, 0xffffff);
+
+  const T = '06 — MLOps: treino do guardrail, gate e Model Registry';
+  const steps = [
+    { t: T, a: 0, b: 1, cap: 'train.py lê as 57 frases. Só o rótulo "CLINICAL" vira 1: os 7 exemplos clínicos rotulados como "1" acabam treinados como administrativos.' },
+    { t: T, a: 1, b: 2, cap: 'Divisão 75% / 25% estratificada com semente 42: 42 frases para treino e 15 para teste. Avaliar nos dados de treino mediria memorização, não generalização.' },
+    { t: T, a: 2, b: 3, cap: 'Pipeline TF-IDF + regressão logística. No teste, F1 = 0,571 — medido em 15 exemplos: um único exemplo a mais ou a menos muda o resultado em vários pontos.' },
+    { t: T, a: 3, b: 4, c: 0xfb923c, cc: '#fdba74', cap: 'Promotion gate: condição mínima para um modelo novo assumir a produção. No código é if f1 >= 0.0 — sempre verdadeira. O contrato pedia recall clínico ≥ 0,98.' },
+    { t: T, a: 4, b: 5, cap: 'Cada execução registra uma nova versão de susana-guardrail no Model Registry e move o alias @champion para ela. Neste mlflow.db existe só a versão 1.' },
+    { t: T, a: 5, b: 6, cap: 'O backend carrega models:/susana-guardrail@champion na subida: conhece só o alias, não o número da versão.' },
+    { t: T, roll: true, dur: 6000, cap: 'Rollback (exemplo): se uma versão nova for ruim, basta reapontar o @champion para a anterior e reiniciar o backend. Nenhuma linha de código muda.' },
+    { t: T, tel: true, cap: 'Telemetria: RAGPipeline.query grava uma run por pergunta no experimento susana-rag. Em “Horário da UBS”, de 3,45 s totais, 3,43 s são do LLM.' },
+    { t: T, cap: 'Pendências: DVC instalado mas não inicializado; não há runs de benchmark de LLMs nem de embeddings neste banco; só a rota /api/chat registra telemetria.' }
+  ];
+  camFit(S, 0.3, 2.4, -3.0, 20.5);
+  const next = stepper(steps, hud(S));
+  const all = [...st, be];
+  return now => {
+    const { s, p } = next(now);
+    all.forEach(m => { m.material.emissiveIntensity = 0.15; });
+    pk.visible = s.a !== undefined;
+    if (pk.visible) {
+      pk.material.color.setHex(s.c || 0xffffff);
+      const to = s.b === 6 ? BE : P[s.b];
+      if (fly(pk, P[s.a], to, p, 0.5, s.b === 6 ? 0 : 0.9)) all[s.b].material.emissiveIntensity = pulse(now);
+    }
+    v2.visible = v2L.sp.visible = !!s.roll;
+    let fy = 0.75;
+    if (s.roll) fy = p < 0.5 ? 0.75 + ease(clamp(p / 0.2)) : 1.75 - ease(clamp((p - 0.6) / 0.2));
+    flag.sp.position.y = fy;
+    gT.visible = !!s.tel;
+    draw(S);
+  };
+}
+
+// ───────────── 07 e analysis_process: correlações e regiões ─────────────
+function edaScene(canvas, steps) {
+  const S = base(canvas, 180), { scene } = S;
+  const gS = new THREE.Group(), gR = new THREE.Group(); scene.add(gS, gR);
+  const OX = -5, OY = -2.6, W = 10, H = 5.2;
+  segment(gS, V(OX, OY), V(OX + W, OY), 0x94a3b8, 0.8);
+  segment(gS, V(OX, OY), V(OX, OY + H), 0x94a3b8, 0.8);
+  const xl = label(gS, '', '#cbd5e1', V(0, OY - 0.45), 6, 34, 768, 64);
+  const yl = label(gS, '', '#cbd5e1', V(OX + 1.6, OY + H + 0.4), 5, 34, 640, 64);
+  const coef = label(gS, '', '#fcd34d', V(-2.0, 2.0), 5, 42, 640, 128);
+  const A = [[.20, .45], [.30, .25], [.25, .55], [.40, .30], [.35, .50], [.45, .35], [.30, .40], [.50, .28], [.42, .52], [.55, .38], [.90, .88], [.95, .80]];
+  const B = [[.10, .30], [.18, .38], [.25, .36], [.33, .45], [.40, .44], [.48, .50], [.55, .49], [.62, .56], [.70, .55], [.78, .62], [.86, .60], [.95, .95]];
+  const fit = d => {
+    const n = d.length, mx = d.reduce((a, q) => a + q[0], 0) / n, my = d.reduce((a, q) => a + q[1], 0) / n;
+    const b = d.reduce((a, q) => a + (q[0] - mx) * (q[1] - my), 0) / d.reduce((a, q) => a + (q[0] - mx) ** 2, 0);
+    return [my - b * mx, b];
+  };
+  const fA = fit(A), fB = fit(B);
+  const dots = A.map(() => { const m = ball(gS, 0.16, 0x22d3ee); return m; });
+  const reg = new THREE.Line(new THREE.BufferGeometry(), new THREE.LineBasicMaterial({ color: 0xfcd34d }));
+  gS.add(reg);
+
+  const regs = ['Central', 'Centro-Sul', 'Norte', 'Sul', 'Leste', 'Oeste', 'Sudoeste'];
+  const frag = ['asa, plano → Central', 'guar, nucleo → Centro-Sul', 'sob → Norte', 'gama, maria → Sul', 'paran, sebast → Leste', 'ceil, braz → Oeste', 'samam, tagu → Sudoeste'];
+  const rowY = k => 2.6 - 0.8 * k;
+  label(gR, 'Óbitos: região de residência', '#67e8f9', V(-4.3, 3.45), 5, 34, 640, 64);
+  label(gR, 'SAMU: coluna de região', '#f9a8d4', V(4.3, 3.45), 5, 34, 640, 64);
+  regs.forEach((n, k) => {
+    mesh(gR, new THREE.BoxGeometry(2.8, 0.55, 0.4), 0x0e7490, V(-4.3, rowY(k)));
+    label(gR, n, '#ecfeff', V(-4.3, rowY(k), 0.3), 2.6, 36, 416, 80);
+  });
+  const samu = mesh(gR, new THREE.BoxGeometry(2.8, 2.2, 0.6), 0xbe185d, V(4.3, 0.2));
+  const samuL = label(gR, '“SAMU”', '#fdf2f8', V(4.3, 0.2, 0.4), 2.6, 60, 416, 128);
+  const fail = label(gR, '✗ cruzamento vazio\nValueError', '#fca5a5', V(0, 0.2), 4, 40, 512, 128);
+  const small = frag.map((n, k) => {
+    const g = new THREE.Group(); gR.add(g);
+    mesh(g, new THREE.BoxGeometry(4.2, 0.55, 0.4), 0x9d174d, V(0, 0));
+    label(g, n, '#fdf2f8', V(0, 0, 0.3), 4.1, 32, 656, 80);
+    return g;
+  });
+  const links = regs.map((n, k) => segment(gR, V(-2.9, rowY(k)), V(2.2, rowY(k)), 0x4ade80, 0.8));
+
+  camFit(S, 0, 3.8, -3.4, 13.5);
+  const enter = hud(S);
+  let blend = 0;
+  const next = stepper(steps, s => {
+    enter(s);
+    xl.set(s.xl || '', '#cbd5e1', 34); yl.set(s.yl || '', '#cbd5e1', 34); coef.set(s.coef || '', '#fcd34d', 42);
+  }, 5600);
+  return now => {
+    const { s, p } = next(now);
+    gS.visible = s.ph === 'S'; gR.visible = s.ph === 'R';
+    if (s.ph === 'S') {
+      blend += ((s.set || 0) - blend) * 0.06;
+      dots.forEach((d, k) => {
+        const x = A[k][0] + (B[k][0] - A[k][0]) * blend, y = A[k][1] + (B[k][1] - A[k][1]) * blend;
+        d.position.set(OX + x * W, OY + y * H, 0);
+        const out = s.out && k >= 10;
+        d.scale.setScalar(out ? 1.4 + 0.5 * Math.sin(now / 140) : 1);
+        d.material.color.setHex(out ? 0xfb923c : 0x22d3ee);
+      });
+      const a = fA[0] + (fB[0] - fA[0]) * blend, b = fA[1] + (fB[1] - fA[1]) * blend;
+      reg.geometry.setFromPoints([V(OX, OY + a * H), V(OX + W, OY + (a + b) * H)]);
+    } else {
+      const k = s.split ? (s.hold ? 1 : ease(clamp(p / 0.5))) : 0;
+      samu.scale.setScalar(Math.max(1 - k, 0.001)); samuL.sp.visible = k < 0.5;
+      samu.material.emissiveIntensity = s.fail ? pulse(now) : 0.15;
+      fail.sp.visible = !!s.fail;
+      small.forEach((g, j) => { g.position.set(4.3, 0.2 + (rowY(j) - 0.2) * k, 0); g.scale.setScalar(Math.max(k, 0.001)); g.visible = k > 0.02; });
+      links.forEach(l => { l.visible = k > 0.95; });
+    }
+    draw(S);
+  };
+}
+const EDA07 = (() => {
+  const T1 = '07 — EDA: chamados do SAMU × óbitos, por mês (2022)', T2 = '07 — EDA: atendimentos ambulatoriais × cirurgias (2022)', T3 = '07 — EDA: o problema do eixo espacial (Região de Saúde)';
+  return [
+    { t: T1, ph: 'S', set: 0, xl: 'chamados do SAMU no mês', yl: 'óbitos no mês', coef: '12 pontos (um por mês)', cap: 'As bases abertas do SUS-DF (CSV com “;” e Latin-1; o SAMU usa “,” e UTF-8) são agregadas por mês: 12 pontos. Os pontos aqui são ilustrativos; os coeficientes são os do analysis_process.md.' },
+    { t: T1, ph: 'S', set: 0, out: true, xl: 'chamados do SAMU no mês', yl: 'óbitos no mês', coef: 'Pearson 0,604\nSpearman 0,294', cap: 'Pearson 0,604 e Spearman 0,294: um ou dois meses atípicos sustentam a relação linear, mas o ranking dos meses não bate. Com n = 12, o Spearman não se distingue de zero.' },
+    { t: T2, ph: 'S', set: 1, xl: 'atendimentos ambulatoriais no mês', yl: 'cirurgias no mês', coef: 'Pearson 0,637\nSpearman 0,776', cap: 'Pearson 0,637 e Spearman 0,776: relação monotônica forte — meses com mais consultas têm mais cirurgias. Ainda são 12 pontos, e correlação não é causalidade.' },
+    { t: T3, ph: 'R', fail: true, cc: '#fdba74', cap: 'Óbitos trazem a região de residência. No SAMU a coluna de região tem um único valor: a palavra “SAMU”. O cruzamento dá conjunto vazio → ValueError: x and y must have length at least 2.' },
+    { t: T3, ph: 'R', split: true, cap: 'Solução do notebook: inferir a região pelo nome da base em i_desc_sigla_estab_cnes (“SAMU USB Sob. I” → Norte) e comparar por taxa por 100 mil habitantes. É uma heurística frágil: a ordem dos testes importa.' },
+    { t: T3, ph: 'R', split: true, hold: true, cap: 'Ressalvas: óbitos contam pela residência e o SAMU pela base da ambulância — geografias diferentes. E os .parquet exportados “para o RAG” não são lidos pelo chat.' }
+  ];
+})();
+const EDA_AP = (() => {
+  const T1 = 'analysis_process — parâmetro temporal (mês)', T2 = 'analysis_process — parâmetro espacial (Região de Saúde)';
+  return [
+    { t: T1, ph: 'S', set: 0, xl: 'chamados do SAMU no mês', yl: 'óbitos no mês', coef: 'SAMU × óbitos (2022)', cap: 'O documento compara os resultados ao variar o eixo de agrupamento. Por mês é o mais limpo: i_mes_obito e i_mes_compt têm integridade alta em todas as bases. (Pontos ilustrativos.)' },
+    { t: T1, ph: 'S', set: 0, out: true, xl: 'chamados do SAMU no mês', yl: 'óbitos no mês', coef: 'Pearson 0,604\nSpearman 0,294', cap: 'SAMU × óbitos: Pearson 0,604 (positiva moderada) e Spearman 0,294 (fraca). Os picos sazonais de chamados acompanham os óbitos em escala, mas a ordenação dos meses mais intensos não é idêntica.' },
+    { t: T1, ph: 'S', set: 1, xl: 'atendimentos ambulatoriais no mês', yl: 'cirurgias no mês', coef: 'Pearson 0,637\nSpearman 0,776', cap: 'Atendimentos ambulatoriais × cirurgias: Pearson 0,637 e Spearman 0,776. Meses com mais triagens e consultas geram monotonicamente mais cirurgias — o funil operacional.' },
+    { t: T2, ph: 'R', fail: true, cc: '#fdba74', cap: 'Óbitos têm 8 regiões consistentes em i_desc_regiao_saude_res. O SAMU reporta uma única região fixa, “SAMU”: a operação é registrada pelo CNES gestor. O cruzamento direto resulta em ValueError.' },
+    { t: T2, ph: 'R', split: true, cap: 'Resolução 1 — dedução espacial do SAMU: abandonar i_desc_regiao_saude e extrair a região por regex em i_desc_sigla_estab_cnes (“SAMU USB Sob. I” → Sobradinho → Região Norte).' },
+    { t: T2, ph: 'R', split: true, hold: true, cap: 'Resolução 2 — taxa por 100 mil habitantes, com a população do IBGE 2022 em auxiliary_data.py, para as regiões mais populosas não dominarem os gráficos de volume absoluto.' }
+  ];
+})();
+
+// ───────────── 08 e BUILD_E_EXECUCAO: subir serviços e rodar testes ─────────────
+function runScene(canvas, cfg) {
+  const S = base(canvas, 180), { scene } = S;
+  const BASE = -2.2, n = cfg.pillars.length;
+  const pil = cfg.pillars.map((pl, k) => {
+    const x = -9 + k * (6.6 / Math.max(n - 1, 1));
+    const m = mesh(scene, new THREE.BoxGeometry(1.4, 3.6, 1.4), pl.c, V(x, BASE));
+    m.userData.h = 0.05;
+    label(scene, pl.name, '#e5e7eb', V(x, BASE - 0.55), 2.1, 32, 336, 128);
+    return m;
+  });
+  const cubes = [], cols = [];
+  cfg.groups.forEach((g, gi) => {
+    const x = 1 + gi * (9.5 / (cfg.groups.length - 1));
+    const col = [];
+    for (let j = 0; j < g.n; j++) {
+      const c = mesh(scene, new THREE.BoxGeometry(0.5, 0.24, 0.5), 0x475569, V(x, BASE + 0.15 + j * 0.3));
+      c.userData.fail = !!(cfg.fail && cfg.fail[0] === gi && cfg.fail[1] === j);
+      cubes.push(c); col.push(c);
+    }
+    cols.push(col);
+    label(scene, g.name, '#cbd5e1', V(x, BASE - (gi % 2 ? 0.85 : 0.4)), 2.4, 34, 384, 64);
+    label(scene, String(g.n), '#f8fafc', V(x, BASE + 0.25 + g.n * 0.3), 0.7, 44, 112, 64);
+  });
+  const pk = ball(scene, 0.24, 0xffffff);
+  camFit(S, 0.6, 3.4, -3.4, 22);
+  const next = stepper(cfg.steps, hud(S));
+  return now => {
+    const { s, p } = next(now);
+    pil.forEach((m, k) => {
+      const target = k < s.up ? 1 : 0.05;
+      m.userData.h += (target - m.userData.h) * 0.08;
+      m.scale.y = m.userData.h; m.position.y = BASE + 1.8 * m.userData.h;
+      m.material.emissiveIntensity = k === s.up - 1 && !s.tests ? pulse(now) * 0.8 : k < s.up ? 0.25 : 0.03;
+    });
+    cubes.forEach((c, j) => {
+      const on = s.tests === 'done' || (s.tests === 'run' && p * cubes.length * 1.25 > j);
+      const hex = !on ? 0x475569 : c.userData.fail ? 0xef4444 : 0x22c55e;
+      c.material.color.setHex(hex); c.material.emissive.setHex(hex);
+      c.material.emissiveIntensity = on && c.userData.fail && s.failHi ? pulse(now) : 0.2;
+    });
+    cols.forEach((col, gi) => { const hi = s.hiG && s.hiG.includes(gi); col.forEach(c => c.scale.setScalar(hi ? 1.15 + 0.12 * Math.sin(now / 150) : 1)); });
+    pk.visible = !!s.demo;
+    if (s.demo) pk.position.copy(along(s.demo.map(k => V(pil[k].position.x, BASE + 4.1)), (p * 1.6) % 1));
+    draw(S);
+  };
+}
+const RUN08 = (() => {
+  const T = '08 — como rodar e testar';
+  return {
+    pillars: [{ name: 'Ollama :11434\nllama3.1:8b', c: 0xf472b6 }, { name: 'Backend :8000\nuvicorn', c: 0x34d399 }, { name: 'Frontend :3000\nnext dev', c: 0x60a5fa }, { name: 'MLflow UI :5002\n(opcional)', c: 0xa78bfa }],
+    groups: [{ name: 'Health', n: 1 }, { name: 'Guardrails', n: 5 }, { name: 'Recuperação', n: 4 }, { name: 'Cache', n: 1 }, { name: 'Validação', n: 2 }, { name: 'Latência', n: 1 }],
+    fail: [1, 1],
+    steps: [
+      { t: T, up: 1, cap: 'Pré-requisito: Ollama em execução na porta 11434 com o llama3.1:8b baixado. Se ele não estiver no ar, o backend sobe mesmo assim e responde com fallback extrativo.' },
+      { t: T, up: 2, cap: 'Backend: cd susana_rag_backend && .venv/bin/uvicorn app.main:app --port 8000. Está pronto quando aparecer “Pipeline pronto. 27 docs na coleção.”' },
+      { t: T, up: 3, cap: 'Frontend: cd susana-ui, colocar o Node no PATH (~/.local/node-v24.21.0-darwin-arm64/bin) e rodar node_modules/.bin/next dev. Chat em http://localhost:3000.' },
+      { t: T, up: 4, cap: 'MLflow UI, opcional: .venv/bin/mlflow ui --backend-store-uri "sqlite:///$PWD/mlflow.db" --port 5002. A porta 5000 costuma estar ocupada pelo AirPlay no macOS.' },
+      { t: T, up: 4, demo: [2, 1, 0], cap: 'Roteiro de demonstração: telefone do HRT (RAG funcionando), remédio para dor de cabeça (bloqueio), bolo de chocolate (o limiar não filtra) e febre com dor no corpo (falha do guardrail).' },
+      { t: T, up: 4, tests: 'run', dur: 7000, cap: '.venv/bin/python -m pytest tests -q → 13 passaram, 1 falhou, em 73 s. São testes de integração: sobem o modelo de embeddings, o ChromaDB e o Ollama reais.' },
+      { t: T, up: 4, tests: 'done', failHi: true, cc: '#fdba74', cap: 'O que falha é test_blocks_symptom_report: “Estou sentindo muita febre e dor no corpo” recebe 0,60 < 0,65 e passa. O teste está fazendo o seu papel: acusa um defeito real.' },
+      { t: T, up: 4, tests: 'done', cap: 'Cuidado com os comandos que alteram estado: train.py move o @champion, collect_corpus.py sobrescreve o corpus e benchmark_llms.py baixa seis LLMs. Depois de retreinar ou recoletar, reinicie o backend.' }
+    ]
+  };
+})();
+const RUNBUILD = (() => {
+  const T = 'BUILD_E_EXECUCAO — build, execução e testes';
+  return {
+    pillars: [{ name: 'Backend :8000\nFastAPI + RAG', c: 0x34d399 }, { name: 'Frontend :3000\nNext.js 16', c: 0x60a5fa }, { name: 'Ollama\n(opcional)', c: 0xf472b6 }],
+    groups: [{ name: 'cidadão e unidades', n: 7 }, { name: 'NLU e personas', n: 10 }, { name: 'multi-turn', n: 7 }, { name: 'busca online', n: 7 }, { name: 'concorrência', n: 4 }, { name: 'ingestão', n: 10 }, { name: 'test_rag', n: 16 }, { name: 'retriever', n: 12 }, { name: 'citações', n: 8 }],
+    steps: [
+      { t: T, up: 0, cap: 'Pré-requisitos: Python 3.9+, Node.js 18.17+, npm 9+ e Git 2.30+. O Ollama é opcional: segundo o guia, o backend tem gerador interno e fallback RAG mesmo sem ele.' },
+      { t: T, up: 1, cap: 'Backend: python3 -m venv .venv, pip install -r requirements.txt, copiar .env.example para .env e subir uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload. Swagger em /docs, saúde em /health.' },
+      { t: T, up: 2, cap: 'Frontend: cd susana-ui && npm install && npm run dev → http://localhost:3000. npm run build verifica os tipos TypeScript e compila com Turbopack.' },
+      { t: T, up: 3, cap: 'Ollama (opcional para fallback local): ollama run llama3.1:8b.' },
+      { t: T, up: 3, tests: 'run', dur: 8000, cap: 'pytest susana_rag_backend/tests/ -q — o guia lista 81 testes em 9 arquivos: unitários, integração, concorrência, personas multi-turn, guardrails e busca online.' },
+      { t: T, up: 3, tests: 'done', hiG: [6, 7, 1, 5], cap: 'Maiores suítes: test_rag.py (16: citações, streaming NDJSON), test_retriever.py (12: busca vetorial e limiares), NLU com personas reais (10) e pipeline de ingestão (10: TLS, idempotência).' },
+      { t: T, up: 3, tests: 'done', cap: 'Troubleshooting: porta ocupada → lsof -ti:8000 | xargs kill -9; erro de lock no ChromaDB → só uma instância do backend em data/chroma_db/; layout estranho → rm -rf susana-ui/.next.' }
+    ]
+  };
+})();
+
+// ───────────── 09: o que os documentos dizem × o que o código faz ─────────────
+function sceneLimites(canvas) {
+  const S = base(canvas, 180), { scene } = S;
+  const cats = [
+    { k: 'S', n: 7, c: 0xef4444, name: 'Segurança\nclínica' }, { k: 'F', n: 7, c: 0xf97316, name: 'Fontes' },
+    { k: 'U', n: 6, c: 0xeab308, name: 'Caminho do\nusuário' }, { k: 'M', n: 8, c: 0xa855f7, name: 'MLOps' },
+    { k: 'A', n: 10, c: 0x3b82f6, name: 'Arquitetura\ne código' }, { k: 'D', n: 5, c: 0x06b6d4, name: 'Análise\nde dados' }
+  ];
+  const tiles = [];
+  cats.forEach((c, ci) => {
+    const x = -6.25 + 2.5 * ci;
+    label(scene, c.name, '#e5e7eb', V(x, 3.5), 2.3, 38, 320, 128);
+    for (let r = 0; r < c.n; r++) {
+      const id = c.k + (r + 1);
+      const m = mesh(scene, new THREE.BoxGeometry(1.9, 0.44, 0.2), c.c, V(x, 2.6 - 0.56 * r), { transparent: true });
+      const l = label(scene, id, '#ffffff', V(x, 2.6 - 0.56 * r, 0.2), 0.9, 44, 128, 64);
+      tiles.push({ m, l, id, cat: c.k, col: c.c, r });
+    }
+  });
+  const fix = ['S1', 'S4', 'S3', 'S6', 'S7', 'F4'];
+  const T = '09 — limitações e divergências entre os documentos e o código';
+  const steps = [
+    { t: T, cat: 'S', cap: 'Segurança clínica (S1–S7), os mais graves: as regex clínicas não são consultadas com o ML carregado, o F1 é 0,571, 7 exemplos clínicos são treinados como administrativos e o gate de promoção sempre aprova.' },
+    { t: T, cat: 'F', cap: 'Fontes (F1–F7): 7 dos 27 blocos são texto simulado com URLs fictícias; a fonte exibida é sempre a do trecho mais próximo; 16 blocos passam de 128 tokens e são truncados no cálculo do vetor.' },
+    { t: T, cat: 'U', cap: 'Caminho do usuário (U1–U6): a rota de streaming não usa cache, não registra no MLflow e não tem nenhum teste. E o formato é NDJSON, não Server-Sent Events.' },
+    { t: T, cat: 'M', cap: 'MLOps (M1–M8): versão 1 e não v4; nenhuma run de benchmark neste banco; DVC não inicializado; a telemetria grava o texto da pergunta; requirements.txt lista pacotes não usados e omite outros.' },
+    { t: T, cat: 'A', cap: 'Arquitetura (A1–A10): hexagonal só para o LLM; async def com chamadas bloqueantes; lógica de RAG duplicada; importação circular; latência medida de 3,4 a 4,8 s, não menos de 1,5 s.' },
+    { t: T, cat: 'D', cap: 'Análise de dados (D1–D5): correlações sobre 12 pontos sem p-valor reportado; região do SAMU inferida por fragmentos de texto; parquets “para o RAG” que o RAG não lê.' },
+    { t: T, fix: true, dur: 7000, cc: '#86efac', cap: 'Ordem de correção: (1) regra regex OU ML no guardrail, (2) padronizar rótulos e retreinar, (3) gate real por recall clínico, (4) limiar de distância ≈ 0,65. Quatro mudanças pequenas que atacam o risco clínico.' },
+    { t: T, cap: 'Enquadramento honesto: prova de conceito com a arquitetura certa e a execução incompleta. Os defeitos mais graves são baratos de corrigir.' }
+  ];
+  camFit(S, 0, 4.0, -2.7, 15.5);
+  const next = stepper(steps, hud(S));
+  return now => {
+    const { s, p } = next(now);
+    tiles.forEach(tl => {
+      const fi = fix.indexOf(tl.id), fixed = s.fix && fi >= 0 && p > fi * 0.1;
+      const active = s.cat ? tl.cat === s.cat : s.fix ? fixed : true;
+      const hex = fixed ? 0x22c55e : tl.col;
+      tl.m.material.color.setHex(hex); tl.m.material.emissive.setHex(hex);
+      tl.m.material.opacity += ((active ? 1 : 0.22) - tl.m.material.opacity) * 0.12;
+      tl.l.sp.material.opacity = tl.m.material.opacity;
+      const z = (s.cat && active && p > tl.r * 0.04) || fixed ? 0.6 : 0;
+      tl.m.position.z += (z - tl.m.position.z) * 0.12; tl.l.sp.position.z = tl.m.position.z + 0.2;
+    });
+    draw(S);
+  };
+}
+
+// ───────────── 10: perguntas prováveis do professor ─────────────
+function scenePerguntas(canvas) {
+  const S = base(canvas, 180), { scene } = S;
+  const themes = [
+    [1, 5, 'Visão geral', 0x60a5fa], [6, 13, 'Embeddings e busca', 0xa78bfa], [14, 20, 'LLM', 0xf472b6], [21, 28, 'Guardrail', 0xfbbf24],
+    [29, 33, 'MLOps', 0x34d399], [34, 40, 'Backend e frontend', 0x22d3ee], [41, 42, 'Testes', 0x4ade80], [43, 46, 'Dados e estatística', 0xfb923c],
+    [47, 48, 'Ética e LGPD', 0xf87171], [49, 50, 'Fechamento', 0xe2e8f0]
+  ];
+  const themeOf = n => themes.find(t => n >= t[0] && n <= t[1]);
+  const ring = new THREE.Group(); scene.add(ring);
+  const RAD = 5, cards = [];
+  for (let n = 1; n <= 50; n++) {
+    const a = (n - 1) / 50 * Math.PI * 2;
+    const m = mesh(ring, new THREE.BoxGeometry(0.5, 0.72, 0.06), themeOf(n)[3], V(RAD * Math.sin(a), 0, RAD * Math.cos(a)));
+    m.rotation.y = a;
+    const l = label(m, String(n), '#0b1220', V(0, 0, 0.1), 0.42, 40, 64, 64);
+    cards.push({ m, l, a });
+  }
+  const qa = [
+    [2, 'O que é RAG e por que usar em vez de só um LLM?', 'RAG é buscar trechos relevantes em uma base própria e entregá-los ao modelo junto com a pergunta. Um LLM sozinho responde de memória: pode inventar um telefone, não conhece dados recentes e não cita fonte.'],
+    [9, 'Como é medida a semelhança?', 'Distância de cosseno: 1 − cosseno do ângulo entre os vetores. Zero é significado igual, 1 é sem relação. Como os vetores são normalizados, o cosseno é só um produto escalar.'],
+    [13, 'E se a pergunta não tiver nada a ver com a base?', 'A intenção era responder “não encontrei” acima de um limiar, sem chamar o LLM. Na prática o limiar está em 1,2 e nunca dispara: medi 1,004 para “como fazer bolo de chocolate”. Um limiar em torno de 0,65 separaria bem.'],
+    [16, 'O que é temperatura e por que 0,1?', 'Controla a aleatoriedade na escolha do token. Para um serviço que deve repetir fielmente a fonte, quero o mínimo de criatividade. A semente fixa (42) reforça a reprodutibilidade.'],
+    [19, 'E se o Ollama cair?', 'O adaptador lança LLMUnavailable e o sistema entra em fallback extrativo: devolve o texto bruto dos trechos recuperados. A busca vetorial não depende do Ollama.'],
+    [25, 'O guardrail funciona bem?', 'Não. O F1 é 0,571 e o teste de sintomas falha. Quatro causas: dataset de 57 frases, erro de rótulos, regex e modelo não combinados com OU, e liberação administrativa com prioridade absoluta.'],
+    [27, 'Qual métrica importa para o guardrail?', 'O recall da classe clínica: das perguntas clínicas, quantas foram barradas. Um falso negativo é muito mais grave que um falso positivo, e o F1 trata os dois erros como equivalentes.'],
+    [30, 'Como fariam rollback de um modelo ruim?', 'Reaponto o alias @champion para a versão anterior no MLflow e reinicio o backend. Nenhuma linha de código muda, porque o backend conhece só o alias.'],
+    [35, 'Como funciona o streaming?', 'O backend devolve uma StreamingResponse alimentada por um gerador; cada pedaço do Ollama vira uma linha JSON. No navegador, o corpo é lido com getReader(). É NDJSON, não Server-Sent Events.'],
+    [41, 'Como o projeto é testado?', '14 testes de integração com pytest, subindo a aplicação inteira. 13 passam e 1 falha, justamente o do guardrail. Não há testes unitários com componentes falsos nem teste da rota de streaming.'],
+    [44, 'O que as correlações mostraram?', 'Por mês, em 2022: SAMU × óbitos com Pearson 0,60 e Spearman 0,29; atendimentos × cirurgias com 0,64 e 0,78. São só 12 pontos, e nada disso indica causalidade.'],
+    [47, 'Que cuidados com LGPD foram tomados?', 'Processamento local, sem envio a terceiros, sem contas nem histórico persistente. Pendências: o MLflow grava o texto da pergunta e a API não tem autenticação.'],
+    [50, 'Qual foi a principal lição?', 'Em um sistema com LLM a parte difícil não é gerar texto, é controlar o que entra e o que sai: corpus, limiares calibrados com medição e um filtro avaliado pela métrica certa.']
+  ];
+  const steps = qa.map(([n, q, a]) => ({ n, t: '10 — pergunta ' + n + ' · ' + themeOf(n)[2] + ': ' + q, cap: a, dur: 7000 }));
+  camFit(S, 0, 2.2, -1.2, 13);
+  S.camera.position.y += 3.2;
+  const next = stepper(steps, hud(S));
+  return now => {
+    const { s } = next(now);
+    const target = -cards[s.n - 1].a;
+    let d = (target - ring.rotation.y) % (Math.PI * 2);
+    if (d > Math.PI) d -= Math.PI * 2; if (d < -Math.PI) d += Math.PI * 2;
+    ring.rotation.y += d * 0.06;
+    cards.forEach((c, k) => {
+      const sel = k === s.n - 1;
+      c.m.position.y += ((sel ? 0.9 : 0) - c.m.position.y) * 0.1;
+      c.m.scale.setScalar(c.m.scale.x + ((sel ? 2.2 : 1) - c.m.scale.x) * 0.1);
+      c.m.material.emissiveIntensity = sel ? pulse(now) : 0.15;
+    });
+    draw(S);
+  };
+}
+
+// ───────────── cena genérica de grafo (nós + pacote) ─────────────
+function graphScene(canvas, cfg) {
+  const S = base(canvas, 180), { scene } = S, N = {};
+  const lw = cfg.lw || 2.6;
+  cfg.nodes.forEach(n => {
+    N[n.k] = mesh(scene, new THREE.BoxGeometry(1.3, 0.8, 0.6), n.c, V(n.x, n.y));
+    label(scene, n.name, '#e5e7eb', V(n.x, n.y - 0.95), lw, 34, Math.round(lw * 160), 128);
+  });
+  (cfg.links || []).forEach(([a, b]) => segment(scene, N[a].position, N[b].position, 0x64748b, 0.6));
+  (cfg.tags || []).forEach(t => label(scene, t.text, t.css, V(t.x, t.y), t.w, 36, Math.round(t.w * 150), 64));
+  const pk = ball(scene, 0.24, 0xffffff);
+  camFit(S, cfg.cx || 0, cfg.yTop, cfg.yBot, cfg.span);
+  const next = stepper(cfg.steps, hud(S), cfg.dur || 5200);
+  return now => {
+    const { s, p } = next(now);
+    Object.values(N).forEach(m => { m.material.emissiveIntensity = 0.15; });
+    (s.hi || []).forEach(k => { N[k].material.emissiveIntensity = pulse(now); });
+    pk.visible = !!(s.a && s.b);
+    if (pk.visible) {
+      pk.material.color.setHex(s.c || 0xffffff);
+      if (fly(pk, N[s.a].position, N[s.b].position, p, 0.45, 0.9)) N[s.b].material.emissiveIntensity = pulse(now);
+    }
+    draw(S);
+  };
+}
+
+const G_ARQ = (() => {
+  const T1 = 'ARQUITETURA_E_FUNCIONAMENTO — “Onde tomo vacina da gripe em Taguatinga?”';
+  const T2 = 'ARQUITETURA_E_FUNCIONAMENTO — quando não há evidência local';
+  const T3 = 'ARQUITETURA_E_FUNCIONAMENTO — consulta clínica';
+  const R = 0xf87171;
+  return {
+    cx: 0.4, yTop: 2.6, yBot: -2.6, span: 21,
+    nodes: [
+      { k: 'CID', name: 'Cidadão\n(navegador)', x: -8, y: 2, c: 0x94a3b8 }, { k: 'UI', name: 'Next.js\nmódulo de chat', x: -5.2, y: 2, c: 0x60a5fa },
+      { k: 'API', name: 'FastAPI\n/api/chat/stream', x: -2.4, y: 2, c: 0x34d399 }, { k: 'GD', name: 'Guardrails\nclínicos', x: 0.4, y: 2, c: 0xfbbf24 },
+      { k: 'NLU', name: 'NLU\nintenção + RA', x: 3.2, y: 2, c: 0xfb923c }, { k: 'CA', name: 'SemanticCache\nRLock', x: 6, y: 2, c: 0x22d3ee },
+      { k: 'DB', name: 'SQLite WAL\nsessões e cidadãos', x: -2.4, y: -1.2, c: 0x64748b }, { k: 'LLM', name: 'Gerador\nLLM / fallback RAG', x: 0.4, y: -1.2, c: 0xf472b6 },
+      { k: 'WEB', name: 'Busca online\nanti-SSRF', x: 3.2, y: -1.2, c: 0xa78bfa }, { k: 'CH', name: 'ChromaDB scoped\n2.365 blocos', x: 6, y: -1.2, c: 0x22d3ee },
+      { k: 'ING', name: 'Ingestão\nSHA-256', x: 8.8, y: -1.2, c: 0x4ade80 }
+    ],
+    links: [['CID', 'UI'], ['UI', 'API'], ['API', 'GD'], ['GD', 'NLU'], ['NLU', 'CA'], ['CA', 'CH'], ['CH', 'WEB'], ['WEB', 'ING'], ['ING', 'CH'], ['API', 'DB'], ['CH', 'LLM'], ['LLM', 'API']],
+    steps: [
+      { t: T1, a: 'CID', b: 'UI', cap: 'O cidadão envia a mensagem pelo chat, digitando ou usando os chips de perguntas rápidas.' },
+      { t: T1, a: 'UI', b: 'API', cap: 'POST /api/chat/stream com message, session_id e history.' },
+      { t: T1, a: 'API', b: 'GD', cap: 'Guardrails clínicos: is_clinical(message)? Arquitetura dual — filtro heurístico por regex e classificador supervisionado. Erro ou dúvida resulta em bloqueio preventivo (fail-closed).' },
+      { t: T1, a: 'GD', b: 'NLU', c: 0x4ade80, cap: 'Aprovada. O NaturalLanguageInferencer extrai intent = vaccine, ra = taguatinga, target = adulto — com regex compiladas, em menos de 2 ms e sem rede.' },
+      { t: T1, a: 'NLU', b: 'CA', cap: 'SemanticCache.get(consulta normalizada). Um acerto devolveria a resposta na hora; aqui é cache miss.' },
+      { t: T1, a: 'CA', b: 'CH', cap: 'ChromaDB com filtro de metadados: cluster de vacinas e ra = taguatinga, mais a base de cobertura ampla geral_df. O corpus tem 2.365 blocos nas 33 RAs.' },
+      { t: T1, a: 'CH', b: 'LLM', cap: 'Blocos locais relevantes encontrados (top-k: UBS de Taguatinga, horários) → o gerador escreve a resposta formatada com citações oficiais.' },
+      { t: T1, a: 'LLM', b: 'API', cap: 'Tokens, citações e opções interativas voltam para a API, e a resposta é gravada no cache.' },
+      { t: T1, a: 'API', b: 'DB', cap: 'Sessões e histórico ficam no SQLite em modo WAL (susana_app.db): tabelas citizens, chat_sessions e chat_messages.' },
+      { t: T1, a: 'API', b: 'UI', cap: 'Stream NDJSON até a tela: tokens acumulativos, citations e interactive_options, com cancelamento por AbortController.' },
+      { t: T2, a: 'CH', b: 'WEB', c: 0xa78bfa, cap: 'Sem evidência local e dentro do escopo: busca só em domínios oficiais (saude.df.gov.br, df.gov.br, gov.br, fiocruz.br), com bloqueio de loopback e IPs privados e circuit breaker.' },
+      { t: T2, a: 'WEB', b: 'ING', c: 0xa78bfa, cap: 'Auto-ingestão assíncrona em background, em um ThreadPoolExecutor persistente: TLS, hash SHA-256 e idempotência.' },
+      { t: T2, a: 'ING', b: 'CH', c: 0x4ade80, cap: 'Os blocos novos entram no ChromaDB e o cache limpa só as respostas de abstenção anteriores (invalidate_negatives).' },
+      { t: T3, tc: '#fca5a5', a: 'API', b: 'GD', c: R, cap: 'Consulta clínica (diagnóstico ou prescrição): o guardrail responde True e o fluxo para aqui.' },
+      { t: T3, tc: '#fca5a5', a: 'GD', b: 'API', c: R, cap: 'Resposta protocolar: “Como assistente virtual do SUS, não posso fazer diagnósticos ou prescrever medicamentos. Procure a UBS mais próxima.”' }
+    ]
+  };
+})();
+
+const G_MLOPSM = (() => {
+  const T = 'MLOPS_E_MODELAGEM — dados, guardrails e avaliação';
+  return {
+    cx: -1, yTop: 3.1, yBot: -4.0, span: 19.5, lw: 3,
+    tags: [{ text: 'DataOps', css: '#67e8f9', x: -9.4, y: 2.6, w: 2.2 }, { text: 'Guardrails', css: '#fcd34d', x: -9.4, y: 0, w: 2.2 }, { text: 'Avaliação', css: '#c4b5fd', x: -9.4, y: -2.6, w: 2.2 }],
+    nodes: [
+      { k: 'A1', name: 'Coleta oficial\nSES-DF / CKAN', x: -6, y: 2.6, c: 0x22d3ee }, { k: 'A2', name: 'Diretório de saúde\n346 unidades, 33 RAs', x: -2, y: 2.6, c: 0x22d3ee },
+      { k: 'A3', name: 'Chunking +\nmetadados', x: 2, y: 2.6, c: 0x22d3ee }, { k: 'A4', name: 'ChromaDB\n2.365 blocos', x: 6, y: 2.6, c: 0x22d3ee },
+      { k: 'B1', name: 'Dataset clínico\nbalanceado', x: -6, y: 0, c: 0xfbbf24 }, { k: 'B2', name: '5-fold CV\nestratificado', x: -2.8, y: 0, c: 0xfbbf24 },
+      { k: 'B3', name: 'Portão relativo\nde promoção', x: 0.4, y: 0, c: 0xfb923c }, { k: 'B4', name: 'Calibração\nsigmoid', x: 3.6, y: 0, c: 0xfbbf24 },
+      { k: 'B5', name: 'Modelo promovido\nguardrail_model.pkl', x: 6.8, y: 0, c: 0x4ade80 },
+      { k: 'C1', name: 'Partições congeladas\ndata/eval/', x: -6, y: -2.6, c: 0xa78bfa }, { k: 'C2', name: 'eval_honest_\nbenchmark.py', x: -2, y: -2.6, c: 0xa78bfa },
+      { k: 'C3', name: 'Recall@1, Recall@3\nP50, P95', x: 2, y: -2.6, c: 0xa78bfa }, { k: 'C4', name: 'MLflow\nmlflow.db', x: 6, y: -2.6, c: 0x60a5fa }
+    ],
+    links: [['A1', 'A2'], ['A2', 'A3'], ['A3', 'A4'], ['B1', 'B2'], ['B2', 'B3'], ['B3', 'B4'], ['B4', 'B5'], ['C1', 'C2'], ['C2', 'C3'], ['C3', 'C4']],
+    steps: [
+      { t: T, a: 'A1', b: 'A2', cap: 'DataOps: generate_health_directory.py parte dos dados abertos georreferenciados da SES-DF e mapeia 346 unidades (176 UBS, 16 UPA, 15 hospitais, 38 policlínicas, 8 CAPS…) nas 33 RAs.' },
+      { t: T, a: 'A2', b: 'A3', cap: 'Cada bloco ganha metadados estruturados: ra, cluster, tipo_unidade, servicos, horario e source.' },
+      { t: T, a: 'A3', b: 'A4', cap: 'sync_corpus_chroma.py converte o diretório em 2.365 blocos vetoriais com o modelo paraphrase-multilingual-MiniLM-L12-v2.' },
+      { t: T, a: 'B1', b: 'B2', cap: 'Guardrail: TF-IDF (n-gramas de 1 a 3, 5000 features) + regressão logística com class_weight balanced, avaliados em validação cruzada estratificada de 5 dobras.' },
+      { t: T, a: 'B2', b: 'B3', c: 0xfb923c, cap: 'Portão relativo de promoção: F1 novo ≥ F1 do champion − 0,02 e recall clínico ≥ 0,95. Se não passar, o script aborta a troca e mantém o modelo anterior.' },
+      { t: T, a: 'B3', b: 'B4', cap: 'Calibração com CalibratedClassifierCV (sigmoid), para que a probabilidade de risco clínico corresponda à confiança real do modelo.' },
+      { t: T, a: 'B4', b: 'B5', c: 0x4ade80, cap: 'O modelo aprovado é promovido para models/guardrail_model.pkl.' },
+      { t: T, a: 'C1', b: 'C2', cap: 'Avaliação honesta: partições congeladas em data/eval/ — 40 + 60 consultas em domínio e 30 + 50 fora de domínio (calibração e teste cego), para evitar overfitting no teste.' },
+      { t: T, a: 'C2', b: 'C3', cap: 'Resultados informados no documento: Recall@1 95,0%, Recall@3 95,0%, vazamento fora de domínio 0,0%, latência de recuperação P50 21,73 ms e P95 42,76 ms.' },
+      { t: T, a: 'C3', b: 'C4', cap: 'Tudo é registrado no MLflow (mlflow.db): experimentos guardrail_clinical_classifier e retrieval_honest_benchmark, com parâmetros e métricas.' },
+      { t: T, hi: ['A4'], cap: 'Ingestão contínua sem reiniciar: manifesto de idempotência com SHA-256, atualização atômica por URL (remove os blocos antigos antes do upsert) e invalidação cirúrgica do cache.' }
+    ]
+  };
+})();
+
+const G_REFIN = (() => {
+  const T = 'plano-de-refinamento — problemas do benchmark e ações';
+  const R = 0xef4444, G = 0x22c55e;
+  return {
+    cx: 0, yTop: 2.4, yBot: -2.9, span: 21, lw: 3.5,
+    nodes: [
+      { k: 'P1', name: 'LLM concatenou\nendereços do HRT', x: -8, y: 1.8, c: R }, { k: 'A1', name: 'Regra de conflito\nno prompt', x: -8, y: -1.2, c: G },
+      { k: 'P2', name: '“Onde tomar vacina?”\ntrouxe o calendário', x: -4, y: 1.8, c: R }, { k: 'A2', name: 'Busca híbrida +\nfiltro por intenção', x: -4, y: -1.2, c: G },
+      { k: 'P3', name: '“UPA perto de mim”\nerro genérico', x: 0, y: 1.8, c: R }, { k: 'A3', name: 'Fallback dinâmico:\npedir a RA', x: 0, y: -1.2, c: G },
+      { k: 'P4', name: 'Explicou a\ntransmissão do HIV', x: 4, y: 1.8, c: R }, { k: 'A4', name: 'Guardrail bloqueia\nsaúde geral', x: 4, y: -1.2, c: G },
+      { k: 'P5', name: 'Benchmark de\n10 perguntas', x: 8, y: 1.8, c: R }, { k: 'A5', name: '40 perguntas\nem 5 categorias', x: 8, y: -1.2, c: G }
+    ],
+    steps: [
+      { t: T, hi: ['P1', 'P2', 'P3', 'P4', 'P5'], cap: 'Plano pós-benchmark: o pipeline está operacional e seguro, mas precisa de refinamento em três pilares — recuperação (retrieval), aterramento (grounding) e contexto conversacional.' },
+      { t: T, a: 'P1', b: 'A1', cap: '1. Grounding: a LLM concatenou endereços conflitantes do HRT vindos de documentos diferentes. Ação: regra no prompt — informar a inconsistência e citar as duas fontes — e avaliar a limpeza dos dados antigos.' },
+      { t: T, a: 'P2', b: 'A2', cap: '2. Retrieval: “Onde posso tomar vacina?” retornou o Calendário de Vacinação, não as UBS. Ação: busca híbrida (semântica + palavra-chave) e boost em UNIDADE_DE_SAUDE para “onde”, “qual”, “perto”.' },
+      { t: T, a: 'P3', b: 'A3', cap: '3. Contexto: “Qual UPA mais perto de mim?” gerava erro genérico. Ação: classificar o motivo da falha e pedir a Região Administrativa, já que não há acesso à localização do cidadão.' },
+      { t: T, a: 'P4', b: 'A4', cap: '4. Escopo: a Susana explicou como o HIV é transmitido. Decisão de produto (opção B): focar em serviços, acesso e administração do SUS-DF e bloquear perguntas enciclopédicas de saúde.' },
+      { t: T, a: 'P5', b: 'A5', cap: '5. Benchmark: 10 perguntas é só um smoke test. Ação: 40 perguntas em 5 categorias (respondíveis, territoriais, ambíguas, fora do escopo, clínicas), com Hit@5 e groundedness.' },
+      { t: T, hi: ['A1', 'A3'], cc: '#86efac', cap: 'Próximo passo sugerido: começar pelas etapas 1 (prompt de conflitos) e 3 (mensagens de fallback dinâmicas) — ajustes rápidos que não exigem reindexação.' }
+    ]
+  };
+})();
+
+const G_PLANREL = (() => {
+  const T = 'plano_relatorio_tecnico — a estrutura proposta para o relatório';
+  const B = 0x60a5fa, D = 0x22d3ee, M = 0xf472b6;
+  return {
+    cx: 0, yTop: 2.0, yBot: -3.0, span: 20, lw: 2.9,
+    nodes: [
+      { k: 'S1', name: '1. Introdução', x: -8, y: 1.5, c: B }, { k: 'S2', name: '2. Preparação\nde dados', x: -4, y: 1.5, c: B }, { k: 'S3', name: '3. Abordagem\nde IA', x: 0, y: 1.5, c: B },
+      { k: 'S4', name: '4. Prompting\ne grounding', x: 4, y: 1.5, c: B }, { k: 'S5', name: '5. Conclusão', x: 8, y: 1.5, c: B },
+      { k: 'D1', name: 'Coleta e\nlimpeza', x: -7.5, y: -1.3, c: D }, { k: 'D2', name: 'Chunking e\nembeddings', x: -4.5, y: -1.3, c: D }, { k: 'D3', name: 'ChromaDB\nlocal', x: -1.5, y: -1.3, c: D },
+      { k: 'M1', name: 'LLM local\nvia Ollama', x: 1.5, y: -1.3, c: M }, { k: 'M2', name: 'Classificador\nclínico', x: 4.5, y: -1.3, c: M }, { k: 'M3', name: 'Intent router\nhíbrido', x: 7.5, y: -1.3, c: M }
+    ],
+    links: [['S1', 'S2'], ['S2', 'S3'], ['S3', 'S4'], ['S4', 'S5'], ['S2', 'D1'], ['S2', 'D2'], ['S2', 'D3'], ['S3', 'M1'], ['S3', 'M2'], ['S3', 'M3']],
+    steps: [
+      { t: T, hi: ['S1'], cap: 'Objetivo do plano: descrever tecnicamente o pipeline da Susana — corpus, classificador de segurança e arquitetura RAG — justificando as escolhas. Seção 1: a assistente e o desafio de informar sem alucinação clínica.' },
+      { t: T, a: 'S1', b: 'S2', cap: 'Seção 2 — processo de preparação de dados: da ingestão à indexação.' },
+      { t: T, a: 'S2', b: 'D1', cap: 'Coleta e limpeza: como os dados brutos (CSV, JSON, manuais) foram filtrados — por exemplo, a remoção de dados de óbitos para focar em atendimento.' },
+      { t: T, a: 'S2', b: 'D2', cap: 'Chunking e indexação: particionamento dos textos e geração de embeddings.' },
+      { t: T, a: 'S2', b: 'D3', cap: 'Banco vetorial: ChromaDB como repositório persistente local para busca semântica veloz.' },
+      { t: T, a: 'S2', b: 'S3', cap: 'Seção 3 — abordagem de inteligência artificial: modelos e critérios de seleção.' },
+      { t: T, a: 'S3', b: 'M1', cap: 'LLM local via Ollama: dados sensíveis ficam na máquina (privacidade), custo controlado e capacidade de rodar offline ou on-premise.' },
+      { t: T, a: 'S3', b: 'M2', cap: 'Classificador clínico em scikit-learn gerenciado via MLflow: latência menor que a de um LLM e precisão estatística para moderação.' },
+      { t: T, a: 'S3', b: 'M3', cap: 'Intent router híbrido: NLP e heurísticas (regex) roteiam perguntas vagas, contextuais e de localização em cerca de 0,001 s, sem bater no LLM.' },
+      { t: T, a: 'S3', b: 'S4', cap: 'Seção 4 — prompting e grounding: como garantir que a Susana não inventa fatos, injeção dinâmica de contexto conversacional e validação de proveniência das citações.' },
+      { t: T, a: 'S4', b: 'S5', cap: 'Seção 5 — conclusão: resumo da robustez alcançada e próximos passos.' },
+      { t: T, cc: '#fcd34d', cap: 'Perguntas de alinhamento antes de redigir: qual o modelo de embedding? Qual o LLM no Ollama? Qual o algoritmo do guardrail? Houve data augmentation ou balanceamento? Incluir trechos de código?' }
+    ]
+  };
+})();
+
+const G_PROD = (() => {
+  const T = 'production-readiness-plan — fases F0 a F8 e dependências';
+  const PAR = 0xeab308, PRO = 0x3b82f6, PEN = 0x64748b;
+  const all = ['F0', 'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8'];
+  return {
+    cx: 0.6, yTop: 2.2, yBot: -3.5, span: 23, lw: 2.7,
+    tags: [{ text: 'amarelo: parcial · azul: em progresso · cinza: pendente (status de 08/10/2026)', css: '#94a3b8', x: 0.6, y: -3.2, w: 12 }],
+    nodes: [
+      { k: 'F0', name: 'F0 Contrato\ne baseline', x: -9, y: 0, c: PAR }, { k: 'F1', name: 'F1 Corpus\ne proveniência', x: -6.2, y: 1.6, c: PAR },
+      { k: 'F2', name: 'F2 Índice\ne retrieval', x: -3.4, y: 1.6, c: PAR }, { k: 'F3', name: 'F3 Llama\ne guardrails', x: -0.6, y: 1.6, c: PRO },
+      { k: 'F4', name: 'F4 API, citações\ne stream', x: 2.2, y: 1.6, c: PEN }, { k: 'F5', name: 'F5 UI', x: 5, y: 1.6, c: PEN },
+      { k: 'F6', name: 'F6 Eval\ne CI', x: 2.2, y: -1.4, c: PAR }, { k: 'F7', name: 'F7 Performance\ne resiliência', x: 7.6, y: 0, c: PEN },
+      { k: 'F8', name: 'F8 Empacotamento\ne piloto', x: 10.4, y: 0, c: PEN }
+    ],
+    links: [['F0', 'F1'], ['F1', 'F2'], ['F2', 'F3'], ['F3', 'F4'], ['F4', 'F5'], ['F3', 'F6'], ['F0', 'F6'], ['F5', 'F7'], ['F6', 'F7'], ['F7', 'F8']],
+    steps: [
+      { t: T, hi: ['F0'], cap: 'Objetivo: finalizar um assistente administrativo local/on-prem com Llama 3.1 8B, recuperação verificável no corpus aprovado, citações rastreáveis e bloqueio de pedidos clínicos. O plano descreve trabalho futuro.' },
+      { t: T, a: 'F0', b: 'F1', cap: 'F0 — contrato e baseline (parcial): alinhar as specs OpenSpec antigas (Gemini, LangChain, NeMo, Redis) à arquitetura real e capturar um baseline reproduzível.' },
+      { t: T, a: 'F1', b: 'F2', cap: 'F1 — corpus (parcial): inventário por arquivo, IDs estáveis, validadores por formato e política de frescor. “Todos os arquivos lidos” não basta: parsing silencioso pode criar fatos falsos.' },
+      { t: T, a: 'F2', b: 'F3', cap: 'F2 — índice e retrieval: em 1.910 blocos, Recall@3 de 100% e 0 de 12 perguntas fora de domínio aceitas. O índice completo (~106 mil blocos) ainda não foi construído; o persistido tinha 27 vetores.' },
+      { t: T, a: 'F3', b: 'F4', cap: 'F3 — Llama e guardrails (em progresso): no smoke, FAQ respondida em 11,9 s, fora de domínio abstida em 49 ms e clínica bloqueada antes do LLM. O guardrail ML não foi encontrado no MLflow; o fallback regex atuou.' },
+      { t: T, a: 'F4', b: 'F5', cap: 'F4 — API, citações e stream (pendente): um único caso de uso para as duas rotas, DTO com citations[] estruturadas e eventos NDJSON formais (start, token, citation, error, done).' },
+      { t: T, hi: ['F5'], cap: 'F5 — UI (pendente): endpoint por variável de ambiente, parser de streaming com buffer residual, AbortController, citações estruturadas e acessibilidade.' },
+      { t: T, a: 'F3', b: 'F6', cap: 'F6 — eval e CI (parcial): runner com 372 casos gold + 12 fora de domínio e 38 testes verdes; faltam evals gerativos, CI e holdout independente.' },
+      { t: T, a: 'F6', b: 'F7', cap: 'F7 — performance e resiliência (pendente): medir cold start, tirar a indexação pesada do lifespan, checkpoints, backup e rebuild do Chroma, injeção de falhas.' },
+      { t: T, a: 'F7', b: 'F8', cap: 'F8 — empacotamento e piloto (pendente): instalação limpa, threat model, runbook e piloto controlado com critérios de parada.' },
+      { t: T, hi: all, cc: '#86efac', cap: 'Gates de produto: 100% dos casos clínicos críticos bloqueados antes do LLM, Recall@3 ≥ 95%, toda resposta factual com fonte real e API p95 ≤ 15 s. Não reduzir gates para acomodar falhas do modelo.' },
+      { t: T, hi: all, cc: '#fca5a5', cap: 'Riscos que bloqueiam o release: resposta clínica não bloqueada, unidade ou telefone atribuído à entidade errada, citação inexistente, e modelo ou guardrail ausente com readiness saudável.' }
+    ]
+  };
+})();
+
+// ───────────── relatorio_tecnico: comparação de algoritmos e matriz de confusão ─────────────
+function sceneRelatorio(canvas) {
+  const S = base(canvas, 180), { scene } = S;
+  const BASE = -2.0, K = 4.4;
+  const algos = [['Regressão\nLogística', 0.84, 0.845], ['LinearSVC', 0.80, 0.824], ['Naive\nBayes', 0.76, 0.797]];
+  const fmt = v => (v * 100).toFixed(1).replace('.', ',') + '%';
+  const bars = [];
+  algos.forEach(([n, rec, f1], k) => {
+    const x = -7.2 + 2.6 * k;
+    [[rec, 0xf472b6, -0.45], [f1, 0x22d3ee, 0.45]].forEach(([v, c, dx]) => {
+      const m = mesh(scene, new THREE.BoxGeometry(0.75, v * K, 0.75), c, V(x + dx, BASE + v * K / 2));
+      label(scene, fmt(v), '#f8fafc', V(x + dx, BASE + v * K + 0.25), 0.95, 36, 152, 64);
+      bars.push({ m, k });
+    });
+    label(scene, n, '#e5e7eb', V(x, BASE - 0.55), 2.3, 34, 368, 128);
+  });
+  label(scene, 'rosa: recall clínico · azul: F1 (5-fold CV)', '#cbd5e1', V(-4.6, 2.45), 6.4, 34, 768, 64);
+  label(scene, 'Matriz de confusão — hold-out (15 exemplos)', '#cbd5e1', V(4.6, 2.45), 6.4, 34, 768, 64);
+  const cells = {};
+  [['TN', '7', 'administrativo\nliberado', 0x16a34a, 3.1, 0.9], ['FP', '1', 'administrativo\nbloqueado', 0xca8a04, 6.1, 0.9],
+   ['FN', '3', 'clínica\nque passou', 0xdc2626, 3.1, -1.4], ['TP', '4', 'clínica\nbloqueada', 0x16a34a, 6.1, -1.4]].forEach(([k, n, txt, c, x, y]) => {
+    cells[k] = mesh(scene, new THREE.BoxGeometry(2.7, 2.0, 0.3), c, V(x, y));
+    label(scene, k + ' = ' + n, '#ffffff', V(x, y + 0.45, 0.3), 2.2, 56, 352, 96);
+    label(scene, txt, '#f1f5f9', V(x, y - 0.4, 0.3), 2.4, 32, 384, 128);
+  });
+  const T = 'relatorio_tecnico — escolha do guardrail e análise dos resultados';
+  const steps = [
+    { t: T, cap: 'O desafio central do relatório: separar informação administrativa (horários, unidades, documentos) de informação clínica (diagnósticos, dosagens), com aterramento estrito nas fontes.' },
+    { t: T, cap: 'Antes da busca, um roteador léxico (regex + NLP clássico) decide o caminho: mensagens curtas, intenções vagas que pedem clarificação, perguntas relativas que usam a memória, ou dúvidas específicas → banco vetorial.' },
+    { t: T, hi: 'bars', cap: 'Guardrail: em validação cruzada estratificada de 5 dobras, a regressão logística teve o maior recall clínico (84,0%) e F1 (84,5%), contra LinearSVC (80,0% / 82,4%) e Naive Bayes (76,0% / 79,7%).' },
+    { t: T, hi: ['TN', 'FP', 'FN', 'TP'], cap: 'No hold-out de 15 exemplos: 7 administrativos liberados, 4 clínicos bloqueados, 1 falso positivo e 3 falsos negativos — recall clínico de 0,571 e F1 de 0,667, abaixo da média da validação cruzada.' },
+    { t: T, hi: ['FN'], cc: '#fca5a5', cap: 'Falsos negativos (“Posso tomar ibuprofeno com losartana?”, “Dor abdominal forte”): termos ausentes das 42 amostras de treino. Mitigações do relatório: treinar com 100% dos dados e a camada de regex CLINICAL_PATTERNS.' },
+    { t: T, hi: ['FP'], cc: '#fcd34d', cap: 'Falso positivo (“Quais documentos preciso para pegar remédio na farmácia popular?”, P = 0,540): tratado pela regra prioritária ADMINISTRATIVE_OVERRIDES, que libera antes da avaliação estatística.' },
+    { t: T, cap: 'Geração: Llama 3.1 8B no Ollama, com citações [1], [2] para dados críticos e “regime misto” (opção B): conhecimento geral só para explicar conceitos estáticos. O MLflow registra susana-guardrail@champion (versão 2).' }
+  ];
+  camFit(S, -0.6, 2.8, -3.1, 17.5);
+  const next = stepper(steps, hud(S), 6000);
+  return now => {
+    const { s } = next(now);
+    bars.forEach(b => { b.m.material.emissiveIntensity = s.hi === 'bars' ? (b.k === 0 ? pulse(now) : 0.25) : 0.15; });
+    Object.keys(cells).forEach(k => { cells[k].material.emissiveIntensity = Array.isArray(s.hi) && s.hi.includes(k) ? pulse(now) * 0.8 : 0.12; });
+    draw(S);
+  };
+}
+
+// ───────────── abas: uma cena por arquivo de docs/ ─────────────
+const OLD = '<i>Escrito sobre a versão anterior do código.</i> Na branch atual (develop_gui3, v2) já mudaram, por exemplo: limiar de distância 0,65, gate de promoção com recall ≥ 0,95, NLU e 81 testes.';
+const V2 = 'Documento que veio com o commit da v2 (e4852c2). Os números são os do documento; não foram conferidos contra o código.';
+const PRE = 'Documento anterior à integração v2. A animação mostra o que o arquivo diz.';
+const DOCS = [
+  { key: 'visao', tab: 'README', file: 'README.md', note: OLD, build: sceneVisao },
+  { key: 'fluxo', tab: '01 Arquitetura', file: '01-arquitetura.md', note: OLD, build: sceneFluxo },
+  { key: 'frontend', tab: '02 Frontend', file: '02-frontend.md', note: OLD, build: sceneFrontend },
+  { key: 'backend', tab: '03 Backend e API', file: '03-backend-api.md', note: OLD, build: sceneBackend },
+  { key: 'vetores', tab: '04 RAG', file: '04-rag.md', note: OLD + ' As posições dos pontos são ilustrativas.', build: sceneVetores },
+  { key: 'guardrail', tab: '05 Guardrails', file: '05-guardrails.md', note: OLD, build: sceneGuardrail },
+  { key: 'mlops', tab: '06 MLOps', file: '06-mlops.md', note: OLD, build: sceneMlops },
+  { key: 'eda07', tab: '07 Dados e EDA', file: '07-dados-e-eda.md', note: 'Os pontos do gráfico são ilustrativos; os coeficientes são os do documento.', build: c => edaScene(c, EDA07) },
+  { key: 'run08', tab: '08 Rodar e testar', file: '08-como-rodar-e-testar.md', note: OLD, build: c => runScene(c, RUN08) },
+  { key: 'limites', tab: '09 Limitações', file: '09-limitacoes-e-divergencias.md', note: OLD, build: sceneLimites },
+  { key: 'perguntas', tab: '10 Perguntas', file: '10-perguntas-do-professor.md', note: OLD, build: scenePerguntas },
+  { key: 'arq', tab: 'ARQUITETURA_E_FUNCIONAMENTO', file: 'ARQUITETURA_E_FUNCIONAMENTO.md', note: V2, build: c => graphScene(c, G_ARQ) },
+  { key: 'build', tab: 'BUILD_E_EXECUCAO', file: 'BUILD_E_EXECUCAO.md', note: V2, build: c => runScene(c, RUNBUILD) },
+  { key: 'mlopsm', tab: 'MLOPS_E_MODELAGEM', file: 'MLOPS_E_MODELAGEM.md', note: V2, build: c => graphScene(c, G_MLOPSM) },
+  { key: 'analysis', tab: 'analysis_process', file: 'analysis_process.md', note: 'Os pontos do gráfico são ilustrativos; os coeficientes são os do documento.', build: c => edaScene(c, EDA_AP) },
+  { key: 'refin', tab: 'plano-de-refinamento', file: 'plano-de-refinamento.md', note: PRE, build: c => graphScene(c, G_REFIN) },
+  { key: 'planrel', tab: 'plano_relatorio_tecnico', file: 'plano_relatorio_tecnico.md', note: PRE, build: c => graphScene(c, G_PLANREL) },
+  { key: 'prod', tab: 'production-readiness-plan', file: 'production-readiness-plan.md', note: PRE, build: c => graphScene(c, G_PROD) },
+  { key: 'relatorio', tab: 'relatorio_tecnico', file: 'relatorio_tecnico.md', note: PRE, build: sceneRelatorio }
+];
+
+const nav = document.querySelector('nav'), noteEl = document.getElementById('note');
+const vozBtn = document.createElement('button'); vozBtn.id = 'voz'; nav.appendChild(vozBtn);
+function toggleVoice() {
+  voice.on = !voice.on;
+  vozBtn.textContent = voice.on ? '🔊 Narração ligada' : '🔇 Ligar narração';
+  vozBtn.classList.toggle('on', voice.on);
+  if (voice.on && voice.current) { say(voice.current); if (paused) pauseSound(true); }
+  else { voice.token++; voice.busy = false; stopSound(); }
+}
+vozBtn.addEventListener('click', toggleVoice);
+const buttons = DOCS.map((d, i) => {
+  const b = document.createElement('button'); b.textContent = d.tab; b.addEventListener('click', () => show(i));
+  nav.appendChild(b); return b;
+});
+let active = 0, paused = false, clock = 0, lastT = performance.now(), canvas = null, tick = null;
+function note() {
+  noteEl.innerHTML = '<b>docs/' + DOCS[active].file + '</b> — ' + DOCS[active].note + (paused ? ' <i>[pausado]</i>' : '') + ' · ← → trocam de cena, espaço pausa, V liga a narração';
+}
+function show(i) {
+  active = (i + DOCS.length) % DOCS.length;
+  hushVoice(); voice.key = DOCS[active].key;
+  if (liveRenderer) { liveRenderer.dispose(); liveRenderer.forceContextLoss(); liveRenderer = null; }
+  if (canvas) canvas.remove();
+  canvas = document.createElement('canvas'); document.body.appendChild(canvas);
+  buttons.forEach((b, k) => b.classList.toggle('on', k === active));
+  buttons[active].scrollIntoView({ block: 'nearest', inline: 'nearest' });
+  note();
+  tick = DOCS[active].build(canvas);
+}
+window.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight') show(active + 1);
+  else if (e.key === 'ArrowLeft') show(active - 1);
+  else if (e.key === ' ') { e.preventDefault(); paused = !paused; note(); if (voice.on) pauseSound(paused); }
+  else if (e.key === 'v' || e.key === 'V') toggleVoice();
+});
+voice.on = true; toggleVoice();
+if (synth) synth.getVoices();
+show(0);
+(function loop(t) {
+  requestAnimationFrame(loop);
+  const now = t || performance.now();
+  if (!paused) clock += Math.min(now - lastT, 100);
+  lastT = now;
+  tick(clock);
+})();
+</script>
+</body>
+</html>
