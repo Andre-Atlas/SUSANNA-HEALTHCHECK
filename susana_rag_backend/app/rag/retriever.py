@@ -48,7 +48,8 @@ _HEALTH_TERMS = {
     "fitoterapicos", "acupuntura", "odontologia", "odonto", "clinica", "cnes", "ambulancia",
     "hemoderivados", "hemodialise", "paciente", "sangue", "maternidade", "alcool", "drogas",
     "residencia", "comprovante", "declaracao", "especialidades", "especializada", "ambulatorio",
-    "vivas", "consultorio",
+    "vivas", "consultorio", "pezinho", "bebe", "gestante", "gravida", "gravidez", "puericultura",
+    "infantil", "neonatal", "sintomas", "emergencia",
 }
 
 

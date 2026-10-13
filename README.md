@@ -41,7 +41,26 @@ Toda a engenharia, modelagem e design do projeto estão detalhados na suíte de 
 
 ## 🚀 Quickstart — Como Executar Localmente
 
-### 1. Parar Processos Anteriores (Se portas ocupadas)
+### ⚡ 1. Execução Unificada via Docker Compose (Recomendado)
+Para subir todos os serviços (Frontend Next.js + Backend FastAPI + persistência) em contêineres:
+```bash
+docker compose up --build
+```
+- **Interface Web:** `http://localhost:3000`
+- **API FastAPI:** `http://localhost:8000`
+- **Documentação Swagger:** `http://localhost:8000/docs`
+- **Healthcheck:** `http://localhost:8000/health`
+
+Para encerrar os contêineres:
+```bash
+docker compose down
+```
+
+---
+
+### 💻 2. Execução Manual / Desenvolvimento Local
+
+#### 2.1. Parar Processos Anteriores (Se portas ocupadas)
 ```bash
 lsof -ti:8000 | xargs kill -9 2>/dev/null
 lsof -ti:3000 | xargs kill -9 2>/dev/null
@@ -49,7 +68,7 @@ lsof -ti:3000 | xargs kill -9 2>/dev/null
 
 ---
 
-### 2. Executar o Backend (API FastAPI)
+#### 2.2. Executar o Backend (API FastAPI)
 ```bash
 cd susana_rag_backend
 python3 -m venv .venv
@@ -62,7 +81,7 @@ uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 
 ---
 
-### 3. Executar o Frontend (Next.js 16)
+#### 2.3. Executar o Frontend (Next.js 16)
 Em outro terminal:
 ```bash
 cd susana-ui
@@ -93,34 +112,30 @@ npm run build
 ## 📁 Estrutura de Diretórios do Repositório
 
 ```text
-EDA/
+SUSANNA-HEALTHCHECK/
+├── docker-compose.yml                   # Orquestração de contêineres (Frontend + Backend)
 ├── docs/                                # Suíte oficial de documentação viva
 │   ├── ARQUITETURA_E_FUNCIONAMENTO.md   # Arquitetura detalhada do sistema
 │   ├── MLOPS_E_MODELAGEM.md             # Engenharia de ML, MLflow e Honest Benchmark
 │   ├── BUILD_E_EXECUCAO.md              # Setup, portas e troubleshooting
 │   └── ...                              # Relatórios e análises técnicas
+├── scripts/                             # Scripts utilitários e de automação
+│   ├── analysis/                        # Análises estatísticas e correlações
+│   ├── notebooks/                       # Geradores de notebooks e experimentos
+│   └── documents/                       # Geradores de documentação técnica e PDFs
+├── notebooks/                           # Jupyter Notebooks de EDA e avaliação de modelos
+├── CORPUS/                              # Dados abertos de saúde do DF
 ├── susana_rag_backend/                  # Backend assíncrono em FastAPI
-│   ├── app/
-│   │   ├── main.py                      # Gateway da API FastAPI
-│   │   ├── config.py                    # Configurações e limiares semânticos
-│   │   ├── citizen/                     # Cadastro, perfis e validadores de CPF/CNS
-│   │   ├── chat_sessions/               # Gerenciador de multi-sessões e histórico
-│   │   ├── units/                       # Catálogo das 346 unidades de saúde do DF
-│   │   ├── vaccines/                    # Guia e calendário de vacinação PNI
-│   │   ├── ingestion/                   # Webhook de ingestão contínua com TLS/SHA-256
-│   │   └── rag/                         # NLU, Retriever Scoped, Guardrails, Cache e Busca Online
-│   ├── data/                            # Corpus, partições congeladas DEV/TEST e SQLite WAL
+│   ├── Dockerfile                       # Contêiner de produção Python 3.11
+│   ├── app/                             # Gateway, NLU, RAG, rotas e regras de negócio
+│   ├── data/                            # Corpus, SQLite WAL e ChromaDB
 │   ├── ml/                              # Scripts de treino de guardrails, corpus e benchmarks
 │   └── tests/                           # Suíte de 81 testes automatizados (100% verde)
 ├── susana-ui/                           # Frontend em Next.js 16 (App Router + Turbopack)
+│   ├── Dockerfile                       # Multi-stage build Node 20 / Next.js
 │   ├── public/images/                   # Ativos gráficos oficiais da mascote Suzanna em 3D
 │   ├── docs/                            # Documentação canônica do Design System
-│   └── src/
-│       ├── app/
-│       │   ├── globals.css              # Tokens Liquid Blue e estilos Glassmorphism (#L e #A)
-│       │   ├── layout.tsx               # Root layout com fonte Inter
-│       │   └── page.tsx                 # Aplicação completa integrada com chat e módulos
-│       └── components/                  # Componentes modulares de visualização
+│   └── src/                             # Componentes, estilos e páginas
 └── README.md                            # Porta de entrada do repositório
 ```
 

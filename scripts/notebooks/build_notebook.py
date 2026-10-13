@@ -1,4 +1,8 @@
+from pathlib import Path
 import nbformat as nbf
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+output_notebook = REPO_ROOT / "notebooks" / "EDA_SUS_Digital.ipynb"
 
 nb = nbf.v4.new_notebook()
 
@@ -133,4 +137,5 @@ obitos_clean.to_parquet('../data/processed/obitos_2022.parquet')
 
 print("Bases tratadas exportadas para data/processed/ com sucesso.")"""))
 
-nbf.write(nb, 'notebooks/EDA_SUS_Digital.ipynb')
+nbf.write(nb, str(output_notebook))
+print(f"Notebook gerado com sucesso em: {output_notebook}")

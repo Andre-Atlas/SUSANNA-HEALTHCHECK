@@ -1,16 +1,25 @@
+from pathlib import Path
 import pandas as pd
 import scipy.stats as stats
 
-obitos = pd.read_csv('CORPUS/obitos-ocorridos-no-df/Óbitos Ocorridos no DF - 2022.csv', sep=';', encoding='iso-8859-1', on_bad_lines='skip')
+REPO_ROOT = Path(__file__).resolve().parents[2]
+CORPUS_DIR = REPO_ROOT / "CORPUS"
+
+obitos_file = CORPUS_DIR / "obitos-ocorridos-no-df" / "Óbitos Ocorridos no DF - 2022.csv"
+samu_file = CORPUS_DIR / "Samu" / "dados_producao_samu-29092026-.csv"
+atend_file = CORPUS_DIR / "atendimentos-e-consultas" / "2022 - Atendimentos e Consultas _ambulatório e emergência_.csv"
+cirurgias_file = CORPUS_DIR / "cirurgias-producao-ambulatorial" / "2022 - Cirurgias Produção Ambulatorial.csv"
+
+obitos = pd.read_csv(obitos_file, sep=';', encoding='iso-8859-1', on_bad_lines='skip')
 obitos.columns = [c.strip().lower() for c in obitos.columns]
 
-samu = pd.read_csv('CORPUS/Samu/dados_producao_samu-29092026-.csv', sep=',', encoding='utf-8', on_bad_lines='skip')
+samu = pd.read_csv(samu_file, sep=',', encoding='utf-8', on_bad_lines='skip')
 samu.columns = [c.strip().lower() for c in samu.columns]
 
-atend = pd.read_csv('CORPUS/atendimentos-e-consultas/2022 - Atendimentos e Consultas _ambulatório e emergência_.csv', sep=';', encoding='iso-8859-1', on_bad_lines='skip')
+atend = pd.read_csv(atend_file, sep=';', encoding='iso-8859-1', on_bad_lines='skip')
 atend.columns = [c.strip().lower() for c in atend.columns]
 
-cirurgias = pd.read_csv('CORPUS/cirurgias-producao-ambulatorial/2022 - Cirurgias Produção Ambulatorial.csv', sep=';', encoding='iso-8859-1', on_bad_lines='skip')
+cirurgias = pd.read_csv(cirurgias_file, sep=';', encoding='iso-8859-1', on_bad_lines='skip')
 cirurgias.columns = [c.strip().lower() for c in cirurgias.columns]
 
 print("# Teste 1: Temporal (Agrupado por Mês)")
@@ -38,10 +47,9 @@ if len(merged_ac) > 2:
 print("\n# Teste 2: Espacial (Agrupado por Região de Saúde)")
 o_reg = obitos.groupby('i_desc_regiao_saude_res')['i_qtd_obitos'].sum().reset_index()
 o_reg['region'] = o_reg['i_desc_regiao_saude_res'].str.replace('Região ', '', regex=False).str.strip().str.lower()
-a_reg = atend.groupby('i_desc_complex_proc')['i_qtd'].sum().reset_index() # Atendimentos doesnt seem to have region easily accessible, let's use estab_cnes
+a_reg = atend.groupby('i_desc_complex_proc')['i_qtd'].sum().reset_index()
 print(f"Óbitos agrupados espacialmente geram {len(o_reg)} regiões únicas.")
 
 # Show SAMU centralizado
 s_reg_unique = samu['i_desc_regiao_saude'].unique()
 print(f"SAMU Regiões Únicas na coluna 'i_desc_regiao_saude': {s_reg_unique}")
-

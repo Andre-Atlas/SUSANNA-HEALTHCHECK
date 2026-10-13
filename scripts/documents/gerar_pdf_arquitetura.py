@@ -1,3 +1,4 @@
+from pathlib import Path
 from fpdf import FPDF
 
 class PDF(FPDF):
@@ -43,4 +44,6 @@ def create_pdf(output_path):
     print(f"PDF gerado com sucesso em {output_path}")
 
 if __name__ == '__main__':
-    create_pdf('Projeto_Susana_Visao_Geral.pdf')
+    REPO_ROOT = Path(__file__).resolve().parents[2]
+    output_path = REPO_ROOT / "docs" / "Projeto_Susana_Visao_Geral.pdf"
+    create_pdf(str(output_path))
