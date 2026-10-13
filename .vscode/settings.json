@@ -1,0 +1,9 @@
+{
+  "python.defaultInterpreterPath": "${workspaceFolder}/susana_rag_backend/.venv/bin/python",
+  "python.analysis.extraPaths": [
+    "${workspaceFolder}/susana_rag_backend"
+  ],
+  "python.autoComplete.extraPaths": [
+    "${workspaceFolder}/susana_rag_backend"
+  ]
+}

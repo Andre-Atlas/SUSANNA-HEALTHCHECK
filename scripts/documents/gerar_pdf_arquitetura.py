@@ -4,13 +4,13 @@ from fpdf import FPDF
 class PDF(FPDF):
     def header(self):
         self.set_font('helvetica', 'B', 15)
-        self.cell(0, 10, 'Projeto Susana (SUS-DF) - Visão Arquitetural', border=False, ln=1, align='C')
-        self.ln(5)
+        self.cell(0, 10, 'Projeto Susana (SUS-DF) - Visão Arquitetural', align='C')
+        self.ln(12)
         
     def footer(self):
         self.set_y(-15)
         self.set_font('helvetica', 'I', 8)
-        self.cell(0, 10, f'Página {self.page_no()}', 0, 0, 'C')
+        self.cell(0, 10, f'Página {self.page_no()}', align='C')
 
 def create_pdf(output_path):
     pdf = PDF()
