@@ -161,11 +161,28 @@ async def chat_stream_endpoint(req: ChatRequest):
                 full_response += piece
                 yield json.dumps({"type": "chunk", "content": piece}) + "\n"
             
-            # Citações limpas
+            # Citações limpas com URL oficial resolvida
+            def _resolve_official_url(title: str, url: Optional[str]) -> str:
+                if url and url.startswith("http"):
+                    return url
+                t = title.lower()
+                if "vacina" in t:
+                    return "https://www.gov.br/saude/pt-br/vacinacao/calendario"
+                if "farmacia" in t or "medicamento" in t:
+                    return "https://www.saude.df.gov.br/componente-especializado"
+                if "ubs" in t or "unidade" in t or "hospital" in t:
+                    return "https://www.saude.df.gov.br/unidades-de-saude"
+                if "samu" in t or "emergencia" in t:
+                    return "https://www.saude.df.gov.br/samu-192"
+                if "dengue" in t or "vigilancia" in t:
+                    return "https://www.saude.df.gov.br/dengue"
+                return "https://www.saude.df.gov.br"
+
             citations = []
             for res in results[:3]:
                 if res.source and res.source not in [c["title"] for c in citations]:
-                    citations.append({"title": res.source, "url": res.url})
+                    resolved_url = _resolve_official_url(res.source, res.url)
+                    citations.append({"title": res.source, "url": resolved_url})
             
             # Chips de opções interativas dinâmicas
             options_chips = ConversationalContextManager.build_interactive_chips(

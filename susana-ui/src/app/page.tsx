@@ -1269,36 +1269,7 @@ export default function Home() {
                           {m.text}
                         </div>
 
-                        {/* Citações Estruturadas com Links Oficiais */}
-                        {m.citations && m.citations.length > 0 && (
-                          <div style={{ marginTop: '8px', display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-                            {m.citations.map((c, ci) => (
-                              <a
-                                key={ci}
-                                href={c.url || '#'}
-                                target={c.url ? '_blank' : undefined}
-                                rel="noopener noreferrer"
-                                style={{
-                                  fontSize: '11px',
-                                  color: '#1e40af',
-                                  background: 'rgba(37,99,235,0.08)',
-                                  padding: '4px 10px',
-                                  borderRadius: '99px',
-                                  textDecoration: 'none',
-                                  display: 'inline-flex',
-                                  alignItems: 'center',
-                                  gap: '4px',
-                                  border: '1px solid rgba(37,99,235,0.18)',
-                                  fontWeight: 400,
-                                }}
-                              >
-                                📄 {c.title.slice(0, 35)}{c.title.length > 35 ? '...' : ''}
-                              </a>
-                            ))}
-                          </div>
-                        )}
-
-                        {/* Chips de Opções Interativas */}
+                        {/* Chips de Opções Interativas (Possíveis dúvidas) */}
                         {m.options && m.options.length > 0 && (
                           <div style={{ marginTop: '12px', paddingTop: '10px', borderTop: '1px solid rgba(0,0,0,0.06)', display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                             {m.options.map((opt, oi) => (
@@ -1340,13 +1311,102 @@ export default function Home() {
                           </div>
                         )}
 
-                        {m.source && (
-                          <small
-                            className="mut"
-                            style={{ display: 'block', marginTop: '6px', fontSize: '11px' }}
+                        {/* Dropdown de Referências e Fontes Oficiais */}
+                        {((m.citations && m.citations.length > 0) || m.source) && (
+                          <details
+                            style={{
+                              marginTop: '10px',
+                              padding: '6px 12px',
+                              borderRadius: '8px',
+                              background: '#f8fafc',
+                              border: '1px solid #e2e8f0',
+                              fontSize: '12px',
+                              color: '#334155',
+                            }}
                           >
-                            {m.source}
-                          </small>
+                            <summary
+                              style={{
+                                cursor: 'pointer',
+                                fontWeight: 600,
+                                color: '#2563eb',
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '6px',
+                                userSelect: 'none',
+                              }}
+                            >
+                              <span>Referências</span>
+                              {m.citations && m.citations.length > 0 && (
+                                <span
+                                  style={{
+                                    fontSize: '11px',
+                                    background: '#dbeafe',
+                                    color: '#1d4ed8',
+                                    padding: '1px 7px',
+                                    borderRadius: '99px',
+                                    fontWeight: 700,
+                                  }}
+                                >
+                                  {m.citations.length}
+                                </span>
+                              )}
+                            </summary>
+
+                            <div style={{ marginTop: '8px', display: 'flex', flexDirection: 'column', gap: '6px', paddingTop: '8px', borderTop: '1px dashed #cbd5e1' }}>
+                              {m.citations && m.citations.length > 0 ? (
+                                m.citations.map((c, ci) => {
+                                  const effectiveUrl =
+                                    c.url ||
+                                    (/vacina/i.test(c.title)
+                                      ? 'https://www.gov.br/saude/pt-br/vacinacao/calendario'
+                                      : /farmacia|medicamento/i.test(c.title)
+                                      ? 'https://www.saude.df.gov.br/componente-especializado'
+                                      : /ubs|unidade|hospital/i.test(c.title)
+                                      ? 'https://www.saude.df.gov.br/unidades-de-saude'
+                                      : /samu|emergencia/i.test(c.title)
+                                      ? 'https://www.saude.df.gov.br/samu-192'
+                                      : 'https://www.saude.df.gov.br');
+                                  return (
+                                    <a
+                                      key={ci}
+                                      href={effectiveUrl}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      style={{
+                                        fontSize: '12px',
+                                        color: '#1d4ed8',
+                                        textDecoration: 'none',
+                                        display: 'inline-flex',
+                                        alignItems: 'center',
+                                        gap: '6px',
+                                        padding: '5px 9px',
+                                        borderRadius: '6px',
+                                        background: '#ffffff',
+                                        border: '1px solid #e2e8f0',
+                                        width: 'fit-content',
+                                        maxWidth: '100%',
+                                      }}
+                                      onMouseEnter={(e) => {
+                                        e.currentTarget.style.textDecoration = 'underline';
+                                        e.currentTarget.style.background = '#f1f5f9';
+                                      }}
+                                      onMouseLeave={(e) => {
+                                        e.currentTarget.style.textDecoration = 'none';
+                                        e.currentTarget.style.background = '#ffffff';
+                                      }}
+                                    >
+                                      <span>{c.title}</span>
+                                      <span style={{ fontSize: '10px', color: '#64748b' }}>↗</span>
+                                    </a>
+                                  );
+                                })
+                              ) : (
+                                <span style={{ fontSize: '12px', color: '#64748b' }}>
+                                  {m.source}
+                                </span>
+                              )}
+                            </div>
+                          </details>
                         )}
                       </div>
                     </div>
