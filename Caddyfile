@@ -1,0 +1,51 @@
+# =========================================================================
+# Caddyfile — Reverse Proxy com HTTPS Automático para o SUS Digital
+# =========================================================================
+# Para ativar SSL com Let's Encrypt no seu domínio, defina a variável
+# de ambiente DOMAIN (ex: DOMAIN=susana.duckdns.org) no .env ou no host.
+# Se DOMAIN não for definido, o Caddy roda na porta :80 com proxy reverso.
+
+{$DOMAIN::80} {
+    # Headers de Segurança Web
+    header {
+        X-Content-Type-Options nosniff
+        X-Frame-Options SAMEORIGIN
+        Referrer-Policy strict-origin-when-cross-origin
+        -Server
+    }
+
+    # Compressão inteligente de tráfego
+    encode zstd gzip
+
+    # Roteamento da API e Swagger para o Backend FastAPI
+    handle /api/* {
+        reverse_proxy backend:8000 {
+            header_up Host {host}
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+        }
+    }
+
+    handle /docs* {
+        reverse_proxy backend:8000
+    }
+
+    handle /openapi.json {
+        reverse_proxy backend:8000
+    }
+
+    handle /health {
+        reverse_proxy backend:8000
+    }
+
+    # Roteamento de todas as telas e estáticos para o Frontend Next.js
+    handle {
+        reverse_proxy frontend:3000 {
+            header_up Host {host}
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+        }
+    }
+}

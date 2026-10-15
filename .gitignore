@@ -21,4 +21,4 @@ dvc-storage/
 
 # Frontend
 susana-ui/node_modules/
-susana-ui/.next/
+**/.next/

@@ -36,12 +36,12 @@ flowchart TD
 ## 🗄️ 2. Engenharia de Dados e Base de Conhecimento (Corpus)
 
 ### 2.1. Diretório Geográfico de Saúde do DF (`data/corpus/diretorio_saude_df.json`)
-A base de conhecimento foi gerada pelo script [`ml/corpus/generate_health_directory.py`](file:///Users/andreatlas/Projetos_pessoais/EDA/susana_rag_backend/ml/corpus/generate_health_directory.py) a partir dos dados abertos georreferenciados da Secretaria de Saúde do Distrito Federal:
+A base de conhecimento foi gerada pelo script [`ml/corpus/generate_health_directory.py`](file:///Users/andreatlas/Projetos_pessoais/SUSANNA/susana_rag_backend/ml/corpus/generate_health_directory.py) a partir dos dados abertos georreferenciados da Secretaria de Saúde do Distrito Federal:
 - **346 Unidades Mapeadas:** 176 Unidades Básicas de Saúde (UBS), 16 Unidades de Pronto Atendimento (UPA), 15 Hospitais Regionais/Especializados, 38 Policlínicas, 8 Centros de Atenção Psicossocial (CAPS) e serviços especializados (Farmácias de Alto Custo, Centros de Radioterapia, etc.).
 - **Cobertura Territorial Integral (100% das 33 RAs):** Desde o Plano Piloto até Ceilândia, Samambaia, Sol Nascente/Pôr do Sol, Santa Maria, Planaltina, Sobradinho, Brazlândia e regiões rurais.
 
 ### 2.2. Indexação e Metadados no ChromaDB
-O script [`ml/corpus/sync_corpus_chroma.py`](file:///Users/andreatlas/Projetos_pessoais/EDA/susana_rag_backend/ml/corpus/sync_corpus_chroma.py) converte o diretório em **2.365 blocos vetoriais estruturados** utilizando o modelo de embeddings multilíngue `paraphrase-multilingual-MiniLM-L12-v2`.
+O script [`ml/corpus/sync_corpus_chroma.py`](file:///Users/andreatlas/Projetos_pessoais/SUSANNA/susana_rag_backend/ml/corpus/sync_corpus_chroma.py) converte o diretório em **2.365 blocos vetoriais estruturados** utilizando o modelo de embeddings multilíngue `paraphrase-multilingual-MiniLM-L12-v2`.
 
 Cada bloco possui o seguinte esquema de metadados:
 ```json
@@ -60,7 +60,7 @@ Cada bloco possui o seguinte esquema de metadados:
 
 ## 🛡️ 3. Classificador de Guardrails Clínicos
 
-A aplicação não pode emitir conselhos médicos diagnósticos nem prescrições farmacológicas. O treinamento em [`ml/guardrails/train.py`](file:///Users/andreatlas/Projetos_pessoais/EDA/susana_rag_backend/ml/guardrails/train.py) implementa engenharia de segurança em machine learning:
+A aplicação não pode emitir conselhos médicos diagnósticos nem prescrições farmacológicas. O treinamento em [`ml/guardrails/train.py`](file:///Users/andreatlas/Projetos_pessoais/SUSANNA/susana_rag_backend/ml/guardrails/train.py) implementa engenharia de segurança em machine learning:
 
 ### 3.1. Pipeline de Treinamento
 - **Vetorização:** `TfidfVectorizer(ngram_range=(1, 3), max_features=5000, sublinear_tf=True)`.
@@ -77,7 +77,7 @@ Se o novo modelo não atingir estes critérios no 5-Fold Stratified Cross-Valida
 
 ## 📊 4. Rastreamento de Experimentos com MLflow
 
-Todos os experimentos de treinamento e benchmarking são centralizados no banco de dados SQLite [`susana_rag_backend/mlflow.db`](file:///Users/andreatlas/Projetos_pessoais/EDA/susana_rag_backend/mlflow.db), garantindo reprodutibilidade científica.
+Todos os experimentos de treinamento e benchmarking são centralizados no banco de dados SQLite [`susana_rag_backend/mlflow.db`](file:///Users/andreatlas/Projetos_pessoais/SUSANNA/susana_rag_backend/mlflow.db), garantindo reprodutibilidade científica.
 
 ### 4.1. Esquema de Registro de Runs
 - **Experimentos:**
@@ -98,7 +98,7 @@ Todos os experimentos de treinamento e benchmarking são centralizados no banco 
 
 ## 🎯 5. Avaliação Honesta e Partições Congeladas (Honest Benchmark)
 
-Para evitar overfitting nos dados de teste, o repositório mantém conjuntos de dados estritamente congelados em [`data/eval/`](file:///Users/andreatlas/Projetos_pessoais/EDA/susana_rag_backend/data/eval/):
+Para evitar overfitting nos dados de teste, o repositório mantém conjuntos de dados estritamente congelados em [`data/eval/`](file:///Users/andreatlas/Projetos_pessoais/SUSANNA/susana_rag_backend/data/eval/):
 
 | Arquivo de Avaliação | Tipo de Dado | Quantidade de Cenários | Propósito do Teste |
 | :--- | :--- | :--- | :--- |
@@ -109,7 +109,7 @@ Para evitar overfitting nos dados de teste, o repositório mantém conjuntos de 
 
 ### 5.1. Resultados Homologados do Benchmark Honesto
 
-Executado através de [`ml/retrieval/eval_honest_benchmark.py`](file:///Users/andreatlas/Projetos_pessoais/EDA/susana_rag_backend/ml/retrieval/eval_honest_benchmark.py):
+Executado através de [`ml/retrieval/eval_honest_benchmark.py`](file:///Users/andreatlas/Projetos_pessoais/SUSANNA/susana_rag_backend/ml/retrieval/eval_honest_benchmark.py):
 
 | Métrica Avaliada | Meta Mínima de Aceite | Resultado Obtido | Status |
 | :--- | :--- | :--- | :--- |
@@ -124,7 +124,7 @@ Executado através de [`ml/retrieval/eval_honest_benchmark.py`](file:///Users/an
 
 ## 🔄 6. Pipeline de Ingestão Contínua e Invalidação de Cache
 
-O módulo [`app/ingestion/`](file:///Users/andreatlas/Projetos_pessoais/EDA/susana_rag_backend/app/ingestion/) fornece capacidade de atualização contínua do conhecimento do SUS-DF sem necessidade de reiniciar a aplicação:
+O módulo [`app/ingestion/`](file:///Users/andreatlas/Projetos_pessoais/SUSANNA/susana_rag_backend/app/ingestion/) fornece capacidade de atualização contínua do conhecimento do SUS-DF sem necessidade de reiniciar a aplicação:
 
 1. **Manifesto de Idempotência (`ingestion_manifest.json`):**
    - Registra o hash SHA-256 de cada documento ingerido.

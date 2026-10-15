@@ -1,0 +1,69 @@
+services:
+  backend:
+    build:
+      context: ./susana_rag_backend
+      dockerfile: Dockerfile
+    container_name: susana-backend
+    restart: unless-stopped
+    environment:
+      - ENVIRONMENT=production
+      - CORS_ORIGINS=*
+      - CHROMA_PERSIST_DIRECTORY=/app/data/chroma_db
+      - RELEVANCE_CONFIDENT_THRESHOLD=0.35
+      - ONLINE_SEARCH_ENABLED=true
+    volumes:
+      - susana_chroma_data:/app/data/chroma_db
+      - susana_app_data:/app/data
+    expose:
+      - "8000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+  frontend:
+    build:
+      context: ./susana-ui
+      dockerfile: Dockerfile
+      args:
+        - NEXT_PUBLIC_API_URL=
+    container_name: susana-frontend
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    expose:
+      - "3000"
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+  caddy:
+    image: caddy:2-alpine
+    container_name: susana-proxy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - frontend
+      - backend
+
+volumes:
+  susana_chroma_data:
+    name: susana_chroma_data
+  susana_app_data:
+    name: susana_app_data
+  caddy_data:
+    name: caddy_data
+  caddy_config:
+    name: caddy_config
