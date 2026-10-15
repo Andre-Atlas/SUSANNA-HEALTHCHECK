@@ -8,7 +8,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "SUS Digital · Suzanna",
+  title: "SUS Digital · SUSANNA",
   description: "Assistente virtual do SUS-DF para informações administrativas e institucionais.",
 };
 

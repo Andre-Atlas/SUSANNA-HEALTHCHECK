@@ -14,9 +14,9 @@ export function SuzannaAvatar({ size = 40 }: { size?: number }) {
     <div 
       className="relative flex items-center justify-center rounded-full bg-gradient-to-tr from-[#1A5699] to-[#2563EB] shadow-sm select-none"
       style={{ width: size, height: size }}
-      aria-label="Avatar da Suzanna"
+      aria-label="Avatar da SUSANNA"
     >
-      {/* Suzanna drop silhouette */}
+      {/* SUSANNA drop silhouette */}
       <svg 
         viewBox="0 0 64 64" 
         className="w-4/5 h-4/5" 

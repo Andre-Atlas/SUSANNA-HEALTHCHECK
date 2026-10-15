@@ -91,7 +91,7 @@ export function InicioView({ onNavigate, appointments }: InicioViewProps) {
             <ArrowRight size={16} className="text-slate-300 group-hover:text-indigo-600 transition" />
           </h3>
           <p className="text-xs text-[#5B6B8C] mt-1">
-            Consulte estoques com a Suzanna
+            Consulte estoques com a SUSANNA
           </p>
         </button>
       </div>

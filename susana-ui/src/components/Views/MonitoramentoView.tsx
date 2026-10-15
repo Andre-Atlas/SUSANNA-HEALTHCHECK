@@ -219,7 +219,7 @@ export function MonitoramentoView({ onNavigate }: MonitoramentoViewProps) {
         </div>
       </div>
 
-      {/* Dicas de Prevenção & Direct CTA to Suzanna */}
+      {/* Dicas de Prevenção & Direct CTA to SUSANNA */}
       <div className="rounded-3xl p-6 sm:p-7 bg-gradient-to-br from-blue-50/80 to-indigo-50/70 border border-blue-200/80">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
           <div>
@@ -237,7 +237,7 @@ export function MonitoramentoView({ onNavigate }: MonitoramentoViewProps) {
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold bg-[#2563EB] text-white hover:bg-[#1D4ED8] transition shadow-sm active:scale-[0.98]"
           >
             <Sparkles size={14} />
-            <span>Perguntar à Suzanna</span>
+            <span>Perguntar à SUSANNA</span>
             <ArrowRight size={14} />
           </button>
         </div>

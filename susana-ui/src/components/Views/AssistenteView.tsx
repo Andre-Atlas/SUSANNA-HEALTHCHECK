@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { MessageBubble, ActionButton, Source } from '@/components/Chat/MessageBubble';
 import { TabId } from '@/components/Navigation/Sidebar';
+import { buildApiUrl } from '@/lib/api';
 
 interface Message {
   id: string;
@@ -38,7 +39,7 @@ export function AssistenteView({ onNavigate, initialPrompt }: AssistenteViewProp
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 'm1',
-      text: 'Olá, Maria! Sou a Suzanna, sua assistente virtual de saúde do SUS-DF.\n\nComo posso ajudar você hoje com informações de unidades, vacinas, exames ou medicamentos?',
+      text: 'Olá! Sou a SUSANNA, sua assistente virtual de saúde do SUS-DF.\n\nComo posso ajudar você hoje com informações de unidades, vacinas, exames ou medicamentos?',
       isUser: false,
     }
   ]);
@@ -104,7 +105,7 @@ export function AssistenteView({ onNavigate, initialPrompt }: AssistenteViewProp
     ]);
 
     try {
-      const res = await fetch('http://localhost:8000/api/chat/stream', {
+      const res = await fetch(buildApiUrl('/api/chat/stream'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: userMsg }),
@@ -228,7 +229,7 @@ export function AssistenteView({ onNavigate, initialPrompt }: AssistenteViewProp
       <div className="bg-amber-50/90 border border-amber-200/80 rounded-2xl px-4 py-2.5 mb-3 flex items-center gap-2.5 text-xs text-amber-900 shadow-2xs">
         <Info size={16} className="text-amber-600 flex-shrink-0" />
         <p>
-          A Suzanna fornece <b>apenas informações administrativas e institucionais</b> da rede SUS-DF. Não realiza diagnósticos ou avaliações médicas.
+          A SUSANNA fornece <b>apenas informações administrativas e institucionais</b> da rede SUS-DF. Não realiza diagnósticos ou avaliações médicas.
         </p>
       </div>
 

@@ -1,6 +1,9 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import { buildApiUrl, createApiUrl } from '@/lib/api';
+import { EpidemiologicalDashboard } from '@/components/Surveillance/EpidemiologicalDashboard';
+import { HealthUnitsInteractiveMap } from '@/components/UnitsMap/HealthUnitsInteractiveMap';
 
 // =========================================================================
 // Tipos e Interfaces da Plataforma SUS Digital
@@ -60,6 +63,12 @@ interface HealthUnitItem {
   horario: string;
   servicos: string[];
   referencia_emergencia?: string;
+  telefone?: string;
+  atendimento_24h?: boolean;
+  bairro?: string;
+  url?: string;
+  lat?: number;
+  lng?: number;
   svg_x: number;
   svg_y: number;
 }
@@ -83,15 +92,6 @@ interface VaccineItem {
   onde_tomar: string;
 }
 
-// Epidemiological Data for Dengue
-const DENGUE_CASES = [22, 30, 28, 41, 55, 49, 62, 58, 44, 36];
-const REGION_BARS = [
-  { name: 'Ceilândia', cases: 88 },
-  { name: 'Samambaia', cases: 64 },
-  { name: 'Taguatinga', cases: 52 },
-  { name: 'Plano Piloto', cases: 31 },
-  { name: 'Lago Sul', cases: 12 },
-];
 
 // Clinical Records
 const RECORDS = [
@@ -154,7 +154,8 @@ export default function Home() {
 
   // Services View State: Units Map & Vaccines Guide
   const [serviceSubTab, setServiceSubTab] = useState<'mapa' | 'vacinas'>('mapa');
-  const [activeUnitTab, setActiveUnitTab] = useState<string>('UBS');
+  const [activeUnitTab, setActiveUnitTab] = useState<string>('todas');
+  const [mapSearchQuery, setMapSearchQuery] = useState<string>('');
   const [units, setUnits] = useState<HealthUnitItem[]>([]);
   const [raList, setRaList] = useState<RADistribution[]>([]);
   const [selectedRA, setSelectedRA] = useState<string>('todas');
@@ -202,7 +203,7 @@ export default function Home() {
 
   const fetchDefaultCitizen = async () => {
     try {
-      const res = await fetch('http://localhost:8000/api/citizen/me');
+      const res = await fetch(buildApiUrl('/api/citizen/me'));
       if (res.ok) {
         const data: CitizenProfile = await res.json();
         setCitizen(data);
@@ -215,7 +216,7 @@ export default function Home() {
 
   const fetchRasList = async () => {
     try {
-      const res = await fetch('http://localhost:8000/api/units/ras');
+      const res = await fetch(buildApiUrl('/api/units/ras'));
       if (res.ok) {
         const data: RADistribution[] = await res.json();
         setRaList(data);
@@ -230,7 +231,7 @@ export default function Home() {
   // -------------------------------------------------------------------------
   const fetchChatSessions = async () => {
     try {
-      const res = await fetch('http://localhost:8000/api/chat/sessions');
+      const res = await fetch(buildApiUrl('/api/chat/sessions'));
       if (res.ok) {
         const list: ChatSessionItem[] = await res.json();
         setSessions(list);
@@ -252,7 +253,7 @@ export default function Home() {
     }
 
     try {
-      const res = await fetch('http://localhost:8000/api/chat/sessions', {
+      const res = await fetch(buildApiUrl('/api/chat/sessions'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -270,7 +271,7 @@ export default function Home() {
         // Mensagem de boas-vindas personalizada
         const welcomeText = `Olá, ${
           citizen ? citizen.primeiro_nome : 'Cidadão'
-        }! Sou a Suzanna, assistente virtual oficial da Secretaria de Saúde do DF. Como posso ajudar com vacinas, unidades de saúde ou agendamentos na sua região?`;
+        }! Sou a SUSANNA, assistente virtual oficial da Secretaria de Saúde do DF. Como posso ajudar com vacinas, unidades de saúde ou agendamentos na sua região?`;
 
         setMessages([
           {
@@ -290,7 +291,7 @@ export default function Home() {
           id: 'm0',
           text: `Olá, ${
             citizen ? citizen.primeiro_nome : 'Cidadão'
-          }! Sou a Suzanna. Como posso orientar você hoje?`,
+          }! Sou a SUSANNA. Como posso orientar você hoje?`,
           isUser: false,
         },
       ]);
@@ -306,13 +307,13 @@ export default function Home() {
     setIsSessionsDrawerOpen(false);
 
     try {
-      const res = await fetch(`http://localhost:8000/api/chat/sessions/${sessionId}/messages`);
+      const res = await fetch(buildApiUrl(`/api/chat/sessions/${sessionId}/messages`));
       if (res.ok) {
         const msgs = await res.json();
         if (msgs.length === 0) {
           const welcomeText = `Olá, ${
             citizen ? citizen.primeiro_nome : 'Cidadão'
-          }! Sou a Suzanna. Como posso ajudar nesta conversa?`;
+          }! Sou a SUSANNA. Como posso ajudar nesta conversa?`;
           setMessages([
             {
               id: 'init_' + Date.now(),
@@ -341,7 +342,7 @@ export default function Home() {
   const deleteSession = async (sessionId: string, e: React.MouseEvent) => {
     e.stopPropagation();
     try {
-      await fetch(`http://localhost:8000/api/chat/sessions/${sessionId}`, { method: 'DELETE' });
+      await fetch(buildApiUrl(`/api/chat/sessions/${sessionId}`), { method: 'DELETE' });
       setSessions((prev) => prev.filter((s) => s.id !== sessionId));
       if (currentSessionId === sessionId) {
         const remaining = sessions.filter((s) => s.id !== sessionId);
@@ -360,40 +361,60 @@ export default function Home() {
   // Carregamento de Unidades de Saúde Reais
   // -------------------------------------------------------------------------
   useEffect(() => {
+    let isCancelled = false;
+
     const fetchUnits = async () => {
       try {
         let tipoParam = '';
-        if (activeUnitTab === 'UBS') tipoParam = 'ubs';
-        else if (activeUnitTab === 'Hospitais') tipoParam = 'hospital';
-        else if (activeUnitTab === 'UPA') tipoParam = 'upa';
+        const tabLower = activeUnitTab.toLowerCase();
+        if (tabLower === 'ubs') tipoParam = 'ubs';
+        else if (tabLower === 'hospitais' || tabLower === 'hospital') tipoParam = 'hospital';
+        else if (tabLower === 'upa') tipoParam = 'upa';
+        else if (tabLower === 'caps') tipoParam = 'caps';
+        else if (tabLower === 'policlinica' || tabLower === 'policlinicas') tipoParam = 'policlinica';
+        else if (tabLower === 'farmacia' || tabLower === 'farmacias') tipoParam = 'farmacia';
+        else if (tabLower === 'laboratorio' || tabLower === 'laboratorios') tipoParam = 'laboratorio';
+        else if (tabLower !== 'todas') tipoParam = tabLower;
 
-        const url = new URL('http://localhost:8000/api/units');
+        const url = createApiUrl('/api/units');
         if (selectedRA && selectedRA !== 'todas') {
           url.searchParams.set('ra', selectedRA);
         }
         if (tipoParam) {
           url.searchParams.set('tipo', tipoParam);
         }
+        if (mapSearchQuery.trim()) {
+          url.searchParams.set('q', mapSearchQuery.trim());
+        }
 
         const res = await fetch(url.toString());
-        if (res.ok) {
+        if (res.ok && !isCancelled) {
           const data = await res.json();
           setUnits(data.units || []);
         }
       } catch (err) {
-        console.warn('Erro ao carregar unidades de saúde:', err);
+        if (!isCancelled) {
+          console.warn('Erro ao carregar unidades de saúde:', err);
+        }
       }
     };
 
-    fetchUnits();
-  }, [activeUnitTab, selectedRA]);
+    const timer = setTimeout(() => {
+      fetchUnits();
+    }, 250);
+
+    return () => {
+      isCancelled = true;
+      clearTimeout(timer);
+    };
+  }, [activeUnitTab, selectedRA, mapSearchQuery]);
 
   // -------------------------------------------------------------------------
   // Carregamento do Guia Oficial de Vacinação e Recomendações
   // -------------------------------------------------------------------------
   const fetchVaccineGuide = async (faixa: string) => {
     try {
-      const url = new URL('http://localhost:8000/api/vaccines/guide');
+      const url = createApiUrl('/api/vaccines/guide');
       if (faixa && faixa !== 'todas') {
         url.searchParams.set('faixa_etaria', faixa);
       }
@@ -416,7 +437,7 @@ export default function Home() {
     if (!citizen?.data_nascimento) return;
     const fetchRecs = async () => {
       try {
-        const url = new URL('http://localhost:8000/api/vaccines/recommendations');
+        const url = createApiUrl('/api/vaccines/recommendations');
         url.searchParams.set('data_nascimento', citizen.data_nascimento);
         url.searchParams.set('gestante', String(citizen.gestante));
 
@@ -526,7 +547,7 @@ export default function Home() {
 
     // Salva mensagem do usuário na sessão ativa
     if (currentSessionId) {
-      fetch('http://localhost:8000/api/chat/sessions/messages', {
+      fetch(buildApiUrl('/api/chat/sessions/messages'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -538,7 +559,7 @@ export default function Home() {
     }
 
     try {
-      const res = await fetch('http://localhost:8000/api/chat/stream', {
+      const res = await fetch(buildApiUrl('/api/chat/stream'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -628,7 +649,7 @@ export default function Home() {
 
       // Salva mensagem do bot na sessão ativa
       if (currentSessionId && accumulatedText) {
-        fetch('http://localhost:8000/api/chat/sessions/messages', {
+        fetch(buildApiUrl('/api/chat/sessions/messages'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -676,7 +697,7 @@ export default function Home() {
         ]);
 
         if (currentSessionId) {
-          fetch('http://localhost:8000/api/chat/sessions/messages', {
+          fetch(buildApiUrl('/api/chat/sessions/messages'), {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -725,7 +746,7 @@ export default function Home() {
         telefone: formTelefone.trim() || null,
       };
 
-      const res = await fetch('http://localhost:8000/api/citizen/register', {
+      const res = await fetch(buildApiUrl('/api/citizen/register'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -758,7 +779,7 @@ export default function Home() {
 
     try {
       const cleanDoc = loginDoc.replace(/\D/g, '');
-      const res = await fetch('http://localhost:8000/api/citizen/login', {
+      const res = await fetch(buildApiUrl('/api/citizen/login'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -786,39 +807,14 @@ export default function Home() {
     }
   };
 
-  // Generate SVG Spline path for Dengue chart
-  const renderSpline = () => {
-    const w = 600;
-    const h = 170;
-    const mx = 70;
-    const pts = DENGUE_CASES.map((v, i) => [
-      i * (w / (DENGUE_CASES.length - 1)),
-      h - (v / mx) * h,
-    ]);
-
-    let d = `M${pts[0][0]},${pts[0][1]}`;
-    for (let i = 1; i < pts.length; i++) {
-      const mid = (pts[i - 1][0] + pts[i][0]) / 2;
-      d += ` C${mid},${pts[i - 1][1]} ${mid},${pts[i][1]} ${pts[i][0]},${pts[i][1]}`;
-    }
-
-    return (
-      <svg id="ln" viewBox="0 0 600 200">
-        <defs>
-          <linearGradient id="gr" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stopColor="#60a5fa" stopOpacity="0.45" />
-            <stop offset="1" stopColor="#60a5fa" stopOpacity="0" />
-          </linearGradient>
-        </defs>
-        <path d={`${d} L${w},${h} L0,${h}Z`} fill="url(#gr)" />
-        <path d={d} fill="none" stroke="#2563eb" strokeWidth="3" strokeLinecap="round" />
-        {pts.map((q, idx) => (
-          <text key={idx} x={q[0]} y={192} textAnchor="middle">
-            {`S${idx + 36}`}
-          </text>
-        ))}
-      </svg>
-    );
+  // Navegação direta do Dashboard Epidemiológico para o Chat com a SUSANNA
+  const handleAskSuzannaFromDashboard = (promptText: string) => {
+    navigateToTab(1);
+    setInputQuery(promptText);
+    setTimeout(() => {
+      const inputEl = document.getElementById('in') as HTMLInputElement | null;
+      if (inputEl) inputEl.focus();
+    }, 150);
   };
 
   return (
@@ -840,7 +836,7 @@ export default function Home() {
               enterApp(1);
             }}
           >
-            Falar com a Suzanna
+            Falar com a SUSANNA
           </a>
         </nav>
 
@@ -852,7 +848,7 @@ export default function Home() {
               Saúde pública, <em>clara</em> como água.
             </h1>
             <p>
-              Agende consultas, acompanhe exames e tire dúvidas com a Suzanna, assistente de IA que consulta dados atualizados da rede pública de todas as 33 Regiões Administrativas do DF.
+              Agende consultas, acompanhe exames e tire dúvidas com a SUSANNA, assistente de IA que consulta dados atualizados da rede pública de todas as 33 Regiões Administrativas do DF.
             </p>
             <a
               className="btn"
@@ -870,7 +866,7 @@ export default function Home() {
           <div className="stage rv">
             <img
               src="/images/suzanna-hero.webp"
-              alt="Suzanna, a assistente virtual do SUS Digital, acenando"
+              alt="SUSANNA, a assistente virtual do SUS Digital, acenando"
             />
             <div className="tag glass t1">
               Vacinação em andamento
@@ -1110,7 +1106,7 @@ export default function Home() {
                     handleSendMessage('Quais são as vacinas e serviços recomendados para a minha idade?');
                   }}
                 >
-                  <b>Falar com a Suzanna</b>
+                  <b>Falar com a SUSANNA</b>
                   <span>Tire dúvidas com IA</span>
                 </div>
               </div>
@@ -1139,7 +1135,7 @@ export default function Home() {
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
                 <div>
                   <h1 style={{ margin: 0 }}>
-                    Fale com a <b>Suzanna</b>
+                    Fale com a <b>SUSANNA</b>
                   </h1>
                   <p className="sub" style={{ margin: '4px 0 0' }}>
                     Respostas em streaming fundamentadas em 346 unidades e diretrizes clínicas oficiais do SUS-DF.
@@ -1261,7 +1257,7 @@ export default function Home() {
                       {!m.isUser && (
                         <img
                           src="/images/suzanna-avatar.webp"
-                          alt="Suzanna"
+                          alt="SUSANNA"
                         />
                       )}
                       <div className="b">
@@ -1413,9 +1409,9 @@ export default function Home() {
                   ))}
                   {isBotTyping && (
                     <div className="m bot">
-                      <img src="/images/suzanna-avatar.webp" alt="Suzanna" />
+                      <img src="/images/suzanna-avatar.webp" alt="SUSANNA" />
                       <div className="b" style={{ fontStyle: 'italic', color: '#64748b' }}>
-                        Suzanna está pesquisando dados da SES-DF…
+                        SUSANNA está pesquisando dados da SES-DF…
                       </div>
                     </div>
                   )}
@@ -1483,7 +1479,7 @@ export default function Home() {
                 Serviços, <b>Unidades e Vacinação</b>
               </h1>
               <p className="sub">
-                Explore as 346 unidades de saúde nas 33 RAs do Distrito Federal e consulte o Guia Oficial do PNI.
+                Explore as {units.length > 0 ? units.length : 383} unidades de saúde nas 33 RAs do Distrito Federal e consulte o Guia Oficial do PNI.
               </p>
 
               {/* Sub-Tabs: Mapa vs. Guia Vacinal */}
@@ -1505,194 +1501,38 @@ export default function Home() {
               {/* ---------------- SUBVIEW 1: MAPA DE UNIDADES ---------------- */}
               {serviceSubTab === 'mapa' && (
                 <>
-                  {/* Seletor de Região Administrativa (33 RAs Reais) e Tipo de Unidade */}
-                  <div
-                    style={{
-                      display: 'flex',
-                      flexWrap: 'wrap',
-                      gap: '12px',
-                      alignItems: 'center',
-                      marginBottom: '16px',
+                  {/* Novo Mapa Interativo Estilizado com Busca em Tempo Real e Card Flutuante */}
+                  <HealthUnitsInteractiveMap
+                    units={units}
+                    raList={raList}
+                    selectedRA={selectedRA}
+                    onSelectRA={setSelectedRA}
+                    activeType={activeUnitTab}
+                    onSelectType={setActiveUnitTab}
+                    searchQuery={mapSearchQuery}
+                    onSearchChange={setMapSearchQuery}
+                    selectedUnit={selectedPin}
+                    onSelectUnit={setSelectedPin}
+                    onAskSuzanna={(unit) => {
+                      if (isBotTyping) {
+                        handleStopGeneration();
+                      }
+                      navigateToTab(1);
+                      setTimeout(() => {
+                        handleSendMessage(`Quais serviços e vacinas estão disponíveis na ${unit.nome} em ${unit.ra_display}?`);
+                      }, 50);
                     }}
-                  >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <span style={{ fontSize: '13px', fontWeight: 600, color: '#1e3a8a' }}>Região Administrativa:</span>
-                      <select
-                        value={selectedRA}
-                        onChange={(e) => setSelectedRA(e.target.value)}
-                        style={{
-                          padding: '8px 14px',
-                          borderRadius: '12px',
-                          border: '1px solid var(--b2)',
-                          background: 'rgba(255,255,255,0.85)',
-                          fontSize: '13px',
-                          color: '#0f172a',
-                          fontWeight: 500,
-                          cursor: 'pointer',
-                        }}
-                      >
-                        <option value="todas">Todas as 33 Regiões do DF</option>
-                        {raList.map((r) => (
-                          <option key={r.ra} value={r.ra}>
-                            {r.ra_display} ({r.unit_count} unidades)
-                          </option>
-                        ))}
-                      </select>
-                    </div>
+                  />
 
-                    {/* Filtro de Tipo: UBS, Hospitais, UPA */}
-                    <div className="tabs g" style={{ margin: 0 }}>
-                      {['UBS', 'Hospitais', 'UPA'].map((tabKey) => (
-                        <button
-                          key={tabKey}
-                          className={activeUnitTab === tabKey ? 'on' : ''}
-                          onClick={() => {
-                            setActiveUnitTab(tabKey);
-                            setSelectedPin(null);
-                          }}
-                        >
-                          {tabKey}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="grid">
-                    {/* Vector Map com Pins Reais */}
-                    <div>
-                      <div className="map g" id="map">
-                        <svg viewBox="0 0 400 300">
-                          {/* Estrutura visual da malha viária do DF */}
-                          <path
-                            d="M-10 210C80 170 140 240 230 190S350 120 420 150"
-                            fill="none"
-                            stroke="#fff"
-                            strokeWidth="14"
-                            opacity="0.8"
-                          />
-                          <path
-                            d="M120 -10C150 80 110 160 160 310"
-                            fill="none"
-                            stroke="#fff"
-                            strokeWidth="10"
-                            opacity="0.8"
-                          />
-
-                          {/* Pins Reais das Unidades de Saúde */}
-                          <g id="pins">
-                            {(selectedRA === 'todas' ? units.slice(0, 60) : units).map((u, i) => {
-                              const isSelected = selectedPin?.id === u.id;
-                              // Mapeamento das coordenadas SVG percentuais (0-100) para o viewBox 400x300
-                              const cx = (u.svg_x / 100) * 360 + 20;
-                              const cy = (u.svg_y / 100) * 260 + 20;
-
-                              return (
-                                <g
-                                  key={u.id || i}
-                                  className="pin"
-                                  onClick={() => setSelectedPin(u)}
-                                  style={{ cursor: 'pointer' }}
-                                >
-                                  <circle
-                                    cx={cx}
-                                    cy={cy}
-                                    r={isSelected ? 10 : 7}
-                                    fill={isSelected ? '#dc2626' : '#2563eb'}
-                                    stroke="#fff"
-                                    strokeWidth="2.5"
-                                  />
-                                  <circle
-                                    cx={cx}
-                                    cy={cy}
-                                    r={isSelected ? 18 : 14}
-                                    fill={isSelected ? '#dc2626' : '#2563eb'}
-                                    opacity="0.2"
-                                  />
-                                </g>
-                              );
-                            })}
-                          </g>
-                        </svg>
-
-                        <div style={{ fontSize: '11px', color: '#64748b', padding: '6px 10px', background: 'rgba(255,255,255,0.4)', borderRadius: '8px', margin: '4px 8px 8px' }}>
-                          📍 Mostrando {selectedRA === 'todas' ? Math.min(60, units.length) : units.length} de {units.length} unidades encontradas{selectedRA === 'todas' ? ' (selecione uma RA para focar e listar todas as unidades da região)' : ''}.
-                        </div>
-
-                        {/* Gaveta de Detalhes da Unidade Real */}
-                        <div className={`det g ${selectedPin ? 'on' : ''}`} id="det">
-                          {selectedPin ? (
-                            <>
-                              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                                <b style={{ fontWeight: 600, color: '#0a1b3d', fontSize: '14px' }}>
-                                  {selectedPin.nome}
-                                </b>
-                                <span
-                                  style={{
-                                    fontSize: '10px',
-                                    padding: '2px 8px',
-                                    borderRadius: '99px',
-                                    background: '#2563eb',
-                                    color: '#fff',
-                                    fontWeight: 500,
-                                  }}
-                                >
-                                  {selectedPin.tipo_display}
-                                </span>
-                              </div>
-                              <div style={{ fontSize: '12px', color: '#2563eb', fontWeight: 500, marginTop: '4px' }}>
-                                📍 Região: {selectedPin.ra_display}
-                              </div>
-                              <div style={{ fontSize: '11px', color: '#475569', marginTop: '4px' }}>
-                                🏢 Endereço: {selectedPin.endereco}
-                              </div>
-                              <div style={{ fontSize: '11px', color: '#166534', marginTop: '2px', fontWeight: 500 }}>
-                                ⏰ Horário: {selectedPin.horario}
-                              </div>
-                              {selectedPin.servicos && selectedPin.servicos.length > 0 && (
-                                <div style={{ fontSize: '11px', color: '#475569', marginTop: '4px' }}>
-                                  🩺 Serviços: {selectedPin.servicos.slice(0, 4).join(', ')}
-                                </div>
-                              )}
-                              {selectedPin.referencia_emergencia && (
-                                <div style={{ fontSize: '10px', color: '#b91c1c', marginTop: '4px' }}>
-                                  🚨 Emergência: {selectedPin.referencia_emergencia}
-                                </div>
-                              )}
-                              <button
-                                type="button"
-                                className="btn"
-                                onClick={() => {
-                                  navigateToTab(1);
-                                  handleSendMessage(`Quais serviços e vacinas estão disponíveis na ${selectedPin.nome} em ${selectedPin.ra_display}?`);
-                                }}
-                                style={{
-                                  marginTop: '8px',
-                                  fontSize: '11px',
-                                  padding: '4px 10px',
-                                  background: 'white',
-                                  color: '#2563eb',
-                                  border: '1px solid #bfdbfe',
-                                }}
-                              >
-                                Perguntar à Suzanna sobre esta unidade
-                              </button>
-                            </>
-                          ) : (
-                            <span className="mut">
-                              Clique em um dos pontos no mapa para inspecionar endereço, horário e serviços oficiais.
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Calendário de Agendamentos */}
+                  {/* Calendário de Agendamentos Integrado */}
+                  <div style={{ marginTop: '20px' }}>
                     <div className="c g">
-                      <h3>Outubro 2026 · Agendamento</h3>
+                      <h3>Outubro 2026 · Agendamento e Acolhimento</h3>
                       <p className="mut" style={{ fontSize: '12px', margin: '0 0 12px' }}>
-                        Dias livres para acolhimento e vacinação na sua região:
+                        Dias livres para acolhimento e vacinação na sua região ({selectedPin ? selectedPin.nome : citizen ? citizen.ra_display : 'Distrito Federal'}):
                       </p>
                       <div className="cal" id="cal">
+
                         {['D', 'S', 'T', 'Q', 'Q', 'S', 'S'].map((dayName, idx) => (
                           <span key={idx} className="h">
                             {dayName}
@@ -1937,43 +1777,7 @@ export default function Home() {
 
             {/* ----------------- SECTION 3: MONITORAMENTO ----------------- */}
             <section className={activeTab === 3 ? 'on' : ''}>
-              <h1>
-                Monitoramento <b>epidemiológico</b>
-              </h1>
-              <p className="sub">Casos de dengue por semana (dados oficiais SES-DF).</p>
-
-              <div className="grid">
-                <div className="c g ch" style={{ gridColumn: '1 / -1' }}>
-                  <h3>Casos por semana</h3>
-                  {renderSpline()}
-                </div>
-              </div>
-
-              <div className="grid">
-                <div className="c g">
-                  <h3>Por região administrativa</h3>
-                  <div id="bars">
-                    {REGION_BARS.map((r, idx) => (
-                      <div key={idx} className="bar">
-                        <span style={{ width: 96, fontWeight: 400 }}>{r.name}</span>
-                        <i style={{ width: `${r.cases * 0.6}%` }}></i>
-                        <span className="mut" style={{ fontWeight: 500 }}>
-                          {r.cases}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="c g">
-                  <h3>Dicas de prevenção</h3>
-                  <ul className="tl">
-                    <li>Elimine água parada em pratos e calhas.</li>
-                    <li>Use repelente e roupas claras e compridas.</li>
-                    <li>Febre alta e dor no corpo: procure uma UBS.</li>
-                  </ul>
-                </div>
-              </div>
+              <EpidemiologicalDashboard onAskSuzanna={handleAskSuzannaFromDashboard} />
             </section>
 
             {/* ----------------- SECTION 4: HISTÓRICO ----------------- */}

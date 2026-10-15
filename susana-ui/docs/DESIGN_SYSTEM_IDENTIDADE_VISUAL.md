@@ -259,11 +259,11 @@ O design adota formato pílula total (`border-radius: 99px`) com gradiente verti
 ### 7.2. Barra de Navegação Flutuante da Landing Page (`nav.glass`)
 - **Posição:** Fixada centralizada no topo (`left: 50%; transform: translateX(-50%); top: 14px; z-index: 10`).
 - **Dimensões:** `width: min(92%, 720px); border-radius: 99px; padding: 8px 8px 8px 20px`.
-- **Conteúdo:** Logotipo tipográfico `SUS Digital` com a palavra `Digital` em `--b2`, e botão pílula `Falar com a Suzanna`.
+- **Conteúdo:** Logotipo tipográfico `SUS Digital` com a palavra `Digital` em `--b2`, e botão pílula `Falar com a SUSANNA`.
 
 ### 7.3. Menu Lateral da Plataforma (`aside.g`)
 - **Desktop:** Coluna sticky de `230px`, altura total calculada (`calc(100vh - 40px)`), cantos arredondados de `28px`.
-- **Cabeçalho:** Avatar circular oficial da Suzanna (`36px x 36px`) com tipografia `SUS Digital`.
+- **Cabeçalho:** Avatar circular oficial da SUSANNA (`36px x 36px`) com tipografia `SUS Digital`.
 - **Botões de Navegação:**
   - Inativo: Cor muted `--mut`, hover com fundo branco translúcido.
   - Ativo (`.on`): Fundo sólido `--b2` (`#2563eb`), texto branco, sombra azul `0 6px 16px rgba(37, 99, 235, 0.35)`.
@@ -272,7 +272,7 @@ O design adota formato pílula total (`border-radius: 99px`) com gradiente verti
 ### 7.4. Módulo de Chat Conversacional (`.chat.g`)
 - **Container:** Caixa de vidro de `560px` de altura com cantos de `28px`.
 - **Balões de Mensagem (`.m`):**
-  - **Mensagem da Suzanna (`.m.bot`):** Alinhada à esquerda com avatar oficial circular (30px), balão branco leitoso translúcido (`rgba(255, 255, 255, 0.90)`), canto inferior esquerdo afunilado (`border-bottom-left-radius: 6px`).
+  - **Mensagem da SUSANNA (`.m.bot`):** Alinhada à esquerda com avatar oficial circular (30px), balão branco leitoso translúcido (`rgba(255, 255, 255, 0.90)`), canto inferior esquerdo afunilado (`border-bottom-left-radius: 6px`).
   - **Mensagem do Usuário (`.m.me`):** Alinhada à direita, fundo azul elétrico `--b2` (`#2563eb`), texto branco, canto inferior direito afunilado (`border-bottom-right-radius: 6px`).
 - **Indicador de Digitação (`.dots`):** 3 pontos azuis com animação escalonada por keyframes (`@keyframes d`).
 - **Chips de Sugestão Rápida (`.chips`):** Pílulas brancas horizontais com texto `--b1`, bordas suaves e transição para `--b2` no hover.

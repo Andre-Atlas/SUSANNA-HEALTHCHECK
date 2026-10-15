@@ -82,11 +82,11 @@ export function Sidebar({ activeTab, onSelectTab, onExit }: SidebarProps) {
         })}
       </nav>
 
-      {/* Mini Suzanna AI Card */}
+      {/* Mini SUSANNA AI Card */}
       <div className="p-3.5 rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100/80 mb-4 text-left">
         <div className="flex items-center gap-2 mb-1">
           <Sparkles size={14} className="text-[#2563EB]" />
-          <span className="text-xs font-bold text-[#0A1B3D]">Suzanna IA</span>
+          <span className="text-xs font-bold text-[#0A1B3D]">SUSANNA IA</span>
         </div>
         <p className="text-[11px] text-slate-500 leading-relaxed">
           Tire dúvidas e consulte unidades oficiais do DF em tempo real.

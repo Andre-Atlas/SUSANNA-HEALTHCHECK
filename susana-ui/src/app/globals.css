@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
 
 html {
   scroll-behavior: smooth;
@@ -1134,4 +1135,119 @@ body {
     animation: none !important;
     transition: none !important;
   }
+}
+
+/* =========================================================================
+   ESTILOS CARTOGRÁFICOS DO SUS DIGITAL (LEAFLET + LIQUID GLASS)
+========================================================================= */
+.leaflet-container {
+  width: 100% !important;
+  height: 100% !important;
+  font-family: inherit !important;
+  background-color: #f1f5f9 !important;
+  border-radius: inherit;
+  z-index: 1 !important;
+}
+
+/* Ocultar controles padrão do Leaflet em favor dos controles Liquid Glass customizados */
+.leaflet-control-zoom {
+  display: none !important;
+}
+
+.leaflet-control-attribution {
+  background: rgba(255, 255, 255, 0.75) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  color: #64748b !important;
+  font-size: 10px !important;
+  border-top-left-radius: 8px;
+  padding: 2px 8px !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+.leaflet-control-attribution a {
+  color: #2563eb !important;
+  text-decoration: none !important;
+}
+
+.leaflet-control-attribution a:hover {
+  text-decoration: underline !important;
+}
+
+/* Customização dos Pins Médicos */
+.sus-unit-pin-marker {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  cursor: pointer;
+  outline: none;
+}
+
+.sus-unit-pin-marker:hover {
+  transform: translateY(-4px) scale(1.15) !important;
+  z-index: 1000 !important;
+}
+
+.sus-unit-pin-selected {
+  transform: translateY(-6px) scale(1.25) !important;
+  z-index: 2000 !important;
+}
+
+/* Popups em Liquid Glass do SUS Digital */
+.leaflet-popup-content-wrapper {
+  background: rgba(255, 255, 255, 0.94) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border: 1px solid rgba(226, 232, 240, 0.9) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.12), 0 8px 10px -6px rgba(15, 23, 42, 0.06) !important;
+  padding: 0 !important;
+  overflow: hidden;
+}
+
+.leaflet-popup-content {
+  margin: 12px 14px !important;
+  line-height: 1.4 !important;
+  font-size: 12px !important;
+  color: #1e293b !important;
+}
+
+.leaflet-popup-tip-container {
+  display: none !important;
+}
+
+.leaflet-popup-close-button {
+  top: 8px !important;
+  right: 8px !important;
+  color: #64748b !important;
+  font-size: 16px !important;
+  width: 22px !important;
+  height: 22px !important;
+  border-radius: 6px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all 0.15s ease !important;
+}
+
+.leaflet-popup-close-button:hover {
+  background: #f1f5f9 !important;
+  color: #0f172a !important;
+}
+
+/* Tooltip em Liquid Glass do SUS Digital */
+.leaflet-tooltip.susana-tooltip-glass {
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  border: 1px solid rgba(226, 232, 240, 0.92) !important;
+  border-radius: 10px !important;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.14) !important;
+  color: #0f172a !important;
+  padding: 6px 10px !important;
+}
+
+.leaflet-tooltip-top.susana-tooltip-glass:before {
+  border-top-color: rgba(255, 255, 255, 0.95) !important;
 }

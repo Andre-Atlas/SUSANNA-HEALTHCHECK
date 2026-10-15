@@ -242,7 +242,7 @@ export function HistoricoView({ onNavigate, preselectedFilter }: HistoricoViewPr
 
                   {/* Action Buttons Row */}
                   <div className="pt-2 flex flex-wrap items-center gap-3">
-                    {/* Ask Suzanna */}
+                    {/* Ask SUSANNA */}
                     <button
                       onClick={() => onNavigate('assistente', { 
                         prompt: `Pode me explicar os resultados do meu ${item.title} em linguagem simples?` 
@@ -250,7 +250,7 @@ export function HistoricoView({ onNavigate, preselectedFilter }: HistoricoViewPr
                       className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-blue-50 text-[#2563EB] border border-blue-200 hover:bg-blue-100 font-semibold text-xs transition active:scale-[0.98]"
                     >
                       <Sparkles size={14} />
-                      <span>Pedir explicação à Suzanna</span>
+                      <span>Pedir explicação à SUSANNA</span>
                       <ArrowRight size={13} />
                     </button>
 

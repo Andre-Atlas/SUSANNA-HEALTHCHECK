@@ -44,7 +44,7 @@ export function LandingPage({ onEnterApp, onOpenChatDirectly }: LandingPageProps
               className="text-xs sm:text-sm font-semibold text-[#2563EB] hover:text-[#1D4ED8] flex items-center gap-1.5 py-2 px-3 rounded-full hover:bg-blue-50/70 transition"
             >
               <MessageSquare size={16} />
-              <span>Falar com a Suzanna</span>
+              <span>Falar com a SUSANNA</span>
             </button>
             <button
               onClick={onEnterApp}
@@ -79,7 +79,7 @@ export function LandingPage({ onEnterApp, onOpenChatDirectly }: LandingPageProps
               </h1>
 
               <p className="text-base sm:text-lg text-[#5B6B8C] max-w-[54ch] leading-relaxed">
-                Agende consultas, acompanhe exames e tire dúvidas com a Suzanna, assistente de IA que consulta dados atualizados da rede pública da Secretaria de Saúde do DF.
+                Agende consultas, acompanhe exames e tire dúvidas com a SUSANNA, assistente de IA que consulta dados atualizados da rede pública da Secretaria de Saúde do DF.
               </p>
 
               {/* CTAs */}
@@ -182,7 +182,7 @@ export function LandingPage({ onEnterApp, onOpenChatDirectly }: LandingPageProps
                 Pronto para <span className="underline decoration-white/40">começar</span>?
               </h2>
               <p className="text-sm sm:text-base text-blue-100 max-w-lg mx-auto">
-                Entre na plataforma digital do SUS-DF e converse com a Suzanna para tirar suas dúvidas agora mesmo.
+                Entre na plataforma digital do SUS-DF e converse com a SUSANNA para tirar suas dúvidas agora mesmo.
               </p>
               <div className="pt-2">
                 <button
