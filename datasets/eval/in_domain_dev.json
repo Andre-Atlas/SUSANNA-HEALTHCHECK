@@ -1,0 +1,22 @@
+[
+  {"id": "id-dev-01", "query": "Onde fica a UBS 2 de Ceilândia?", "category": "UNIDADE", "expected_keywords": ["ubs", "2", "ceilandia"]},
+  {"id": "id-dev-02", "query": "Qual o horário de funcionamento do postinho da QNM 36?", "category": "UNIDADE", "expected_keywords": ["ubs", "7", "taguatinga"]},
+  {"id": "id-dev-03", "query": "Como agendar consulta pelo aplicativo Meu SUS Digital?", "category": "FAQ", "expected_keywords": ["meu sus digital", "consulta", "agendamento"]},
+  {"id": "id-dev-04", "query": "Onde posso tomar vacina contra gripe em Taguatinga?", "category": "VACINACAO", "expected_keywords": ["taguatinga", "vacina", "ubs"]},
+  {"id": "id-dev-05", "query": "Qual o telefone de emergência do SAMU no DF?", "category": "EMERGENCIA", "expected_keywords": ["samu", "192"]},
+  {"id": "id-dev-06", "query": "Como retirar medicamento de alto custo na farmácia da SES-DF?", "category": "MEDICAMENTO", "expected_keywords": ["alto custo", "farmacia", "ceaf"]},
+  {"id": "id-dev-07", "query": "Quais documentos preciso levar para fazer o Cartão SUS?", "category": "FAQ", "expected_keywords": ["cartao", "sus", "cns", "documentos"]},
+  {"id": "id-dev-08", "query": "A UPA de Samambaia atende casos de urgência 24 horas?", "category": "EMERGENCIA", "expected_keywords": ["upa", "samambaia", "urgencia"]},
+  {"id": "id-dev-09", "query": "Onde tem atendimento de saúde mental infantil pelo CAPS no Recanto das Emas?", "category": "UNIDADE", "expected_keywords": ["caps", "recanto das emas"]},
+  {"id": "id-dev-10", "query": "Como funciona o atendimento de pré-natal e parto no Hospital Materno Infantil de Brasília?", "category": "UNIDADE", "expected_keywords": ["hmib", "parto", "maternidade"]},
+  {"id": "id-dev-11", "query": "Onde fazer teste rápido gratuito de HIV e sífilis no DF?", "category": "SERVICO", "expected_keywords": ["cta", "teste rapido", "hiv"]},
+  {"id": "id-dev-12", "query": "Qual o endereço da Policlínica do Gama?", "category": "UNIDADE", "expected_keywords": ["policlinica", "gama"]},
+  {"id": "id-dev-13", "query": "Tem farmácia popular funcionando na UBS 1 do Paranoá?", "category": "UNIDADE", "expected_keywords": ["ubs", "1", "paranoa", "farmacia"]},
+  {"id": "id-dev-14", "query": "Onde posso ser atendido por picada de escorpião ou cobra em Brasília?", "category": "EMERGENCIA", "expected_keywords": ["hran", "peconhentos", "soro"]},
+  {"id": "id-dev-15", "query": "Como conseguir remédio fitoterápico pelas Farmácias Vivas da rede pública do DF?", "category": "MEDICAMENTO", "expected_keywords": ["farmacias vivas", "fitoterapicos"]},
+  {"id": "id-dev-16", "query": "Qual posto de saúde atende os moradores de Sobradinho II?", "category": "UNIDADE", "expected_keywords": ["sobradinho", "ubs"]},
+  {"id": "id-dev-17", "query": "O que fazer quando perdi meu comprovante de vacinação?", "category": "FAQ", "expected_keywords": ["comprovante", "vacinacao", "meu sus digital"]},
+  {"id": "id-dev-18", "query": "Como funciona a regulação de consultas com especialistas pelo SISREG?", "category": "SERVICO", "expected_keywords": ["regulacao", "sisreg", "consulta"]},
+  {"id": "id-dev-19", "query": "Onde tem atendimento de acupuntura e práticas integrativas na rede pública?", "category": "SERVICO", "expected_keywords": ["praticas integrativas", "pisp"]},
+  {"id": "id-dev-20", "query": "Qual o horário do pronto socorro do Hospital Regional de Taguatinga?", "category": "UNIDADE", "expected_keywords": ["hrt", "hospital regional", "taguatinga"]}
+]
