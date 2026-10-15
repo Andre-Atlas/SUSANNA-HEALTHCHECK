@@ -143,7 +143,7 @@ Para assegurar confiabilidade e evitar desvios de escopo, o produto opera sob re
 
 1. **Escopo Territorial Restrito:** Atendimento focado exclusivamente na estrutura do SUS no Distrito Federal (SES-DF).
 2. **Vedação Clínica Absoluta:** O produto não emite pareceres médicos, laudos ou recomendações terapêuticas individualizadas.
-3. **Vedação Transacional no MVP:** A Susana não realiza o agendamento direto de consultas em sistemas legados do Ministério da Saúde (como SISREG ou e-SUS PEC), orientando o cidadão sobre o fluxo presencial de acolhimento e regulação.
+3. **Vedação Transacional:** A Susana não realiza o agendamento direto de consultas em sistemas legados do Ministério da Saúde (como SISREG ou e-SUS PEC), orientando o cidadão sobre o fluxo presencial de acolhimento e regulação. A **agenda pessoal** da versão final (seção 7) é apenas um lembrete do próprio cidadão e não marca nada em sistemas oficiais.
 4. **Governança de Fontes Oficiais:** O sistema recusa-se a conjeturar quando a informação não estiver disponível no Corpus auditado (*fail-closed*).
 
 ---
@@ -156,3 +156,40 @@ A qualidade do produto é avaliada continuamente por três ordens de indicadores
 * **Segurança e Bloqueio Ético:** 0 prescrições indevidas emitidas, com tempo de bloqueio de consultas de risco clínico abaixo de 10 milissegundos.
 * **Transparência de Fontes:** 100% das respostas RAG acompanhadas de citação oficial resolvida.
 * **Resolução Anafórica e Territorial:** Retenção correta do contexto espacial do Distrito Federal em diálogos multi-turn.
+
+---
+
+## 7. Descrição Final do Produto (Versão Entregue)
+
+A versão final mantém o assistente como porta de entrada e acrescenta uma camada **opcional** de personalização. O cidadão pode usar tudo sem se identificar; criar uma conta apenas amplia o que a Susana consegue fazer por ele.
+
+### 7.1 O que o produto entrega
+
+| Frente | O que o cidadão encontra |
+| :--- | :--- |
+| **Assistente (chat)** | Perguntas em linguagem natural sobre unidades, vacinas, medicamentos e fluxos do SUS-DF, com streaming, fontes oficiais com link e bloqueio de pedidos clínicos |
+| **Mapa de unidades** | 383 unidades de saúde nas regiões administrativas, com busca e filtros; com a localização do aparelho, ordena por distância e mostra "você está aqui" |
+| **Guia de vacinação** | Calendário do PNI por ciclo de vida e recomendações por idade e perfil |
+| **Monitoramento** | Painel epidemiológico com dados oficiais, com atalho para perguntar à Susana sobre cada indicador |
+| **Conta opcional** | Cadastro em três passos (só nome, CPF e senha são obrigatórios), login com "Lembrar de mim", perfil de saúde editável e exclusão de conta |
+| **Agenda pessoal** | Vacinas pendentes calculadas pelo perfil, calendário mensal e lembretes de consultas, exames, vacinas e medicamentos; avisos no aplicativo e, com permissão, no navegador |
+| **Lembretes pelo chat** | "Marca consulta no dentista terça às 14h" gera um cartão editável que só entra na agenda depois de o cidadão confirmar |
+
+### 7.2 Como a privacidade foi tratada
+
+* **Sem conta, sem dados pessoais:** o histórico de conversa de visitantes fica só no navegador.
+* **Minimização:** o modelo de linguagem recebe apenas faixa etária, sexo biológico, condições declaradas, região e vacinas pendentes. Nunca CPF, telefone, nome completo, data exata de nascimento ou coordenadas.
+* **Localização no aparelho:** a permissão é pedida ao cidadão, as coordenadas não vão ao servidor, que guarda no máximo a região escolhida.
+* **Controle do titular:** edição dos dados, troca de senha, saída de todos os aparelhos e exclusão da conta, que apaga perfil, agenda, registros de vacina e conversas.
+
+### 7.3 Personas e a versão final
+
+* **Camila (mãe e cuidadora):** sem conta, consulta o guia do PNI por faixa etária (ex.: criança) e os documentos para vacinar o filho. As vacinas pendentes calculadas na agenda valem para o **titular da conta**; contas de dependentes não existem nesta versão e ficam como evolução futura.
+* **Seu Raimundo (idoso crônico):** com conta e a condição declarada, vê influenza e pneumocócica como pendências, pode marcá-las como tomadas e pede lembretes de consultas pelo chat.
+* **Felipe (trabalhador autônomo):** usa sem conta para achar a UBS mais próxima e o horário estendido; cria a conta apenas se quiser lembretes.
+
+### 7.4 Indicadores da versão final
+
+* Suíte automatizada do backend com **151 testes**; compilação de produção do frontend sem erros de tipagem.
+* Bateria histórica de 18 cenários de homologação aprovada pela equipe (script não versionado).
+* Implantação em contêineres (Docker Compose + Caddy) documentada para a Oracle Cloud Always Free; a validação em produção está em andamento.

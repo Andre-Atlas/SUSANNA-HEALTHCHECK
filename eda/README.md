@@ -26,3 +26,9 @@ Este diretório reúne as análises exploratórias que subsidiaram as decisões 
 * **Dependências:** `pandas`, `numpy`, `plotly`, `scipy`, `pyarrow`.
 
 > A célula inicial do notebook menciona também "Exames de Internação", mas essa base não é carregada nas células seguintes.
+
+---
+
+## 🔗 Relação com o restante do repositório
+
+Os notebooks desta pasta são a versão organizada para entrega. Versões de trabalho anteriores (incluindo a avaliação do modelo de guardrails) estão em [`notebooks/`](../notebooks/), e os scripts que os geram em [`scripts/notebooks/`](../scripts/notebooks/).

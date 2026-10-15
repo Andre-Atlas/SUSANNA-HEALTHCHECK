@@ -1,50 +1,62 @@
 # Código-Fonte da Aplicação — SUSANA
 
-Área estruturada para a esteira e versionamento do código-fonte da solução **SUSANA (Meu SUS Brasília)**.
+O código funcional da solução **SUSANA (SUS Digital — Meu SUS Brasília)** está versionado neste mesmo repositório, nas pastas abaixo. Esta página é o mapa entre os entregáveis da Residência e o código.
+
+* **Repositório:** [github.com/Andre-Atlas/SUSANNA-HEALTHCHECK](https://github.com/Andre-Atlas/SUSANNA-HEALTHCHECK)
 
 ---
 
-## 📦 Arquitetura dos Módulos
+## 📦 Estrutura
 
-### 1. `backend/` (API FastAPI & Mecanismo de IA)
-* **Framework:** FastAPI com suporte assíncrono e execução local em Python 3.11+.
-* **Motor RAG Híbrido:** Integração vetorial densa (`paraphrase-multilingual-MiniLM-L12-v2` no **ChromaDB**) e busca léxica esparsa (**BM25 Okapi** com tokenizador em saúde e toponímia do DF).
-* **Algoritmo de Fusão:** **RRF (Reciprocal Rank Fusion)** com constante $k=60$ e limiares de relevância semântica.
-* **Salvaguardas Clínicas:** Guardrail supervisionado treinado via Scikit-Learn e governado no **MLflow** (`@champion`), complementado por regex emergencial para interceptação de risco em $< 10\text{ ms}$.
-* **Validador Anti-Alucinação:** Sanitização pós-geração que bloqueia emissão de receitas médicas e restringe contatos telefônicos estritamente aos canais oficiais (160, 136, 192).
-* **Persistência Relacional:** SQLite em modo **WAL (Write-Ahead Logging)** com concorrência thread-safe para gestão de cidadãos e multi-sessões.
+| Pasta | Conteúdo |
+| :--- | :--- |
+| [`susana_rag_backend/`](../susana_rag_backend/) | API FastAPI, pipeline RAG, guardrails, cadastro, agenda, vacinas, unidades, monitoramento e testes |
+| [`susana-ui/`](../susana-ui/) | Interface Next.js 16 (App Router) com React 19 e Tailwind CSS v4 |
+| [`scripts/`](../scripts/) | Scripts de análise, geração de documentos/notebooks e implantação (`deploy_oci.sh`) |
+| [`docs/`](../docs/) | Arquitetura, MLOps, build e execução, guia de implantação na Oracle Cloud |
+| [`docker-compose.yml`](../docker-compose.yml), [`Caddyfile`](../Caddyfile) | Orquestração dos contêineres e proxy HTTPS |
 
-### 2. `frontend/` (Interface Conversacional Next.js)
-* **Framework:** Next.js 16 (App Router) empacotado via Turbopack com React 19 e TypeScript.
-* **Estilização e Identidade Visual:** Tailwind CSS v4 com tokens de design *Liquid Blue* e *Liquid Glassmorphism*.
-* **Streaming Fluido:** Renderização em tempo real de tokens via NDJSON/SSE com suporte a cancelamento de requisição (`AbortController`).
-* **Componentes Especializados:**
-  - Mascote visual acolhedora com micro-animações.
-  - Dropdowns retráteis de citação de fontes oficiais governamentais com links resolvidos.
-  - Chips de navegação rápida e opções contextuais para reduzir a barreira de digitação do cidadão.
-  - Mapa interativo vetorial SVG das unidades de saúde por Região Administrativa.
+### Backend (`susana_rag_backend/app/`)
 
-### 3. `scripts/` (Automação, Avaliação e Ingestão)
-* **`run_automated_eval.py`:** Bateria de testes automatizados ponta a ponta avaliando 18 cenários contra a API em execução (100% de aprovação).
-* **`index_corpus.py`:** Script standalone para descoberta recursiva e indexação do corpus no ChromaDB e no índice BM25.
-* **`train.py` (Guardrails):** Pipeline de treino e validação cruzada 5-Fold Stratified com logging automático de métricas no MLflow.
+| Módulo | Responsabilidade |
+| :--- | :--- |
+| `rag/` | NLU e toponímia do DF, `ChromaRetriever` (busca vetorial, filtro por RA, casamento lexical e reordenação por regras), guardrails clínicos, cache semântico e busca online restrita a domínios oficiais |
+| `llm/` | Adaptador do Ollama (Llama 3.1 8B), prompts e contexto de perfil sem dados identificáveis |
+| `routers_stream.py` | Chat em streaming NDJSON, incluindo propostas de agenda confirmadas pelo cidadão |
+| `citizen/` | Cadastro opcional, login por CPF e senha, sessões persistentes, perfil e exclusão de conta |
+| `chat_sessions/` | Histórico de conversas por titular |
+| `agenda/` | Eventos, lembretes, interpretação de datas em português e detecção de pedidos de agendamento |
+| `vaccines/` | Guia do PNI e cálculo de vacinas pendentes por perfil |
+| `units/` | Diretório de 383 unidades de saúde do DF (servidas por `/api/units`), construído a partir do diretório por região e das unidades especializadas, com deduplicação |
+| `surveillance/` | Monitoramento epidemiológico com dados oficiais |
+| `ingestion/` | Webhook autenticado de ingestão contínua de documentos |
+
+### Frontend (`susana-ui/src/`)
+
+* `app/page.tsx`: casca da aplicação (landing, navegação por abas e assistente).
+* `components/Auth/`: cadastro em etapas, login e perfil. `components/Agenda/`: calendário, lembretes e vacinas pendentes. `components/Chat/`: cartão de confirmação de lembretes. `components/UnitsMap/` e `components/Surveillance/`: mapa de unidades e painel epidemiológico.
+* `context/`: estado de autenticação, agenda e localização (as coordenadas ficam só no aparelho).
 
 ---
 
-## 🧪 Comandos Rápidos de Execução e Testes
+## 🧪 Comandos de Execução e Teste
 
 ```bash
-# Execução da suíte de 97 testes unitários do backend
+# Backend: ambiente, testes (151) e servidor
 cd susana_rag_backend
-source .venv/bin/activate
-pytest tests/ -v
+python3 -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+pytest tests/
+python -m uvicorn app.main:app --host 0.0.0.0 --port 8000
 
-# Execução do benchmark automatizado de homologação (18 cenários)
-python scripts/run_automated_eval.py
-
-# Build de produção do frontend Next.js
+# Frontend: compilação de produção e servidor de desenvolvimento
 cd ../susana-ui
+npm install
 npm run build
+npm run dev
 ```
 
-*Nota: O código-fonte funcional e homologado encontra-se preservado na branch `homologacao` e será transferido progressivamente conforme validação da banca avaliadora.*
+* O LLM precisa do Ollama em execução (`ollama pull llama3.1:8b`). Sem ele, o chat devolve os trechos oficiais recuperados.
+* Benchmarks de recuperação e de modelos ficam em `susana_rag_backend/ml/` (ex.: `ml/retrieval/eval_honest_benchmark.py`).
+* Detalhes de setup, portas e variáveis de ambiente: [`docs/BUILD_E_EXECUCAO.md`](../docs/BUILD_E_EXECUCAO.md).
+* Implantação na Oracle Cloud (Docker Compose + HTTPS): [`docs/GUIA_DEPLOY_ORACLE_CLOUD.md`](../docs/GUIA_DEPLOY_ORACLE_CLOUD.md).

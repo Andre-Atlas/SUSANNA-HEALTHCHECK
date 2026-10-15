@@ -19,7 +19,7 @@ A equipe foi dimensionada para cobrir ponta a ponta o ciclo de desenvolvimento d
 
 | Membro | Papel Scrum Principal | Áreas de Atuação e Responsabilidades |
 | :--- | :--- | :--- |
-| **André Alves Acioli** | **Engenheiro de IA & MLOps** | Arquitetura RAG Híbrido (ChromaDB + BM25 Okapi com RRF), pipeline de embeddings, inferência local Ollama (Llama 3.1 8B), tracking e model registry no MLflow, guardrails clínicos. |
+| **André Alves Acioli** | **Engenheiro de IA & MLOps** | Arquitetura RAG (ChromaDB + filtro por RA e regras lexicais), pipeline de embeddings, inferência local Ollama (Llama 3.1 8B), tracking e model registry no MLflow, guardrails clínicos. |
 | **Samuel de Souza Rodrigues** | **Engenheiro de Software (Fullstack)** | Desenvolvimento da API FastAPI assíncrona, streaming de tokens via NDJSON, interface Next.js 16 (App Router / Tailwind), gerenciador de sessões e componentes visuais. |
 | **Ingrid Hanna Nóbrega** | **Product Owner & Validação Clínica** | Curadoria das fontes oficiais da SES-DF e Ministério da Saúde, elaboração de requisitos e personas, condução de entrevistas de campo e garantia de conformidade ética e LGPD. |
 | **Guilherme Barros Jr.** | **Cientista de Dados & Scrum Master** | Facilitação dos rituais ágeis, gestão do quadro Kanban no Trello, análises exploratórias de dados (EDAs de vacinação e cartilha), cálculo de correlações e benchmarks. |
@@ -38,12 +38,12 @@ A equipe foi dimensionada para cobrir ponta a ponta o ciclo de desenvolvimento d
 | Curadoria e Saneamento do Corpus Oficial | C | I | **A** | **R** |
 | Análises Exploratórias de Dados (EDAs) | C | I | C | **A/R** |
 | Engenharia de NLU e Toponímia do DF | **A/R** | **R** | C | I |
-| Pipeline RAG Híbrido (ChromaDB + BM25) | **A/R** | C | I | I |
+| Pipeline RAG (ChromaDB + regras lexicais) | **A/R** | C | I | I |
 | Treinamento e Promoção de Guardrails (MLflow) | **A/R** | I | C | C |
 | API FastAPI, Streaming e Persistência SQLite | C | **A/R** | I | I |
 | Frontend Next.js 16 e Acessibilidade | I | **A/R** | C | I |
-| Validação de Segurança Clínica e Anti-Alucinação | **R** | **R** | **A** | **R** |
-| Bateria de Testes Automatizados (18 Cenários) | **A/R** | **R** | C | **R** |
+| Validação de Segurança Clínica e Aterramento nas Fontes | **R** | **R** | **A** | **R** |
+| Bateria de Testes Automatizados (suíte do backend e 18 cenários) | **A/R** | **R** | C | **R** |
 | Documentação e Portfólio de Entrega Final | **R** | **R** | **A** | **R** |
 
 ---
@@ -68,7 +68,7 @@ gantt
     API FastAPI & Interface Next.js :2026-09-28, 2026-10-09
     Validação Cruzada & MLflow :2026-10-02, 2026-10-09
     section Sprint 4 • Showcase
-    Benchmark Automatizado (18 Cenários) :2026-10-12, 2026-10-16
+    Benchmark e Testes Automatizados :2026-10-12, 2026-10-16
     Auditoria de Qualidade do Corpus :2026-10-12, 2026-10-15
     Congelamento da Branch & Vídeo Pitch :2026-10-14, 2026-10-16
 ```
@@ -84,24 +84,26 @@ gantt
 * **Objetivo:** Investigar dados, fontes oficiais e necessidades reais dos cidadãos do SUS-DF.
 * **Principais Entregas:**
   - 3 Notebooks de EDA: Carta de Serviços da SES-DF, séries temporais de vacinação na APS e bases do Meu SUS Digital.
-  - Documento de [Visão do Produto](file:///Users/aluno2/SUSANA/produto/visao_do_produto.md) com 4 personas (Camila, Seu Raimundo, Felipe e usuário clínico).
+  - Documento de [Visão do Produto](../produto/visao_do_produto.md) com 4 personas (Camila, Seu Raimundo, Felipe e usuário clínico).
   - Especificação formal de requisitos: 15 Requisitos Funcionais (RF) e 12 Requisitos Não Funcionais (RNF).
   - Coleta inicial e catalogação de bases abertas (InfoSaúde-DF, DATASUS, CNES).
 
 ### Sprint 3: Act (Semanas 4–5 • 28/09 a 09/10)
 * **Objetivo:** Desenvolver o protótipo funcional integrado com IA local e salvaguardas clínicas.
 * **Principais Entregas:**
-  - Pipeline de RAG Híbrido: vetorização densa com `paraphrase-multilingual-MiniLM-L12-v2` no ChromaDB e busca esparsa BM25 Okapi com fusão via RRF ($k=60$).
+  - Pipeline de RAG: vetorização densa com `paraphrase-multilingual-MiniLM-L12-v2` no ChromaDB, filtro por Região Administrativa, casamento lexical de termos/entidades e reordenação por regras.
   - Guardrail de segurança clínica com 5-Fold Stratified Cross-Validation registrado no MLflow (`@champion`) e regex de interceptação emergencial em $< 10\text{ ms}$.
   - Backend assíncrono em FastAPI com endpoint `/api/chat/stream` em NDJSON.
   - Frontend Next.js 16 com Mascote 3D, design tokens acessíveis e visualização de evidências oficiais.
-  - Implementação do validador anti-alucinação limitando telefones aos canais 160, 136 e 192.
+  - Aterramento no corpus oficial e resposta padrão de ausência de informação quando não há evidência relevante.
 
 ### Sprint 4: Showcase & Refinamento (Semana 6 • 12/10 a 16/10)
 * **Objetivo:** Validação experimental, auditoria de qualidade, congelamento do portfólio e preparação para apresentação.
 * **Principais Entregas:**
-  - Bateria de testes automatizados ponta a ponta (`run_automated_eval.py`): 100% de aprovação (18/18 cenários).
-  - Suíte de 97 testes unitários do backend passando integralmente (`pytest tests/`).
+  - Suíte de **151 testes** do backend passando integralmente (`pytest tests/`), incluindo cadastro/sessões, agenda, vacinas e isolamento entre usuários.
+  - Bateria de 18 cenários ponta a ponta executada na homologação (18/18 aprovados; o script não está versionado, ver relatório técnico).
+  - Cadastro opcional com login persistente, agenda com lembretes criados pelo chat (com confirmação), vacinas pendentes por perfil e monitoramento epidemiológico.
+  - Pacote de implantação (Docker Compose, Caddy, guia Oracle Cloud); validação em produção em andamento.
   - Auditoria profunda do corpus (identificação e documentação de 2.283 blocos reais, limitações de links e saneamento).
   - Estruturação limpa da branch `entrega-final` no GitHub.
 
@@ -112,7 +114,7 @@ gantt
 1. **Daily Standups Assíncronas & Síncronas:** Alinhamento diário rápido de 15 minutos cobrindo: *o que foi feito ontem, o que será feito hoje e impedimentos identificados*.
 2. **Sprint Planning:** Definição da meta da sprint, quebra de tarefas técnicas e estimativa de esforço relativo.
 3. **Sprint Review:** Demonstração funcional do assistente respondendo a casos de teste com medição de latência e conferência de fontes.
-4. **Retrospectiva Contínua:** Ajustes imediatos de rumo (ex.: inclusão da Busca Léxica BM25 quando a busca densa falhou em nomes exatos de medicamentos).
+4. **Retrospectiva Contínua:** Ajustes imediatos de rumo (ex.: inclusão do casamento lexical de termos e entidades quando a busca densa falhou em nomes exatos de medicamentos e em unidades numeradas).
 
 ---
 

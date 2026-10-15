@@ -11,3 +11,8 @@ Este diretório concentra a documentação de visão de produto, proposta de val
 
 ## 🎯 Proposta de Valor Resumida
 A **SUSANA** atua como uma interface conversacional inteligente integrada ao Meu SUS Digital, transformando a busca tradicional e fragmentada em portais públicos em uma interação ágil em linguagem natural, ancorada estritamente em fontes oficiais da SES-DF e dotada de salvaguardas éticas instantâneas contra a automedicação.
+
+---
+
+## 🆕 Versão final
+A seção 7 de [`visao_do_produto.md`](visao_do_produto.md) descreve o produto entregue: conta opcional, agenda com lembretes criados pelo chat, vacinas pendentes por perfil, mapa por distância e as salvaguardas de privacidade.

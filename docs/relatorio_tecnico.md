@@ -163,10 +163,10 @@ A inspeção qualitativa das predições divergentes na partição de teste inde
 1. **Falsos Negativos Clínicos (Ex: *"Posso tomar ibuprofeno com losartana?"* e *"Dor abdominal forte"*):**
    * *Diagnóstico:* Ocorreram devido à ausência desses termos anatômicos e farmacológicos específicos no conjunto reduzido de 42 amostras de treino;
    * *Mitigação 1 (Treinamento de Produção):* A pipeline final foi ajustada sobre 100% dos dados rotulados, expandindo o vocabulário e eliminando esses pontos cegos;
-   * *Mitigação 2 (Defesa em Profundidade com Regex):* Caso o modelo estatístico produza probabilidade abaixo de 0.50 para uma frase nunca vista, o sistema aciona a segunda camada: a regra [`CLINICAL_PATTERNS`](file:///Users/aluno2/SUSANA/susana_rag_backend/app/rag/guardrails.py#L24) (que intercepta expressões como *"posso tomar"*, *"sinto dor"*, *"como curar"*).
+   * *Mitigação 2 (Defesa em Profundidade com Regex):* Caso o modelo estatístico produza probabilidade abaixo de 0.50 para uma frase nunca vista, o sistema aciona a segunda camada: a regra [`CLINICAL_PATTERNS`](../susana_rag_backend/app/rag/guardrails.py#L24) (que intercepta expressões como *"posso tomar"*, *"sinto dor"*, *"como curar"*).
 2. **Falsos Positivos Administrativos (Ex: *"Quais documentos preciso para pegar remédio na farmácia popular?"*):**
    * *Diagnóstico:* A presença da palavra *"remédio"* desloca a probabilidade clínica para 0.540, gerando um bloqueio indevido no modelo puro;
-   * *Mitigação Arquitetural:* A aplicação implementa a regra prioritária [`ADMINISTRATIVE_OVERRIDES`](file:///Users/aluno2/SUSANA/susana_rag_backend/app/rag/guardrails.py#L32), que reconhece termos como *"farmácia popular"*, *"documentos"* ou *"horário"*, liberando o fluxo antes mesmo da avaliação estatística.
+   * *Mitigação Arquitetural:* A aplicação implementa a regra prioritária [`ADMINISTRATIVE_OVERRIDES`](../susana_rag_backend/app/rag/guardrails.py#L32), que reconhece termos como *"farmácia popular"*, *"documentos"* ou *"horário"*, liberando o fluxo antes mesmo da avaliação estatística.
 
 #### 3. Auditoria em Tempo Real de Consultas RAG
 Além do guardrail, o MLflow mantém o experimento ativo `susana-rag` (ID: `1`), registrando a telemetria de todas as consultas que chegam à Susana: latência total, tempo de geração do LLM e a distância semântica euclidiana ao documento mais próximo no ChromaDB. Isso fecha o ciclo completo de observabilidade de IA (MLOps + LLMOps).

@@ -8,7 +8,7 @@ Consulte o detalhamento completo em [Metodologia e Sprints](metodologia_e_sprint
 
 ## 👥 Papéis e Integrantes da Equipe
 
-* **André Alves Acioli:** Engenharia de IA & MLOps (RAG Híbrido, ChromaDB, BM25 Okapi, Ollama/Llama 3.1, MLflow e Guardrails Clínicos).
+* **André Alves Acioli:** Engenharia de IA & MLOps (RAG, ChromaDB, Ollama/Llama 3.1, MLflow e Guardrails Clínicos).
 * **Samuel de Souza Rodrigues:** Engenharia de Software Fullstack (API FastAPI assíncrona, Streaming NDJSON, interface Next.js 16 e persistência).
 * **Ingrid Hanna Nóbrega:** Product Owner & Validação Clínica (Curadoria das fontes oficiais da SES-DF/MS, requisitos, personas e conformidade LGPD).
 * **Guilherme Barros Jr.:** Ciência de Dados & Scrum Master (Facilitação ágil, quadro Kanban no Trello, análises exploratórias de dados e estatísticas).

@@ -24,3 +24,9 @@ O inventário completo, com origem, qualidade e pendências de cada arquivo, est
 * O diretório por região tem **346 blocos** (70 UBS, 33 regiões), e não 346 unidades.
 
 > ⚠️ Antes da apresentação, consulte a [seção 7 do catálogo](catalogo_do_corpus.md#7-pendências-de-qualidade-antes-da-apresentação): há arquivos de teste e de exemplo dentro de `corpus/` e links de origem do diretório que retornam 404.
+
+---
+
+## 🔗 Relação com o código
+
+Esta pasta é a **cópia de entrega** dos dados. A aplicação lê o corpus de [`susana_rag_backend/data/corpus/`](../susana_rag_backend/data/corpus/) (e o diretório de unidades de `diretorio_saude_df.json` e `unidades_especializadas_df.json`, que servem as 383 unidades do mapa) e mantém as bases brutas do projeto em [`CORPUS/`](../CORPUS/). Se o corpus mudar, atualize as duas cópias.

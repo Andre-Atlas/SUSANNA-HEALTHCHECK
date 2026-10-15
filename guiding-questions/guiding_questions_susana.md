@@ -35,7 +35,7 @@ Para assegurar alinhamento integral com o framework CBL (Nichols & Cator, *Chall
 2. **Dupla Matriz de Classificação:**
    - **Eixo CBL:** Identificação da contribuição de cada pergunta nas fases de *Engage* (Problema/Usuário), *Investigate* (Dados/Fontes/Arquitetura) e *Act* (Governança/Produção/Solução).
    - **Eixo Ágil (Trello):** Manutenção explícita das faixas *RESPONDER JÁ*, *PLANEJAR*, *SE SOBRAR TEMPO* e *CORTAR SEM DÓ*.
-3. **Formalização das Perguntas Complementares da Equipe (Identificadas com tag [COMPLEMENTAR]):** Foram introduzidas 6 questões que sintetizam os aprendizados das semanas 4, 5 e 6 do projeto (Busca Híbrida BM25+RRF, Segurança Clínica Fail-Closed, Toponímia do DF, LGPD e limites de integração governamental).
+3. **Formalização das Perguntas Complementares da Equipe (Identificadas com tag [COMPLEMENTAR]):** Foram introduzidas 6 questões que sintetizam os aprendizados das semanas 4, 5 e 6 do projeto (Recuperação com regras lexicais, Segurança Clínica Fail-Closed, Toponímia do DF, LGPD e limites de integração governamental).
 4. **Estrutura Pedagógica Padronizada por Pergunta:** Cada questão apresenta:
    - *Pergunta Oficial*;
    - *Etapa CBL & Label Temático*;
@@ -61,8 +61,8 @@ Para assegurar alinhamento integral com o framework CBL (Nichols & Cator, *Chall
 ### D. Roadmap & Cronograma Executado
 * **Semana 1 (Engage • 07/09 a 11/09):** Investigação de casos reais de desinformação, formulação das Guiding Questions iniciais e exploração dos dados abertos de saúde.
 * **Semanas 2-3 (Investigate • 14/09 a 25/09):** Definição do produto (Chatbot SUSANA), divisão dos papéis Scrum, EDA dos dados do SUS e auditoria de fontes oficiais (SES-DF / Ministério da Saúde).
-* **Semanas 4-5 (Act • 28/09 a 09/10):** Construção da arquitetura RAG Híbrida (BM25 + ChromaDB), engenharia de Guardrails Clínicos e desenvolvimento da interface.
-* **Semana 6 (Showcase • 12/10 a 16/10):** Execução do benchmark automatizado (18/18 testes aprovados), consolidação do repositório final e produção do vídeo pitch.
+* **Semanas 4-5 (Act • 28/09 a 09/10):** Construção da arquitetura RAG (ChromaDB com filtro por RA e regras lexicais), engenharia de Guardrails Clínicos e desenvolvimento da interface.
+* **Semana 6 (Showcase • 12/10 a 16/10):** Execução da bateria de homologação (18/18 cenários aprovados, registro histórico) e da suíte de 151 testes, consolidação do repositório final e produção do vídeo pitch.
 
 ---
 
@@ -244,12 +244,12 @@ Para assegurar alinhamento integral com o framework CBL (Nichols & Cator, *Chall
 
 ---
 
-#### GQ 2.11 [COMPLEMENTAR] — Busca Híbrida: BM25 Okapi + ChromaDB com RRF
+#### GQ 2.11 [COMPLEMENTAR] — Busca Vetorial Complementada por Regras Lexicais
 * **Pergunta:** *Por que buscas exclusivamente semânticas falham em nomes exatos de remédios e siglas do SUS, e como resolver essa lacuna?*
 * **Fase CBL:** `Act` | **Label:** `MODELO` 🟣
 * **Objetivo Investigativo:** Otimizar o pipeline de recuperação de informação para termos específicos da farmacopeia e legislação de saúde pública.
 * **Resposta & Evidências no SUSANA:**  
-  Implementação de **Busca Híbrida com Reciprocal Rank Fusion (RRF, k=60)**, combinando a representação densa do modelo multilingue com o índice esparso BM25 Okapi. Isso garantiu 100% de precisão em termos como *Dolutegravir*, *Tenofovir*, *LME* e *PCDT*.
+  A busca vetorial multilíngue do ChromaDB foi complementada por **casamento lexical de entidades numeradas e termos raros** (siglas e princípios ativos como *LME* e *PCDT*) e por **reordenação por regras** (RA, entidade, título e sobreposição de termos). A hipótese inicial de uma fusão BM25 + RRF foi avaliada como alternativa, **mas não foi implementada**; permanece como melhoria futura (`docs/production-readiness-plan.md`).
 
 ---
 
@@ -258,7 +258,7 @@ Para assegurar alinhamento integral com o framework CBL (Nichols & Cator, *Chall
 * **Fase CBL:** `Act` | **Label:** `PRODUÇÃO` ⚫
 * **Objetivo Investigativo:** Adequar a arquitetura técnica às exigências da Lei Geral de Proteção de Dados Pessoais (Lei nº 13.709/2018).
 * **Resposta & Evidências no SUSANA:**  
-  Toda a computação de inferência de linguagem e busca vetorial ocorre **on-premises / localmente** na infraestrutura do backend, sem envio de conversas para APIs comerciais fechadas fora do país, com sessões anônimas efêmeras.
+  Toda a computação de inferência de linguagem e busca vetorial ocorre **on-premises / localmente** na infraestrutura do backend, sem envio de conversas para APIs comerciais fechadas fora do país. Na versão final o uso continua possível **sem conta** (histórico de visitantes só no navegador); com conta opcional, os dados ficam no servidor do projeto, com senha protegida por hash, exclusão a pedido do titular e **sem envio de CPF, telefone ou nome ao modelo** (ver `requisitos/` RNF-13 a RNF-15).
 
 ---
 
@@ -346,7 +346,7 @@ Para assegurar alinhamento integral com o framework CBL (Nichols & Cator, *Chall
 | **Card #20**| Governança federativa multi-hospitalar | **Cortada com Justificativa** | Risco burocrático; foco estratégico mantido exclusivamente no DF. |
 | **NOVA 1** | Salvaguarda Clínica Fail-Closed (<10ms) | **Adicionada pela Equipe** | Proteção contra automedicação e garantia de segurança do paciente. |
 | **NOVA 2** | Desambiguação da Toponímia do DF | **Adicionada pela Equipe** | Resolução de regionalismos de Brasília (RAs, quadras e setores). |
-| **NOVA 3** | Busca Híbrida BM25 + ChromaDB (RRF) | **Adicionada pela Equipe** | Superação da falha vetorial em termos exatos de remédios (LME/PCDT). |
+| **NOVA 3** | Recuperação vetorial + regras lexicais | **Adicionada pela Equipe** | Mitigação da falha vetorial em termos exatos de remédios (LME/PCDT); BM25 + RRF ficou como melhoria futura. |
 | **NOVA 4** | Privacidade e Conformidade LGPD | **Adicionada pela Equipe** | Garantia de inferência local sem vazamento de dados de cidadãos. |
 | **NOVA 5** | Arquitetura Omnichannel (WhatsApp) | **Adicionada pela Equipe** | Planejamento da evolução do motor para canais de mensageria. |
 | **NOVA 6** | Agendamento Direto no SISREG | **Adicionada e Cortada** | Delimitação consciente: manter foco na orientação de acolhimento. |
