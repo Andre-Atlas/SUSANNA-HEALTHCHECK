@@ -1,0 +1,12 @@
+sources:
+  - {url: "https://www.saude.df.gov.br/ubs", tag: UNIDADE, title: "Unidades Básicas de Saúde"}
+  - {url: "https://www.saude.df.gov.br/atencao-primaria", tag: UNIDADE, title: "Atenção Primária à Saúde"}
+  - {url: "https://www.saude.df.gov.br/hospitais", tag: UNIDADE, title: "Hospitais Regionais"}
+  - {url: "https://www.saude.df.gov.br/vacinacao", tag: VACINACAO, title: "Vacinação no DF"}
+  - {url: "https://www.saude.df.gov.br/salas-de-vacina", tag: VACINACAO, title: "Salas de vacina"}
+  - {url: "https://www.saude.df.gov.br/componente-especializado", tag: SERVICO, title: "Farmácia de Alto Custo (CEAF)"}
+  - {url: "https://www.saude.df.gov.br/farmacia-popular", tag: SERVICO, title: "Farmácia Popular"}
+  - {url: "https://www.saude.df.gov.br/samu", tag: EMERGENCIA, title: "SAMU 192"}
+  - {url: "https://www.saude.df.gov.br/ouvidoria", tag: INSTITUCIONAL, title: "Ouvidoria SES-DF"}
+  - {url: "https://www.gov.br/saude/pt-br/acesso-a-informacao/acoes-e-programas/cns", tag: SERVICO, title: "Cartão Nacional de Saúde"}
+  - {url: "https://www.gov.br/saude/pt-br/vacinacao/calendario", tag: VACINACAO, title: "Calendário Nacional de Vacinação"}

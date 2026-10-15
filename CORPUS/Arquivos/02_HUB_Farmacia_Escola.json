@@ -1,0 +1,470 @@
+{
+  "schema_version": "1.0.0",
+  "document": {
+    "source_id": "hub-farmacia-escola",
+    "source_title": "Farmácia Escola — Hospital Universitário de Brasília (HUB-UnB / EBSERH)",
+    "source_file": "02_HUB_Farmacia_Escola.md",
+    "source_url": "https://www.gov.br/hubrasil/pt-br/hospitais-universitarios/regiao-centro-oeste/hub-unb/saude/farmacia-escola",
+    "source_version": null,
+    "captured_at": null,
+    "reference_date_original": "01/10/2026 às 16:57",
+    "review_status": "pending",
+    "ingestion_status": "review_required",
+    "quality_notes": [
+      "Estoque e operacao sao temporarios; verificar a fonte oficial na data da consulta.",
+      "Elencos e orientacoes clinicas nao estao aprovados para uso automatico."
+    ],
+    "language": "pt-BR",
+    "original_sha256": "4e124834f29848a8d5a40504715abe687ced415f8498c87d22a8b806d5baae3a",
+    "original_line_count": 174
+  },
+  "original_markdown": "# Farmácia Escola — Hospital Universitário de Brasília (HUB-UnB / EBSERH)\n> **Endereço da Página Oficial:** [Farmácia Escola - HUB / EBSERH](https://www.gov.br/hubrasil/pt-br/hospitais-universitarios/regiao-centro-oeste/hub-unb/saude/farmacia-escola)  \n> **Data de Última Verificação:** 01/10/2026 às 16:57\n> **Finalidade:** Dispensação ambulatorial especializada de medicamentos para usuários de todo o DF e programas estratégicos pactuados com o Ministério da Saúde e a Secretaria de Saúde do DF (SES-DF).\n\n---\n\n## 🚨 Status Crítico e Alertas de Falta / Disponibilidade\n\n> [!WARNING]\n> ### MEDICAMENTOS / PRODUTOS EM FALTA\n> **Última atualização registrada na unidade:** 11/09/2026\n> - ❌ **Ciclofosfamida**\n> - ❌ **Dapsona**\n> \n> *Recomenda-se aos pacientes e responsáveis que façam contato prévio antes do comparecimento para checar reposições.*\n\n> [!IMPORTANT]\n> ### AVISO DE OBRAS E ACESSO\n> O acesso de pedestres via **Avenida L2 Norte está temporariamente fechado** em razão de reformas no prédio da unidade.  \n> **O acesso está sendo realizado exclusivamente pela entrada lateral.**\n\n---\n\n## ⏰ Horários de Funcionamento e Atendimento\n\n| Serviço | Horário / Regras |\n|---|---|\n| **Funcionamento Geral** | Segunda a sexta-feira, das **07:00 às 19:00** (exceto feriados e pontos facultativos) |\n| **Distribuição de Senhas - Turno Matutino** | **07:30 às 12:00** (ou até atingir a capacidade máxima diária) |\n| **Distribuição de Senhas - Turno Vespertino** | **13:30 às 18:00** (ou até atingir a capacidade máxima diária) |\n| **Canal de Comunicação Oficial** | E-mail: **`UFCD.HUB-UNB@EBSERH.GOV.BR`** |\n\n---\n\n## 💊 Relação de Programas e Medicamentos Dispensados\n\nA Farmácia Escola do HUB não atua como uma farmácia de atenção básica comum, mas sim como polo estratégico para programas específicos:\n\n### 1. Profilaxia Pré-Exposição ao HIV (PrEP)\n- Atendimento a usuários em acompanhamento para prevenção do HIV.\n- Documentos obrigatórios:\n  - Documento de identidade com foto e Cartão SUS.\n  - Formulário de Cadastramento de Usuários SUS - PrEP.\n  - Ficha de Atendimento para PrEP preenchida pelo serviço de saúde de origem.\n\n### 2. Terapia Antirretroviral (TARV - HIV/Aids)\n- Atendimento a pacientes de **todo o Distrito Federal**.\n- Exigência: Apresentação do Formulário de Solicitação de Medicamentos Antirretrovirais (emitido por médico assistente) e exames de acompanhamento.\n- **Fármacos do Elenco:**\n  - Abacavir 300 mg comprimido e 20 mg/mL solução oral\n  - Atazanavir 200 mg e 300 mg comprimido\n  - Darunavir 600 mg comprimido\n  - Didanosina entérica 400 mg cápsula\n  - Dolutegravir 50 mg comprimido\n  - Efavirenz 600 mg comprimido\n  - Estavudina 30 mg cápsula\n  - Etravirina 100 mg comprimido\n  - Fosamprenavir 700 mg comprimido\n  - Lamivudina 150 mg comprimido e 10 mg/mL solução oral\n  - Lopinavir + Ritonavir (100+25 mg, 200+50 mg e solução oral 80+20 mg/mL)\n  - Nevirapina 200 mg comprimido\n  - Raltegravir 400 mg comprimido\n  - Ritonavir 100 mg comprimido\n  - Saquinavir 200 mg cápsula\n  - Tenofovir 300 mg comprimido\n  - Tenofovir 300 mg + Lamivudina 150 mg (2 em 1)\n  - Efavirenz 600 mg + Tenofovir 300 mg + Lamivudina 150 mg (3 em 1)\n  - Tipranavir 250 mg cápsula\n  - Zidovudina 100 mg cápsula e 10 mg/mL solução oral\n  - Zidovudina + Lamivudina 300+150 mg comprimido\n\n### 3. Insulinas Análogas (Diabetes Melito Tipo 1 e Tipo 2)\n- Atendimento para pacientes de todo o Distrito Federal.\n- **Medicamentos:**\n  - Insulina Glargina\n  - Insulina Detemir\n  - Insulina Ultra-Rápida (Asparte / Lispro / Glulisina)\n- **Documentação Exigida:**\n  - Formulário de Inclusão ou Formulário de Continuidade emitido pela SES-DF e assinado por médico autorizador credenciado.\n  - Termo de Esclarecimento e Responsabilidade assinado.\n  - Renovação periódica obrigatória a cada **6 meses**.\n\n### 4. Cirurgia Bariátrica\n- Destinado a pacientes operados e acompanhados no **HUB** e no **Hospital Regional da Asa Norte (HRAN)**.\n- Receita emitida por médico cadastrado na SES-DF.\n- **Itens Fornecidos:**\n  - Citrato de Cálcio 500 mg + Colecalciferol 200 UI (Sachê)\n  - Cianocobalamina (Vitamina B12) 500 mcg/mL 2 mL injetável\n  - Polivitaminas + Poliminerais (Frascos)\n  - Ferro Quelato comprimido\n\n### 5. Tuberculose (Casos Especiais e Resistência)\n- Estreptomicina 1 g pó para solução injetável\n- Etambutol 400 mg comprimido\n- Etionamida 400 mg comprimido\n\n### 6. Epidermólise Bolhosa\n- Programa de apoio integral com curativos especiais e insumos de proteção:\n  - Ácido Ascórbico 200 mg/mL solução oral (100 mL)\n  - Ácido Poliacrílico (Viscotears) 10 g gel oftálmico\n  - Ácidos Graxos Essenciais com TCM (Dersani ou similar) 200 mL\n  - Atadura Auto-Adesiva e Ataduras de Crepom (10x30 cm e 20x30 cm)\n  - Cloreto de Sódio 0,9% frascos 250 mL\n  - Cloreto de Sódio 0,9% + Cloreto de Benzalcônio gotas nasais\n  - Colagenase 50 g pomada\n  - Compressa de gaze estéril 7,5x7,5 cm\n  - Dexametasona 1% creme 10 g\n  - Hipromelose 0,003 g colírio 15 mL\n  - Protetor Solar hipoalergênico FPS 15 e FPS 30\n  - Mupirocina 20 mg/g pomada 15 g\n\n### 7. Hanseníase e Tratamento com Talidomida\n- Blister Multibacilar (Adulto e Infantil)\n- Blister Paucibacilar (Adulto e Infantil)\n- Clofazimina 50 mg e 100 mg cápsulas\n- Minociclina 100 mg comprimido\n- Ofloxacino 400 mg cápsula\n- Pentoxifilina 400 mg comprimido\n- Prednisona 5 mg e 20 mg comprimido\n- **Talidomida:** Dispensação com controle especial severo (conforme RDC ANVISA nº 11/2011). Exige Notificação de Receita Especial em duas vias e Termo de Consentimento Pós-Informação. Validade da receita: **20 dias**.\n\n### 8. Oncologia Ambulatorial Oral\n- Medicamentos antineoplásicos orais e hormonoterápicos para pacientes regulados:\n  - Anastrozol 1 mg\n  - Bicalutamida 50 mg\n  - Capecitabina 150 mg e 500 mg\n  - Ciclofosfamida 50 mg *(atualmente em monitoramento de falta)*\n  - Clorambucila 2 mg\n  - Dasatinibe 100 mg\n  - Filgrastim 300 µg/0,5 mL seringa injetável\n  - Fulvestranto 250 mg injetável\n  - Gosserrelina 10,8 mg implante\n  - Hidroxiuréia 500 mg\n  - Mesilato de Imatinibe 100 mg e 400 mg\n  - Letrozol 2,5 mg\n  - Mercaptopurina 50 mg\n  - Metotrexato 2,5 mg comprimido\n  - Nilotinibe 200 mg cápsula\n  - Tamoxifeno 20 mg comprimido\n\n---\n\n## 📋 Orientações ao Paciente\n\n### Armazenamento e Transporte:\n- Mantenha sempre os produtos na embalagem original (onde constam lote, validade e instruções do fabricante).\n- Medicamentos termolábeis (como **insulinas** e **filgrastim**) exigem transporte em caixa térmica com gelo reciclável (gelox) sem contato direto com a ampola/frasco, e devem ser armazenados na geladeira (entre 2°C e 8°C, nunca no congelador).\n- Medicamentos secos devem ficar ao abrigo de luz solar, umidade e calor excessivo, fora do alcance de crianças e animais.\n\n### Administração Segura:\n- Nunca altere a dosagem ou interrompa o tratamento sem consentimento médico.\n- Comprimidos e cápsulas de liberação modificada, drágeas ou revestidos não devem ser triturados, mastigados ou abertos sem orientação de farmacêutico.\n\n---\n\n## 🩺 Orientações aos Profissionais Prescritores\n\n1. **Antimicrobianos:** Receitas devem ser preenchidas em duas vias, com identificação completa do paciente, posologia, dosagem e carimbo com CRM do médico.\n2. **Antirretrovirais (TARV):** Formulário padronizado pelo Ministério da Saúde devidamente preenchido e assinado, com justificativa clínica em caso de troca de esquema.\n3. **Insulinas:** Laudo médico e Formulário da SES-DF específico para DM1/DM2 assinado por prescritor autorizado.\n4. **Talidomida:** Obediência irrestrita à RDC nº 11/2011, preenchimento dos cadastros no SINAV (Sistema Nacional de Agravos) e termo de consentimento para mulheres em idade fértil.\n\n---\n\n## 🔄 Automação e Atualização Periódica\n\nPara manter este documento sincronizado com eventuais novos alertas de falta de insumos publicados pelo HUB, utilize o script automatizado criado no projeto:\n\n```bash\n# Executar a atualização da Farmácia Escola\npython3 /Users/aluno2/.gemini/antigravity/scratch/farmacos_df/atualizar_hub_farmacia_escola.py\n```\nO script checa o portal da EBSERH/HUB, identifica mudanças no quadro de faltas e regenera este arquivo `.md`.\n",
+  "records": [
+    {
+      "record_id": "hub-farmacia-escola:table:L27:L29",
+      "source_id": "hub-farmacia-escola",
+      "section": "Farmácia Escola — Hospital Universitário de Brasília (HUB-UnB / EBSERH) > ⏰ Horários de Funcionamento e Atendimento",
+      "table_id": "hub-farmacia-escola:table:L27",
+      "line_start": 29,
+      "line_end": 29,
+      "raw_row": "| **Funcionamento Geral** | Segunda a sexta-feira, das **07:00 às 19:00** (exceto feriados e pontos facultativos) |",
+      "headers_original": [
+        "Serviço",
+        "Horário / Regras"
+      ],
+      "cells_original": [
+        "**Funcionamento Geral**",
+        "Segunda a sexta-feira, das **07:00 às 19:00** (exceto feriados e pontos facultativos)"
+      ],
+      "parse_status": "columns_aligned_unverified",
+      "review_status": "pending",
+      "validation_status": "not_validated_against_authoritative_source",
+      "fields_original": {
+        "Serviço": "**Funcionamento Geral**",
+        "Horário / Regras": "Segunda a sexta-feira, das **07:00 às 19:00** (exceto feriados e pontos facultativos)"
+      }
+    },
+    {
+      "record_id": "hub-farmacia-escola:table:L27:L30",
+      "source_id": "hub-farmacia-escola",
+      "section": "Farmácia Escola — Hospital Universitário de Brasília (HUB-UnB / EBSERH) > ⏰ Horários de Funcionamento e Atendimento",
+      "table_id": "hub-farmacia-escola:table:L27",
+      "line_start": 30,
+      "line_end": 30,
+      "raw_row": "| **Distribuição de Senhas - Turno Matutino** | **07:30 às 12:00** (ou até atingir a capacidade máxima diária) |",
+      "headers_original": [
+        "Serviço",
+        "Horário / Regras"
+      ],
+      "cells_original": [
+        "**Distribuição de Senhas - Turno Matutino**",
+        "**07:30 às 12:00** (ou até atingir a capacidade máxima diária)"
+      ],
+      "parse_status": "columns_aligned_unverified",
+      "review_status": "pending",
+      "validation_status": "not_validated_against_authoritative_source",
+      "fields_original": {
+        "Serviço": "**Distribuição de Senhas - Turno Matutino**",
+        "Horário / Regras": "**07:30 às 12:00** (ou até atingir a capacidade máxima diária)"
+      }
+    },
+    {
+      "record_id": "hub-farmacia-escola:table:L27:L31",
+      "source_id": "hub-farmacia-escola",
+      "section": "Farmácia Escola — Hospital Universitário de Brasília (HUB-UnB / EBSERH) > ⏰ Horários de Funcionamento e Atendimento",
+      "table_id": "hub-farmacia-escola:table:L27",
+      "line_start": 31,
+      "line_end": 31,
+      "raw_row": "| **Distribuição de Senhas - Turno Vespertino** | **13:30 às 18:00** (ou até atingir a capacidade máxima diária) |",
+      "headers_original": [
+        "Serviço",
+        "Horário / Regras"
+      ],
+      "cells_original": [
+        "**Distribuição de Senhas - Turno Vespertino**",
+        "**13:30 às 18:00** (ou até atingir a capacidade máxima diária)"
+      ],
+      "parse_status": "columns_aligned_unverified",
+      "review_status": "pending",
+      "validation_status": "not_validated_against_authoritative_source",
+      "fields_original": {
+        "Serviço": "**Distribuição de Senhas - Turno Vespertino**",
+        "Horário / Regras": "**13:30 às 18:00** (ou até atingir a capacidade máxima diária)"
+      }
+    },
+    {
+      "record_id": "hub-farmacia-escola:table:L27:L32",
+      "source_id": "hub-farmacia-escola",
+      "section": "Farmácia Escola — Hospital Universitário de Brasília (HUB-UnB / EBSERH) > ⏰ Horários de Funcionamento e Atendimento",
+      "table_id": "hub-farmacia-escola:table:L27",
+      "line_start": 32,
+      "line_end": 32,
+      "raw_row": "| **Canal de Comunicação Oficial** | E-mail: **`UFCD.HUB-UNB@EBSERH.GOV.BR`** |",
+      "headers_original": [
+        "Serviço",
+        "Horário / Regras"
+      ],
+      "cells_original": [
+        "**Canal de Comunicação Oficial**",
+        "E-mail: **`UFCD.HUB-UNB@EBSERH.GOV.BR`**"
+      ],
+      "parse_status": "columns_aligned_unverified",
+      "review_status": "pending",
+      "validation_status": "not_validated_against_authoritative_source",
+      "fields_original": {
+        "Serviço": "**Canal de Comunicação Oficial**",
+        "Horário / Regras": "E-mail: **`UFCD.HUB-UNB@EBSERH.GOV.BR`**"
+      }
+    }
+  ],
+  "chunks": [
+    {
+      "chunk_id": "hub-farmacia-escola:L2-L4",
+      "text": "Fonte: hub-farmacia-escola\nSecao: Farmácia Escola — Hospital Universitário de Brasília (HUB-UnB / EBSERH)\n\n> **Endereço da Página Oficial:** [Farmácia Escola - HUB / EBSERH](https://www.gov.br/hubrasil/pt-br/hospitais-universitarios/regiao-centro-oeste/hub-unb/saude/farmacia-escola)  \n> **Data de Última Verificação:** 01/10/2026 às 16:57\n> **Finalidade:** Dispensação ambulatorial especializada de medicamentos para usuários de todo o DF e programas estratégicos pactuados com o Ministério da Saúde e a Secretaria de Saúde do DF (SES-DF).",
+      "content_original": "> **Endereço da Página Oficial:** [Farmácia Escola - HUB / EBSERH](https://www.gov.br/hubrasil/pt-br/hospitais-universitarios/regiao-centro-oeste/hub-unb/saude/farmacia-escola)  \n> **Data de Última Verificação:** 01/10/2026 às 16:57\n> **Finalidade:** Dispensação ambulatorial especializada de medicamentos para usuários de todo o DF e programas estratégicos pactuados com o Ministério da Saúde e a Secretaria de Saúde do DF (SES-DF).\n",
+      "metadata": {
+        "source_id": "hub-farmacia-escola",
+        "section": "Farmácia Escola — Hospital Universitário de Brasília (HUB-UnB / EBSERH)",
+        "line_start": 2,
+        "line_end": 4,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "hub-farmacia-escola:L6-L6",
+      "text": "Fonte: hub-farmacia-escola\nSecao: Farmácia Escola — Hospital Universitário de Brasília (HUB-UnB / EBSERH)\n\n---",
+      "content_original": "---\n",
+      "metadata": {
+        "source_id": "hub-farmacia-escola",
+        "section": "Farmácia Escola — Hospital Universitário de Brasília (HUB-UnB / EBSERH)",
+        "line_start": 6,
+        "line_end": 6,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "hub-farmacia-escola:L10-L16",
+      "text": "Fonte: hub-farmacia-escola\nSecao: Farmácia Escola — Hospital Universitário de Brasília (HUB-UnB / EBSERH) > 🚨 Status Crítico e Alertas de Falta / Disponibilidade\n\n> [!WARNING]\n> ### MEDICAMENTOS / PRODUTOS EM FALTA\n> **Última atualização registrada na unidade:** 11/09/2026\n> - ❌ **Ciclofosfamida**\n> - ❌ **Dapsona**\n> \n> *Recomenda-se aos pacientes e responsáveis que façam contato prévio antes do comparecimento para checar reposições.*",
+      "content_original": "> [!WARNING]\n> ### MEDICAMENTOS / PRODUTOS EM FALTA\n> **Última atualização registrada na unidade:** 11/09/2026\n> - ❌ **Ciclofosfamida**\n> - ❌ **Dapsona**\n> \n> *Recomenda-se aos pacientes e responsáveis que façam contato prévio antes do comparecimento para checar reposições.*\n",
+      "metadata": {
+        "source_id": "hub-farmacia-escola",
+        "section": "Farmácia Escola — Hospital Universitário de Brasília (HUB-UnB / EBSERH) > 🚨 Status Crítico e Alertas de Falta / Disponibilidade",
+        "line_start": 10,
+        "line_end": 16,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "hub-farmacia-escola:L18-L21",
+      "text": "Fonte: hub-farmacia-escola\nSecao: Farmácia Escola — Hospital Universitário de Brasília (HUB-UnB / EBSERH) > 🚨 Status Crítico e Alertas de Falta / Disponibilidade\n\n> [!IMPORTANT]\n> ### AVISO DE OBRAS E ACESSO\n> O acesso de pedestres via **Avenida L2 Norte está temporariamente fechado** em razão de reformas no prédio da unidade.  \n> **O acesso está sendo realizado exclusivamente pela entrada lateral.**",
+      "content_original": "> [!IMPORTANT]\n> ### AVISO DE OBRAS E ACESSO\n> O acesso de pedestres via **Avenida L2 Norte está temporariamente fechado** em razão de reformas no prédio da unidade.  \n> **O acesso está sendo realizado exclusivamente pela entrada lateral.**\n",
+      "metadata": {
+        "source_id": "hub-farmacia-escola",
+        "section": "Farmácia Escola — Hospital Universitário de Brasília (HUB-UnB / EBSERH) > 🚨 Status Crítico e Alertas de Falta / Disponibilidade",
+        "line_start": 18,
+        "line_end": 21,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "hub-farmacia-escola:L23-L23",
+      "text": "Fonte: hub-farmacia-escola\nSecao: Farmácia Escola — Hospital Universitário de Brasília (HUB-UnB / EBSERH) > 🚨 Status Crítico e Alertas de Falta / Disponibilidade\n\n---",
+      "content_original": "---\n",
+      "metadata": {
+        "source_id": "hub-farmacia-escola",
+        "section": "Farmácia Escola — Hospital Universitário de Brasília (HUB-UnB / EBSERH) > 🚨 Status Crítico e Alertas de Falta / Disponibilidade",
+        "line_start": 23,
+        "line_end": 23,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "hub-farmacia-escola:L29-L29",
+      "text": "Fonte: hub-farmacia-escola\nSecao: Farmácia Escola — Hospital Universitário de Brasília (HUB-UnB / EBSERH) > ⏰ Horários de Funcionamento e Atendimento\n\nCabecalhos da tabela: Serviço | Horário / Regras\nLinha da tabela: | **Funcionamento Geral** | Segunda a sexta-feira, das **07:00 às 19:00** (exceto feriados e pontos facultativos) |",
+      "content_original": "Cabecalhos da tabela: Serviço | Horário / Regras\nLinha da tabela: | **Funcionamento Geral** | Segunda a sexta-feira, das **07:00 às 19:00** (exceto feriados e pontos facultativos) |",
+      "metadata": {
+        "source_id": "hub-farmacia-escola",
+        "section": "Farmácia Escola — Hospital Universitário de Brasília (HUB-UnB / EBSERH) > ⏰ Horários de Funcionamento e Atendimento",
+        "line_start": 29,
+        "line_end": 29,
+        "content_type": "table_row",
+        "record_id": "hub-farmacia-escola:table:L27:L29",
+        "table_id": "hub-farmacia-escola:table:L27",
+        "parse_status": "columns_aligned_unverified"
+      }
+    },
+    {
+      "chunk_id": "hub-farmacia-escola:L30-L30",
+      "text": "Fonte: hub-farmacia-escola\nSecao: Farmácia Escola — Hospital Universitário de Brasília (HUB-UnB / EBSERH) > ⏰ Horários de Funcionamento e Atendimento\n\nCabecalhos da tabela: Serviço | Horário / Regras\nLinha da tabela: | **Distribuição de Senhas - Turno Matutino** | **07:30 às 12:00** (ou até atingir a capacidade máxima diária) |",
+      "content_original": "Cabecalhos da tabela: Serviço | Horário / Regras\nLinha da tabela: | **Distribuição de Senhas - Turno Matutino** | **07:30 às 12:00** (ou até atingir a capacidade máxima diária) |",
+      "metadata": {
+        "source_id": "hub-farmacia-escola",
+        "section": "Farmácia Escola — Hospital Universitário de Brasília (HUB-UnB / EBSERH) > ⏰ Horários de Funcionamento e Atendimento",
+        "line_start": 30,
+        "line_end": 30,
+        "content_type": "table_row",
+        "record_id": "hub-farmacia-escola:table:L27:L30",
+        "table_id": "hub-farmacia-escola:table:L27",
+        "parse_status": "columns_aligned_unverified"
+      }
+    },
+    {
+      "chunk_id": "hub-farmacia-escola:L31-L31",
+      "text": "Fonte: hub-farmacia-escola\nSecao: Farmácia Escola — Hospital Universitário de Brasília (HUB-UnB / EBSERH) > ⏰ Horários de Funcionamento e Atendimento\n\nCabecalhos da tabela: Serviço | Horário / Regras\nLinha da tabela: | **Distribuição de Senhas - Turno Vespertino** | **13:30 às 18:00** (ou até atingir a capacidade máxima diária) |",
+      "content_original": "Cabecalhos da tabela: Serviço | Horário / Regras\nLinha da tabela: | **Distribuição de Senhas - Turno Vespertino** | **13:30 às 18:00** (ou até atingir a capacidade máxima diária) |",
+      "metadata": {
+        "source_id": "hub-farmacia-escola",
+        "section": "Farmácia Escola — Hospital Universitário de Brasília (HUB-UnB / EBSERH) > ⏰ Horários de Funcionamento e Atendimento",
+        "line_start": 31,
+        "line_end": 31,
+        "content_type": "table_row",
+        "record_id": "hub-farmacia-escola:table:L27:L31",
+        "table_id": "hub-farmacia-escola:table:L27",
+        "parse_status": "columns_aligned_unverified"
+      }
+    },
+    {
+      "chunk_id": "hub-farmacia-escola:L32-L32",
+      "text": "Fonte: hub-farmacia-escola\nSecao: Farmácia Escola — Hospital Universitário de Brasília (HUB-UnB / EBSERH) > ⏰ Horários de Funcionamento e Atendimento\n\nCabecalhos da tabela: Serviço | Horário / Regras\nLinha da tabela: | **Canal de Comunicação Oficial** | E-mail: **`UFCD.HUB-UNB@EBSERH.GOV.BR`** |",
+      "content_original": "Cabecalhos da tabela: Serviço | Horário / Regras\nLinha da tabela: | **Canal de Comunicação Oficial** | E-mail: **`UFCD.HUB-UNB@EBSERH.GOV.BR`** |",
+      "metadata": {
+        "source_id": "hub-farmacia-escola",
+        "section": "Farmácia Escola — Hospital Universitário de Brasília (HUB-UnB / EBSERH) > ⏰ Horários de Funcionamento e Atendimento",
+        "line_start": 32,
+        "line_end": 32,
+        "content_type": "table_row",
+        "record_id": "hub-farmacia-escola:table:L27:L32",
+        "table_id": "hub-farmacia-escola:table:L27",
+        "parse_status": "columns_aligned_unverified"
+      }
+    },
+    {
+      "chunk_id": "hub-farmacia-escola:L34-L34",
+      "text": "Fonte: hub-farmacia-escola\nSecao: Farmácia Escola — Hospital Universitário de Brasília (HUB-UnB / EBSERH) > ⏰ Horários de Funcionamento e Atendimento\n\n---",
+      "content_original": "---\n",
+      "metadata": {
+        "source_id": "hub-farmacia-escola",
+        "section": "Farmácia Escola — Hospital Universitário de Brasília (HUB-UnB / EBSERH) > ⏰ Horários de Funcionamento e Atendimento",
+        "line_start": 34,
+        "line_end": 34,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "hub-farmacia-escola:L38-L38",
+      "text": "Fonte: hub-farmacia-escola\nSecao: Farmácia Escola — Hospital Universitário de Brasília (HUB-UnB / EBSERH) > 💊 Relação de Programas e Medicamentos Dispensados\n\nA Farmácia Escola do HUB não atua como uma farmácia de atenção básica comum, mas sim como polo estratégico para programas específicos:",
+      "content_original": "A Farmácia Escola do HUB não atua como uma farmácia de atenção básica comum, mas sim como polo estratégico para programas específicos:\n",
+      "metadata": {
+        "source_id": "hub-farmacia-escola",
+        "section": "Farmácia Escola — Hospital Universitário de Brasília (HUB-UnB / EBSERH) > 💊 Relação de Programas e Medicamentos Dispensados",
+        "line_start": 38,
+        "line_end": 38,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "hub-farmacia-escola:L41-L45",
+      "text": "Fonte: hub-farmacia-escola\nSecao: Farmácia Escola — Hospital Universitário de Brasília (HUB-UnB / EBSERH) > 💊 Relação de Programas e Medicamentos Dispensados > 1. Profilaxia Pré-Exposição ao HIV (PrEP)\n\n- Atendimento a usuários em acompanhamento para prevenção do HIV.\n- Documentos obrigatórios:\n  - Documento de identidade com foto e Cartão SUS.\n  - Formulário de Cadastramento de Usuários SUS - PrEP.\n  - Ficha de Atendimento para PrEP preenchida pelo serviço de saúde de origem.",
+      "content_original": "- Atendimento a usuários em acompanhamento para prevenção do HIV.\n- Documentos obrigatórios:\n  - Documento de identidade com foto e Cartão SUS.\n  - Formulário de Cadastramento de Usuários SUS - PrEP.\n  - Ficha de Atendimento para PrEP preenchida pelo serviço de saúde de origem.\n",
+      "metadata": {
+        "source_id": "hub-farmacia-escola",
+        "section": "Farmácia Escola — Hospital Universitário de Brasília (HUB-UnB / EBSERH) > 💊 Relação de Programas e Medicamentos Dispensados > 1. Profilaxia Pré-Exposição ao HIV (PrEP)",
+        "line_start": 41,
+        "line_end": 45,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "hub-farmacia-escola:L48-L71",
+      "text": "Fonte: hub-farmacia-escola\nSecao: Farmácia Escola — Hospital Universitário de Brasília (HUB-UnB / EBSERH) > 💊 Relação de Programas e Medicamentos Dispensados > 2. Terapia Antirretroviral (TARV - HIV/Aids)\n\n- Atendimento a pacientes de **todo o Distrito Federal**.\n- Exigência: Apresentação do Formulário de Solicitação de Medicamentos Antirretrovirais (emitido por médico assistente) e exames de acompanhamento.\n- **Fármacos do Elenco:**\n  - Abacavir 300 mg comprimido e 20 mg/mL solução oral\n  - Atazanavir 200 mg e 300 mg comprimido\n  - Darunavir 600 mg comprimido\n  - Didanosina entérica 400 mg cápsula\n  - Dolutegravir 50 mg comprimido\n  - Efavirenz 600 mg comprimido\n  - Estavudina 30 mg cápsula\n  - Etravirina 100 mg comprimido\n  - Fosamprenavir 700 mg comprimido\n  - Lamivudina 150 mg comprimido e 10 mg/mL solução oral\n  - Lopinavir + Ritonavir (100+25 mg, 200+50 mg e solução oral 80+20 mg/mL)\n  - Nevirapina 200 mg comprimido\n  - Raltegravir 400 mg comprimido\n  - Ritonavir 100 mg comprimido\n  - Saquinavir 200 mg cápsula\n  - Tenofovir 300 mg comprimido\n  - Tenofovir 300 mg + Lamivudina 150 mg (2 em 1)\n  - Efavirenz 600 mg + Tenofovir 300 mg + Lamivudina 150 mg (3 em 1)\n  - Tipranavir 250 mg cápsula\n  - Zidovudina 100 mg cápsula e 10 mg/mL solução oral\n  - Zidovudina + Lamivudina 300+150 mg comprimido",
+      "content_original": "- Atendimento a pacientes de **todo o Distrito Federal**.\n- Exigência: Apresentação do Formulário de Solicitação de Medicamentos Antirretrovirais (emitido por médico assistente) e exames de acompanhamento.\n- **Fármacos do Elenco:**\n  - Abacavir 300 mg comprimido e 20 mg/mL solução oral\n  - Atazanavir 200 mg e 300 mg comprimido\n  - Darunavir 600 mg comprimido\n  - Didanosina entérica 400 mg cápsula\n  - Dolutegravir 50 mg comprimido\n  - Efavirenz 600 mg comprimido\n  - Estavudina 30 mg cápsula\n  - Etravirina 100 mg comprimido\n  - Fosamprenavir 700 mg comprimido\n  - Lamivudina 150 mg comprimido e 10 mg/mL solução oral\n  - Lopinavir + Ritonavir (100+25 mg, 200+50 mg e solução oral 80+20 mg/mL)\n  - Nevirapina 200 mg comprimido\n  - Raltegravir 400 mg comprimido\n  - Ritonavir 100 mg comprimido\n  - Saquinavir 200 mg cápsula\n  - Tenofovir 300 mg comprimido\n  - Tenofovir 300 mg + Lamivudina 150 mg (2 em 1)\n  - Efavirenz 600 mg + Tenofovir 300 mg + Lamivudina 150 mg (3 em 1)\n  - Tipranavir 250 mg cápsula\n  - Zidovudina 100 mg cápsula e 10 mg/mL solução oral\n  - Zidovudina + Lamivudina 300+150 mg comprimido\n",
+      "metadata": {
+        "source_id": "hub-farmacia-escola",
+        "section": "Farmácia Escola — Hospital Universitário de Brasília (HUB-UnB / EBSERH) > 💊 Relação de Programas e Medicamentos Dispensados > 2. Terapia Antirretroviral (TARV - HIV/Aids)",
+        "line_start": 48,
+        "line_end": 71,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "hub-farmacia-escola:L74-L82",
+      "text": "Fonte: hub-farmacia-escola\nSecao: Farmácia Escola — Hospital Universitário de Brasília (HUB-UnB / EBSERH) > 💊 Relação de Programas e Medicamentos Dispensados > 3. Insulinas Análogas (Diabetes Melito Tipo 1 e Tipo 2)\n\n- Atendimento para pacientes de todo o Distrito Federal.\n- **Medicamentos:**\n  - Insulina Glargina\n  - Insulina Detemir\n  - Insulina Ultra-Rápida (Asparte / Lispro / Glulisina)\n- **Documentação Exigida:**\n  - Formulário de Inclusão ou Formulário de Continuidade emitido pela SES-DF e assinado por médico autorizador credenciado.\n  - Termo de Esclarecimento e Responsabilidade assinado.\n  - Renovação periódica obrigatória a cada **6 meses**.",
+      "content_original": "- Atendimento para pacientes de todo o Distrito Federal.\n- **Medicamentos:**\n  - Insulina Glargina\n  - Insulina Detemir\n  - Insulina Ultra-Rápida (Asparte / Lispro / Glulisina)\n- **Documentação Exigida:**\n  - Formulário de Inclusão ou Formulário de Continuidade emitido pela SES-DF e assinado por médico autorizador credenciado.\n  - Termo de Esclarecimento e Responsabilidade assinado.\n  - Renovação periódica obrigatória a cada **6 meses**.\n",
+      "metadata": {
+        "source_id": "hub-farmacia-escola",
+        "section": "Farmácia Escola — Hospital Universitário de Brasília (HUB-UnB / EBSERH) > 💊 Relação de Programas e Medicamentos Dispensados > 3. Insulinas Análogas (Diabetes Melito Tipo 1 e Tipo 2)",
+        "line_start": 74,
+        "line_end": 82,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "hub-farmacia-escola:L85-L91",
+      "text": "Fonte: hub-farmacia-escola\nSecao: Farmácia Escola — Hospital Universitário de Brasília (HUB-UnB / EBSERH) > 💊 Relação de Programas e Medicamentos Dispensados > 4. Cirurgia Bariátrica\n\n- Destinado a pacientes operados e acompanhados no **HUB** e no **Hospital Regional da Asa Norte (HRAN)**.\n- Receita emitida por médico cadastrado na SES-DF.\n- **Itens Fornecidos:**\n  - Citrato de Cálcio 500 mg + Colecalciferol 200 UI (Sachê)\n  - Cianocobalamina (Vitamina B12) 500 mcg/mL 2 mL injetável\n  - Polivitaminas + Poliminerais (Frascos)\n  - Ferro Quelato comprimido",
+      "content_original": "- Destinado a pacientes operados e acompanhados no **HUB** e no **Hospital Regional da Asa Norte (HRAN)**.\n- Receita emitida por médico cadastrado na SES-DF.\n- **Itens Fornecidos:**\n  - Citrato de Cálcio 500 mg + Colecalciferol 200 UI (Sachê)\n  - Cianocobalamina (Vitamina B12) 500 mcg/mL 2 mL injetável\n  - Polivitaminas + Poliminerais (Frascos)\n  - Ferro Quelato comprimido\n",
+      "metadata": {
+        "source_id": "hub-farmacia-escola",
+        "section": "Farmácia Escola — Hospital Universitário de Brasília (HUB-UnB / EBSERH) > 💊 Relação de Programas e Medicamentos Dispensados > 4. Cirurgia Bariátrica",
+        "line_start": 85,
+        "line_end": 91,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "hub-farmacia-escola:L94-L96",
+      "text": "Fonte: hub-farmacia-escola\nSecao: Farmácia Escola — Hospital Universitário de Brasília (HUB-UnB / EBSERH) > 💊 Relação de Programas e Medicamentos Dispensados > 5. Tuberculose (Casos Especiais e Resistência)\n\n- Estreptomicina 1 g pó para solução injetável\n- Etambutol 400 mg comprimido\n- Etionamida 400 mg comprimido",
+      "content_original": "- Estreptomicina 1 g pó para solução injetável\n- Etambutol 400 mg comprimido\n- Etionamida 400 mg comprimido\n",
+      "metadata": {
+        "source_id": "hub-farmacia-escola",
+        "section": "Farmácia Escola — Hospital Universitário de Brasília (HUB-UnB / EBSERH) > 💊 Relação de Programas e Medicamentos Dispensados > 5. Tuberculose (Casos Especiais e Resistência)",
+        "line_start": 94,
+        "line_end": 96,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "hub-farmacia-escola:L99-L111",
+      "text": "Fonte: hub-farmacia-escola\nSecao: Farmácia Escola — Hospital Universitário de Brasília (HUB-UnB / EBSERH) > 💊 Relação de Programas e Medicamentos Dispensados > 6. Epidermólise Bolhosa\n\n- Programa de apoio integral com curativos especiais e insumos de proteção:\n  - Ácido Ascórbico 200 mg/mL solução oral (100 mL)\n  - Ácido Poliacrílico (Viscotears) 10 g gel oftálmico\n  - Ácidos Graxos Essenciais com TCM (Dersani ou similar) 200 mL\n  - Atadura Auto-Adesiva e Ataduras de Crepom (10x30 cm e 20x30 cm)\n  - Cloreto de Sódio 0,9% frascos 250 mL\n  - Cloreto de Sódio 0,9% + Cloreto de Benzalcônio gotas nasais\n  - Colagenase 50 g pomada\n  - Compressa de gaze estéril 7,5x7,5 cm\n  - Dexametasona 1% creme 10 g\n  - Hipromelose 0,003 g colírio 15 mL\n  - Protetor Solar hipoalergênico FPS 15 e FPS 30\n  - Mupirocina 20 mg/g pomada 15 g",
+      "content_original": "- Programa de apoio integral com curativos especiais e insumos de proteção:\n  - Ácido Ascórbico 200 mg/mL solução oral (100 mL)\n  - Ácido Poliacrílico (Viscotears) 10 g gel oftálmico\n  - Ácidos Graxos Essenciais com TCM (Dersani ou similar) 200 mL\n  - Atadura Auto-Adesiva e Ataduras de Crepom (10x30 cm e 20x30 cm)\n  - Cloreto de Sódio 0,9% frascos 250 mL\n  - Cloreto de Sódio 0,9% + Cloreto de Benzalcônio gotas nasais\n  - Colagenase 50 g pomada\n  - Compressa de gaze estéril 7,5x7,5 cm\n  - Dexametasona 1% creme 10 g\n  - Hipromelose 0,003 g colírio 15 mL\n  - Protetor Solar hipoalergênico FPS 15 e FPS 30\n  - Mupirocina 20 mg/g pomada 15 g\n",
+      "metadata": {
+        "source_id": "hub-farmacia-escola",
+        "section": "Farmácia Escola — Hospital Universitário de Brasília (HUB-UnB / EBSERH) > 💊 Relação de Programas e Medicamentos Dispensados > 6. Epidermólise Bolhosa",
+        "line_start": 99,
+        "line_end": 111,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "hub-farmacia-escola:L114-L121",
+      "text": "Fonte: hub-farmacia-escola\nSecao: Farmácia Escola — Hospital Universitário de Brasília (HUB-UnB / EBSERH) > 💊 Relação de Programas e Medicamentos Dispensados > 7. Hanseníase e Tratamento com Talidomida\n\n- Blister Multibacilar (Adulto e Infantil)\n- Blister Paucibacilar (Adulto e Infantil)\n- Clofazimina 50 mg e 100 mg cápsulas\n- Minociclina 100 mg comprimido\n- Ofloxacino 400 mg cápsula\n- Pentoxifilina 400 mg comprimido\n- Prednisona 5 mg e 20 mg comprimido\n- **Talidomida:** Dispensação com controle especial severo (conforme RDC ANVISA nº 11/2011). Exige Notificação de Receita Especial em duas vias e Termo de Consentimento Pós-Informação. Validade da receita: **20 dias**.",
+      "content_original": "- Blister Multibacilar (Adulto e Infantil)\n- Blister Paucibacilar (Adulto e Infantil)\n- Clofazimina 50 mg e 100 mg cápsulas\n- Minociclina 100 mg comprimido\n- Ofloxacino 400 mg cápsula\n- Pentoxifilina 400 mg comprimido\n- Prednisona 5 mg e 20 mg comprimido\n- **Talidomida:** Dispensação com controle especial severo (conforme RDC ANVISA nº 11/2011). Exige Notificação de Receita Especial em duas vias e Termo de Consentimento Pós-Informação. Validade da receita: **20 dias**.\n",
+      "metadata": {
+        "source_id": "hub-farmacia-escola",
+        "section": "Farmácia Escola — Hospital Universitário de Brasília (HUB-UnB / EBSERH) > 💊 Relação de Programas e Medicamentos Dispensados > 7. Hanseníase e Tratamento com Talidomida",
+        "line_start": 114,
+        "line_end": 121,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "hub-farmacia-escola:L124-L140",
+      "text": "Fonte: hub-farmacia-escola\nSecao: Farmácia Escola — Hospital Universitário de Brasília (HUB-UnB / EBSERH) > 💊 Relação de Programas e Medicamentos Dispensados > 8. Oncologia Ambulatorial Oral\n\n- Medicamentos antineoplásicos orais e hormonoterápicos para pacientes regulados:\n  - Anastrozol 1 mg\n  - Bicalutamida 50 mg\n  - Capecitabina 150 mg e 500 mg\n  - Ciclofosfamida 50 mg *(atualmente em monitoramento de falta)*\n  - Clorambucila 2 mg\n  - Dasatinibe 100 mg\n  - Filgrastim 300 µg/0,5 mL seringa injetável\n  - Fulvestranto 250 mg injetável\n  - Gosserrelina 10,8 mg implante\n  - Hidroxiuréia 500 mg\n  - Mesilato de Imatinibe 100 mg e 400 mg\n  - Letrozol 2,5 mg\n  - Mercaptopurina 50 mg\n  - Metotrexato 2,5 mg comprimido\n  - Nilotinibe 200 mg cápsula\n  - Tamoxifeno 20 mg comprimido",
+      "content_original": "- Medicamentos antineoplásicos orais e hormonoterápicos para pacientes regulados:\n  - Anastrozol 1 mg\n  - Bicalutamida 50 mg\n  - Capecitabina 150 mg e 500 mg\n  - Ciclofosfamida 50 mg *(atualmente em monitoramento de falta)*\n  - Clorambucila 2 mg\n  - Dasatinibe 100 mg\n  - Filgrastim 300 µg/0,5 mL seringa injetável\n  - Fulvestranto 250 mg injetável\n  - Gosserrelina 10,8 mg implante\n  - Hidroxiuréia 500 mg\n  - Mesilato de Imatinibe 100 mg e 400 mg\n  - Letrozol 2,5 mg\n  - Mercaptopurina 50 mg\n  - Metotrexato 2,5 mg comprimido\n  - Nilotinibe 200 mg cápsula\n  - Tamoxifeno 20 mg comprimido\n",
+      "metadata": {
+        "source_id": "hub-farmacia-escola",
+        "section": "Farmácia Escola — Hospital Universitário de Brasília (HUB-UnB / EBSERH) > 💊 Relação de Programas e Medicamentos Dispensados > 8. Oncologia Ambulatorial Oral",
+        "line_start": 124,
+        "line_end": 140,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "hub-farmacia-escola:L142-L142",
+      "text": "Fonte: hub-farmacia-escola\nSecao: Farmácia Escola — Hospital Universitário de Brasília (HUB-UnB / EBSERH) > 💊 Relação de Programas e Medicamentos Dispensados > 8. Oncologia Ambulatorial Oral\n\n---",
+      "content_original": "---\n",
+      "metadata": {
+        "source_id": "hub-farmacia-escola",
+        "section": "Farmácia Escola — Hospital Universitário de Brasília (HUB-UnB / EBSERH) > 💊 Relação de Programas e Medicamentos Dispensados > 8. Oncologia Ambulatorial Oral",
+        "line_start": 142,
+        "line_end": 142,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "hub-farmacia-escola:L147-L149",
+      "text": "Fonte: hub-farmacia-escola\nSecao: Farmácia Escola — Hospital Universitário de Brasília (HUB-UnB / EBSERH) > 📋 Orientações ao Paciente > Armazenamento e Transporte:\n\n- Mantenha sempre os produtos na embalagem original (onde constam lote, validade e instruções do fabricante).\n- Medicamentos termolábeis (como **insulinas** e **filgrastim**) exigem transporte em caixa térmica com gelo reciclável (gelox) sem contato direto com a ampola/frasco, e devem ser armazenados na geladeira (entre 2°C e 8°C, nunca no congelador).\n- Medicamentos secos devem ficar ao abrigo de luz solar, umidade e calor excessivo, fora do alcance de crianças e animais.",
+      "content_original": "- Mantenha sempre os produtos na embalagem original (onde constam lote, validade e instruções do fabricante).\n- Medicamentos termolábeis (como **insulinas** e **filgrastim**) exigem transporte em caixa térmica com gelo reciclável (gelox) sem contato direto com a ampola/frasco, e devem ser armazenados na geladeira (entre 2°C e 8°C, nunca no congelador).\n- Medicamentos secos devem ficar ao abrigo de luz solar, umidade e calor excessivo, fora do alcance de crianças e animais.\n",
+      "metadata": {
+        "source_id": "hub-farmacia-escola",
+        "section": "Farmácia Escola — Hospital Universitário de Brasília (HUB-UnB / EBSERH) > 📋 Orientações ao Paciente > Armazenamento e Transporte:",
+        "line_start": 147,
+        "line_end": 149,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "hub-farmacia-escola:L152-L153",
+      "text": "Fonte: hub-farmacia-escola\nSecao: Farmácia Escola — Hospital Universitário de Brasília (HUB-UnB / EBSERH) > 📋 Orientações ao Paciente > Administração Segura:\n\n- Nunca altere a dosagem ou interrompa o tratamento sem consentimento médico.\n- Comprimidos e cápsulas de liberação modificada, drágeas ou revestidos não devem ser triturados, mastigados ou abertos sem orientação de farmacêutico.",
+      "content_original": "- Nunca altere a dosagem ou interrompa o tratamento sem consentimento médico.\n- Comprimidos e cápsulas de liberação modificada, drágeas ou revestidos não devem ser triturados, mastigados ou abertos sem orientação de farmacêutico.\n",
+      "metadata": {
+        "source_id": "hub-farmacia-escola",
+        "section": "Farmácia Escola — Hospital Universitário de Brasília (HUB-UnB / EBSERH) > 📋 Orientações ao Paciente > Administração Segura:",
+        "line_start": 152,
+        "line_end": 153,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "hub-farmacia-escola:L155-L155",
+      "text": "Fonte: hub-farmacia-escola\nSecao: Farmácia Escola — Hospital Universitário de Brasília (HUB-UnB / EBSERH) > 📋 Orientações ao Paciente > Administração Segura:\n\n---",
+      "content_original": "---\n",
+      "metadata": {
+        "source_id": "hub-farmacia-escola",
+        "section": "Farmácia Escola — Hospital Universitário de Brasília (HUB-UnB / EBSERH) > 📋 Orientações ao Paciente > Administração Segura:",
+        "line_start": 155,
+        "line_end": 155,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "hub-farmacia-escola:L159-L162",
+      "text": "Fonte: hub-farmacia-escola\nSecao: Farmácia Escola — Hospital Universitário de Brasília (HUB-UnB / EBSERH) > 🩺 Orientações aos Profissionais Prescritores\n\n1. **Antimicrobianos:** Receitas devem ser preenchidas em duas vias, com identificação completa do paciente, posologia, dosagem e carimbo com CRM do médico.\n2. **Antirretrovirais (TARV):** Formulário padronizado pelo Ministério da Saúde devidamente preenchido e assinado, com justificativa clínica em caso de troca de esquema.\n3. **Insulinas:** Laudo médico e Formulário da SES-DF específico para DM1/DM2 assinado por prescritor autorizado.\n4. **Talidomida:** Obediência irrestrita à RDC nº 11/2011, preenchimento dos cadastros no SINAV (Sistema Nacional de Agravos) e termo de consentimento para mulheres em idade fértil.",
+      "content_original": "1. **Antimicrobianos:** Receitas devem ser preenchidas em duas vias, com identificação completa do paciente, posologia, dosagem e carimbo com CRM do médico.\n2. **Antirretrovirais (TARV):** Formulário padronizado pelo Ministério da Saúde devidamente preenchido e assinado, com justificativa clínica em caso de troca de esquema.\n3. **Insulinas:** Laudo médico e Formulário da SES-DF específico para DM1/DM2 assinado por prescritor autorizado.\n4. **Talidomida:** Obediência irrestrita à RDC nº 11/2011, preenchimento dos cadastros no SINAV (Sistema Nacional de Agravos) e termo de consentimento para mulheres em idade fértil.\n",
+      "metadata": {
+        "source_id": "hub-farmacia-escola",
+        "section": "Farmácia Escola — Hospital Universitário de Brasília (HUB-UnB / EBSERH) > 🩺 Orientações aos Profissionais Prescritores",
+        "line_start": 159,
+        "line_end": 162,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "hub-farmacia-escola:L164-L164",
+      "text": "Fonte: hub-farmacia-escola\nSecao: Farmácia Escola — Hospital Universitário de Brasília (HUB-UnB / EBSERH) > 🩺 Orientações aos Profissionais Prescritores\n\n---",
+      "content_original": "---\n",
+      "metadata": {
+        "source_id": "hub-farmacia-escola",
+        "section": "Farmácia Escola — Hospital Universitário de Brasília (HUB-UnB / EBSERH) > 🩺 Orientações aos Profissionais Prescritores",
+        "line_start": 164,
+        "line_end": 164,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "hub-farmacia-escola:L168-L168",
+      "text": "Fonte: hub-farmacia-escola\nSecao: Farmácia Escola — Hospital Universitário de Brasília (HUB-UnB / EBSERH) > 🔄 Automação e Atualização Periódica\n\nPara manter este documento sincronizado com eventuais novos alertas de falta de insumos publicados pelo HUB, utilize o script automatizado criado no projeto:",
+      "content_original": "Para manter este documento sincronizado com eventuais novos alertas de falta de insumos publicados pelo HUB, utilize o script automatizado criado no projeto:\n",
+      "metadata": {
+        "source_id": "hub-farmacia-escola",
+        "section": "Farmácia Escola — Hospital Universitário de Brasília (HUB-UnB / EBSERH) > 🔄 Automação e Atualização Periódica",
+        "line_start": 168,
+        "line_end": 168,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "hub-farmacia-escola:L170-L170",
+      "text": "Fonte: hub-farmacia-escola\nSecao: Farmácia Escola — Hospital Universitário de Brasília (HUB-UnB / EBSERH) > 🔄 Automação e Atualização Periódica\n\n```bash",
+      "content_original": "```bash\n",
+      "metadata": {
+        "source_id": "hub-farmacia-escola",
+        "section": "Farmácia Escola — Hospital Universitário de Brasília (HUB-UnB / EBSERH) > 🔄 Automação e Atualização Periódica",
+        "line_start": 170,
+        "line_end": 170,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "hub-farmacia-escola:L172-L174",
+      "text": "Fonte: hub-farmacia-escola\nSecao: Executar a atualização da Farmácia Escola\n\npython3 /Users/aluno2/.gemini/antigravity/scratch/farmacos_df/atualizar_hub_farmacia_escola.py\n```\nO script checa o portal da EBSERH/HUB, identifica mudanças no quadro de faltas e regenera este arquivo `.md`.",
+      "content_original": "python3 /Users/aluno2/.gemini/antigravity/scratch/farmacos_df/atualizar_hub_farmacia_escola.py\n```\nO script checa o portal da EBSERH/HUB, identifica mudanças no quadro de faltas e regenera este arquivo `.md`.\n",
+      "metadata": {
+        "source_id": "hub-farmacia-escola",
+        "section": "Executar a atualização da Farmácia Escola",
+        "line_start": 172,
+        "line_end": 174,
+        "content_type": "text"
+      }
+    }
+  ]
+}

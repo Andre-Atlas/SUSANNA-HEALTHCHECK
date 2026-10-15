@@ -1,0 +1,119 @@
+[UNIDADE] Hospitais Regionais (parte 1)
+Hospital Regional da Asa Norte – HRAN Telefone: (61) 3449-4650/4651
+Hospital Regional de Brazlândia Telefone: (61) 3449-6318/6319
+Hospital Regional de Ceilândia Telefone: (61) 3449-6027/6028/6029
+Hospital Regional do Gama Telefone: (61) 3449-7152/7153/7154/7155
+Hospital Regional do Guará Telefone: (61) 3449-4943/4944
+Hospital da Região Leste (Paranoá) Telefone: (61) 3449-5213/5214/5215
+Hospital Regional de Planaltina Telefone: (61) 3449-5753
+Hospital Regional de Santa Maria Telefone: (61) 4042-7770
+Hospital Regional de Samambaia Telefone: (61) 3449-4650/4651
+Hospital Regional de Sobradinho Telefone: (61) 3449-6810/6811/6812
+Hospital Regional de Taguatinga Telefone: (61) 3449-6534/6535/6536/6537
+Fonte: https://www.saude.df.gov.br/hospitais
+
+[UNIDADE] Hospitais Regionais (parte 2)
+Ao chegar em uma unidade de urgência e emergência, o primeiro passo é fazer a ficha no guichê de atendimento. Em seguida, todos os pacientes passam pelo processo chamado Acolhimento e Classificação de Risco, que organiza o atendimento conforme a gravidade de cada caso e não apenas pela ordem de chegada.
+Nos hospitais e UPAs, os principais atendimentos oferecidos são: clínica médica, pediatria, ginecologia, obstetrícia, ortopedia, oftalmologia e cirurgia geral.
+O atendimento é feito por um protocolo de cores que define a gravidade do caso e o tempo de espera previsto:
+Fonte: https://www.saude.df.gov.br/hospitais
+
+[UNIDADE] Hospitais Regionais (parte 3)
+Vermelho – Emergência: risco imediato de morte. Atendimento imediato. Laranja – Muito urgente: risco de piora rápida, precisa de atendimento médico e assistência contínua de enfermagem. Atendimento em até 10 minutos. Amarelo – Urgente: casos que precisam de atendimento em tempo curto. Atendimento em até 60 minutos (obstetrícia até 30 minutos). Verde – Pouco urgente: baixo risco de agravamento, podendo ser atendido na UBS de referência. Atendimento em até 360 minutos (obstetrícia até 120 minutos). Azul – Não urgente: sem risco imediato, deve ser preferencialmente acompanhado na UBS de referência. Atendimento em até 720 minutos nos prontos-socorros e UPAs. Gestantes, idosos e crianças com menos de 6 meses têm prioridade de atendimento em qualquer unidade. Se o estado de saúde do paciente mudar enquanto aguarda, a equipe poderá reavaliar e reclassificar a prioridade.
+Fonte: https://www.saude.df.gov.br/hospitais
+
+[SERVICO] Farmácia de Alto Custo (CEAF) (parte 1)
+ATENÇÃO : uma vez que o cadastro tenha sido feito de forma digital pelo portal CEAFDigital, é obrigatória a apresentação da documentação original no momento da retirada do medicamento.
+ATENDIMENTOS PRESENCIAL DE CADASTRO DE PRIMEIRA VEZ SEM AGENDAMENTO: Para alguns medicamentos e/ou tratamentos, excepcionalmente o atendimento pode ser feito sem a necessidade do agendamento no CallCenter (160 opção 3), sendo necessários apenas ir até a farmácia referenciada da residência do paciente com os documentos necessários e retirar uma senha.
+Prevenção de Tromboembolismo Venoso Gestantes
+Fonte: https://www.saude.df.gov.br/componente-especializado
+
+[SERVICO] Farmácia de Alto Custo (CEAF) (parte 2)
+PROGRAMA MEDICAMENTO EM CASA É um programa da Secretaria de Saúde que realiza a entrega dos medicamentos nas casas dos pacientes que já estão cadastrados nas Farmácias do Componente Especializado ("farmácias de alto custo"), na região de Brasília e entorno do Distrito Federal. Quem pode receber o medicamento em casa? Pacientes cadastrados no Componente Especializado da Assistência Farmacêutica e que possuem autorização válida. O paciente pode autorizar até 4 pessoas para receber o medicamento no seu lugar. Não podem ser entregues em casa os medicamentos que precisem de aplicação especial no hospital ou algum outro que não tenha a autorização para entrega.
+Fonte: https://www.saude.df.gov.br/componente-especializado
+
+[SERVICO] Farmácia de Alto Custo (CEAF) (parte 3)
+Como fazer para receber o medicamento em casa? Entre em contato pelo telefone (61) 3029-8080 ou busque informações direto com a Farmácia do Componente Especializado a qual foi cadastrado o paciente para poder receber seu medicamento em casa. É necessário que o recebedor do medicamento seja o próprio paciente/responsável ou algum representante cadastrado nas Farmácias do Componente Especializado.
+No ato do cadastro, será repassada todas as orientações quanto aos procedimentos necessários para liberação do medicamento neste serviço, conforme regras estabelecidas pelo Ministério da Saúde. Após o servidor verificar se toda a documentação foi apresentada, o processo de solicitação do medicamento será encaminhado para avaliação médica, etapa obrigatória pelo Ministério da Saúde para liberação do medicamento.
+Fonte: https://www.saude.df.gov.br/componente-especializado
+
+[SERVICO] Farmácia de Alto Custo (CEAF) (parte 4)
+Núcleo de Farmácia do Componente Especializado na Asa Sul Chefe: Iraides Nabie Albernaz da Silva Endereço: Estação 102 Sul do Metrô, Subsolo – Ala Comercial, Asa Sul, Brasília/DF Telefone: (61) 3449-4272 WhatsApp: (61) 99358-0060 Núcleo de Farmácia do Componente Especializado em Ceilândia Chefe: Mariana Mantovani Endereço: EQNM 18/20, blocos A e C – Praça do Cidadão, Ceilândia/DF Telefone: (61) 3449-4276 WhatsApp: (61) 99166-4579 Núcleo de Farmácia do Componente Especializado no Gama Chefe: Paulline Andressa Araújo Feitosa Endereço: Praça 1, s/n – Setor Leste, Gama/DF. Telefone : (61) 3449-4280 WhatsApp : (61) 99124-1043 Qual horário de funcionamento?
+Fonte: https://www.saude.df.gov.br/componente-especializado
+
+[SERVICO] Farmácia de Alto Custo (CEAF) (parte 5)
+O horário de funcionamento das farmácias do Componente Especializado é de segunda a sexta-feira, das 7h às 19h, e aos sábados, das 7h às 12h. A entrega de senhas ocorre de segunda a sexta-feira, das 7h às 18h, e aos sábados, das 7h às 11h, podendo ser restringida conforme a capacidade de atendimento da unidade. Os setores de cadastro de primeira vez e atendimento farmacêutico são agendados conforme disponibilidade de vagas por dia. Para evitar aglomerações e maior tempo de espera para atendimento, sugerimos que os usuários evitem comparecer nos últimos dias do mês em razão da elevada demanda neste período.
+Para informações sobre outros medicamentos fornecidos na SES DF, consulte a página de medicamentos .
+Farmácias de Alto Custo (Lista de Medicamentos Padronizados - consultar estoque)
+Fonte: https://www.saude.df.gov.br/componente-especializado
+
+[EMERGENCIA] SAMU 192 (parte 1)
+Gerência de Serviços de Atenção Domiciliar
+A Gerência de Serviços Atenção Domiciliar é uma unidade orgânica, vinculada à Diretoria de Serviços de Internação Domiciliar, que realiza assessoramento técnico quanto ao planejamento, monitoramento, avaliação e implementação da Política de Atenção Domiciliar nas dimensões da promoção, prevenção, recuperação e reabilitação em consonância com o Programa de Internação Domiciliar (PID DF) e as diretrizes do Ministério da Saúde, no âmbito do Distrito Federal e desenvolve estratégias para a organização do Serviço de Atenção Domiciliar de Alta Complexidade (SAD AC) e do Programa de Oxigenoterapia Domiciliar (POD) em consonância com as diretrizes da Secretaria, promovendo e apoiando a integralidade da assistência à saúde a partir das Linhas de Cuidados.
+Fonte: https://www.saude.df.gov.br/samu
+
+[EMERGENCIA] SAMU 192 (parte 2)
+A GESAD acompanha e apoia a estruturação dos Serviços de Atenção Domiciliar em consonância com as diretrizes do Ministério da Saúde por meio das Equipes Multidisciplinares de Atenção Domiciliar (EMAD) e Equipes Multiprofissional de Apoio (EMAP) e promove e apoia os processos de planejamento, elaboração e normatização dos protocolos clínicos e fluxos assistenciais de Atenção Domiciliar com ênfase à Desospitalização, monitorando e avaliando as informações relacionadas à Atenção Domiciliar a partir dos sistemas informacionais vigentes, elaborando pareceres técnicos relacionados a insumos, materiais médico-hospitalares, equipamentos e outras matérias relativas à Atenção Domiciliar e colaborando na elaboração de Termos de Referência para a aquisição de insumos, materiais médico hospitalares e equipamentos necessários ao atendimento aos pacientes e funcionamento da Atenção Domiciliar do Distri
+Fonte: https://www.saude.df.gov.br/samu
+
+[EMERGENCIA] SAMU 192 (parte 3)
+to Federal, bem como para a contratação de prestação de serviços especializados e executa outras atividades que lhe forem atribuídas na sua área de competência.
+A GESAD realiza ações de educação continuada, planeja e acompanha a política de estágio supervisionado junto às universidades conveniadas e EAPSUS, participa e elabora fluxos, parâmetros e protocolos, emite pareceres e notas técnicas em matéria de Atenção Domiciliar e representa a SES em comissões, conselhos de direitos e políticas públicas.
+Fonte: https://www.saude.df.gov.br/samu
+
+[EMERGENCIA] SAMU 192 (parte 4)
+Gerente: Clisciene Dutra de Magalhães – Assistente Social Equipe técnica: Alline Meyre de Oliveira Costa Evaristo - Fisioterapeuta, Mariana Mota da Silva - Assistente Social, Silvana Monteiro Fiquer Leal -Fisioterapeuta. Painel de Informações Domiciliares (Sala de Situação SES/DF): https://info.saude.df.gov.br/informacoesemapemad/ E-mail: gesad.dsint@gmail.com Endereço: SRTVN Quadra 701, Via W 5 Norte, Lote D, Edifício PO700 (1° andar) Telefones: (61) 99205-0480 Horário de atendimento: das 7h às 19h
+NRAD HRAN: (61) 2017-1900 Ramal: 7191, 7095, 7069. E-mail: nradhran@gmail.com
+NRAD HRBZ: (61) 2017-1300 Ramal: 3952 E-mail: nradhrbz@gmail.com
+NRAD HRC: (61) 2017-2000 Ramal 3116 E-mail: nradceilandia@gmail.com
+NRAD HRG: (61) 2017-1800/ (61) 2017-1852 Ramal: 5339, 5340/99245-6983 E-mail: nradgama@gmail.com
+NRAD HRGU: (61) 2017-1417 Funcional: 98184-2311 E-mail: nradguara@gmail.com
+Fonte: https://www.saude.df.gov.br/samu
+
+[EMERGENCIA] SAMU 192 (parte 5)
+EMAD Núcleo Bandeirante: (61) 2017-1145 Ramal: 6181 Funcional: 99254-5958 E-mail: nrad.cnbpwrf@gmail.com Endereço: 3a. Avenida, ao lado da Policlinica do Núcleo Bandeirante.
+NRAD HRL: (61) 2017-1564 E-mail: nrad.paranoa@gmail.com NRAD HRPL: (61) 2017-1372
+E-mail: nradhrpl@gmail.com EMAD Recanto das Emas: (61) 2017-1145 Ramal: 6033 E-mail: nradrecantodasemas@gmail.com Endereço: 422, Q 104, Brasília - DF (Dentro da UBS 03 - Recanto das Emas)
+NRAD HRSAM: (61) 2017-2214 Ramal: 3834 E-mail: nradsamambaiadf@gmail.com EMAD São Sebastião: (61) 3335-1378/ 2017-1598 E-mail: nradss@gmail.com
+NRAD HRS: (61) 2017-1200 Ramal: 1301 E-mail: nradsobradinho@hotmail.com
+NRAD HRT: (61) 2017-1700 Ramal: 3305, 3306/ (61) 2017-1706 E-mail: nrad1.hrt@gmail.com
+NURAD/HRSM: (61) 3550-8900/6819 E nurad.hrsm@igesdf.org.br
+Fonte: https://www.saude.df.gov.br/samu
+
+[EMERGENCIA] SAMU 192 (parte 6)
+A Atenção Domiciliar (AD) é uma modalidade de atenção à saúde que complementa e substitui a internação hospitalar. Envolve ações de prevenção, promoção, reabilitação, tratamento e a promoção de cuidados paliativos em ambiente domiciliar. Deve estar articulada às Redes de Atenção à Saúde (RAS) e inserida no território, fazendo articulação entre os diversos níveis de atenção à saúde.
+Tem como objetivo a redução da demanda por atendimento hospitalar e/ou redução do período de permanência de usuários nas unidades hospitalares.
+Principais benefícios dos Serviços de Atenção Domiciliar:
+Assistência individualizada e personalizada, o que garante mais qualidade de vida ao paciente;
+Maior envolvimento da família com o tratamento, o que favorece a recuperação do paciente;
+Melhor resposta à terapêutica proposta, quase sempre reduzindo o tempo de internação;
+Fonte: https://www.saude.df.gov.br/samu
+
+[EMERGENCIA] SAMU 192 (parte 7)
+Proximidade do paciente aos seus familiares, rotina, hábitos e referências, o que também ajuda na recuperação;
+Redução da incidência de infecções hospitalares;
+Viabilização de maior disponibilidade de leitos hospitalares.
+O Serviço de Atenção Domiciliar no DF conta com 3 programas distintos:
+Fonte: https://www.saude.df.gov.br/samu
+
+[INSTITUCIONAL] Ouvidoria SES-DF (parte 1)
+Olá, este espaço é para você! Utilize o seu direito de colaborar com o Governo do Distrito Federal, registrando a sua sugestão, reclamação, elogio, denúncia ou solicitação de informações de caráter geral sobre serviços da administração pública, como horários de funcionamento, contatos, endereço, entre outras. Em Canais de Atendimento, você encontrará diversos canais de acesso para participar: internet, telefone e endereço das nossas ouvidorias para atendimento presencial. O serviço de ouvidoria agora conta com um novo sistema para registro e acompanhamento de manifestações, o Participa-DF !.
+Fonte: https://www.saude.df.gov.br/ouvidoria
+
+[INSTITUCIONAL] Ouvidoria SES-DF (parte 2)
+Entre as novidades do sistema, você verá a robô IZA, que irá te ajudar com dicas e sugestões de assuntos para facilitar o seu registro! Lei de Acesso à Informação – LAI Pelo Participa-DF, você também pode solicitar informações sobre ações, programas, despesas, contratos, servidores e outras possibilidades previstas na Lei Distrital de Acesso à Informação nº 4.990/2012. Clique AQUI para fazer um pedido de acesso à informação! Participar é um direito seu!
+Fonte: https://www.saude.df.gov.br/ouvidoria
+
+[VACINACAO] Calendário Nacional de Vacinação (parte 1)
+Criança (0 a 9 anos, 11 meses e 29 dias) Vacinar nos primeiros 1.000 dias de vida é um cuidado essencial para a proteção contra intercorrências que possam comprometer o pleno desenvolvimento infantil. É a melhor forma de proteger a criança contra doenças graves. O Calendário Nacional de Vacinação orienta quais vacinas são necessárias em cada idade.
+Adolescente (10 a 19 anos, 11 meses e 29 dias) e Jovem (20 a 24 anos, 11 meses e 29 dias) A vacinação protege adolescentes e jovens contra doenças graves e contribui para uma vida adulta e futuras gestações mais saudáveis. O Calendário Nacional de Vacinação orienta quais vacinas são necessárias. Todas as vacinas do SUS são seguras e essenciais para prevenir doenças graves.
+Fonte: https://www.gov.br/saude/pt-br/vacinacao/calendario
+
+[VACINACAO] Calendário Nacional de Vacinação (parte 2)
+Adulto (25 a 59 anos) Vacinação em dia protege a saúde e a qualidade de vida da pessoa adulta. Procure uma unidade de saúde e atualize suas vacinas conforme o Calendário Nacional de Vacinação. Manter a vacinação em dia, também, é muito importante para as mulheres, antes, durante e após a gestação, para proteger a mãe e o bebê.
+Idoso (a partir de 60 anos) A vacinação promove uma vida saudável e contribui para a qualidade de vida e o bem-estar da pessoa idosa. Em todas as idades, as vacinas são essenciais para prevenir doenças graves. Os idosos devem manter o Cartão de Vacinas atualizado, seguindo o Calendário Nacional de Vacinação - Idoso.
+Fonte: https://www.gov.br/saude/pt-br/vacinacao/calendario
+
+[VACINACAO] Calendário Nacional de Vacinação (parte 3)
+Gestante (a gestante e seu bebê, até o nascimento) A vacina é uma forma segura de proteger a gestante e o bebê. Na primeira consulta do pré-natal, é importante atualizar o Cartão de Vacinas e planejar as próximas doses indicadas. Os cuidados dos 1.000 mil dias de vida do bebê são fundamentais para um desenvolvimento saudável.
+Fonte: https://www.gov.br/saude/pt-br/vacinacao/calendario

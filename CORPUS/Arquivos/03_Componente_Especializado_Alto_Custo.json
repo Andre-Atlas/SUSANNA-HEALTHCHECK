@@ -1,0 +1,313 @@
+{
+  "schema_version": "1.0.0",
+  "document": {
+    "source_id": "sesdf-ceaf",
+    "source_title": "Componente Especializado da Assistência Farmacêutica (CEAF) — Farmácias de Alto Custo (SES-DF)",
+    "source_file": "03_Componente_Especializado_Alto_Custo.md",
+    "source_url": "https://www.saude.df.gov.br/componente-especializado",
+    "source_version": null,
+    "captured_at": null,
+    "reference_date_original": "01/10/2026",
+    "review_status": "pending",
+    "ingestion_status": "partial_review",
+    "quality_notes": [
+      "Requisitos, elegibilidade e abrangencia necessitam validacao por protocolo vigente.",
+      "Avisos com prazo devem deixar de ser apresentados como atuais apos o vencimento."
+    ],
+    "language": "pt-BR",
+    "original_sha256": "3023455173f4943c221408f4a6b2781450a21d4df732b98f6eafbd43b033e07c",
+    "original_line_count": 137
+  },
+  "original_markdown": "# Componente Especializado da Assistência Farmacêutica (CEAF) — Farmácias de Alto Custo (SES-DF)\n> **Página Oficial:** [Componente Especializado - SES-DF](https://www.saude.df.gov.br/componente-especializado)  \n> **Data de Referência:** 01/10/2026  \n> **Órgão Responsável:** Diretoria de Assistência Farmacêutica (DIASF / SULOG / SES-DF)\n\n---\n\n## 🚨 AVISO URGENTE: FECHAMENTO PARA INVENTÁRIO ANUAL\n\n> [!WARNING]\n> ### SUSPENSÃO TEMPORÁRIA DE ATENDIMENTO\n> **Informa-se que NÃO HAVERÁ ATENDIMENTO nas Farmácias do Componente Especializado (\"Farmácias de Alto Custo\") nos dias:**\n> ### **09 e 10 de Novembro de 2026**\n> **Motivo:** Realização do Inventário Anual de Medicamentos e conferência física de estoques, em cumprimento às normas dos órgãos de controle interno e externo.  \n> \n> **Retorno das Atividades:**\n> O atendimento presencial e a entrega de senhas serão **retomados normalmente no dia 11/11/2026**.  \n> *Antecipe suas retiradas ou programe-se para evitar descontinuidade do tratamento medicamentoso.*\n\n---\n\n## 📍 Unidades de Farmácia do Alto Custo e Áreas Atendidas\n\nA SES-DF conta com 3 polos de atendimento do Componente Especializado. Cada cidadão deve se dirigir à unidade correspondente à sua Região Administrativa de moradia ou domicílio no Entorno:\n\n### 1. Núcleo da Asa Sul\n- **Endereço:** Estação 102 Sul do Metrô, Subsolo – Ala Comercial, Asa Sul, Brasília/DF.\n- **Chefia:** Iraides Nabie Albernaz da Silva.\n- **Telefone:** (61) 3449-4272 | **WhatsApp:** (61) 99358-0060.\n- **Regiões de Abrangência:**\n  - Asa Norte, Asa Sul, Arapoanga, Candangolândia, Cruzeiro, Cidade do Automóvel e SCIA / Estrutural, Guará, Itapoã, Jardim Botânico, Jardins Mangueiral, Lago Norte, Lago Sul, Noroeste, Núcleo Bandeirante, Paranoá, Park Way, Planaltina, São Sebastião, Setor de Mansões Dom Bosco, Sobradinho I e II, Sudoeste / Octogonal, Unaí (MG) e demais Estados da Federação atendidos por pactuação.\n\n### 2. Núcleo de Ceilândia\n- **Endereço:** EQNM 18/20, Blocos A e C – Praça do Cidadão, Ceilândia/DF.\n- **Chefia:** Mariana Mantovani.\n- **Telefone:** (61) 3449-4276 | **WhatsApp:** (61) 99166-4579.\n- **Regiões de Abrangência:**\n  - Águas Claras, Água Quente, Areal, Arniqueiras, Brazlândia, Ceilândia, Pôr do Sol, Sol Nascente, Samambaia, Taguatinga, Vicente Pires.\n  - **Municípios do Entorno Goiano:** Águas Lindas de Goiás, Cocalzinho de Goiás, Corumbá de Goiás, Padre Bernardo, Pirenópolis, Santo Antônio do Descoberto.\n\n### 3. Núcleo do Gama\n- **Endereço:** Praça 1, s/n – Setor Leste, Gama/DF.\n- **Chefia:** Paulline Andressa Araújo Feitosa.\n- **Telefone:** (61) 3449-4280 | **WhatsApp:** (61) 99124-1043.\n- **Regiões de Abrangência:**\n  - Gama, Recanto das Emas, Riacho Fundo I, Riacho Fundo II, Santa Maria.\n  - **Municípios do Entorno Goiano:** Abadiânia, Alexânia, Cidade Ocidental, Cristalina, Luziânia, Novo Gama, Pedregal, Valparaíso de Goiás.\n\n---\n\n## ⏱️ Horários de Funcionamento e Distribuição de Senhas\n\n- **Atendimento ao Público:** Segunda a sexta-feira, das **07:00 às 19:00**; Sábados das **07:00 às 12:00**.\n- **Distribuição de Senhas:**\n  - Segunda a sexta: das **07:00 às 18:00** *(pode encerrar antes se atingir o limite técnico da equipe)*.\n  - Sábados: das **07:00 às 11:00**.\n- **Dica Importante da Gestão:**  \n  > [!TIP]\n  > Para evitar filas extensas e tempo de espera excessivo, **evite comparecer nos últimos dias do mês**, período de pico e sobrecarga no sistema.\n\n---\n\n## 📝 Como Solicitar Medicamentos no Alto Custo\n\nO processo de abertura para acesso aos medicamentos de alta complexidade requer observância estrita aos Protocolos Clínicos e Diretrizes Terapêuticas (PCDT) do Ministério da Saúde e protocolos distritais da SES-DF.\n\n### Requisitos Prévios:\n1. **Nome do Princípio Ativo:** A receita do médico deve constar obrigatoriamente a Denominação Comum Brasileira (DCB) / nome genérico da substância, e não apenas o nome comercial.\n2. **Classificação Internacional de Doenças (CID-10):** A enfermidade deve estar enquadrada no rol de CIDs aceitos para aquele fármaco no PCDT.\n3. **Verificação na REME-DF:** Confirmar se o medicamento integra a Subseção \"g\" da REME-DF.\n\n### Modalidades de Cadastro:\n\n#### 1. Atendimento Digital (CEAFDigital)\n- O paciente ou seu responsável legal realiza a solicitação eletrônica pelo site:  \n  👉 **`https://ceafdigital.saude.df.gov.br`**\n- O sistema encaminha o processo automaticamente para a farmácia de referência da região.\n- **ATENÇÃO:** No momento da primeira retirada física do medicamento, é **obrigatória a apresentação de todos os documentos originais** que foram anexados no portal.\n\n#### 2. Atendimento Presencial com Agendamento\n- Para abertura de cadastro presencial comum, ligue para o Call-Center:\n  - **Telefone 160 (Opção 3)** — Para ligações dentro do DF.\n  - **0800 644 0160** — Para chamadas com origem fora do DF.\n- O atendente agendará dia e hora na unidade correspondente.\n\n#### 3. Casos Especiais SEM NECESSIDADE de Agendamento Prévio (Atendimento Imediato por Senha)\nPara garantir celeridade em agravos críticos, os seguintes tratamentos e condições têm **atendimento direto no guichê de primeira vez**, bastando retirar a senha:\n- ⚡ Atrofia Muscular Espinhal (AME)\n- ⚡ Diabetes Melito Tipo 1 (DM1)\n- ⚡ Distonias e Espasmo Hemifacial\n- ⚡ Doença Falciforme\n- ⚡ Doença Renal Crônica\n- ⚡ Dor Crônica\n- ⚡ Espasticidade\n- ⚡ Fenilcetonúria\n- ⚡ Fibrose Cística\n- ⚡ Imunossupressão no Transplante Renal e demais Órgãos\n- ⚡ Miastenia Gravis\n- ⚡ Prevenção de Tromboembolismo Venoso em Gestantes\n- ⚡ Púrpura Trombocitopênica Idiopática (PTI)\n- ⚡ Síndrome de Guillain-Barré\n\n---\n\n## 🚚 Programa Medicamento em Casa\n\nIniciativa da SES-DF que realiza a **entrega gratuita de medicamentos diretamente no domicílio** de pacientes já cadastrados no Componente Especializado.\n\n### Critérios de Participação:\n- Estar ativamente cadastrado com autorização e processo válidos no CEAF.\n- Residir em regiões atendidas de Brasília e municípios do Entorno do DF.\n- O paciente pode credenciar **até 4 representantes legais** autorizados a receber as remessas.\n- **Exceções:** Medicamentos que necessitam de aplicação hospitalar assistida ou procedimentos técnicos complexos não são enviados pelo programa.\n\n### Como Solicitar a Adesão:\n- Entre em contato pela Central Telefônica: **(61) 3029-8080**;\n- Ou solicite pessoalmente no balcão de atendimento da sua Farmácia de referência.\n\n---\n\n## 📄 Documentação Obrigatória para Cadastro\n\nPara evitar devoluções e pendências documentais, apresente o dossiê completo:\n1. **LME (Laudo de Solicitação, Avaliação e Autorização de Medicamento):** Totalmente preenchido, assinado e carimbado pelo médico (validade de 90 dias a contar da emissão).\n2. **Receita Médica:** Em 2 vias, com nome genérico do fármaco, posologia e carimbo com CRM legível.\n3. **Termo de Consentimento Livre e Esclarecido (TCLE):** Assinado pelo paciente ou responsável, conforme modelo do PCDT da patologia.\n4. **Documento de Identidade Oficial:** Com foto e CPF do paciente (e do responsável, se for o caso).\n5. **Cartão Nacional de Saúde (CNS / Cartão SUS):** Do paciente.\n6. **Comprovante de Residência:** Atualizado (últimos 3 meses), em nome do paciente ou com declaração de residência.\n7. **Exames Complementares:** Laudos laboratoriais, radiológicos ou anatomopatológicos exigidos pelo respectivo protocolo clínico para confirmação diagnóstica.\n\n---\n\n## 🔗 Links Úteis e Consultas\n- [Portal CEAFDigital SES-DF](https://ceafdigital.saude.df.gov.br)\n- [Protocolos Clínicos e Diretrizes Terapêuticas (PCDT) - Ministério da Saúde](https://www.gov.br/conitec/pt-br/assuntos/avaliacao-de-tecnologias-em-saude/pcdt)\n- [Consulta ao Cadastro Nacional de Estabelecimentos de Saúde (CNES)](https://cnes.datasus.gov.br)\n",
+  "records": [],
+  "chunks": [
+    {
+      "chunk_id": "sesdf-ceaf:L2-L4",
+      "text": "Fonte: sesdf-ceaf\nSecao: Componente Especializado da Assistência Farmacêutica (CEAF) — Farmácias de Alto Custo (SES-DF)\n\n> **Página Oficial:** [Componente Especializado - SES-DF](https://www.saude.df.gov.br/componente-especializado)  \n> **Data de Referência:** 01/10/2026  \n> **Órgão Responsável:** Diretoria de Assistência Farmacêutica (DIASF / SULOG / SES-DF)",
+      "content_original": "> **Página Oficial:** [Componente Especializado - SES-DF](https://www.saude.df.gov.br/componente-especializado)  \n> **Data de Referência:** 01/10/2026  \n> **Órgão Responsável:** Diretoria de Assistência Farmacêutica (DIASF / SULOG / SES-DF)\n",
+      "metadata": {
+        "source_id": "sesdf-ceaf",
+        "section": "Componente Especializado da Assistência Farmacêutica (CEAF) — Farmácias de Alto Custo (SES-DF)",
+        "line_start": 2,
+        "line_end": 4,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "sesdf-ceaf:L6-L6",
+      "text": "Fonte: sesdf-ceaf\nSecao: Componente Especializado da Assistência Farmacêutica (CEAF) — Farmácias de Alto Custo (SES-DF)\n\n---",
+      "content_original": "---\n",
+      "metadata": {
+        "source_id": "sesdf-ceaf",
+        "section": "Componente Especializado da Assistência Farmacêutica (CEAF) — Farmácias de Alto Custo (SES-DF)",
+        "line_start": 6,
+        "line_end": 6,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "sesdf-ceaf:L10-L18",
+      "text": "Fonte: sesdf-ceaf\nSecao: Componente Especializado da Assistência Farmacêutica (CEAF) — Farmácias de Alto Custo (SES-DF) > 🚨 AVISO URGENTE: FECHAMENTO PARA INVENTÁRIO ANUAL\n\n> [!WARNING]\n> ### SUSPENSÃO TEMPORÁRIA DE ATENDIMENTO\n> **Informa-se que NÃO HAVERÁ ATENDIMENTO nas Farmácias do Componente Especializado (\"Farmácias de Alto Custo\") nos dias:**\n> ### **09 e 10 de Novembro de 2026**\n> **Motivo:** Realização do Inventário Anual de Medicamentos e conferência física de estoques, em cumprimento às normas dos órgãos de controle interno e externo.  \n> \n> **Retorno das Atividades:**\n> O atendimento presencial e a entrega de senhas serão **retomados normalmente no dia 11/11/2026**.  \n> *Antecipe suas retiradas ou programe-se para evitar descontinuidade do tratamento medicamentoso.*",
+      "content_original": "> [!WARNING]\n> ### SUSPENSÃO TEMPORÁRIA DE ATENDIMENTO\n> **Informa-se que NÃO HAVERÁ ATENDIMENTO nas Farmácias do Componente Especializado (\"Farmácias de Alto Custo\") nos dias:**\n> ### **09 e 10 de Novembro de 2026**\n> **Motivo:** Realização do Inventário Anual de Medicamentos e conferência física de estoques, em cumprimento às normas dos órgãos de controle interno e externo.  \n> \n> **Retorno das Atividades:**\n> O atendimento presencial e a entrega de senhas serão **retomados normalmente no dia 11/11/2026**.  \n> *Antecipe suas retiradas ou programe-se para evitar descontinuidade do tratamento medicamentoso.*\n",
+      "metadata": {
+        "source_id": "sesdf-ceaf",
+        "section": "Componente Especializado da Assistência Farmacêutica (CEAF) — Farmácias de Alto Custo (SES-DF) > 🚨 AVISO URGENTE: FECHAMENTO PARA INVENTÁRIO ANUAL",
+        "line_start": 10,
+        "line_end": 18,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "sesdf-ceaf:L20-L20",
+      "text": "Fonte: sesdf-ceaf\nSecao: Componente Especializado da Assistência Farmacêutica (CEAF) — Farmácias de Alto Custo (SES-DF) > 🚨 AVISO URGENTE: FECHAMENTO PARA INVENTÁRIO ANUAL\n\n---",
+      "content_original": "---\n",
+      "metadata": {
+        "source_id": "sesdf-ceaf",
+        "section": "Componente Especializado da Assistência Farmacêutica (CEAF) — Farmácias de Alto Custo (SES-DF) > 🚨 AVISO URGENTE: FECHAMENTO PARA INVENTÁRIO ANUAL",
+        "line_start": 20,
+        "line_end": 20,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "sesdf-ceaf:L24-L24",
+      "text": "Fonte: sesdf-ceaf\nSecao: Componente Especializado da Assistência Farmacêutica (CEAF) — Farmácias de Alto Custo (SES-DF) > 📍 Unidades de Farmácia do Alto Custo e Áreas Atendidas\n\nA SES-DF conta com 3 polos de atendimento do Componente Especializado. Cada cidadão deve se dirigir à unidade correspondente à sua Região Administrativa de moradia ou domicílio no Entorno:",
+      "content_original": "A SES-DF conta com 3 polos de atendimento do Componente Especializado. Cada cidadão deve se dirigir à unidade correspondente à sua Região Administrativa de moradia ou domicílio no Entorno:\n",
+      "metadata": {
+        "source_id": "sesdf-ceaf",
+        "section": "Componente Especializado da Assistência Farmacêutica (CEAF) — Farmácias de Alto Custo (SES-DF) > 📍 Unidades de Farmácia do Alto Custo e Áreas Atendidas",
+        "line_start": 24,
+        "line_end": 24,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "sesdf-ceaf:L27-L31",
+      "text": "Fonte: sesdf-ceaf\nSecao: Componente Especializado da Assistência Farmacêutica (CEAF) — Farmácias de Alto Custo (SES-DF) > 📍 Unidades de Farmácia do Alto Custo e Áreas Atendidas > 1. Núcleo da Asa Sul\n\n- **Endereço:** Estação 102 Sul do Metrô, Subsolo – Ala Comercial, Asa Sul, Brasília/DF.\n- **Chefia:** Iraides Nabie Albernaz da Silva.\n- **Telefone:** (61) 3449-4272 | **WhatsApp:** (61) 99358-0060.\n- **Regiões de Abrangência:**\n  - Asa Norte, Asa Sul, Arapoanga, Candangolândia, Cruzeiro, Cidade do Automóvel e SCIA / Estrutural, Guará, Itapoã, Jardim Botânico, Jardins Mangueiral, Lago Norte, Lago Sul, Noroeste, Núcleo Bandeirante, Paranoá, Park Way, Planaltina, São Sebastião, Setor de Mansões Dom Bosco, Sobradinho I e II, Sudoeste / Octogonal, Unaí (MG) e demais Estados da Federação atendidos por pactuação.",
+      "content_original": "- **Endereço:** Estação 102 Sul do Metrô, Subsolo – Ala Comercial, Asa Sul, Brasília/DF.\n- **Chefia:** Iraides Nabie Albernaz da Silva.\n- **Telefone:** (61) 3449-4272 | **WhatsApp:** (61) 99358-0060.\n- **Regiões de Abrangência:**\n  - Asa Norte, Asa Sul, Arapoanga, Candangolândia, Cruzeiro, Cidade do Automóvel e SCIA / Estrutural, Guará, Itapoã, Jardim Botânico, Jardins Mangueiral, Lago Norte, Lago Sul, Noroeste, Núcleo Bandeirante, Paranoá, Park Way, Planaltina, São Sebastião, Setor de Mansões Dom Bosco, Sobradinho I e II, Sudoeste / Octogonal, Unaí (MG) e demais Estados da Federação atendidos por pactuação.\n",
+      "metadata": {
+        "source_id": "sesdf-ceaf",
+        "section": "Componente Especializado da Assistência Farmacêutica (CEAF) — Farmácias de Alto Custo (SES-DF) > 📍 Unidades de Farmácia do Alto Custo e Áreas Atendidas > 1. Núcleo da Asa Sul",
+        "line_start": 27,
+        "line_end": 31,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "sesdf-ceaf:L34-L39",
+      "text": "Fonte: sesdf-ceaf\nSecao: Componente Especializado da Assistência Farmacêutica (CEAF) — Farmácias de Alto Custo (SES-DF) > 📍 Unidades de Farmácia do Alto Custo e Áreas Atendidas > 2. Núcleo de Ceilândia\n\n- **Endereço:** EQNM 18/20, Blocos A e C – Praça do Cidadão, Ceilândia/DF.\n- **Chefia:** Mariana Mantovani.\n- **Telefone:** (61) 3449-4276 | **WhatsApp:** (61) 99166-4579.\n- **Regiões de Abrangência:**\n  - Águas Claras, Água Quente, Areal, Arniqueiras, Brazlândia, Ceilândia, Pôr do Sol, Sol Nascente, Samambaia, Taguatinga, Vicente Pires.\n  - **Municípios do Entorno Goiano:** Águas Lindas de Goiás, Cocalzinho de Goiás, Corumbá de Goiás, Padre Bernardo, Pirenópolis, Santo Antônio do Descoberto.",
+      "content_original": "- **Endereço:** EQNM 18/20, Blocos A e C – Praça do Cidadão, Ceilândia/DF.\n- **Chefia:** Mariana Mantovani.\n- **Telefone:** (61) 3449-4276 | **WhatsApp:** (61) 99166-4579.\n- **Regiões de Abrangência:**\n  - Águas Claras, Água Quente, Areal, Arniqueiras, Brazlândia, Ceilândia, Pôr do Sol, Sol Nascente, Samambaia, Taguatinga, Vicente Pires.\n  - **Municípios do Entorno Goiano:** Águas Lindas de Goiás, Cocalzinho de Goiás, Corumbá de Goiás, Padre Bernardo, Pirenópolis, Santo Antônio do Descoberto.\n",
+      "metadata": {
+        "source_id": "sesdf-ceaf",
+        "section": "Componente Especializado da Assistência Farmacêutica (CEAF) — Farmácias de Alto Custo (SES-DF) > 📍 Unidades de Farmácia do Alto Custo e Áreas Atendidas > 2. Núcleo de Ceilândia",
+        "line_start": 34,
+        "line_end": 39,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "sesdf-ceaf:L42-L47",
+      "text": "Fonte: sesdf-ceaf\nSecao: Componente Especializado da Assistência Farmacêutica (CEAF) — Farmácias de Alto Custo (SES-DF) > 📍 Unidades de Farmácia do Alto Custo e Áreas Atendidas > 3. Núcleo do Gama\n\n- **Endereço:** Praça 1, s/n – Setor Leste, Gama/DF.\n- **Chefia:** Paulline Andressa Araújo Feitosa.\n- **Telefone:** (61) 3449-4280 | **WhatsApp:** (61) 99124-1043.\n- **Regiões de Abrangência:**\n  - Gama, Recanto das Emas, Riacho Fundo I, Riacho Fundo II, Santa Maria.\n  - **Municípios do Entorno Goiano:** Abadiânia, Alexânia, Cidade Ocidental, Cristalina, Luziânia, Novo Gama, Pedregal, Valparaíso de Goiás.",
+      "content_original": "- **Endereço:** Praça 1, s/n – Setor Leste, Gama/DF.\n- **Chefia:** Paulline Andressa Araújo Feitosa.\n- **Telefone:** (61) 3449-4280 | **WhatsApp:** (61) 99124-1043.\n- **Regiões de Abrangência:**\n  - Gama, Recanto das Emas, Riacho Fundo I, Riacho Fundo II, Santa Maria.\n  - **Municípios do Entorno Goiano:** Abadiânia, Alexânia, Cidade Ocidental, Cristalina, Luziânia, Novo Gama, Pedregal, Valparaíso de Goiás.\n",
+      "metadata": {
+        "source_id": "sesdf-ceaf",
+        "section": "Componente Especializado da Assistência Farmacêutica (CEAF) — Farmácias de Alto Custo (SES-DF) > 📍 Unidades de Farmácia do Alto Custo e Áreas Atendidas > 3. Núcleo do Gama",
+        "line_start": 42,
+        "line_end": 47,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "sesdf-ceaf:L49-L49",
+      "text": "Fonte: sesdf-ceaf\nSecao: Componente Especializado da Assistência Farmacêutica (CEAF) — Farmácias de Alto Custo (SES-DF) > 📍 Unidades de Farmácia do Alto Custo e Áreas Atendidas > 3. Núcleo do Gama\n\n---",
+      "content_original": "---\n",
+      "metadata": {
+        "source_id": "sesdf-ceaf",
+        "section": "Componente Especializado da Assistência Farmacêutica (CEAF) — Farmácias de Alto Custo (SES-DF) > 📍 Unidades de Farmácia do Alto Custo e Áreas Atendidas > 3. Núcleo do Gama",
+        "line_start": 49,
+        "line_end": 49,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "sesdf-ceaf:L53-L59",
+      "text": "Fonte: sesdf-ceaf\nSecao: Componente Especializado da Assistência Farmacêutica (CEAF) — Farmácias de Alto Custo (SES-DF) > ⏱️ Horários de Funcionamento e Distribuição de Senhas\n\n- **Atendimento ao Público:** Segunda a sexta-feira, das **07:00 às 19:00**; Sábados das **07:00 às 12:00**.\n- **Distribuição de Senhas:**\n  - Segunda a sexta: das **07:00 às 18:00** *(pode encerrar antes se atingir o limite técnico da equipe)*.\n  - Sábados: das **07:00 às 11:00**.\n- **Dica Importante da Gestão:**  \n  > [!TIP]\n  > Para evitar filas extensas e tempo de espera excessivo, **evite comparecer nos últimos dias do mês**, período de pico e sobrecarga no sistema.",
+      "content_original": "- **Atendimento ao Público:** Segunda a sexta-feira, das **07:00 às 19:00**; Sábados das **07:00 às 12:00**.\n- **Distribuição de Senhas:**\n  - Segunda a sexta: das **07:00 às 18:00** *(pode encerrar antes se atingir o limite técnico da equipe)*.\n  - Sábados: das **07:00 às 11:00**.\n- **Dica Importante da Gestão:**  \n  > [!TIP]\n  > Para evitar filas extensas e tempo de espera excessivo, **evite comparecer nos últimos dias do mês**, período de pico e sobrecarga no sistema.\n",
+      "metadata": {
+        "source_id": "sesdf-ceaf",
+        "section": "Componente Especializado da Assistência Farmacêutica (CEAF) — Farmácias de Alto Custo (SES-DF) > ⏱️ Horários de Funcionamento e Distribuição de Senhas",
+        "line_start": 53,
+        "line_end": 59,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "sesdf-ceaf:L61-L61",
+      "text": "Fonte: sesdf-ceaf\nSecao: Componente Especializado da Assistência Farmacêutica (CEAF) — Farmácias de Alto Custo (SES-DF) > ⏱️ Horários de Funcionamento e Distribuição de Senhas\n\n---",
+      "content_original": "---\n",
+      "metadata": {
+        "source_id": "sesdf-ceaf",
+        "section": "Componente Especializado da Assistência Farmacêutica (CEAF) — Farmácias de Alto Custo (SES-DF) > ⏱️ Horários de Funcionamento e Distribuição de Senhas",
+        "line_start": 61,
+        "line_end": 61,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "sesdf-ceaf:L65-L65",
+      "text": "Fonte: sesdf-ceaf\nSecao: Componente Especializado da Assistência Farmacêutica (CEAF) — Farmácias de Alto Custo (SES-DF) > 📝 Como Solicitar Medicamentos no Alto Custo\n\nO processo de abertura para acesso aos medicamentos de alta complexidade requer observância estrita aos Protocolos Clínicos e Diretrizes Terapêuticas (PCDT) do Ministério da Saúde e protocolos distritais da SES-DF.",
+      "content_original": "O processo de abertura para acesso aos medicamentos de alta complexidade requer observância estrita aos Protocolos Clínicos e Diretrizes Terapêuticas (PCDT) do Ministério da Saúde e protocolos distritais da SES-DF.\n",
+      "metadata": {
+        "source_id": "sesdf-ceaf",
+        "section": "Componente Especializado da Assistência Farmacêutica (CEAF) — Farmácias de Alto Custo (SES-DF) > 📝 Como Solicitar Medicamentos no Alto Custo",
+        "line_start": 65,
+        "line_end": 65,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "sesdf-ceaf:L68-L70",
+      "text": "Fonte: sesdf-ceaf\nSecao: Componente Especializado da Assistência Farmacêutica (CEAF) — Farmácias de Alto Custo (SES-DF) > 📝 Como Solicitar Medicamentos no Alto Custo > Requisitos Prévios:\n\n1. **Nome do Princípio Ativo:** A receita do médico deve constar obrigatoriamente a Denominação Comum Brasileira (DCB) / nome genérico da substância, e não apenas o nome comercial.\n2. **Classificação Internacional de Doenças (CID-10):** A enfermidade deve estar enquadrada no rol de CIDs aceitos para aquele fármaco no PCDT.\n3. **Verificação na REME-DF:** Confirmar se o medicamento integra a Subseção \"g\" da REME-DF.",
+      "content_original": "1. **Nome do Princípio Ativo:** A receita do médico deve constar obrigatoriamente a Denominação Comum Brasileira (DCB) / nome genérico da substância, e não apenas o nome comercial.\n2. **Classificação Internacional de Doenças (CID-10):** A enfermidade deve estar enquadrada no rol de CIDs aceitos para aquele fármaco no PCDT.\n3. **Verificação na REME-DF:** Confirmar se o medicamento integra a Subseção \"g\" da REME-DF.\n",
+      "metadata": {
+        "source_id": "sesdf-ceaf",
+        "section": "Componente Especializado da Assistência Farmacêutica (CEAF) — Farmácias de Alto Custo (SES-DF) > 📝 Como Solicitar Medicamentos no Alto Custo > Requisitos Prévios:",
+        "line_start": 68,
+        "line_end": 70,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "sesdf-ceaf:L75-L78",
+      "text": "Fonte: sesdf-ceaf\nSecao: Componente Especializado da Assistência Farmacêutica (CEAF) — Farmácias de Alto Custo (SES-DF) > 📝 Como Solicitar Medicamentos no Alto Custo > Modalidades de Cadastro: > 1. Atendimento Digital (CEAFDigital)\n\n- O paciente ou seu responsável legal realiza a solicitação eletrônica pelo site:  \n  👉 **`https://ceafdigital.saude.df.gov.br`**\n- O sistema encaminha o processo automaticamente para a farmácia de referência da região.\n- **ATENÇÃO:** No momento da primeira retirada física do medicamento, é **obrigatória a apresentação de todos os documentos originais** que foram anexados no portal.",
+      "content_original": "- O paciente ou seu responsável legal realiza a solicitação eletrônica pelo site:  \n  👉 **`https://ceafdigital.saude.df.gov.br`**\n- O sistema encaminha o processo automaticamente para a farmácia de referência da região.\n- **ATENÇÃO:** No momento da primeira retirada física do medicamento, é **obrigatória a apresentação de todos os documentos originais** que foram anexados no portal.\n",
+      "metadata": {
+        "source_id": "sesdf-ceaf",
+        "section": "Componente Especializado da Assistência Farmacêutica (CEAF) — Farmácias de Alto Custo (SES-DF) > 📝 Como Solicitar Medicamentos no Alto Custo > Modalidades de Cadastro: > 1. Atendimento Digital (CEAFDigital)",
+        "line_start": 75,
+        "line_end": 78,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "sesdf-ceaf:L81-L84",
+      "text": "Fonte: sesdf-ceaf\nSecao: Componente Especializado da Assistência Farmacêutica (CEAF) — Farmácias de Alto Custo (SES-DF) > 📝 Como Solicitar Medicamentos no Alto Custo > Modalidades de Cadastro: > 2. Atendimento Presencial com Agendamento\n\n- Para abertura de cadastro presencial comum, ligue para o Call-Center:\n  - **Telefone 160 (Opção 3)** — Para ligações dentro do DF.\n  - **0800 644 0160** — Para chamadas com origem fora do DF.\n- O atendente agendará dia e hora na unidade correspondente.",
+      "content_original": "- Para abertura de cadastro presencial comum, ligue para o Call-Center:\n  - **Telefone 160 (Opção 3)** — Para ligações dentro do DF.\n  - **0800 644 0160** — Para chamadas com origem fora do DF.\n- O atendente agendará dia e hora na unidade correspondente.\n",
+      "metadata": {
+        "source_id": "sesdf-ceaf",
+        "section": "Componente Especializado da Assistência Farmacêutica (CEAF) — Farmácias de Alto Custo (SES-DF) > 📝 Como Solicitar Medicamentos no Alto Custo > Modalidades de Cadastro: > 2. Atendimento Presencial com Agendamento",
+        "line_start": 81,
+        "line_end": 84,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "sesdf-ceaf:L87-L101",
+      "text": "Fonte: sesdf-ceaf\nSecao: Componente Especializado da Assistência Farmacêutica (CEAF) — Farmácias de Alto Custo (SES-DF) > 📝 Como Solicitar Medicamentos no Alto Custo > Modalidades de Cadastro: > 3. Casos Especiais SEM NECESSIDADE de Agendamento Prévio (Atendimento Imediato por Senha)\n\nPara garantir celeridade em agravos críticos, os seguintes tratamentos e condições têm **atendimento direto no guichê de primeira vez**, bastando retirar a senha:\n- ⚡ Atrofia Muscular Espinhal (AME)\n- ⚡ Diabetes Melito Tipo 1 (DM1)\n- ⚡ Distonias e Espasmo Hemifacial\n- ⚡ Doença Falciforme\n- ⚡ Doença Renal Crônica\n- ⚡ Dor Crônica\n- ⚡ Espasticidade\n- ⚡ Fenilcetonúria\n- ⚡ Fibrose Cística\n- ⚡ Imunossupressão no Transplante Renal e demais Órgãos\n- ⚡ Miastenia Gravis\n- ⚡ Prevenção de Tromboembolismo Venoso em Gestantes\n- ⚡ Púrpura Trombocitopênica Idiopática (PTI)\n- ⚡ Síndrome de Guillain-Barré",
+      "content_original": "Para garantir celeridade em agravos críticos, os seguintes tratamentos e condições têm **atendimento direto no guichê de primeira vez**, bastando retirar a senha:\n- ⚡ Atrofia Muscular Espinhal (AME)\n- ⚡ Diabetes Melito Tipo 1 (DM1)\n- ⚡ Distonias e Espasmo Hemifacial\n- ⚡ Doença Falciforme\n- ⚡ Doença Renal Crônica\n- ⚡ Dor Crônica\n- ⚡ Espasticidade\n- ⚡ Fenilcetonúria\n- ⚡ Fibrose Cística\n- ⚡ Imunossupressão no Transplante Renal e demais Órgãos\n- ⚡ Miastenia Gravis\n- ⚡ Prevenção de Tromboembolismo Venoso em Gestantes\n- ⚡ Púrpura Trombocitopênica Idiopática (PTI)\n- ⚡ Síndrome de Guillain-Barré\n",
+      "metadata": {
+        "source_id": "sesdf-ceaf",
+        "section": "Componente Especializado da Assistência Farmacêutica (CEAF) — Farmácias de Alto Custo (SES-DF) > 📝 Como Solicitar Medicamentos no Alto Custo > Modalidades de Cadastro: > 3. Casos Especiais SEM NECESSIDADE de Agendamento Prévio (Atendimento Imediato por Senha)",
+        "line_start": 87,
+        "line_end": 101,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "sesdf-ceaf:L103-L103",
+      "text": "Fonte: sesdf-ceaf\nSecao: Componente Especializado da Assistência Farmacêutica (CEAF) — Farmácias de Alto Custo (SES-DF) > 📝 Como Solicitar Medicamentos no Alto Custo > Modalidades de Cadastro: > 3. Casos Especiais SEM NECESSIDADE de Agendamento Prévio (Atendimento Imediato por Senha)\n\n---",
+      "content_original": "---\n",
+      "metadata": {
+        "source_id": "sesdf-ceaf",
+        "section": "Componente Especializado da Assistência Farmacêutica (CEAF) — Farmácias de Alto Custo (SES-DF) > 📝 Como Solicitar Medicamentos no Alto Custo > Modalidades de Cadastro: > 3. Casos Especiais SEM NECESSIDADE de Agendamento Prévio (Atendimento Imediato por Senha)",
+        "line_start": 103,
+        "line_end": 103,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "sesdf-ceaf:L107-L107",
+      "text": "Fonte: sesdf-ceaf\nSecao: Componente Especializado da Assistência Farmacêutica (CEAF) — Farmácias de Alto Custo (SES-DF) > 🚚 Programa Medicamento em Casa\n\nIniciativa da SES-DF que realiza a **entrega gratuita de medicamentos diretamente no domicílio** de pacientes já cadastrados no Componente Especializado.",
+      "content_original": "Iniciativa da SES-DF que realiza a **entrega gratuita de medicamentos diretamente no domicílio** de pacientes já cadastrados no Componente Especializado.\n",
+      "metadata": {
+        "source_id": "sesdf-ceaf",
+        "section": "Componente Especializado da Assistência Farmacêutica (CEAF) — Farmácias de Alto Custo (SES-DF) > 🚚 Programa Medicamento em Casa",
+        "line_start": 107,
+        "line_end": 107,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "sesdf-ceaf:L110-L113",
+      "text": "Fonte: sesdf-ceaf\nSecao: Componente Especializado da Assistência Farmacêutica (CEAF) — Farmácias de Alto Custo (SES-DF) > 🚚 Programa Medicamento em Casa > Critérios de Participação:\n\n- Estar ativamente cadastrado com autorização e processo válidos no CEAF.\n- Residir em regiões atendidas de Brasília e municípios do Entorno do DF.\n- O paciente pode credenciar **até 4 representantes legais** autorizados a receber as remessas.\n- **Exceções:** Medicamentos que necessitam de aplicação hospitalar assistida ou procedimentos técnicos complexos não são enviados pelo programa.",
+      "content_original": "- Estar ativamente cadastrado com autorização e processo válidos no CEAF.\n- Residir em regiões atendidas de Brasília e municípios do Entorno do DF.\n- O paciente pode credenciar **até 4 representantes legais** autorizados a receber as remessas.\n- **Exceções:** Medicamentos que necessitam de aplicação hospitalar assistida ou procedimentos técnicos complexos não são enviados pelo programa.\n",
+      "metadata": {
+        "source_id": "sesdf-ceaf",
+        "section": "Componente Especializado da Assistência Farmacêutica (CEAF) — Farmácias de Alto Custo (SES-DF) > 🚚 Programa Medicamento em Casa > Critérios de Participação:",
+        "line_start": 110,
+        "line_end": 113,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "sesdf-ceaf:L116-L117",
+      "text": "Fonte: sesdf-ceaf\nSecao: Componente Especializado da Assistência Farmacêutica (CEAF) — Farmácias de Alto Custo (SES-DF) > 🚚 Programa Medicamento em Casa > Como Solicitar a Adesão:\n\n- Entre em contato pela Central Telefônica: **(61) 3029-8080**;\n- Ou solicite pessoalmente no balcão de atendimento da sua Farmácia de referência.",
+      "content_original": "- Entre em contato pela Central Telefônica: **(61) 3029-8080**;\n- Ou solicite pessoalmente no balcão de atendimento da sua Farmácia de referência.\n",
+      "metadata": {
+        "source_id": "sesdf-ceaf",
+        "section": "Componente Especializado da Assistência Farmacêutica (CEAF) — Farmácias de Alto Custo (SES-DF) > 🚚 Programa Medicamento em Casa > Como Solicitar a Adesão:",
+        "line_start": 116,
+        "line_end": 117,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "sesdf-ceaf:L119-L119",
+      "text": "Fonte: sesdf-ceaf\nSecao: Componente Especializado da Assistência Farmacêutica (CEAF) — Farmácias de Alto Custo (SES-DF) > 🚚 Programa Medicamento em Casa > Como Solicitar a Adesão:\n\n---",
+      "content_original": "---\n",
+      "metadata": {
+        "source_id": "sesdf-ceaf",
+        "section": "Componente Especializado da Assistência Farmacêutica (CEAF) — Farmácias de Alto Custo (SES-DF) > 🚚 Programa Medicamento em Casa > Como Solicitar a Adesão:",
+        "line_start": 119,
+        "line_end": 119,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "sesdf-ceaf:L123-L130",
+      "text": "Fonte: sesdf-ceaf\nSecao: Componente Especializado da Assistência Farmacêutica (CEAF) — Farmácias de Alto Custo (SES-DF) > 📄 Documentação Obrigatória para Cadastro\n\nPara evitar devoluções e pendências documentais, apresente o dossiê completo:\n1. **LME (Laudo de Solicitação, Avaliação e Autorização de Medicamento):** Totalmente preenchido, assinado e carimbado pelo médico (validade de 90 dias a contar da emissão).\n2. **Receita Médica:** Em 2 vias, com nome genérico do fármaco, posologia e carimbo com CRM legível.\n3. **Termo de Consentimento Livre e Esclarecido (TCLE):** Assinado pelo paciente ou responsável, conforme modelo do PCDT da patologia.\n4. **Documento de Identidade Oficial:** Com foto e CPF do paciente (e do responsável, se for o caso).\n5. **Cartão Nacional de Saúde (CNS / Cartão SUS):** Do paciente.\n6. **Comprovante de Residência:** Atualizado (últimos 3 meses), em nome do paciente ou com declaração de residência.\n7. **Exames Complementares:** Laudos laboratoriais, radiológicos ou anatomopatológicos exigidos pelo respectivo protocolo clínico para confirmação diagnóstica.",
+      "content_original": "Para evitar devoluções e pendências documentais, apresente o dossiê completo:\n1. **LME (Laudo de Solicitação, Avaliação e Autorização de Medicamento):** Totalmente preenchido, assinado e carimbado pelo médico (validade de 90 dias a contar da emissão).\n2. **Receita Médica:** Em 2 vias, com nome genérico do fármaco, posologia e carimbo com CRM legível.\n3. **Termo de Consentimento Livre e Esclarecido (TCLE):** Assinado pelo paciente ou responsável, conforme modelo do PCDT da patologia.\n4. **Documento de Identidade Oficial:** Com foto e CPF do paciente (e do responsável, se for o caso).\n5. **Cartão Nacional de Saúde (CNS / Cartão SUS):** Do paciente.\n6. **Comprovante de Residência:** Atualizado (últimos 3 meses), em nome do paciente ou com declaração de residência.\n7. **Exames Complementares:** Laudos laboratoriais, radiológicos ou anatomopatológicos exigidos pelo respectivo protocolo clínico para confirmação diagnóstica.\n",
+      "metadata": {
+        "source_id": "sesdf-ceaf",
+        "section": "Componente Especializado da Assistência Farmacêutica (CEAF) — Farmácias de Alto Custo (SES-DF) > 📄 Documentação Obrigatória para Cadastro",
+        "line_start": 123,
+        "line_end": 130,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "sesdf-ceaf:L132-L132",
+      "text": "Fonte: sesdf-ceaf\nSecao: Componente Especializado da Assistência Farmacêutica (CEAF) — Farmácias de Alto Custo (SES-DF) > 📄 Documentação Obrigatória para Cadastro\n\n---",
+      "content_original": "---\n",
+      "metadata": {
+        "source_id": "sesdf-ceaf",
+        "section": "Componente Especializado da Assistência Farmacêutica (CEAF) — Farmácias de Alto Custo (SES-DF) > 📄 Documentação Obrigatória para Cadastro",
+        "line_start": 132,
+        "line_end": 132,
+        "content_type": "text"
+      }
+    },
+    {
+      "chunk_id": "sesdf-ceaf:L135-L137",
+      "text": "Fonte: sesdf-ceaf\nSecao: Componente Especializado da Assistência Farmacêutica (CEAF) — Farmácias de Alto Custo (SES-DF) > 🔗 Links Úteis e Consultas\n\n- [Portal CEAFDigital SES-DF](https://ceafdigital.saude.df.gov.br)\n- [Protocolos Clínicos e Diretrizes Terapêuticas (PCDT) - Ministério da Saúde](https://www.gov.br/conitec/pt-br/assuntos/avaliacao-de-tecnologias-em-saude/pcdt)\n- [Consulta ao Cadastro Nacional de Estabelecimentos de Saúde (CNES)](https://cnes.datasus.gov.br)",
+      "content_original": "- [Portal CEAFDigital SES-DF](https://ceafdigital.saude.df.gov.br)\n- [Protocolos Clínicos e Diretrizes Terapêuticas (PCDT) - Ministério da Saúde](https://www.gov.br/conitec/pt-br/assuntos/avaliacao-de-tecnologias-em-saude/pcdt)\n- [Consulta ao Cadastro Nacional de Estabelecimentos de Saúde (CNES)](https://cnes.datasus.gov.br)\n",
+      "metadata": {
+        "source_id": "sesdf-ceaf",
+        "section": "Componente Especializado da Assistência Farmacêutica (CEAF) — Farmácias de Alto Custo (SES-DF) > 🔗 Links Úteis e Consultas",
+        "line_start": 135,
+        "line_end": 137,
+        "content_type": "text"
+      }
+    }
+  ]
+}

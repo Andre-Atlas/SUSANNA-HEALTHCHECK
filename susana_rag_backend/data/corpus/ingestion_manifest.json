@@ -1,0 +1,24 @@
+{
+  "documents": {
+    "ebbaee33dee6156d9e330334d5a469b7097af67f1bb5e36c06761b8b7e24c24f": {
+      "title": "Início",
+      "url": "https://www.df.gov.br/",
+      "tag": "INSTITUCIONAL",
+      "author_or_department": "Secretaria de Saúde do DF (SES-DF)",
+      "fetched_at": "2026-10-12T08:31:44.572213+00:00",
+      "indexed_at": "2026-10-12T08:31:45.226255+00:00",
+      "chunks_count": 2,
+      "char_count": 1500
+    },
+    "9ad216023f090d4d24f315fade3a1d5504ebe9d6c68aa2273de0f937dcdce60a": {
+      "title": "Aviso Oficial: Ponto de Atendimento Rápido Especial em Santa Maria",
+      "url": "https://www.saude.df.gov.br/comunicado-santa-maria-sazonal-2026",
+      "tag": "UNIDADE",
+      "author_or_department": "Secretaria de Saúde do DF",
+      "fetched_at": "2026-10-12T08:31:45.228641+00:00",
+      "indexed_at": "2026-10-12T08:31:45.436541+00:00",
+      "chunks_count": 1,
+      "char_count": 258
+    }
+  }
+}

@@ -1,0 +1,667 @@
+{
+  "schema_version": "1.0",
+  "documento": {
+    "id": "meu_sus_digital_faq",
+    "titulo": "Base estruturada de informações sobre o Meu SUS Digital",
+    "tipo": "knowledge_base",
+    "idioma": "pt-BR",
+    "fonte_principal": "https://www.gov.br/saude/pt-br/composicao/seidigi/meu-sus-digital",
+    "origem": "texto fornecido pelo usuário",
+    "observacao": "Estruturado exclusivamente a partir do conteúdo fornecido; não foram adicionadas respostas externas."
+  },
+  "documentos": [
+    {
+      "id": "meu_sus_exames_01",
+      "categoria": "exames",
+      "categoria_titulo": "Resultados de exames",
+      "tipo": "faq",
+      "pergunta": "Quem envia os dados dos exames para a base do Ministério da Saúde?",
+      "resposta": "Após o resultado, os laboratórios públicos e privados são responsáveis pelo envio dos dados para a base de dados do Ministério da Saúde. O Meu SUS Digital consome as informações sobre exames lançados e apresenta no aplicativo e no sistema.",
+      "texto_indexacao": "Quem envia os dados dos exames para a base do Ministério da Saúde? Após o resultado, os laboratórios públicos e privados são responsáveis pelo envio dos dados para a base de dados do Ministério da Saúde. O Meu SUS Digital consome as informações sobre exames lançados e apresenta no aplicativo e no sistema.",
+      "fontes": [
+        {
+          "url": "https://www.gov.br/saude/pt-br/composicao/seidigi/meu-sus-digital"
+        }
+      ],
+      "idioma": "pt-BR"
+    },
+    {
+      "id": "meu_sus_exames_02",
+      "categoria": "exames",
+      "categoria_titulo": "Resultados de exames",
+      "tipo": "faq",
+      "pergunta": "O que fazer se o exame não aparecer no Meu SUS Digital?",
+      "resposta": "Caso o exame não esteja apresentado no Meu SUS Digital, entre em contato com o laboratório onde o exame foi realizado e verifique se os dados foram migrados para a base de dados do Ministério da Saúde.",
+      "texto_indexacao": "O que fazer se o exame não aparecer no Meu SUS Digital? Caso o exame não esteja apresentado no Meu SUS Digital, entre em contato com o laboratório onde o exame foi realizado e verifique se os dados foram migrados para a base de dados do Ministério da Saúde.",
+      "fontes": [
+        {
+          "url": "https://www.gov.br/saude/pt-br/composicao/seidigi/meu-sus-digital"
+        }
+      ],
+      "idioma": "pt-BR"
+    },
+    {
+      "id": "meu_sus_vacinacao_01",
+      "categoria": "vacinacao",
+      "categoria_titulo": "Vacinação e certificados",
+      "tipo": "faq",
+      "pergunta": "Como emitir o Certificado Nacional de Vacinação COVID-19?",
+      "resposta": "Quem foi vacinado e teve os dados enviados ao Ministério da Saúde pode emitir o Certificado Nacional de Vacinação COVID-19 pelo Meu SUS Digital, nas versões aplicativo e sistema web.",
+      "texto_indexacao": "Como emitir o Certificado Nacional de Vacinação COVID-19? Quem foi vacinado e teve os dados enviados ao Ministério da Saúde pode emitir o Certificado Nacional de Vacinação COVID-19 pelo Meu SUS Digital, nas versões aplicativo e sistema web.",
+      "fontes": [
+        {
+          "url": "https://www.gov.br/saude/pt-br/composicao/seidigi/meu-sus-digital"
+        }
+      ],
+      "idioma": "pt-BR"
+    },
+    {
+      "id": "meu_sus_vacinacao_02",
+      "categoria": "vacinacao",
+      "categoria_titulo": "Vacinação e certificados",
+      "tipo": "faq",
+      "pergunta": "Como validar o certificado de vacinação?",
+      "resposta": "O Meu SUS Digital disponibiliza a opção de validar o certificado através da ferramenta Valida QR Code ou pelo site. Para validação, utilize o código validador ou o leitor de câmera. O documento é válido por um ano em território nacional. Se um novo certificado for emitido, o anterior não poderá mais ser utilizado.",
+      "texto_indexacao": "Como validar o certificado de vacinação? O Meu SUS Digital disponibiliza a opção de validar o certificado através da ferramenta Valida QR Code ou pelo site. Para validação, utilize o código validador ou o leitor de câmera. O documento é válido por um ano em território nacional. Se um novo certificado for emitido, o anterior não poderá mais ser utilizado.",
+      "fontes": [
+        {
+          "url": "https://www.gov.br/saude/pt-br/composicao/seidigi/meu-sus-digital"
+        },
+        {
+          "url": "https://validaqrcode.saude.gov.br/"
+        }
+      ],
+      "idioma": "pt-BR"
+    },
+    {
+      "id": "meu_sus_vacinacao_03",
+      "categoria": "vacinacao",
+      "categoria_titulo": "Vacinação e certificados",
+      "tipo": "faq",
+      "pergunta": "Quais sistemas fornecem os registros de vacinação exibidos no Meu SUS Digital?",
+      "resposta": "O aplicativo exibe, a partir da identificação do cidadão pelo Cartão Nacional de Saúde (CNS) e CPF, as vacinas aplicadas registradas no SI-PNI, nos sistemas E-SUS Atenção Primária em Saúde e em sistemas próprios das secretarias estaduais e municipais. O registro é realizado pelos estabelecimentos de saúde responsáveis pela aplicação das vacinas.",
+      "texto_indexacao": "Quais sistemas fornecem os registros de vacinação exibidos no Meu SUS Digital? O aplicativo exibe, a partir da identificação do cidadão pelo Cartão Nacional de Saúde (CNS) e CPF, as vacinas aplicadas registradas no SI-PNI, nos sistemas E-SUS Atenção Primária em Saúde e em sistemas próprios das secretarias estaduais e municipais. O registro é realizado pelos estabelecimentos de saúde responsáveis pela aplicação das vacinas.",
+      "fontes": [
+        {
+          "url": "https://www.gov.br/saude/pt-br/acesso-a-informacao/acoes-e-programas/cns"
+        },
+        {
+          "url": "http://pni.datasus.gov.br/"
+        }
+      ],
+      "idioma": "pt-BR"
+    },
+    {
+      "id": "meu_sus_vacinacao_04",
+      "categoria": "vacinacao",
+      "categoria_titulo": "Vacinação e certificados",
+      "tipo": "faq",
+      "pergunta": "O que fazer se uma vacina não aparecer no Meu SUS Digital?",
+      "resposta": "Procure o estabelecimento de saúde mais próximo da sua residência ou o estabelecimento onde a vacina foi administrada e verifique se as informações já foram lançadas nos sistemas de vacinação.",
+      "texto_indexacao": "O que fazer se uma vacina não aparecer no Meu SUS Digital? Procure o estabelecimento de saúde mais próximo da sua residência ou o estabelecimento onde a vacina foi administrada e verifique se as informações já foram lançadas nos sistemas de vacinação.",
+      "fontes": [],
+      "idioma": "pt-BR"
+    },
+    {
+      "id": "meu_sus_vacinacao_05",
+      "categoria": "vacinacao",
+      "categoria_titulo": "Vacinação e certificados",
+      "tipo": "faq",
+      "pergunta": "Quem pode corrigir dados de vacinação?",
+      "resposta": "O Meu SUS Digital recebe as informações lançadas pelos estabelecimentos de saúde e somente esses estabelecimentos podem realizar correções ou alterações. Para corrigir dados, procure o polo onde a vacina foi administrada e solicite a correção.",
+      "texto_indexacao": "Quem pode corrigir dados de vacinação? O Meu SUS Digital recebe as informações lançadas pelos estabelecimentos de saúde e somente esses estabelecimentos podem realizar correções ou alterações. Para corrigir dados, procure o polo onde a vacina foi administrada e solicite a correção.",
+      "fontes": [
+        {
+          "url": "https://www.gov.br/saude/pt-br/composicao/seidigi/meu-sus-digital"
+        }
+      ],
+      "idioma": "pt-BR"
+    },
+    {
+      "id": "meu_sus_vacinacao_06",
+      "categoria": "vacinacao",
+      "categoria_titulo": "Vacinação e certificados",
+      "tipo": "faq",
+      "pergunta": "Como os dados de vacinação chegam à Rede Nacional de Dados em Saúde?",
+      "resposta": "Os dados são enviados à Rede Nacional de Dados em Saúde (RNDS) pelos estabelecimentos de saúde através do SI-PNI, dos sistemas E-SUS Atenção Primária em Saúde e de sistemas próprios das secretarias estaduais e municipais.",
+      "texto_indexacao": "Como os dados de vacinação chegam à Rede Nacional de Dados em Saúde? Os dados são enviados à Rede Nacional de Dados em Saúde (RNDS) pelos estabelecimentos de saúde através do SI-PNI, dos sistemas E-SUS Atenção Primária em Saúde e de sistemas próprios das secretarias estaduais e municipais.",
+      "fontes": [
+        {
+          "url": "https://www.gov.br/saude/pt-br/composicao/seidigi/rnds"
+        },
+        {
+          "url": "http://pni.datasus.gov.br/"
+        }
+      ],
+      "idioma": "pt-BR"
+    },
+    {
+      "id": "meu_sus_vacinacao_07",
+      "categoria": "vacinacao",
+      "categoria_titulo": "Vacinação e certificados",
+      "tipo": "faq",
+      "pergunta": "Quem define os critérios e prioridades das campanhas de vacinação?",
+      "resposta": "Os critérios, estratégias e prioridades para a Campanha de Vacinação são definidos pelos gestores estaduais e municipais. Após a vacinação, esses gestores são responsáveis pelo envio das informações para a base de dados do Ministério da Saúde.",
+      "texto_indexacao": "Quem define os critérios e prioridades das campanhas de vacinação? Os critérios, estratégias e prioridades para a Campanha de Vacinação são definidos pelos gestores estaduais e municipais. Após a vacinação, esses gestores são responsáveis pelo envio das informações para a base de dados do Ministério da Saúde.",
+      "fontes": [],
+      "idioma": "pt-BR"
+    },
+    {
+      "id": "meu_sus_vacinacao_08",
+      "categoria": "vacinacao",
+      "categoria_titulo": "Vacinação e certificados",
+      "tipo": "faq",
+      "pergunta": "Por que uma dose de vacina pode demorar para aparecer?",
+      "resposta": "Devido ao grande fluxo de atendimento, as Secretarias podem necessitar de mais tempo para lançar as doses da vacina na base de dados.",
+      "texto_indexacao": "Por que uma dose de vacina pode demorar para aparecer? Devido ao grande fluxo de atendimento, as Secretarias podem necessitar de mais tempo para lançar as doses da vacina na base de dados.",
+      "fontes": [],
+      "idioma": "pt-BR"
+    },
+    {
+      "id": "meu_sus_dignidade_menstrual_01",
+      "categoria": "dignidade_menstrual",
+      "categoria_titulo": "Dignidade Menstrual",
+      "tipo": "faq",
+      "pergunta": "Como emitir a autorização para retirada de absorventes?",
+      "resposta": "A autorização para retirada de absorventes deve ser emitida no Meu SUS Digital. Pelo aplicativo é possível emitir a autorização para retirada nos estabelecimentos credenciados no Programa Farmácia Popular.",
+      "texto_indexacao": "Como emitir a autorização para retirada de absorventes? A autorização para retirada de absorventes deve ser emitida no Meu SUS Digital. Pelo aplicativo é possível emitir a autorização para retirada nos estabelecimentos credenciados no Programa Farmácia Popular.",
+      "fontes": [
+        {
+          "url": "https://www.gov.br/saude/pt-br/composicao/seidigi/meu-sus-digital"
+        },
+        {
+          "url": "https://www.gov.br/saude/pt-br/composicao/sectics/daf/farmacia-popular"
+        }
+      ],
+      "idioma": "pt-BR"
+    },
+    {
+      "id": "meu_sus_dignidade_menstrual_02",
+      "categoria": "dignidade_menstrual",
+      "categoria_titulo": "Dignidade Menstrual",
+      "tipo": "faq",
+      "pergunta": "Quais requisitos são informados para o Dignidade Menstrual?",
+      "resposta": "O texto informa como requisitos: ser estudante de baixa renda da rede pública; estar em situação de rua e/ou pobreza; ter renda mensal de até R$208; ou estar cadastrado no Programa Bolsa Família.",
+      "texto_indexacao": "Quais requisitos são informados para o Dignidade Menstrual? O texto informa como requisitos: ser estudante de baixa renda da rede pública; estar em situação de rua e/ou pobreza; ter renda mensal de até R$208; ou estar cadastrado no Programa Bolsa Família.",
+      "fontes": [],
+      "idioma": "pt-BR"
+    },
+    {
+      "id": "meu_sus_dignidade_menstrual_03",
+      "categoria": "dignidade_menstrual",
+      "categoria_titulo": "Dignidade Menstrual",
+      "tipo": "faq",
+      "pergunta": "Como emitir a autorização do Dignidade Menstrual?",
+      "resposta": "Entre no Meu SUS Digital com sua conta Gov.br, selecione Dignidade Menstrual e clique em emitir autorização. A autorização pode ser salva como PDF e apresentada nos estabelecimentos credenciados da Farmácia Popular para retirada gratuita de absorventes.",
+      "texto_indexacao": "Como emitir a autorização do Dignidade Menstrual? Entre no Meu SUS Digital com sua conta Gov.br, selecione Dignidade Menstrual e clique em emitir autorização. A autorização pode ser salva como PDF e apresentada nos estabelecimentos credenciados da Farmácia Popular para retirada gratuita de absorventes.",
+      "fontes": [
+        {
+          "url": "https://www.gov.br/saude/pt-br/composicao/seidigi/meu-sus-digital"
+        }
+      ],
+      "idioma": "pt-BR"
+    },
+    {
+      "id": "meu_sus_dignidade_menstrual_04",
+      "categoria": "dignidade_menstrual",
+      "categoria_titulo": "Dignidade Menstrual",
+      "tipo": "faq",
+      "pergunta": "O que é o Programa Dignidade Menstrual?",
+      "resposta": "O Dignidade Menstrual é um programa do Governo Federal voltado ao combate à pobreza menstrual e à promoção da dignidade e do bem-estar de pessoas que menstruam. O texto informa que a autorização pode ser emitida pelo Meu SUS Digital e apresentada nos estabelecimentos credenciados pelo Programa Farmácia Popular do Brasil.",
+      "texto_indexacao": "O que é o Programa Dignidade Menstrual? O Dignidade Menstrual é um programa do Governo Federal voltado ao combate à pobreza menstrual e à promoção da dignidade e do bem-estar de pessoas que menstruam. O texto informa que a autorização pode ser emitida pelo Meu SUS Digital e apresentada nos estabelecimentos credenciados pelo Programa Farmácia Popular do Brasil.",
+      "fontes": [
+        {
+          "url": "https://www.gov.br/saude/pt-br/composicao/sectics/daf/farmacia-popular"
+        },
+        {
+          "url": "https://play.google.com/store/apps/details?id=br.gov.datasus.cnsdigital&hl=pt_BR&gl=US"
+        }
+      ],
+      "idioma": "pt-BR"
+    },
+    {
+      "id": "meu_sus_cns_01",
+      "categoria": "cns",
+      "categoria_titulo": "Cartão Nacional de Saúde (CNS)",
+      "tipo": "faq",
+      "pergunta": "O Meu SUS Digital pode substituir o cartão físico?",
+      "resposta": "O Meu SUS Digital pode ser usado para substituir o cartão impresso. Caso queira o cartão impresso, a impressão é realizada presencialmente e exclusivamente em um estabelecimento de saúde.",
+      "texto_indexacao": "O Meu SUS Digital pode substituir o cartão físico? O Meu SUS Digital pode ser usado para substituir o cartão impresso. Caso queira o cartão impresso, a impressão é realizada presencialmente e exclusivamente em um estabelecimento de saúde.",
+      "fontes": [
+        {
+          "url": "https://www.gov.br/saude/pt-br/acesso-a-informacao/acoes-e-programas/cns"
+        }
+      ],
+      "idioma": "pt-BR"
+    },
+    {
+      "id": "meu_sus_cns_02",
+      "categoria": "cns",
+      "categoria_titulo": "Cartão Nacional de Saúde (CNS)",
+      "tipo": "faq",
+      "pergunta": "Por que a numeração do CNS pode mudar?",
+      "resposta": "A numeração dos cartões se baseia no grau de qualidade dos cadastros. O texto informa que cartões iniciados com o numeral 7 têm o melhor grau de qualidade e que, ao complementar informações cadastrais, pode ser gerada uma nova numeração iniciada com 7, que passa a ser o Cartão Principal.",
+      "texto_indexacao": "Por que a numeração do CNS pode mudar? A numeração dos cartões se baseia no grau de qualidade dos cadastros. O texto informa que cartões iniciados com o numeral 7 têm o melhor grau de qualidade e que, ao complementar informações cadastrais, pode ser gerada uma nova numeração iniciada com 7, que passa a ser o Cartão Principal.",
+      "fontes": [],
+      "idioma": "pt-BR"
+    },
+    {
+      "id": "meu_sus_cns_03",
+      "categoria": "cns",
+      "categoria_titulo": "Cartão Nacional de Saúde (CNS)",
+      "tipo": "faq",
+      "pergunta": "O Meu SUS Digital gera novas numerações de CNS?",
+      "resposta": "Não. O aplicativo não gera novas numerações; ele carrega as informações que já existem no Cartão Nacional de Saúde.",
+      "texto_indexacao": "O Meu SUS Digital gera novas numerações de CNS? Não. O aplicativo não gera novas numerações; ele carrega as informações que já existem no Cartão Nacional de Saúde.",
+      "fontes": [
+        {
+          "url": "https://www.gov.br/saude/pt-br/acesso-a-informacao/acoes-e-programas/cns"
+        }
+      ],
+      "idioma": "pt-BR"
+    },
+    {
+      "id": "meu_sus_cns_04",
+      "categoria": "cns",
+      "categoria_titulo": "Cartão Nacional de Saúde (CNS)",
+      "tipo": "faq",
+      "pergunta": "Como consultar o número do CNS no Meu SUS Digital?",
+      "resposta": "Clique em Perfil e, em seguida, no ícone do cartão. O cartão exibe a foto do usuário, o número do CNS e um QR Code de identificação.",
+      "texto_indexacao": "Como consultar o número do CNS no Meu SUS Digital? Clique em Perfil e, em seguida, no ícone do cartão. O cartão exibe a foto do usuário, o número do CNS e um QR Code de identificação.",
+      "fontes": [
+        {
+          "url": "https://www.gov.br/saude/pt-br/acesso-a-informacao/acoes-e-programas/cns"
+        }
+      ],
+      "idioma": "pt-BR"
+    },
+    {
+      "id": "meu_sus_cns_05",
+      "categoria": "cns",
+      "categoria_titulo": "Cartão Nacional de Saúde (CNS)",
+      "tipo": "faq",
+      "pergunta": "É possível fazer um novo CNS pelo Meu SUS Digital?",
+      "resposta": "Não. A criação de novos cadastros e qualquer alteração em cadastros existentes do CNS são realizadas presencialmente e exclusivamente em um estabelecimento de saúde. Procure um estabelecimento portando seus documentos.",
+      "texto_indexacao": "É possível fazer um novo CNS pelo Meu SUS Digital? Não. A criação de novos cadastros e qualquer alteração em cadastros existentes do CNS são realizadas presencialmente e exclusivamente em um estabelecimento de saúde. Procure um estabelecimento portando seus documentos.",
+      "fontes": [
+        {
+          "url": "https://www.gov.br/saude/pt-br/acesso-a-informacao/acoes-e-programas/cns"
+        }
+      ],
+      "idioma": "pt-BR"
+    },
+    {
+      "id": "meu_sus_agendamento_01",
+      "categoria": "agendamento",
+      "categoria_titulo": "Marcação de consultas",
+      "tipo": "faq",
+      "pergunta": "É possível marcar consultas pelo Meu SUS Digital?",
+      "resposta": "A funcionalidade de marcação de consulta está disponível para municípios brasileiros que possuem Serviços de Atenção Primária à Saúde e utilizam o Prontuário Eletrônico do Cidadão e-SUS Atenção Primária à Saúde (PEC e-SUS APS).",
+      "texto_indexacao": "É possível marcar consultas pelo Meu SUS Digital? A funcionalidade de marcação de consulta está disponível para municípios brasileiros que possuem Serviços de Atenção Primária à Saúde e utilizam o Prontuário Eletrônico do Cidadão e-SUS Atenção Primária à Saúde (PEC e-SUS APS).",
+      "fontes": [
+        {
+          "url": "https://www.gov.br/saude/pt-br/composicao/saps/informatiza-aps/prontuario-eletronico"
+        }
+      ],
+      "idioma": "pt-BR"
+    },
+    {
+      "id": "meu_sus_agendamento_02",
+      "categoria": "agendamento",
+      "categoria_titulo": "Marcação de consultas",
+      "tipo": "faq",
+      "pergunta": "Quem habilita a marcação de consultas?",
+      "resposta": "A habilitação é responsabilidade do gestor municipal de saúde e depende da organização do serviço junto às equipes de saúde da família para habilitar o Agendamento online no PEC e disponibilizar horários.",
+      "texto_indexacao": "Quem habilita a marcação de consultas? A habilitação é responsabilidade do gestor municipal de saúde e depende da organização do serviço junto às equipes de saúde da família para habilitar o Agendamento online no PEC e disponibilizar horários.",
+      "fontes": [],
+      "idioma": "pt-BR"
+    },
+    {
+      "id": "meu_sus_agendamento_03",
+      "categoria": "agendamento",
+      "categoria_titulo": "Marcação de consultas",
+      "tipo": "faq",
+      "pergunta": "Todos os estabelecimentos oferecem marcação de consulta pelo Meu SUS Digital?",
+      "resposta": "Não. A funcionalidade não é obrigatória. Estabelecimentos que utilizam sistemas próprios de prontuário eletrônico não possuem interface com o aplicativo do Ministério da Saúde.",
+      "texto_indexacao": "Todos os estabelecimentos oferecem marcação de consulta pelo Meu SUS Digital? Não. A funcionalidade não é obrigatória. Estabelecimentos que utilizam sistemas próprios de prontuário eletrônico não possuem interface com o aplicativo do Ministério da Saúde.",
+      "fontes": [],
+      "idioma": "pt-BR"
+    },
+    {
+      "id": "meu_sus_familiares_01",
+      "categoria": "familiares",
+      "categoria_titulo": "Contas de familiares",
+      "tipo": "faq",
+      "pergunta": "Como adicionar um familiar no Meu SUS Digital?",
+      "resposta": "No Meu SUS Digital, clique em Perfil, acesse Gerenciar Contas, selecione Adicionar uma nova conta e siga o procedimento.",
+      "texto_indexacao": "Como adicionar um familiar no Meu SUS Digital? No Meu SUS Digital, clique em Perfil, acesse Gerenciar Contas, selecione Adicionar uma nova conta e siga o procedimento.",
+      "fontes": [
+        {
+          "url": "https://www.gov.br/saude/pt-br/composicao/seidigi/meu-sus-digital"
+        }
+      ],
+      "idioma": "pt-BR"
+    },
+    {
+      "id": "meu_sus_familiares_02",
+      "categoria": "familiares",
+      "categoria_titulo": "Contas de familiares",
+      "tipo": "faq",
+      "pergunta": "Quais são os requisitos para vincular um familiar?",
+      "resposta": "É necessário realizar o login Gov.br utilizando os dados da pessoa que deseja vincular. O familiar precisa ter cadastro no Meu SUS Digital e possuir número do CNS vinculado.",
+      "texto_indexacao": "Quais são os requisitos para vincular um familiar? É necessário realizar o login Gov.br utilizando os dados da pessoa que deseja vincular. O familiar precisa ter cadastro no Meu SUS Digital e possuir número do CNS vinculado.",
+      "fontes": [
+        {
+          "url": "https://www.gov.br/saude/pt-br/acesso-a-informacao/acoes-e-programas/cns"
+        }
+      ],
+      "idioma": "pt-BR"
+    },
+    {
+      "id": "meu_sus_familiares_03",
+      "categoria": "familiares",
+      "categoria_titulo": "Contas de familiares",
+      "tipo": "faq",
+      "pergunta": "O que fazer se não for possível gerar o CNS do familiar?",
+      "resposta": "Procure o serviço de saúde mais próximo para a emissão do documento.",
+      "texto_indexacao": "O que fazer se não for possível gerar o CNS do familiar? Procure o serviço de saúde mais próximo para a emissão do documento.",
+      "fontes": [],
+      "idioma": "pt-BR"
+    },
+    {
+      "id": "meu_sus_govbr_01",
+      "categoria": "govbr",
+      "categoria_titulo": "Gov.br e acesso",
+      "tipo": "faq",
+      "pergunta": "Como o Meu SUS Digital realiza a autenticação?",
+      "resposta": "O Meu SUS Digital utiliza a autenticação fornecida pelo Gov.br, assim como outros serviços digitais do governo federal.",
+      "texto_indexacao": "Como o Meu SUS Digital realiza a autenticação? O Meu SUS Digital utiliza a autenticação fornecida pelo Gov.br, assim como outros serviços digitais do governo federal.",
+      "fontes": [
+        {
+          "url": "https://www.gov.br/pt-br"
+        }
+      ],
+      "idioma": "pt-BR"
+    },
+    {
+      "id": "meu_sus_govbr_02",
+      "categoria": "govbr",
+      "categoria_titulo": "Gov.br e acesso",
+      "tipo": "faq",
+      "pergunta": "O que é o portal Gov.br?",
+      "resposta": "O portal Gov.br surgiu para unificar os canais digitais do governo federal e promover o acesso dos cidadãos aos serviços públicos.",
+      "texto_indexacao": "O que é o portal Gov.br? O portal Gov.br surgiu para unificar os canais digitais do governo federal e promover o acesso dos cidadãos aos serviços públicos.",
+      "fontes": [
+        {
+          "url": "https://www.gov.br/pt-br"
+        }
+      ],
+      "idioma": "pt-BR"
+    },
+    {
+      "id": "meu_sus_govbr_03",
+      "categoria": "govbr",
+      "categoria_titulo": "Gov.br e acesso",
+      "tipo": "faq",
+      "pergunta": "Onde recuperar dados de acesso do Gov.br?",
+      "resposta": "O texto orienta o acesso ao site Gov.br para recuperação dos dados.",
+      "texto_indexacao": "Onde recuperar dados de acesso do Gov.br? O texto orienta o acesso ao site Gov.br para recuperação dos dados.",
+      "fontes": [
+        {
+          "url": "https://sso.acesso.gov.br/"
+        }
+      ],
+      "idioma": "pt-BR"
+    },
+    {
+      "id": "meu_sus_govbr_04",
+      "categoria": "govbr",
+      "categoria_titulo": "Gov.br e acesso",
+      "tipo": "faq",
+      "pergunta": "Como alterar a senha do Gov.br?",
+      "resposta": "Informe o CPF, selecione a opção de recuperação de senha e siga as etapas apresentadas para confirmação e recebimento do código.",
+      "texto_indexacao": "Como alterar a senha do Gov.br? Informe o CPF, selecione a opção de recuperação de senha e siga as etapas apresentadas para confirmação e recebimento do código.",
+      "fontes": [
+        {
+          "url": "https://sso.acesso.gov.br/"
+        }
+      ],
+      "idioma": "pt-BR"
+    },
+    {
+      "id": "meu_sus_govbr_05",
+      "categoria": "govbr",
+      "categoria_titulo": "Gov.br e acesso",
+      "tipo": "faq",
+      "pergunta": "Quais dados podem ser alterados na área do Gov.br?",
+      "resposta": "Na área Minha Área, o usuário pode alterar dados cadastrais básicos, como nome, e-mail e celular, além do endereço e da senha.",
+      "texto_indexacao": "Quais dados podem ser alterados na área do Gov.br? Na área Minha Área, o usuário pode alterar dados cadastrais básicos, como nome, e-mail e celular, além do endereço e da senha.",
+      "fontes": [
+        {
+          "url": "https://www.gov.br/pt-br"
+        }
+      ],
+      "idioma": "pt-BR"
+    },
+    {
+      "id": "meu_sus_cadastro_01",
+      "categoria": "cadastro",
+      "categoria_titulo": "Alteração de dados cadastrais",
+      "tipo": "faq",
+      "pergunta": "Quem pode alterar os dados exibidos no Meu SUS Digital?",
+      "resposta": "As inclusões, alterações e exclusões de dados e informações inseridas no Meu SUS Digital são realizadas pelos estabelecimentos de saúde.",
+      "texto_indexacao": "Quem pode alterar os dados exibidos no Meu SUS Digital? As inclusões, alterações e exclusões de dados e informações inseridas no Meu SUS Digital são realizadas pelos estabelecimentos de saúde.",
+      "fontes": [
+        {
+          "url": "https://www.gov.br/saude/pt-br/composicao/seidigi/meu-sus-digital"
+        }
+      ],
+      "idioma": "pt-BR"
+    },
+    {
+      "id": "meu_sus_cadastro_02",
+      "categoria": "cadastro",
+      "categoria_titulo": "Alteração de dados cadastrais",
+      "tipo": "faq",
+      "pergunta": "Quais documentos levar para solicitar alteração de dados?",
+      "resposta": "Para solicitar alteração ou exclusão, o cidadão deve comparecer ao estabelecimento de saúde próximo à sua residência e apresentar documento de identificação com foto, comprovante de residência e número do CNS.",
+      "texto_indexacao": "Quais documentos levar para solicitar alteração de dados? Para solicitar alteração ou exclusão, o cidadão deve comparecer ao estabelecimento de saúde próximo à sua residência e apresentar documento de identificação com foto, comprovante de residência e número do CNS.",
+      "fontes": [
+        {
+          "url": "https://www.gov.br/saude/pt-br/acesso-a-informacao/acoes-e-programas/cns"
+        }
+      ],
+      "idioma": "pt-BR"
+    },
+    {
+      "id": "meu_sus_atualizacao_01",
+      "categoria": "atualizacao",
+      "categoria_titulo": "Atualização do aplicativo",
+      "tipo": "faq",
+      "pergunta": "Por que pode ser necessário atualizar o Meu SUS Digital?",
+      "resposta": "Alguns celulares são configurados para atualização automática, enquanto outros podem estar configurados para atualização manual. Nesse caso, pode ser necessário atualizar o aplicativo nas lojas para obter conteúdo atualizado.",
+      "texto_indexacao": "Por que pode ser necessário atualizar o Meu SUS Digital? Alguns celulares são configurados para atualização automática, enquanto outros podem estar configurados para atualização manual. Nesse caso, pode ser necessário atualizar o aplicativo nas lojas para obter conteúdo atualizado.",
+      "fontes": [],
+      "idioma": "pt-BR"
+    },
+    {
+      "id": "meu_sus_funcionalidades_01",
+      "categoria": "funcionalidades",
+      "categoria_titulo": "Funcionalidades",
+      "tipo": "faq",
+      "pergunta": "Quais informações de saúde podem ser consultadas no Meu SUS Digital?",
+      "resposta": "O cidadão pode acessar histórico de vacinas, carteira de vacinação, certificados e documentos, resultados de exames, medicamentos prescritos e dispensados, informações sobre atendimentos recebidos, consultas e procedimentos agendados e funcionalidades de gestão pessoal de saúde, como o Diário de Saúde.",
+      "texto_indexacao": "Quais informações de saúde podem ser consultadas no Meu SUS Digital? O cidadão pode acessar histórico de vacinas, carteira de vacinação, certificados e documentos, resultados de exames, medicamentos prescritos e dispensados, informações sobre atendimentos recebidos, consultas e procedimentos agendados e funcionalidades de gestão pessoal de saúde, como o Diário de Saúde.",
+      "fontes": [
+        {
+          "url": "https://www.gov.br/saude/pt-br/composicao/seidigi/meu-sus-digital"
+        }
+      ],
+      "idioma": "pt-BR"
+    },
+    {
+      "id": "meu_sus_funcionalidades_02",
+      "categoria": "funcionalidades",
+      "categoria_titulo": "Funcionalidades",
+      "tipo": "faq",
+      "pergunta": "É possível consultar serviços de saúde próximos?",
+      "resposta": "Sim. O cidadão pode consultar serviços de saúde próximos à sua localização e a melhor rota. O catálogo inclui hospitais, Unidades Básicas de Saúde, maternidades, Atenção Psicossocial, Academias de Saúde, Unidades de Saúde Bucal e Unidades de Doenças Raras, Transplantes e de Serviços Hemoterápicos.",
+      "texto_indexacao": "É possível consultar serviços de saúde próximos? Sim. O cidadão pode consultar serviços de saúde próximos à sua localização e a melhor rota. O catálogo inclui hospitais, Unidades Básicas de Saúde, maternidades, Atenção Psicossocial, Academias de Saúde, Unidades de Saúde Bucal e Unidades de Doenças Raras, Transplantes e de Serviços Hemoterápicos.",
+      "fontes": [
+        {
+          "url": "https://www.gov.br/saude/pt-br/composicao/seidigi/meu-sus-digital"
+        }
+      ],
+      "idioma": "pt-BR"
+    },
+    {
+      "id": "meu_sus_funcionalidades_03",
+      "categoria": "funcionalidades",
+      "categoria_titulo": "Funcionalidades",
+      "tipo": "faq",
+      "pergunta": "Quais outras informações e serviços o Meu SUS Digital oferece?",
+      "resposta": "O Meu SUS Digital possui aplicações sobre doação de sangue e acompanhamento, candidatos a transplante, posição e status na lista de espera, gestão de peso, guias informativos e programas de Gênero, Raça, Etnia e Valorização das Trabalhadoras do SUS.",
+      "texto_indexacao": "Quais outras informações e serviços o Meu SUS Digital oferece? O Meu SUS Digital possui aplicações sobre doação de sangue e acompanhamento, candidatos a transplante, posição e status na lista de espera, gestão de peso, guias informativos e programas de Gênero, Raça, Etnia e Valorização das Trabalhadoras do SUS.",
+      "fontes": [
+        {
+          "url": "https://www.gov.br/saude/pt-br/composicao/seidigi/meu-sus-digital"
+        }
+      ],
+      "idioma": "pt-BR"
+    },
+    {
+      "id": "meu_sus_funcionalidades_04",
+      "categoria": "funcionalidades",
+      "categoria_titulo": "Funcionalidades",
+      "tipo": "faq",
+      "pergunta": "O Meu SUS Digital apresenta informações sobre campanhas e sobre o SUS?",
+      "resposta": "Sim. O Meu SUS Digital disponibiliza informações sobre campanhas do Ministério da Saúde, informações sobre o Sistema Único de Saúde (SUS) e o número do CNS de cada usuário.",
+      "texto_indexacao": "O Meu SUS Digital apresenta informações sobre campanhas e sobre o SUS? Sim. O Meu SUS Digital disponibiliza informações sobre campanhas do Ministério da Saúde, informações sobre o Sistema Único de Saúde (SUS) e o número do CNS de cada usuário.",
+      "fontes": [
+        {
+          "url": "https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/s/sus"
+        },
+        {
+          "url": "https://www.gov.br/saude/pt-br/composicao/seidigi/meu-sus-digital"
+        }
+      ],
+      "idioma": "pt-BR"
+    },
+    {
+      "id": "meu_sus_sobre_01",
+      "categoria": "sobre",
+      "categoria_titulo": "Sobre o Meu SUS Digital",
+      "tipo": "faq",
+      "pergunta": "O que é o Meu SUS Digital?",
+      "resposta": "O Meu SUS Digital é uma plataforma integrada de soluções em saúde digital desenvolvida para unificar informações de saúde do cidadão, funcionando como canal de acesso ao histórico de saúde e como espaço multifuncional para gestão pessoal da saúde dos usuários do SUS.",
+      "texto_indexacao": "O que é o Meu SUS Digital? O Meu SUS Digital é uma plataforma integrada de soluções em saúde digital desenvolvida para unificar informações de saúde do cidadão, funcionando como canal de acesso ao histórico de saúde e como espaço multifuncional para gestão pessoal da saúde dos usuários do SUS.",
+      "fontes": [
+        {
+          "url": "https://www.gov.br/saude/pt-br/composicao/seidigi/meu-sus-digital"
+        }
+      ],
+      "idioma": "pt-BR"
+    },
+    {
+      "id": "meu_sus_sobre_02",
+      "categoria": "sobre",
+      "categoria_titulo": "Sobre o Meu SUS Digital",
+      "tipo": "faq",
+      "pergunta": "Qual é a relação entre o Meu SUS Digital e o Conecte SUS?",
+      "resposta": "O Meu SUS Digital é uma evolução do aplicativo Conecte SUS, inicialmente projetado para a emissão do certificado de vacinação COVID-19. A plataforma ampliou suas funcionalidades para reunir iniciativas do Ministério da Saúde e facilitar o acesso aos serviços e informações do SUS.",
+      "texto_indexacao": "Qual é a relação entre o Meu SUS Digital e o Conecte SUS? O Meu SUS Digital é uma evolução do aplicativo Conecte SUS, inicialmente projetado para a emissão do certificado de vacinação COVID-19. A plataforma ampliou suas funcionalidades para reunir iniciativas do Ministério da Saúde e facilitar o acesso aos serviços e informações do SUS.",
+      "fontes": [
+        {
+          "url": "https://www.gov.br/saude/pt-br/composicao/seidigi/meu-sus-digital"
+        }
+      ],
+      "idioma": "pt-BR"
+    },
+    {
+      "id": "meu_sus_sobre_03",
+      "categoria": "sobre",
+      "categoria_titulo": "Sobre o Meu SUS Digital",
+      "tipo": "faq",
+      "pergunta": "Qual é a finalidade do Meu SUS Digital?",
+      "resposta": "A plataforma busca ampliar o acesso à saúde, facilitar a comunicação entre usuários e serviços de saúde e disponibilizar informações confiáveis e atualizadas, promovendo a tomada de decisões informadas.",
+      "texto_indexacao": "Qual é a finalidade do Meu SUS Digital? A plataforma busca ampliar o acesso à saúde, facilitar a comunicação entre usuários e serviços de saúde e disponibilizar informações confiáveis e atualizadas, promovendo a tomada de decisões informadas.",
+      "fontes": [
+        {
+          "url": "https://www.gov.br/saude/pt-br/composicao/seidigi/meu-sus-digital"
+        }
+      ],
+      "idioma": "pt-BR"
+    },
+    {
+      "id": "meu_sus_sobre_04",
+      "categoria": "sobre",
+      "categoria_titulo": "Sobre o Meu SUS Digital",
+      "tipo": "faq",
+      "pergunta": "Onde o Meu SUS Digital está disponível?",
+      "resposta": "O Meu SUS Digital está disponível nas versões aplicativo e web. O cidadão pode usar o aplicativo nas lojas digitais ou acessar o site. Quem já possui o aplicativo Conecte SUS pode atualizá-lo.",
+      "texto_indexacao": "Onde o Meu SUS Digital está disponível? O Meu SUS Digital está disponível nas versões aplicativo e web. O cidadão pode usar o aplicativo nas lojas digitais ou acessar o site. Quem já possui o aplicativo Conecte SUS pode atualizá-lo.",
+      "fontes": [
+        {
+          "url": "https://www.gov.br/saude/pt-br/composicao/seidigi/meu-sus-digital"
+        }
+      ],
+      "idioma": "pt-BR"
+    }
+  ],
+  "entidades": [
+    {
+      "nome": "Meu SUS Digital",
+      "tipo": "servico_digital",
+      "url": "https://www.gov.br/saude/pt-br/composicao/seidigi/meu-sus-digital"
+    },
+    {
+      "nome": "Cartão Nacional de Saúde (CNS)",
+      "tipo": "identificador_saude",
+      "url": "https://www.gov.br/saude/pt-br/acesso-a-informacao/acoes-e-programas/cns"
+    },
+    {
+      "nome": "Rede Nacional de Dados em Saúde (RNDS)",
+      "tipo": "infraestrutura_dados",
+      "url": "https://www.gov.br/saude/pt-br/composicao/seidigi/rnds"
+    },
+    {
+      "nome": "Sistema de Informações do Programa Nacional de Imunização (SI-PNI)",
+      "tipo": "sistema",
+      "url": "http://pni.datasus.gov.br/"
+    },
+    {
+      "nome": "Gov.br",
+      "tipo": "plataforma_autenticacao",
+      "url": "https://www.gov.br/pt-br"
+    },
+    {
+      "nome": "Programa Farmácia Popular do Brasil",
+      "tipo": "programa_governamental",
+      "url": "https://www.gov.br/saude/pt-br/composicao/sectics/daf/farmacia-popular"
+    },
+    {
+      "nome": "Programa Dignidade Menstrual",
+      "tipo": "programa_governamental"
+    },
+    {
+      "nome": "Prontuário Eletrônico do Cidadão e-SUS APS",
+      "tipo": "sistema",
+      "url": "https://www.gov.br/saude/pt-br/composicao/saps/informatiza-aps/prontuario-eletronico"
+    }
+  ],
+  "metadados_rag": {
+    "total_documentos": 41,
+    "unidade_de_recuperacao": "documentos[]",
+    "campos_recomendados_para_embedding": [
+      "pergunta",
+      "resposta",
+      "categoria_titulo"
+    ],
+    "campos_recomendados_para_filtro": [
+      "categoria",
+      "idioma"
+    ],
+    "preservar_fontes": true,
+    "aviso": "Regras, valores, funcionalidades e disponibilidade de serviços podem mudar; associe data de coleta quando esta base for atualizada."
+  }
+}

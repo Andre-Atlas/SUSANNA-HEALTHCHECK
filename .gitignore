@@ -1,0 +1,34 @@
+.DS_Store
+.venv/
+**/.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.env
+.env.local
+
+# Susana backend — artefatos gerados (versionados via DVC/MLflow, não git)
+susana_rag_backend/data/chroma_db/
+susana_rag_backend/mlruns/
+susana_rag_backend/mlflow.db
+susana_rag_backend/models/
+susana_rag_backend/data/*.db
+susana_rag_backend/data/*.db-shm
+susana_rag_backend/data/*.db-wal
+*.db-shm
+*.db-wal
+dvc-storage/
+
+# Frontend
+susana-ui/node_modules/
+**/.next/
+
+# Entrega final (união com a branch entrega-final)
+*.py[cod]
+*$py.class
+.coverage
+htmlcov/
+node_modules/
+.next/
+dist/
+build/

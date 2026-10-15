@@ -1,0 +1,17 @@
+[
+  {"id": "ood-dev-01", "query": "Qual o horário do metrô de Brasília aos domingos?"},
+  {"id": "ood-dev-02", "query": "Qual a previsão do tempo para Taguatinga amanhã?"},
+  {"id": "ood-dev-03", "query": "Como fazer um bolo de chocolate fofinho com cobertura?"},
+  {"id": "ood-dev-04", "query": "Qual foi o placar do jogo do Flamengo ontem?"},
+  {"id": "ood-dev-05", "query": "Onde renovo minha carteira nacional de habilitação no Detran DF?"},
+  {"id": "ood-dev-06", "query": "Quanto custa uma passagem de avião de Brasília para São Paulo?"},
+  {"id": "ood-dev-07", "query": "Qual o prazo para declarar o Imposto de Renda da Receita Federal?"},
+  {"id": "ood-dev-08", "query": "Quais filmes estão em cartaz no cinema do shopping hoje?"},
+  {"id": "ood-dev-09", "query": "Como configurar repetidor de sinal de rede Wi-Fi na minha casa?"},
+  {"id": "ood-dev-10", "query": "Qual a cotação comercial do dólar americano hoje?"},
+  {"id": "ood-dev-11", "query": "Onde encontro uma boa oficina mecânica para consertar freio de carro?"},
+  {"id": "ood-dev-12", "query": "Qual o cardápio e horário de almoço do restaurante comunitário?"},
+  {"id": "ood-dev-13", "query": "Como emitir a segunda via da conta de luz da Neoenergia Brasília?"},
+  {"id": "ood-dev-14", "query": "Qual a linha de ônibus que vai da Rodoviária do Plano Piloto para Ceilândia Centro?"},
+  {"id": "ood-dev-15", "query": "Como plantar mudas de orquídea em vaso de barro?"}
+]
