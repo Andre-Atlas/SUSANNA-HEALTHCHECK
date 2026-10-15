@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useId, useState } from 'react';
-import { Eye, EyeOff, Lock } from 'lucide-react';
+import { Check, ChevronDown, Eye, EyeOff, Lock } from 'lucide-react';
 
 interface FieldProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> {
   label: string;
@@ -70,11 +70,12 @@ export function SelectField({
       <label className="sx-label" htmlFor={id}>
         {label}
       </label>
-      <div className="sx-field">
+      <div className="sx-field sx-select">
         {icon}
         <select id={id} {...select}>
           {children}
         </select>
+        <ChevronDown size={16} className="chev" aria-hidden />
       </div>
       {hint && <p className="sx-hint">{hint}</p>}
     </div>
@@ -85,7 +86,10 @@ export function Checkbox({ label, ...input }: React.InputHTMLAttributes<HTMLInpu
   return (
     <label className="sx-check">
       <input type="checkbox" {...input} />
-      <span>{label}</span>
+      <span className="box" aria-hidden>
+        <Check size={14} strokeWidth={3} />
+      </span>
+      <span className="txt">{label}</span>
     </label>
   );
 }

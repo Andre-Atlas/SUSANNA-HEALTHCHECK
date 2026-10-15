@@ -1379,8 +1379,16 @@ body {
 .sx-field input, .sx-field select {
   all: unset; flex: 1; min-width: 0; height: 100%; font-size: 15px; font-weight: 400; color: var(--ink);
 }
+.sx-field select {
+  all: revert; flex: 1; min-width: 0; width: 100%; height: 100%; padding: 0 22px 0 0; margin: 0; border: 0; outline: 0; background: transparent;
+  font: 400 15px/1 var(--font-inter), 'Inter', system-ui, sans-serif; color: var(--ink); text-align: left; text-align-last: left;
+  appearance: none; -webkit-appearance: none; text-overflow: ellipsis; white-space: nowrap; cursor: pointer;
+}
+.sx-field select:invalid, .sx-field select option[value=""] { color: #9aa8c4; }
+.sx-field.sx-select { position: relative; }
+.sx-field.sx-select .chev { position: absolute; right: 16px; pointer-events: none; color: #8a9bbd; }
+.sx-field.sx-select:focus-within .chev { color: var(--b2); }
 .sx-field input::placeholder { color: #9aa8c4; }
-.sx-field select { cursor: pointer; }
 .sx-eye { all: unset; cursor: pointer; display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; color: #8a9bbd; }
 .sx-eye:hover { color: var(--b2); background: var(--b4); }
 .sx-eye:focus-visible { outline: 2px solid var(--b3); }
@@ -1388,11 +1396,15 @@ body {
 .sx-hint.bad { color: var(--bad); }
 
 .sx-line { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: 13px; }
-.sx-check { display: inline-flex; align-items: flex-start; gap: 8px; cursor: pointer; color: var(--ink); font-size: 13px; user-select: none; }
-.sx-check input { appearance: none; width: 20px; height: 20px; margin: 0; border-radius: 6px; border: 1.5px solid #b8c6e3; background: #fff; display: grid; place-items: center; transition: 0.15s; cursor: pointer; }
-.sx-check input:checked { background: var(--b2); border-color: var(--b2); }
-.sx-check input:checked::after { content: ""; width: 5px; height: 10px; border: solid #fff; border-width: 0 2px 2px 0; transform: translateY(-1px) rotate(45deg); }
-.sx-check input:focus-visible { outline: 2px solid var(--b3); outline-offset: 2px; }
+.sx-check { position: relative; display: inline-flex; align-items: flex-start; gap: 10px; cursor: pointer; color: var(--ink); font-size: 13px; line-height: 1.4; user-select: none; text-align: left; }
+.sx-check input { position: absolute; opacity: 0; width: 20px; height: 20px; margin: 0; cursor: pointer; }
+.sx-check .box { flex: none; width: 20px; height: 20px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; border: 1.5px solid #b8c6e3; background: #fff; color: transparent; transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.15s; }
+.sx-check .box svg { display: block; transform: scale(0.6); transition: transform 0.15s; }
+.sx-check:hover .box { border-color: var(--b3); }
+.sx-check input:checked + .box { background: var(--b2); border-color: var(--b2); color: #fff; }
+.sx-check input:checked + .box svg { transform: scale(1); }
+.sx-check input:focus-visible + .box { outline: 2px solid var(--b3); outline-offset: 2px; }
+.sx-check .txt { padding-top: 1px; }
 .sx-link { all: unset; cursor: pointer; color: var(--b2); font-weight: 500; font-size: 13px; }
 .sx-link:hover { text-decoration: underline; }
 .sx-link:focus-visible { outline: 2px solid var(--b3); border-radius: 4px; }

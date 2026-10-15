@@ -162,7 +162,7 @@ export default function RealCartographicMap({
       userMarkerRef.current.remove();
       userMarkerRef.current = null;
     }
-    if (!userCoords) return;
+    if (!userCoords || !Number.isFinite(userCoords.lat) || !Number.isFinite(userCoords.lng)) return;
     const insideDF = L.latLngBounds(DF_BOUNDS).contains([userCoords.lat, userCoords.lng]);
     if (!insideDF) return;
     userMarkerRef.current = L.circleMarker([userCoords.lat, userCoords.lng], {
@@ -174,7 +174,15 @@ export default function RealCartographicMap({
     })
       .bindTooltip('Você está aqui', { direction: 'top', offset: [0, -8] })
       .addTo(map);
-    map.flyTo([userCoords.lat, userCoords.lng], Math.max(map.getZoom(), 13), { duration: 0.8 });
+    const target: [number, number] = [userCoords.lat, userCoords.lng];
+    const zoom = Math.max(map.getZoom() || 0, 13);
+    const size = map.getSize();
+    if (size.x > 0 && size.y > 0) {
+      map.flyTo(target, zoom, { duration: 0.8 });
+    } else {
+      // Aba escondida (contêiner com tamanho 0): flyTo calcularia NaN, então só posiciona
+      map.setView(target, zoom, { animate: false });
+    }
   }, [isMapReady, userCoords]);
 
   // 1. Inicialização do Mapa Leaflet

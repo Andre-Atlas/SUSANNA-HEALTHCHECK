@@ -50,6 +50,11 @@ export function GeoProvider({ children }: { children: React.ReactNode }) {
         navigator.geolocation.getCurrentPosition(
           (pos) => {
             const c = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+            if (!Number.isFinite(c.lat) || !Number.isFinite(c.lng)) {
+              setStatus('unavailable');
+              resolve(null);
+              return;
+            }
             setCoords(c);
             setStatus('granted');
             write('local', CONSENT_KEY, '1');
@@ -74,9 +79,12 @@ export function GeoProvider({ children }: { children: React.ReactNode }) {
       try {
         // Leitura do sessionStorage só é possível no cliente
         // eslint-disable-next-line react-hooks/set-state-in-effect
-        setCoords(JSON.parse(cached));
-        setStatus('granted');
-        return;
+        const parsed = JSON.parse(cached);
+        if (Number.isFinite(parsed?.lat) && Number.isFinite(parsed?.lng)) {
+          setCoords(parsed);
+          setStatus('granted');
+          return;
+        }
       } catch {
         /* ignora */
       }
