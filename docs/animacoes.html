@@ -28,6 +28,7 @@
 <div id="note"></div>
 
 <script src="animacoes-narracao.js"></script>
+<script src="animacoes-legendas.js"></script>
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
@@ -46,7 +47,7 @@ const pulse = now => 0.6 + 0.3 * Math.sin(now / 150);
 const synth = window.speechSynthesis;
 const NARR = window.NARR || {};
 const player = new Audio();
-const voice = { on: false, busy: false, token: 0, idx: 0, key: null, current: null };
+const voice = { on: false, busy: false, token: 0, idx: 0, key: null, current: null, cue: -1 };
 function spoken(text) {
   return text.replace(/\n/g, ' ').replace(/\[…\]/g, ' ').replace(/✓/g, 'Correto: ').replace(/✗/g, '')
     .replace(/>=|≥/g, ' maior ou igual a ').replace(/≤/g, ' menor ou igual a ').replace(/≈/g, ' cerca de ')
@@ -90,15 +91,24 @@ function pauseSound(stop) {
 }
 // Chamado sempre que uma cena entra num passo novo
 function narrate(title, cap) {
-  const text = (NARR[voice.key] || [])[voice.idx];
+  const text = (NARR[voice.key] || [])[voice.idx], id = voice.key + '-' + String(voice.idx + 1).padStart(2, '0');
   voice.current = text
-    ? { src: 'animacoes-audio/' + voice.key + '-' + String(voice.idx + 1).padStart(2, '0') + '.m4a', text }
+    ? { src: 'animacoes-audio/' + id + '.m4a', text, cues: (window.CUES || {})[id] }
     : { src: null, text: title + '. ' + cap };
+  voice.cue = -1;
   if (voice.on) say(voice.current);
 }
 function hushVoice() { voice.token++; voice.busy = false; voice.current = null; stopSound(); }
 // Com a narração ligada, o passo só avança quando a fala termina (com um teto de segurança),
 // e a animação do passo se repete enquanto isso
+// Legenda sincronizada: mostra a frase que está sendo falada (tempos medidos pelo Whisper)
+function subtitle() {
+  const cues = voice.on && voice.current && voice.current.cues;
+  if (!cues || !liveCap || !voice.busy) return;
+  const t = player.currentTime + 0.1;
+  let k = 0; while (k + 1 < cues.length && cues[k + 1][0] <= t) k++;
+  if (k !== voice.cue) { voice.cue = k; liveCap.set(cues[k][1], '#fde68a', 30); }
+}
 const voiceHolds = elapsed => voice.on && voice.busy && elapsed < 120000;
 const loopP = (elapsed, dur) => (voice.on ? elapsed % (dur + 1500) : elapsed) / dur;
 
@@ -129,7 +139,7 @@ function textSprite(w, h) {
 }
 
 // Só uma cena fica viva por vez: o navegador limita o número de contextos WebGL abertos
-let liveRenderer = null;
+let liveRenderer = null, liveCap = null;
 
 // Cena base: câmera, luzes, controles e HUD (título em cima, legenda embaixo)
 function base(canvas, capH = 150) {
@@ -150,6 +160,7 @@ function base(canvas, capH = 150) {
   title.sp.position.set(0, vh / 2 - hudW * 55 / 1024 - 0.15, -D); camera.add(title.sp);
   const cap = textSprite(1024, capH); cap.sp.scale.set(hudW, hudW * capH / 1024, 1);
   cap.sp.position.set(0, -vh / 2 + hudW * capH / 2048 + 0.15, -D); camera.add(cap.sp);
+  liveCap = cap;
   const titleFrac = (hudW * 110 / 1024 + 0.15) / vh, capFrac = (hudW * capH / 1024 + 0.15) / vh;
   return { scene, camera, renderer, controls, title, cap, titleFrac, capFrac };
 }
@@ -1285,6 +1296,7 @@ show(0);
   if (!paused) clock += Math.min(now - lastT, 100);
   lastT = now;
   tick(clock);
+  subtitle();
 })();
 </script>
 </body>
