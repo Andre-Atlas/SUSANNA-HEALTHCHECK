@@ -19,11 +19,48 @@ O projeto **SUSANA** foi concebido para atuar como uma assistente conversacional
 
 O sistema foi estruturado em uma arquitetura desacoplada e orientada a microsserviços/módulos independentes:
 * **Frontend:** Interface moderna desenvolvida em **Next.js 16 (App Router / Turbopack)** com componentes acessíveis e visualização de streaming em tempo real.
-* **Backend:** API de alta performance em **FastAPI (Python 3.14)** com suporte a concorrência assíncrona, Server-Sent Events/NDJSON e *threadpools* para operações intensivas de CPU.
+* **Backend:** API de alta performance em **FastAPI (Python 3.11+)** com suporte a concorrência assíncrona, Server-Sent Events/NDJSON e *threadpools* para operações intensivas de CPU.
 * **Mecanismo de IA:** Pipeline RAG Híbrido que integra busca vetorial densa (**ChromaDB**), busca léxica esparsa (**BM25 Okapi**), fusão via **RRF (Reciprocal Rank Fusion)** e inferência com o modelo **Llama 3.1 (8B Instruct)** rodando via **Ollama**.
 * **Segurança e MLOps:** Camada de Guardrails supervisionados rastreada e governada através do **MLflow**.
 
-### 2.1 Passo a Passo do Fluxo Operacional:
+### 2.1 Diagrama de Sequência da Arquitetura
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Cidadão
+    participant UI as Frontend (Next.js)
+    participant API as Gateway FastAPI
+    participant Guard as Guardrail Clínico
+    participant NLU as NLU & Toponímia DF
+    participant Cache as Cache Semântico
+    participant RAG as Busca Híbrida (Chroma + BM25)
+    participant LLM as Llama 3.1 (Ollama)
+
+    Cidadão->>UI: Pergunta em Linguagem Natural
+    UI->>API: POST /api/chat/stream
+    API->>Guard: is_clinical(mensagem)?
+    alt Risco Clínico Detectado (Diagnóstico / Prescrição)
+        Guard-->>API: Bloqueio Instantâneo (< 10ms)
+        API-->>UI: Resposta de Proteção Fail-Closed
+    else Demanda Administrativa / Operacional
+        API->>NLU: Extrair Intenção, RA e Serviços
+        API->>Cache: Verificar Similaridade
+        alt Cache Hit
+            Cache-->>API: Resposta Homologada
+        else Cache Miss
+            API->>RAG: Busca Vetorial (Chroma) + Léxica (BM25)
+            RAG-->>API: Fusão RRF (k=60) + Filtro de Relevância
+            API->>LLM: Geração Fundamentada (System Prompt Estrito)
+            LLM-->>API: Stream de Tokens
+            API->>Guard: Anti-Hallucination (Validar Telefones)
+        end
+        API-->>UI: Streaming NDJSON com Citações e Opções
+    end
+    UI-->>Cidadão: Renderização com Links e Fontes Oficiais
+```
+
+### 2.2 Passo a Passo do Fluxo Operacional:
 1. **Recepção da Requisição:** O usuário submete sua pergunta via `POST /api/chat/stream`.
 2. **Contextualização e Toponímia do DF:** O módulo `ConversationalContextManager` normaliza expressões populares e expande termos geográficos típicos de Brasília (ex.: *Setor O* e *P Sul* ➔ *Ceilândia QNO/QNP*).
 3. **Barreira Clínica Pré-LLM (Guardrail):** Antes de qualquer consulta pesada, a mensagem é submetida ao classificador de risco clínico.
@@ -88,8 +125,8 @@ O modelo de Guardrails é gerenciado pelo **MLflow**, registrando hiperparâmetr
 
 ### 5.1 Especificações do Modelo de Linguagem
 * **Modelo Base:** `Llama 3.1 8B Instruct` da Meta.
-* **Runtime de Execução:** **Ollama** executado localmente na porta `11434`, utilizando aceleração de hardware (MPS no macOS).
-* **Parâmetros de Inferência:** `temperature = 0.1`, `top_p = 0.9`, `num_predict = 512`, `timeout = 60s`.
+* **Runtime de Execução:** **Ollama** executado localmente na porta `11434`, utilizando aceleração de hardware (MPS no macOS / CUDA em Linux).
+* **Parâmetros de Inferência Homologados:** `temperature = 0.0` (determinismo estrito), `top_p = 0.1`, `num_predict = 350`, `seed = 42`, `timeout = 12.0s`.
 
 ### 5.2 Estrutura do System Prompt e Regras de Grounding
 O modelo recebe instruções estritas que governam seu estilo e proíbem conjeturas:

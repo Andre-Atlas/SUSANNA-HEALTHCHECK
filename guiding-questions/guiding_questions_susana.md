@@ -350,3 +350,11 @@ Para assegurar alinhamento integral com o framework CBL (Nichols & Cator, *Chall
 | **NOVA 4** | Privacidade e Conformidade LGPD | **Adicionada pela Equipe** | Garantia de inferência local sem vazamento de dados de cidadãos. |
 | **NOVA 5** | Arquitetura Omnichannel (WhatsApp) | **Adicionada pela Equipe** | Planejamento da evolução do motor para canais de mensageria. |
 | **NOVA 6** | Agendamento Direto no SISREG | **Adicionada e Cortada** | Delimitação consciente: manter foco na orientação de acolhimento. |
+
+---
+
+## 4. Evidências Empíricas e Entrevistas de Campo
+
+Como parte do processo investigativo da fase *Investigate* da metodologia CBL, a equipe realizou levantamentos e entrevistas com foco na experiência do usuário e na validação das dores da atenção primária:
+
+* 📄 **Entrevista Acadêmica e Levantamento de Campo:** [`entrevista_academica_meusus.pdf`](entrevista_academica_meusus.pdf) — Síntese das percepções sobre o Meu SUS Digital, barreiras de literacia da população e a necessidade de canais conversacionais oficiais orientados a evidências.

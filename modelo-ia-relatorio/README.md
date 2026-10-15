@@ -1,17 +1,11 @@
 # Modelo de IA, Arquitetura e Relatório Técnico — SUSANA
 
-Este diretório concentra a documentação profunda da arquitetura de Inteligência Artificial, modelagem de RAG Híbrido, governança de MLOps com MLflow, engenharia de Guardrails de segurança clínica e os resultados do benchmark de homologação da assistente **SUSANA**.
+Este diretório concentra a documentação detalhada da arquitetura de Inteligência Artificial, modelagem do RAG Híbrido, governança de MLOps com MLflow, engenharia de Guardrails de segurança clínica e os resultados do benchmark de homologação da assistente **SUSANA**.
 
 ---
 
 ## 📄 Documentação Técnica Oficial
-* 📑 **[`relatorio_tecnico_ia.md`](relatorio_tecnico_ia.md)**: Relatório Técnico integral da solução, cobrindo o pipeline ponta a ponta, formulação matemática do RRF, validação cruzada estratificada do classificador clínico, aterramento do LLM e a bateria de testes automatizados com 100% de aprovação.
-
----
-
-## 🖼️ Diagramas e Evidências Visuais
-* 📊 **[`assets/diagrama_sequencia_susana.png`](assets/diagrama_sequencia_susana.png)**: Diagrama de sequência completo do fluxo síncrono e assíncrono (Frontend Next.js, Guardrail Clínico, Cache Semântico, Busca Híbrida ChromaDB/BM25 e streaming de tokens com Ollama Llama 3.1).
-* 📈 **[`assets/painel_metricas_benchmark.jpg`](assets/painel_metricas_benchmark.jpg)**: Painel executivo de resultados e métricas de produção (100% de precisão nos testes de regressão, zero prescrições indevidas com bloqueio < 10ms e 2.280+ blocos oficiais indexados).
+* 📑 **[`relatorio_tecnico_ia.md`](relatorio_tecnico_ia.md)**: Relatório Técnico integral da solução, cobrindo o pipeline ponta a ponta, diagrama de sequência nativo Mermaid, formulação matemática do RRF, validação cruzada estratificada do classificador clínico, aterramento do LLM e a bateria de testes automatizados com 100% de aprovação.
 
 ---
 
@@ -26,3 +20,13 @@ Este diretório concentra a documentação profunda da arquitetura de Inteligên
 | **Fusão de Rankings** | `RRF (Reciprocal Rank Fusion)` ($k=60$) | Combinação ponderada de escores densos e esparsos para máxima relevância. |
 | **Guardrails de Segurança** | `Scikit-Learn` + `Regex Semântico` | Interceptação em $< 10\text{ ms}$ de qualquer tentativa de diagnóstico ou automedicação. |
 | **MLOps & Governança** | `MLflow` (Tracking & Model Registry) | Rastreamento de experimentos, curvas ROC e promoção do modelo campeão (`@champion`). |
+| **Validação Pós-Geração** | `AntiHallucinationValidator` | Restrição estrita a canais telefônicos auditados (160, 136, 192) e veto a prescrições. |
+
+---
+
+## 📊 Indicadores de Homologação (Benchmark Oficial)
+
+* **Precisão nos Testes de Regressão:** **100% (18/18 Cenários Validados)**
+* **Tempo de Interceptação Clínica:** **< 10 milissegundos**
+* **Prescrições ou Dosagens Indevidas Emitidas:** **Zero**
+* **Suíte de Testes do Backend:** **97 testes passando** (`pytest tests/`)
