@@ -1,9 +1,16 @@
-# 04 - Guiding Questions (Perguntas Norteadoras)
+# Guiding Questions — Perguntas Norteadoras
 
-Mapeamento das dores do cidadão e das perguntas norteadoras que orientaram a concepção e os testes da assistente SUSANA.
+Este diretório contém a documentação das hipóteses, dilemas arquiteturais e perguntas norteadoras que guiaram a concepção, o design e o desenvolvimento da assistente virtual **SUSANA**.
 
-## 🧭 Eixos Principais
-1. **Acessibilidade e Descentralização:** Como o morador de regiões administrativas periféricas encontra postos abertos em horários flexíveis (ex: Saúde na Hora até 22h)?
-2. **Desmistificação Farmacêutica:** Como simplificar a jornada do paciente para retirada de medicamentos de alto custo (PCDT/CEAF) sem devolução por falta de documentos?
-3. **Imunização e Prevenção:** Quais são as barreiras de informação que impedem a atualização vacinal de crianças e idosos?
-4. **Governança e Segurança em Saúde:** Como garantir que um modelo de IA nunca atue como médico ou prescreva medicamentos em ambiente de saúde pública?
+---
+
+## 📄 Documento Principal
+* 📑 **[`guiding_questions_susana.md`](guiding_questions_susana.md)**: Documento completo com as **26 questões norteadoras** organizadas segundo a metodologia do quadro ágil original (*Trello Challenge 1*), detalhando fundamentações técnicas, arquitetura adotada e respostas atualizadas com o sistema em produção.
+
+---
+
+## 🗂️ Categorias de Priorização
+1. **🚨 RESPONDER JÁ:** Decisões fundamentais para o MVP (formato de produto, classificação por evidências, guardrail clínico, toponímia do DF).
+2. **📋 PLANEJAR:** Arquitetura de IA (RAG Híbrido BM25 + ChromaDB), ingestão contínua de dados da SES-DF e conformidade LGPD.
+3. **⏳ SE SOBRAR TEMPO:** Estudos de literacia digital, responsabilidade civil e integração futura com mensageria (WhatsApp/Telegram).
+4. **✂️ CORTAR SEM DÓ:** Complexidades descartadas conscientemente no MVP (integração transacional com SISREG/e-SUS e múltiplos tons acadêmicos).
