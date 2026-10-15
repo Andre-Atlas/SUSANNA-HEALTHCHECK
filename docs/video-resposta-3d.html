@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Como a resposta é construída</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #000; overflow: hidden; font-family: system-ui, sans-serif; }
+  canvas { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(100vw, calc(100vh * 16 / 9)); height: auto; aspect-ratio: 16 / 9; }
+  #ui { position: fixed; left: 50%; bottom: 14px; transform: translateX(-50%); z-index: 5; display: flex; gap: 8px; align-items: center; padding: 8px; border-radius: 999px; background: rgba(8, 15, 38, 0.9); border: 1px solid #27408b; color: #e2e8f0; font: 600 14px system-ui, sans-serif; }
+  #ui button { background: #13224d; color: #fff; border: 1px solid #27408b; border-radius: 999px; height: 44px; padding: 0 16px; font: inherit; cursor: pointer; }
+  #ui button:hover { background: #1d3270; }
+  #ui button:focus-visible { outline: 3px solid #fde68a; outline-offset: 2px; }
+  #ui button.rec { background: #b91c1c; border-color: #fca5a5; }
+  #time { min-width: 92px; text-align: center; font-variant-numeric: tabular-nums; }
+  #ui.hide { opacity: 0.15; } #ui.hide:hover { opacity: 1; }
+  #msg { position: fixed; left: 50%; top: 14px; transform: translateX(-50%); z-index: 5; padding: 8px 16px; border-radius: 999px; background: rgba(37, 99, 235, 0.92); color: #fff; font: 600 14px system-ui, sans-serif; display: none; }
+</style>
+<script type="importmap">
+{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }
+</script>
+<script src="video-audio.js"></script>
+</head>
+<body>
+<div id="msg" role="status"></div>
+<div id="ui">
+  <button id="play" type="button">▶ Reproduzir</button>
+  <button id="restart" type="button" title="Voltar ao início">⟲ Início</button>
+  <button id="back" type="button" title="Voltar 5 segundos (tecla ← ou R)">⟲ 5 s</button>
+  <span id="time">0:00 / 1:00</span>
+  <button id="voz" type="button" aria-pressed="true" title="Ligar ou desligar a voz da narração (também na gravação)">Voz: sim</button>
+  <button id="txt" type="button" aria-pressed="true" title="Mostrar ou esconder as palavras-chave na tela">Texto na tela: sim</button>
+  <button id="rec" type="button" title="Grava 1 minuto em 1920×1080 e baixa o arquivo">● Gravar vídeo (1 min)</button>
+</div>
+<script type="module">
+import * as THREE from 'three';
+
+// Animação de 60 s para o vídeo "Como a resposta é construída".
+// O quadro é uma função do tempo t (segundos): o mesmo t sempre gera a mesma imagem.
+// ?t=20 abre nesse instante; com &still=1 desenha só esse quadro (usado para conferir imagens).
+const DURATION = 60, W = 1920, H = 1080;
+const qs = new URLSearchParams(location.search);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(1); renderer.setSize(W, H, false); renderer.setClearColor(0x050b1d);
+document.body.appendChild(renderer.domElement);
+const scene = new THREE.Scene();
+scene.fog = new THREE.Fog(0x050b1d, 18, 40);
+const camera = new THREE.PerspectiveCamera(40, W / H, 0.1, 200);
+scene.add(camera);
+scene.add(new THREE.HemisphereLight(0xc7dbff, 0x0b1020, 1.0));
+const key = new THREE.DirectionalLight(0xffffff, 1.2); key.position.set(4, 8, 10); scene.add(key);
+
+// ───── utilitários ─────
+const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
+const smooth = x => { x = clamp(x); return x * x * (3 - 2 * x); };
+const seg = (t, a, b) => smooth((t - a) / (b - a));          // 0 → 1 entre os segundos a e b
+const V = (x, y, z = 0) => new THREE.Vector3(x, y, z);
+const mat = (c, e = 0.2) => new THREE.MeshStandardMaterial({ color: c, emissive: c, emissiveIntensity: e, roughness: 0.45, metalness: 0.1, transparent: true });
+function at(m, x, y, z = 0) { m.position.set(x, y, z); return m; }
+function textSprite(text, { w = 1024, h = 160, font = 64, color = '#ffffff', bg = null, border = null, weight = 700, scale = 1 } = {}) {
+  const c = document.createElement('canvas'); c.width = w; c.height = h;
+  const ctx = c.getContext('2d');
+  if (bg) { ctx.fillStyle = bg; ctx.beginPath(); ctx.roundRect(3, 3, w - 6, h - 6, Math.min(h / 2, 40)); ctx.fill(); if (border) { ctx.strokeStyle = border; ctx.lineWidth = 5; ctx.stroke(); } }
+  ctx.fillStyle = color; ctx.font = weight + ' ' + font + 'px system-ui, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText(text, w / 2, h / 2 + 3);
+  const tex = new THREE.CanvasTexture(c); tex.anisotropy = 8;
+  const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false }));
+  sp.scale.set(scale * w / h, scale, 1); sp.renderOrder = 10;
+  return sp;
+}
+function ext(shape, depth, m) {
+  const g = new THREE.ExtrudeGeometry(shape, { depth, bevelEnabled: true, bevelThickness: 0.03, bevelSize: 0.03, bevelSegments: 2, curveSegments: 18 });
+  g.center(); return new THREE.Mesh(g, m);
+}
+function roundRect(w, h, r) {
+  const s = new THREE.Shape(), x = -w / 2, y = -h / 2;
+  s.moveTo(x + r, y); s.lineTo(x + w - r, y); s.quadraticCurveTo(x + w, y, x + w, y + r); s.lineTo(x + w, y + h - r);
+  s.quadraticCurveTo(x + w, y + h, x + w - r, y + h); s.lineTo(x + r, y + h); s.quadraticCurveTo(x, y + h, x, y + h - r);
+  s.lineTo(x, y + r); s.quadraticCurveTo(x, y, x + r, y); return s;
+}
+function poly(pts) { const s = new THREE.Shape(); s.moveTo(...pts[0]); pts.slice(1).forEach(q => s.lineTo(...q)); s.closePath(); return s; }
+const setOpacity = (obj, o) => obj.traverse(m => { if (m.material) { m.material.transparent = true; m.material.opacity = o; } m.visible = o > 0.01 || !m.material; });
+
+// ───── fundo: poeira estelar ─────
+let seed = 7; const rnd = () => { seed = (seed * 1664525 + 1013904223) % 4294967296; return seed / 4294967296; };
+{
+  const n = 2500, p = new Float32Array(n * 3);
+  for (let i = 0; i < n; i++) { p[i * 3] = (rnd() - 0.5) * 70; p[i * 3 + 1] = (rnd() - 0.5) * 30; p[i * 3 + 2] = -6 - rnd() * 30; }
+  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(p, 3));
+  scene.add(new THREE.Points(g, new THREE.PointsMaterial({ color: 0x93c5fd, size: 0.06, transparent: true, opacity: 0.7, depthWrite: false })));
+}
+const floor = new THREE.Mesh(new THREE.CircleGeometry(30, 64), new THREE.MeshStandardMaterial({ color: 0x0a1633, roughness: 1 }));
+floor.rotation.x = -Math.PI / 2; floor.position.y = -1.3; scene.add(floor);
+const grid = new THREE.GridHelper(60, 60, 0x1e3a8a, 0x12245a); grid.position.y = -1.29; scene.add(grid);
+
+// posições de cada "estação" da história, da esquerda para a direita
+const X = { db: -7, gate: -3.5, prompt: 0, chip: 3.6, web: 7.8 };
+
+// ───── 1. gancho: pergunta, "memória da IA" riscada ─────
+const hook = new THREE.Group(); scene.add(hook);
+const qBubble = new THREE.Group(); hook.add(qBubble);
+qBubble.add(ext(roundRect(3.6, 0.8, 0.25), 0.1, mat(0xbfdbfe, 0.3)));
+const qText = textSprite('Onde tomo vacina em Taguatinga?', { font: 52, color: '#0c4a6e', w: 1100, h: 120, scale: 0.42 }); qText.position.z = 0.12; qBubble.add(qText);
+qBubble.position.set(0, 2.6, 1);
+const brain = new THREE.Group(); hook.add(brain);
+[[0, 0, 0, 0.55], [0.45, 0.2, 0, 0.42], [-0.45, 0.2, 0, 0.42], [0.25, -0.35, 0.1, 0.38], [-0.3, -0.35, 0.1, 0.38], [0, 0.45, -0.1, 0.4]].forEach(([x, y, z, r]) => brain.add(at(new THREE.Mesh(new THREE.SphereGeometry(r, 24, 16), mat(0xf472b6, 0.3)), x, y, z)));
+const xMark = new THREE.Group(); [1, -1].forEach(s => { const b = new THREE.Mesh(new THREE.BoxGeometry(1.9, 0.18, 0.12), mat(0xef4444, 0.6)); b.rotation.z = s * Math.PI / 4; b.position.z = 0.7; xMark.add(b); }); brain.add(xMark);
+const brainLabel = textSprite('memória da IA', { font: 56, color: '#fbcfe8', scale: 0.38 }); brainLabel.position.set(0, -1.05, 0); brain.add(brainLabel);
+brain.position.set(-2.2, 0.6, 0.5);
+// cartões de documentos oficiais
+function docCard(color = 0xf8fafc) {
+  const g = new THREE.Group();
+  g.add(new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.78, 0.04), mat(color, 0.25)));
+  [0.22, 0.08, -0.06, -0.2].forEach((y, i) => g.add(at(new THREE.Mesh(new THREE.BoxGeometry(i === 0 ? 0.42 : 0.36, 0.05, 0.01), mat(0x334155, 0)), -0.02, y, 0.03)));
+  return g;
+}
+const hookDocs = [...Array(6)].map((_, i) => { const d = docCard(); hook.add(d); return d; });
+const officialLabel = textSprite('fontes oficiais', { font: 56, color: '#a5f3fc', scale: 0.38 }); officialLabel.position.set(2.3, -0.55, 0.5); hook.add(officialLabel);
+
+// ───── 2. ChromaDB, trechos, checagem, busca online ─────
+const db = new THREE.Group(); scene.add(db);
+[-0.5, -0.1, 0.3].forEach(y => db.add(at(new THREE.Mesh(new THREE.CylinderGeometry(0.85, 0.85, 0.32, 40), mat(0x22d3ee, 0.3)), 0, y)));
+const dbLabel = textSprite('ChromaDB', { font: 64, color: '#a5f3fc', scale: 0.42 }); dbLabel.position.set(0, -1.05, 0.6); db.add(dbLabel);
+db.position.set(X.db, -0.3, 0);
+const pool = [...Array(12)].map((_, i) => { const d = docCard(); scene.add(d); return d; });
+const fanPos = i => { const a = -1.1 + (i / 11) * 2.2; return V(X.db + Math.sin(a) * 2.1, 1.0 + Math.cos(a) * 1.4, -0.4 + (i % 2) * 0.2); };
+const TOP = [3, 6, 8], REJECT = 10;
+const gate = new THREE.Group(); scene.add(gate);
+gate.add(new THREE.Mesh(new THREE.TorusGeometry(1.0, 0.09, 14, 48), mat(0x34d399, 0.35)));
+const check = ext(poly([[-0.52, 0.04], [-0.14, -0.38], [0.52, 0.36], [0.4, 0.48], [-0.14, -0.14], [-0.4, 0.17]]), 0.08, mat(0x34d399, 0.5)); check.position.set(0, 1.45, 0); check.scale.setScalar(0.6); gate.add(check);
+const gateLabel = textSprite('checagem de relevância', { font: 56, color: '#bbf7d0', scale: 0.36 }); gateLabel.position.set(0, -1.35, 0.4); gate.add(gateLabel);
+gate.position.set(X.gate, 0.7, 0);
+const globe = new THREE.Group(); scene.add(globe);
+globe.add(new THREE.Mesh(new THREE.SphereGeometry(0.55, 28, 18), mat(0x7c3aed, 0.3)));
+globe.add(new THREE.LineSegments(new THREE.WireframeGeometry(new THREE.SphereGeometry(0.58, 12, 8)), new THREE.LineBasicMaterial({ color: 0xe9d5ff, transparent: true, opacity: 0.6 })));
+const globeLabel = textSprite('se não: sites oficiais (gov.br)', { font: 52, color: '#e9d5ff', scale: 0.32 }); globeLabel.position.set(0, 0.95, 0); globe.add(globeLabel);
+globe.position.set(X.gate - 0.3, 3.1, -1.5);
+
+// ───── 3. o prompt e o chip do Llama ─────
+const prompt = new THREE.Group(); scene.add(prompt);
+prompt.add(new THREE.Mesh(new THREE.BoxGeometry(2.0, 3.0, 0.06), new THREE.MeshStandardMaterial({ color: 0x0f1d44, emissive: 0x1e3a8a, emissiveIntensity: 0.3, transparent: true, opacity: 0.9 })));
+const promptTitle = textSprite('PROMPT', { font: 64, color: '#fde68a', scale: 0.32 }); promptTitle.position.set(0, 1.25, 0.1); prompt.add(promptTitle);
+prompt.position.set(X.prompt, 0.7, 0);
+const SLOT = { rules: V(0, 0.7, 0.08), t1: V(-0.55, -0.05, 0.08), t2: V(0, -0.05, 0.08), t3: V(0.55, -0.05, 0.08), hist: V(0, -0.85, 0.08) };
+const rules = docCard(0xfde68a); scene.add(rules);
+const rulesLabel = textSprite('regras', { font: 60, color: '#fef3c7', scale: 0.3 }); scene.add(rulesLabel);
+const tags = ['[1]', '[2]', '[3]'].map(s => { const sp = textSprite(s, { font: 70, color: '#ecfeff', w: 256, h: 140, scale: 0.28 }); scene.add(sp); return sp; });
+const hist = new THREE.Group(); scene.add(hist);
+[[-0.3, 0.1, 0x93c5fd], [0.25, -0.12, 0x3b82f6]].forEach(([x, y, c]) => hist.add(at(ext(roundRect(0.75, 0.3, 0.12), 0.05, mat(c, 0.3)), x, y)));
+const histLabel = textSprite('histórico', { font: 60, color: '#dbeafe', scale: 0.3 }); scene.add(histLabel);
+const fastapiLabel = textSprite('FastAPI monta o prompt', { font: 56, color: '#fde68a', scale: 0.34 }); fastapiLabel.position.set(X.prompt, 2.6, 0.3); scene.add(fastapiLabel);
+const chip = new THREE.Group(); scene.add(chip);
+chip.add(new THREE.Mesh(new THREE.BoxGeometry(1.6, 1.6, 0.22), mat(0x0f172a, 0.05)));
+const core = at(new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.9, 0.1), mat(0xf472b6, 0.4)), 0, 0, 0.15); chip.add(core);
+for (let i = 0; i < 6; i++) { const o = -0.62 + i * 0.25; [[o, 0.95, 0.08, 0.3], [o, -0.95, 0.08, 0.3], [0.95, o, 0.3, 0.08], [-0.95, o, 0.3, 0.08]].forEach(([x, y, w, h]) => chip.add(at(new THREE.Mesh(new THREE.BoxGeometry(w, h, 0.06), mat(0xcbd5e1, 0.1)), x, y))); }
+const chipLabel = textSprite('Llama 3.1 · Ollama (local)', { font: 56, color: '#fbcfe8', scale: 0.34 }); chipLabel.position.set(0, -1.45, 0.5); chip.add(chipLabel);
+chip.position.set(X.chip, 0.7, 0);
+// termômetro: temperatura 0,1
+const thermo = new THREE.Group(); scene.add(thermo);
+thermo.add(new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.11, 1.5, 16), new THREE.MeshStandardMaterial({ color: 0xe2e8f0, transparent: true, opacity: 0.35 })));
+thermo.add(at(new THREE.Mesh(new THREE.SphereGeometry(0.2, 16, 12), mat(0x60a5fa, 0.5)), 0, -0.85));
+const mercury = at(new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 1, 12), mat(0x60a5fa, 0.6)), 0, -0.6); thermo.add(mercury);
+const thermoLabel = textSprite('temperatura 0,1', { font: 56, color: '#bfdbfe', scale: 0.3 }); thermoLabel.position.set(0, 1.05, 0); thermo.add(thermoLabel);
+thermo.position.set(X.chip + 1.45, 1.0, 0.3);
+
+// ───── 4 e 5. o navegador, o balão da resposta, citações e sugestões ─────
+const web = new THREE.Group(); scene.add(web);
+web.add(new THREE.Mesh(new THREE.BoxGeometry(3.6, 2.7, 0.08), new THREE.MeshStandardMaterial({ color: 0x0b1226, emissive: 0x0b1226, roughness: 0.8 })));
+web.add(at(new THREE.Mesh(new THREE.BoxGeometry(3.6, 0.28, 0.1), mat(0x1e293b, 0.1)), 0, 1.21));
+[0xef4444, 0xf59e0b, 0x22c55e].forEach((c, i) => web.add(at(new THREE.Mesh(new THREE.SphereGeometry(0.055, 12, 8), mat(c, 0.4)), -1.62 + i * 0.17, 1.21, 0.07)));
+const webUser = new THREE.Group(); web.add(webUser);
+webUser.add(ext(roundRect(2.2, 0.36, 0.14), 0.04, mat(0xbfdbfe, 0.3)));
+const wuText = textSprite('Onde tomo vacina em Taguatinga?', { font: 52, color: '#0c4a6e', w: 1100, h: 120, scale: 0.2 }); wuText.position.z = 0.06; webUser.add(wuText);
+webUser.position.set(0.55, 0.78, 0.08);
+const ansBubble = new THREE.Mesh(new THREE.PlaneGeometry(3.0, 1.15), new THREE.MeshBasicMaterial({ transparent: true }));
+ansBubble.position.set(-0.15, -0.08, 0.07); web.add(ansBubble);
+const ansCanvas = document.createElement('canvas'); ansCanvas.width = 1200; ansCanvas.height = 460;
+const ansTex = new THREE.CanvasTexture(ansCanvas); ansTex.anisotropy = 8; ansBubble.material.map = ansTex;
+function drawAnswer(text, color = '#f8fafc', textColor = '#0f172a') {
+  const ctx = ansCanvas.getContext('2d'); ctx.clearRect(0, 0, 1200, 460);
+  ctx.fillStyle = color; ctx.beginPath(); ctx.roundRect(4, 4, 1192, 452, 44); ctx.fill();
+  ctx.fillStyle = textColor; ctx.font = '600 58px system-ui, sans-serif'; ctx.textBaseline = 'top';
+  const words = text.split(' '); let line = '', y = 40;
+  words.forEach(w => { const t = line ? line + ' ' + w : w; if (ctx.measureText(t).width > 1110 && line) { ctx.fillText(line, 44, y); line = w; y += 74; } else line = t; });
+  if (line) ctx.fillText(line, 44, y);
+  ansTex.needsUpdate = true;
+}
+const ANSWER = 'Você pode se vacinar na UBS 2 de Taguatinga, de segunda a sexta, das 7h às 19h.'.split(' ');
+const cite = textSprite('Fonte: UBS 2 Taguatinga · saude.df.gov.br', { font: 46, color: '#bfdbfe', bg: 'rgba(30,58,138,0.9)', border: '#60a5fa', w: 1100, h: 110, scale: 0.2 }); cite.position.set(-0.3, -0.88, 0.1); web.add(cite);
+const chips = ['Horários de atendimento', 'Documentos necessários'].map((s, i) => { const sp = textSprite(s, { font: 46, color: '#ccfbf1', bg: 'rgba(17,94,89,0.95)', border: '#2dd4bf', w: 760, h: 110, scale: 0.19 }); sp.position.set(-0.85 + i * 1.45, -1.13, 0.1); web.add(sp); return sp; });
+const webLabel = textSprite('navegador · Next.js', { font: 56, color: '#bfdbfe', scale: 0.32 }); webLabel.position.set(0, -1.75, 0.3); web.add(webLabel);
+web.position.set(X.web, 0.75, 0);
+// tokens: palavras saindo do chip como linhas JSON
+const TOKENS = ANSWER.map((w, i) => {
+  const g = new THREE.Group();
+  g.add(new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.16, 0.16), mat(0xf9a8d4, 0.9)));
+  const sp = textSprite(i % 4 === 1 ? '{"type":"chunk"}' : w, { font: 54, color: i % 4 === 1 ? '#fde68a' : '#fdf2f8', w: 640, h: 110, scale: 0.2 }); sp.position.y = 0.24; g.add(sp);
+  scene.add(g); return g;
+});
+const tokenPath = new THREE.QuadraticBezierCurve3(V(X.chip + 0.8, 0.9, 0.2), V((X.chip + X.web) / 2, 2.4, 0.6), V(X.web - 0.6, 0.7, 0.3));
+// falha simulada: trecho oficial direto ao balão
+const failLabel = textSprite('falha na IA', { font: 60, color: '#fecaca', bg: 'rgba(127,29,29,0.9)', border: '#f87171', w: 560, h: 120, scale: 0.3 }); failLabel.position.set(X.chip, 2.0, 0.4); scene.add(failLabel);
+const fallbackDoc = docCard(0x67e8f9); scene.add(fallbackDoc);
+const fallbackPath = new THREE.QuadraticBezierCurve3(V(X.prompt, 0.7, 0.3), V((X.prompt + X.web) / 2, 3.0, 0.8), V(X.web - 0.2, 0.6, 0.3));
+
+// ───── textos de tela (palavras-chave) e título final ─────
+const D = 10, vh = 2 * D * Math.tan(THREE.MathUtils.degToRad(20)), vw = vh * W / H;
+function lowerThird(text) {
+  const c = document.createElement('canvas'); c.width = 2400; c.height = 170;
+  const ctx = c.getContext('2d'); ctx.font = '700 70px system-ui, sans-serif';
+  const tw = Math.min(ctx.measureText(text).width + 110, 2390);
+  ctx.fillStyle = 'rgba(5, 11, 29, 0.78)'; ctx.beginPath(); ctx.roundRect((2400 - tw) / 2, 18, tw, 134, 67); ctx.fill();
+  ctx.strokeStyle = '#3b82f6'; ctx.lineWidth = 4; ctx.stroke();
+  ctx.fillStyle = '#ffffff'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(text, 1200, 88);
+  const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(c), transparent: true, depthTest: false }));
+  sp.renderOrder = 20; const sw = vw * 0.9; sp.scale.set(sw, sw * 170 / 2400, 1); sp.position.set(0, -vh / 2 + sw * 85 / 2400 + 0.25, -D);
+  camera.add(sp); return sp;
+}
+const CAPTIONS = [
+  [0.6, 7, lowerThird('A resposta não vem da memória da IA: é montada com fontes oficiais')],
+  [7.3, 18, lowerThird('ChromaDB → 3 trechos mais relevantes → checagem de relevância')],
+  [18.3, 33, lowerThird('FastAPI monta o prompt → Llama 3.1 no Ollama, local, temperatura 0,1')],
+  [33.3, 46, lowerThird('Geração token a token · cada pedaço é uma linha JSON · streaming')],
+  [46.3, 55.5, lowerThird('Citações oficiais + sugestões · se a IA falhar, vai o trecho oficial')]
+];
+const finalTitle = textSprite('Resposta construída, não inventada.', { font: 92, color: '#ffffff', bg: 'rgba(5,11,29,0.88)', border: '#3b82f6', w: 2000, h: 200, scale: 0.85 });
+finalTitle.position.set(0, vh / 2 - 1.15, -D); camera.add(finalTitle);
+let showText = true;
+
+// ───── câmera: quadros-chave ─────
+const CAM = [
+  [0, V(0, 2.2, 11.5), V(0, 1.1, 0)], [6.2, V(0, 2.2, 10.5), V(0, 1.1, 0)],
+  [8.5, V(-6, 2.8, 8), V(-5.4, 0.9, 0)], [13, V(-5.2, 2.8, 8.2), V(-4.4, 1.2, 0)], [17, V(-4.2, 3.4, 9), V(-3.6, 1.6, 0)],
+  [19.5, V(0.3, 2.2, 7.4), V(0.3, 0.8, 0)], [26, V(1.2, 2.2, 7.6), V(1.2, 0.8, 0)], [30, V(3.9, 2.3, 7.4), V(3.9, 0.9, 0)],
+  [34.5, V(5.6, 2.6, 8.6), V(5.7, 0.9, 0)], [45.5, V(7.4, 2.0, 7.0), V(7.6, 0.6, 0)], [50, V(7.6, 1.6, 6.0), V(7.7, 0.4, 0)],
+  [52.5, V(4.6, 2.8, 10), V(4.4, 0.9, 0)], [56.5, V(0.4, 4.2, 17), V(0.4, 0.8, 0)], [60, V(0.4, 4.6, 18.5), V(0.4, 0.8, 0)]
+];
+function cameraAt(t) {
+  let i = 0; while (i + 1 < CAM.length && CAM[i + 1][0] <= t) i++;
+  const a = CAM[i], b = CAM[Math.min(i + 1, CAM.length - 1)], k = b[0] > a[0] ? smooth((t - a[0]) / (b[0] - a[0])) : 0;
+  camera.position.lerpVectors(a[1], b[1], k);
+  camera.lookAt(new THREE.Vector3().lerpVectors(a[2], b[2], k));
+}
+
+// ───── o quadro no instante t ─────
+let lastWords = -1, lastAnswerMode = '';
+function frame(t) {
+  cameraAt(t);
+  const bob = Math.sin(t * 1.6) * 0.05;
+  // 1 · gancho (0–7 s)
+  const hookOn = 1 - seg(t, 6.2, 7.4);
+  setOpacity(hook, hookOn);
+  qBubble.scale.setScalar(Math.max(0.001, seg(t, 0.2, 1.0))); qBubble.position.y = 2.6 + bob;
+  brain.scale.setScalar(Math.max(0.001, seg(t, 1.2, 2.0))); brain.rotation.y = Math.sin(t) * 0.25;
+  xMark.scale.setScalar(Math.max(0.001, seg(t, 2.6, 3.1)));
+  hookDocs.forEach((d, i) => {
+    const a = i / 6 * Math.PI * 2 + t * 0.4, from = V(Math.cos(a) * 7, 1 + Math.sin(a) * 3, -3), to = V(1.6 + (i % 3) * 0.7, 0.3 + Math.floor(i / 3) * 0.95, 0.5);
+    d.position.lerpVectors(from, to, seg(t, 3.4 + i * 0.25, 5.2 + i * 0.25)); d.rotation.y = (1 - seg(t, 3.4, 5.8)) * 3;
+  });
+  officialLabel.material.opacity = seg(t, 5.2, 5.8) * hookOn;
+  // 2 · ChromaDB e checagem (7–18 s)
+  const s2 = seg(t, 6.8, 8);
+  setOpacity(db, s2); db.rotation.y = t * 0.3;
+  pool.forEach((d, i) => {
+    const fan = fanPos(i), rise = seg(t, 7.6 + i * 0.08, 9.4 + i * 0.08), top = TOP.indexOf(i);
+    d.visible = t > 7.4;
+    d.position.lerpVectors(V(X.db, -0.2, 0), fan, rise); d.position.y += Math.sin(t * 2 + i) * 0.04;
+    d.rotation.set(0, Math.sin(t + i) * 0.2, 0);
+    const dimmed = seg(t, 10, 11) * (top < 0 && i !== REJECT ? 1 : 0);
+    d.children[0].material.color.setHex(top >= 0 && t > 10 ? 0x67e8f9 : i === REJECT && t > 14.6 ? 0xf87171 : 0xf8fafc);
+    d.children[0].material.emissive.copy(d.children[0].material.color);
+    d.children[0].material.emissiveIntensity = top >= 0 && t > 10 ? 0.7 : 0.25;
+    setOpacity(d, (1 - 0.8 * dimmed) * (1 - seg(t, 17.4, 18.4) * (top < 0 ? 1 : 0)));
+    if (top >= 0) {
+      const go = seg(t, 12 + top * 0.5, 13.6 + top * 0.5);
+      const g0 = V(X.gate - 0.6 + top * 0.6, 0.7 + (top - 1) * 0.1, 0.3);
+      d.position.lerpVectors(d.position.clone(), g0, go);
+      // 3 · do portão até as vagas do prompt (20–23 s)
+      const slot = [SLOT.t1, SLOT.t2, SLOT.t3][top].clone().add(prompt.position);
+      const into = seg(t, 20 + top * 0.6, 21.6 + top * 0.6);
+      if (into > 0) { d.position.lerpVectors(g0, slot, into); d.scale.setScalar(1 - 0.25 * into); d.rotation.set(0, 0, 0); }
+      tags[top].position.copy(d.position).add(V(0, -0.47, 0.1)); tags[top].material.opacity = seg(t, 21.6 + top * 0.6, 22.2 + top * 0.6) * (1 - seg(t, 26, 27));
+    }
+    if (i === REJECT) {
+      const g0 = V(X.gate - 0.9, 1.2, 0.3), go = seg(t, 13.8, 14.6);
+      if (go > 0) d.position.lerpVectors(d.position.clone(), g0, go);
+      const fall = seg(t, 14.8, 16.2); if (fall > 0) { d.position.y -= fall * 2.6; d.rotation.z = fall * 1.2; }
+    }
+  });
+  // portão e globo: aparecem na cena 2, saem durante a montagem e voltam na visão geral final
+  const s2vis = seg(t, 9.5, 10.5) * (1 - seg(t, 18.4, 19.4)) + seg(t, 55, 56.5);
+  setOpacity(gate, s2vis); gate.rotation.y = Math.sin(t * 0.7) * 0.3;
+  gate.children[0].material.emissiveIntensity = 0.35 + (t > 12 && t < 15 ? 0.5 * (0.5 + 0.5 * Math.sin(t * 8)) : 0);
+  check.scale.setScalar(0.6 * Math.max(0.001, seg(t, 13.6, 14.1)));
+  setOpacity(globe, Math.min(seg(t, 15.8, 16.6), s2vis)); globe.rotation.y = t * 0.6; globe.scale.setScalar(1 + 0.06 * Math.sin(t * 5));
+  // 3 · montagem do prompt (18–33 s)
+  const pIn = seg(t, 18, 19.2), pToChip = seg(t, 26.2, 29.4);
+  setOpacity(prompt, pIn);
+  prompt.position.lerpVectors(V(X.prompt, 0.7, 0), V(X.chip, 0.7, 0.2), pToChip);
+  prompt.scale.setScalar(Math.max(0.001, 1 - 0.85 * pToChip));
+  const slotWorld = s => s.clone().multiplyScalar(prompt.scale.x).add(prompt.position);
+  rules.visible = t > 18.6; rules.position.lerpVectors(V(X.prompt - 2.6, 3.2, 0.5), slotWorld(SLOT.rules), seg(t, 18.8, 20)); rules.scale.setScalar(Math.max(0.001, 0.9 * prompt.scale.x));
+  rulesLabel.position.copy(rules.position).add(V(0.75 * prompt.scale.x, 0, 0.1)); rulesLabel.material.opacity = seg(t, 19.8, 20.3) * (1 - pToChip);
+  hist.visible = t > 23; hist.position.lerpVectors(V(X.prompt + 2.6, -1.4, 0.5), slotWorld(SLOT.hist), seg(t, 23.2, 24.6)); hist.scale.setScalar(Math.max(0.001, prompt.scale.x));
+  histLabel.position.copy(hist.position).add(V(0, -0.38 * prompt.scale.x, 0.1)); histLabel.material.opacity = seg(t, 24.4, 24.9) * (1 - pToChip);
+  pool.forEach((d, i) => { const top = TOP.indexOf(i); if (top >= 0 && t > 26.2) { d.position.copy(slotWorld([SLOT.t1, SLOT.t2, SLOT.t3][top])); d.scale.setScalar(Math.max(0.001, 0.75 * prompt.scale.x)); } });
+  [rules, hist, ...TOP.map(i => pool[i])].forEach(o => { if (t > 29.2) o.visible = false; });
+  if (t > 29.2) prompt.visible = false;
+  promptTitle.material.opacity = pIn * (1 - pToChip);
+  fastapiLabel.material.opacity = seg(t, 19, 19.6) * (1 - seg(t, 26, 26.8));
+  setOpacity(chip, seg(t, 24.5, 26)); chip.rotation.y = Math.sin(t * 0.8) * 0.25;
+  const thinking = t > 29.3 && t < 45 ? 0.5 + 0.5 * Math.sin(t * 6) : 0;
+  const failing = t > 50.2 && t < 53.6;
+  core.material.color.setHex(failing ? 0xef4444 : 0xf472b6); core.material.emissive.setHex(failing ? 0xef4444 : 0xf472b6);
+  core.material.emissiveIntensity = 0.4 + 0.6 * thinking + (failing ? 0.5 * (0.5 + 0.5 * Math.sin(t * 14)) : 0);
+  setOpacity(thermo, seg(t, 29.6, 30.6) * (1 - seg(t, 33.4, 34.2)));
+  mercury.scale.y = 0.15 + 0.1 * seg(t, 30.4, 31.6); mercury.position.y = -0.75 + mercury.scale.y / 2;
+  // 4 · entrega token a token (33–46 s)
+  setOpacity(web, seg(t, 32, 33.5)); web.rotation.y = Math.sin(t * 0.5) * 0.06;
+  let words = 0;
+  TOKENS.forEach((g, i) => {
+    const t0 = 34.2 + i * 0.75, q = (t - t0) / 1.6;
+    g.visible = q > 0 && q < 1;
+    if (g.visible) { g.position.copy(tokenPath.getPoint(smooth(q))); g.rotation.y = t * 3; }
+    if (q >= 1) words = i + 1;
+  });
+  // 5 · citações, sugestões e falha simulada (46–60 s)
+  const fallback = seg(t, 52.2, 53.6);
+  const mode = fallback > 0.98 ? 'fallback' : 'llm';
+  if (words !== lastWords || mode !== lastAnswerMode) {
+    lastWords = words; lastAnswerMode = mode;
+    if (mode === 'fallback') drawAnswer('[Trecho oficial] UBS 2 Taguatinga · QND Lote 1 · vacinação de segunda a sexta, 7h às 19h', '#cffafe', '#083344');
+    else drawAnswer(ANSWER.slice(0, words).join(' ') + (words < ANSWER.length && t > 34 ? ' ▍' : ''));
+  }
+  cite.material.opacity = seg(t, 46.4, 47.2) * (1 - seg(t, 52, 52.4));
+  chips.forEach((c, i) => { c.material.opacity = seg(t, 47.4 + i * 0.5, 48.2 + i * 0.5) * (1 - seg(t, 52, 52.4)); });
+  failLabel.material.opacity = seg(t, 50.3, 50.8) * (1 - seg(t, 54.5, 55.2));
+  fallbackDoc.visible = t > 51 && t < 53.7;
+  if (fallbackDoc.visible) { fallbackDoc.position.copy(fallbackPath.getPoint(seg(t, 51, 53.5))); fallbackDoc.rotation.y = t * 2; }
+  // textos de tela
+  CAPTIONS.forEach(([a, b, sp]) => { sp.material.opacity = showText ? seg(t, a, a + 0.5) * (1 - seg(t, b - 0.5, b)) : 0; });
+  finalTitle.material.opacity = seg(t, 55.6, 56.8);
+  renderer.render(scene, camera);
+}
+
+// ───── voz da narração (Web Audio) ─────
+// Cada bloco começa no segundo indicado; o relógio do áudio também comanda a animação, para não haver descompasso.
+const VOICE_AT = [0.1, 7.3, 18.3, 33.3, 46.3];
+const voice = { on: true, ctx: null, bufs: [], gain: null, dest: null, sources: [], ready: null };
+function initVoice() {
+  if (voice.ready) return voice.ready;
+  voice.ready = (async () => {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    voice.ctx = ctx; voice.gain = ctx.createGain(); voice.gain.connect(ctx.destination);
+    voice.dest = ctx.createMediaStreamDestination(); voice.gain.connect(voice.dest);
+    voice.bufs = await Promise.all((window.VOICE_DATA || []).map(b64 =>
+      fetch('data:audio/mpeg;base64,' + b64).then(r => r.arrayBuffer()).then(a => ctx.decodeAudioData(a))));
+  })();
+  return voice.ready;
+}
+function stopVoice() { voice.sources.forEach(s => { try { s.stop(); } catch (e) {} }); voice.sources = []; }
+function scheduleVoice(fromT) {
+  stopVoice();
+  if (!voice.on || !voice.ctx) return;
+  const now = voice.ctx.currentTime;
+  voice.bufs.forEach((buf, i) => {
+    const st = VOICE_AT[i];
+    if (st + buf.duration <= fromT) return;
+    const src = voice.ctx.createBufferSource(); src.buffer = buf; src.connect(voice.gain);
+    src.start(now + Math.max(0, st - fromT), Math.max(0, fromT - st)); voice.sources.push(src);
+  });
+}
+
+// ───── reprodução e gravação ─────
+const ui = document.getElementById('ui'), playBtn = document.getElementById('play'), timeEl = document.getElementById('time'), recBtn = document.getElementById('rec'), msg = document.getElementById('msg');
+let playing = false, t = Number(qs.get('t') || 0), last = null, recorder = null, clock = null;
+const fmt = s => Math.floor(s / 60) + ':' + String(Math.floor(s % 60)).padStart(2, '0');
+async function setPlaying(p) {
+  playing = p; last = null; clock = null; playBtn.textContent = p ? '⏸ Pausar' : '▶ Reproduzir';
+  if (!p) { stopVoice(); return; }
+  await initVoice(); await voice.ctx.resume();
+  if (!playing) return;
+  clock = { t0: t, a0: voice.ctx.currentTime };
+  scheduleVoice(t);
+}
+playBtn.addEventListener('click', () => { if (t >= DURATION) t = 0; setPlaying(!playing); });
+document.getElementById('restart').addEventListener('click', () => { t = 0; frame(0); timeEl.textContent = fmt(0) + ' / 1:00'; if (playing) setPlaying(true); });
+// voltar alguns segundos: imagem e voz recuam juntas
+function seek(newT) {
+  if (recorder) return;
+  t = clamp(newT, 0, DURATION); lastWords = -1;
+  if (playing && voice.ctx && clock) { clock = { t0: t, a0: voice.ctx.currentTime }; scheduleVoice(t); }
+  frame(t); timeEl.textContent = fmt(t) + ' / 1:00';
+}
+document.getElementById('back').addEventListener('click', () => seek(t - 5));
+const vozBtn = document.getElementById('voz');
+vozBtn.addEventListener('click', () => { voice.on = !voice.on; vozBtn.textContent = 'Voz: ' + (voice.on ? 'sim' : 'não'); vozBtn.setAttribute('aria-pressed', String(voice.on)); if (playing) setPlaying(true); });
+const txtBtn = document.getElementById('txt');
+txtBtn.addEventListener('click', () => { showText = !showText; txtBtn.textContent = 'Texto na tela: ' + (showText ? 'sim' : 'não'); txtBtn.setAttribute('aria-pressed', String(showText)); frame(t); });
+function say(text, ms = 5000) { msg.textContent = text; msg.style.display = 'block'; clearTimeout(say.h); if (ms) say.h = setTimeout(() => { msg.style.display = 'none'; }, ms); }
+recBtn.addEventListener('click', async () => {
+  if (recorder) return;
+  await initVoice(); await voice.ctx.resume();
+  const types = voice.on
+    ? ['video/mp4;codecs=avc1.640028,mp4a.40.2', 'video/mp4', 'video/webm;codecs=vp9,opus', 'video/webm']
+    : ['video/mp4;codecs=avc1.640028', 'video/mp4', 'video/webm;codecs=vp9', 'video/webm'];
+  const type = types.find(x => window.MediaRecorder && MediaRecorder.isTypeSupported(x));
+  if (!type) { say('Este navegador não grava vídeo. Use o Chrome ou o Edge.'); return; }
+  const chunks = [], stream = renderer.domElement.captureStream(30);
+  if (voice.on) voice.dest.stream.getAudioTracks().forEach(tr => stream.addTrack(tr));
+  recorder = new MediaRecorder(stream, { mimeType: type, videoBitsPerSecond: 16e6 });
+  recorder.ondataavailable = e => { if (e.data.size) chunks.push(e.data); };
+  recorder.onstop = () => {
+    const ext = type.startsWith('video/mp4') ? 'mp4' : 'webm';
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(chunks, { type })); a.download = 'susana-como-a-resposta-e-construida.' + ext;
+    document.body.appendChild(a); a.click(); a.remove();
+    recorder = null; recBtn.classList.remove('rec'); recBtn.textContent = '● Gravar vídeo (1 min)'; ui.classList.remove('hide');
+    say('Vídeo salvo na pasta de downloads (' + ext.toUpperCase() + ', 1920×1080, 30 fps).', 8000);
+  };
+  t = 0; frame(0); recorder.start(500); await setPlaying(true);
+  recBtn.classList.add('rec'); recBtn.textContent = '● Gravando…'; ui.classList.add('hide');
+  say('Gravando 1 minuto. Deixe esta aba aberta e visível até terminar.', 0);
+});
+function loop(ms) {
+  requestAnimationFrame(loop);
+  if (playing) {
+    // com o áudio ativo, o tempo vem do relógio do áudio; sem ele, do relógio da tela
+    if (clock) t = Math.min(DURATION, clock.t0 + (voice.ctx.currentTime - clock.a0));
+    else if (last !== null) t = Math.min(DURATION, t + (ms - last) / 1000);
+    last = ms;
+    if (t >= DURATION) { setPlaying(false); if (recorder) setTimeout(() => recorder && recorder.stop(), 300); }
+  }
+  frame(t);
+  timeEl.textContent = fmt(t) + ' / 1:00';
+}
+// ?still=1 desenha um único quadro (para conferir imagens sem animar)
+if (qs.has('still')) { frame(t); ui.style.display = 'none'; } else requestAnimationFrame(loop);
+window.addEventListener('keydown', e => {
+  if (e.key === ' ' && document.activeElement.tagName !== 'BUTTON') { e.preventDefault(); playBtn.click(); }
+  else if (e.key === 'ArrowLeft' || e.key === 'r' || e.key === 'R') { e.preventDefault(); seek(t - 5); }
+});
+</script>
+</body>
+</html>
