@@ -29,9 +29,11 @@ async def get_vaccine_guide(
 async def get_personalized_recommendation(
     data_nascimento: str = Query(..., description="Data de nascimento do cidadão no formato AAAA-MM-DD"),
     gestante: bool = Query(False, description="Indica se a cidadã é gestante"),
+    condicoes: Optional[str] = Query(None, description="Condições de saúde separadas por vírgula"),
 ):
     """Retorna as vacinas recomendadas de forma personalizada baseada na idade e perfil do cidadão."""
     return _service.get_personalized_recommendation(
         birth_date_str=data_nascimento,
         is_pregnant=gestante,
+        condicoes=[c.strip() for c in condicoes.split(",") if c.strip()] if condicoes else None,
     )

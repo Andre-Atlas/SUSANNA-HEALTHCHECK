@@ -243,6 +243,10 @@ app.include_router(units_router)
 from app.vaccines.router import router as vaccines_router
 app.include_router(vaccines_router)
 
+# Include personalized agenda (pending vaccines, reminders, chat proposals) router
+from app.agenda.router import router as agenda_router
+app.include_router(agenda_router)
+
 # Include official epidemiological surveillance router
 from app.surveillance.router import router as surveillance_router
 app.include_router(surveillance_router)

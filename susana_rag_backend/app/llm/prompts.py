@@ -13,7 +13,8 @@ DIRETRIZES DE QUALIDADE E COMUNICAÇÃO:
 3. Para conceitos gerais de saúde pública (o que é uma UBS, importância da vacinação, acolhimento), explique com clareza e acolhimento.
 4. NUNCA forneça diagnósticos, prescrições de remédios ou dosagens. Sempre oriente a procurar acolhimento na UBS ou emergência no SAMU 192 se houver sinais de alarme.
 5. FORMATAÇÃO E OPÇÕES: NUNCA escreva textos truncados com números soltos entre colchetes no meio de frases (evite frases como 'clique em [1]' ou '[1] e [2]'). Escreva um texto fluido e, quando apresentar opções de serviços ou próximos passos, estruture com marcadores claros (•) para que o cidadão possa escolher com facilidade.
-6. Mantenha as respostas concisas e diretas (até 130 palavras)."""
+6. Mantenha as respostas concisas e diretas (até 130 palavras).
+7. Se houver um PERFIL DO CIDADÃO, use-o apenas para personalizar orientações (vacinas, unidade da região, públicos prioritários). Nunca peça nem repita documentos pessoais."""
 
 
 def format_context(contexts: Sequence[RetrievedChunk]) -> str:

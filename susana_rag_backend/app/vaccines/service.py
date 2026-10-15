@@ -254,6 +254,7 @@ class VaccineGuideService:
         self,
         birth_date_str: str,
         is_pregnant: bool = False,
+        condicoes: Optional[List[str]] = None,
     ) -> PersonalizedVaccineRecommendation:
         try:
             d = datetime.strptime(birth_date_str, "%Y-%m-%d").date()
@@ -281,6 +282,12 @@ class VaccineGuideService:
             recommended.extend([v for v in all_items if v.id == "vac_influenza_anual"])
         else:
             recommended = [v for v in all_items if v.faixa_etaria in (faixa, "adulto" if faixa == "idoso" else faixa)]
+
+        if condicoes and not is_pregnant and faixa != "idoso":
+            # Grupos prioritários por condição crônica recebem Influenza anual
+            from app.vaccines.schedule import INFLUENZA_CONDITIONS
+            if INFLUENZA_CONDITIONS & set(condicoes):
+                recommended.extend(v for v in all_items if v.id == "vac_influenza_anual" and v not in recommended)
 
         alerta = None
         if is_pregnant:
