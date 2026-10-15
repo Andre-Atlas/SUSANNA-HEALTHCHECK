@@ -23,14 +23,7 @@ O sistema foi estruturado em uma arquitetura desacoplada e orientada a microsser
 * **Mecanismo de IA:** Pipeline RAG Híbrido que integra busca vetorial densa (**ChromaDB**), busca léxica esparsa (**BM25 Okapi**), fusão via **RRF (Reciprocal Rank Fusion)** e inferência com o modelo **Llama 3.1 (8B Instruct)** rodando via **Ollama**.
 * **Segurança e MLOps:** Camada de Guardrails supervisionados rastreada e governada através do **MLflow**.
 
-### 2.1 Diagrama de Sequência do Pipeline
-
-O fluxo de dados desde o momento em que o usuário envia uma mensagem até a renderização do streaming de resposta é ilustrado a seguir:
-
-![Diagrama de Sequência da Arquitetura Susana RAG](assets/diagrama_sequencia_susana.png)
-*Figura 1: Mapeamento da interação síncrona e assíncrona entre o Frontend, Guardrails de Segurança, Cache Semântico, Busca Híbrida e LLM Local.*
-
-### 2.2 Passo a Passo do Fluxo Operacional:
+### 2.1 Passo a Passo do Fluxo Operacional:
 1. **Recepção da Requisição:** O usuário submete sua pergunta via `POST /api/chat/stream`.
 2. **Contextualização e Toponímia do DF:** O módulo `ConversationalContextManager` normaliza expressões populares e expande termos geográficos típicos de Brasília (ex.: *Setor O* e *P Sul* ➔ *Ceilândia QNO/QNP*).
 3. **Barreira Clínica Pré-LLM (Guardrail):** Antes de qualquer consulta pesada, a mensagem é submetida ao classificador de risco clínico.
