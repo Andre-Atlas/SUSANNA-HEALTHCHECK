@@ -12,7 +12,7 @@
 
 ### 1. Contexto e Enquadramento Pedagógico
 O material original de partida originou-se de duas fontes complementares:
-1. **Diretrizes Oficiais do Desafio (`CBL_Challenge1_ClearColors.pptx`):** Estabelece a **Big Idea** ("distinguir fatos, evidências e opiniões através de IA para fortalecer o pensamento crítico"), a **Essential Question** ("Como sistemas de IA podem ajudar as pessoas a avaliar a confiabilidade de informações sem substituir seu pensamento crítico?") e o **Challenge Roadmap** de 6 semanas (Engage, Investigate, Act e Showcase).
+1. **Diretrizes Oficiais do Desafio:** Estabelece a **Big Idea** ("distinguir fatos, evidências e opiniões através de IA para fortalecer o pensamento crítico"), a **Essential Question** ("Como sistemas de IA podem ajudar as pessoas a avaliar a confiabilidade de informações sem substituir seu pensamento crítico?") e o **Challenge Roadmap** de 6 semanas (Engage, Investigate, Act e Showcase).
 2. **Quadro Operacional de Trabalho (`Challenge 1 - Trello`):** Reuniu 20 cartões investigativos com categorização temática (`DADOS`, `USUÁRIO`, `MODELO`, `PRODUÇÃO`) e faixas de priorização ágil (*RESPONDER JÁ*, *PLANEJAR*, *SE SOBRAR TEMPO*, *CORTAR SEM DÓ*).
 
 ### 2. Pontos Fortes Identificados
@@ -48,17 +48,17 @@ Para assegurar alinhamento integral com o framework CBL (Nichols & Cator, *Chall
 
 ## 🎯 1. Alinhamento com as Fases do Challenge 1
 
-### A. Big Idea (Slide 1)
+### A. Big Idea
 > *"Em um mundo com excesso de informação, como distinguir fatos, evidências e opiniões? A IA pode apoiar a investigação da confiabilidade das informações, fortalecendo o pensamento crítico em vez de substituí-lo."*
 
-### B. Essential Question (Slide 2)
+### B. Essential Question
 > *"Como sistemas de IA podem ajudar as pessoas a avaliar a confiabilidade de informações sem substituir seu pensamento crítico?"*  
 > **Pilares:** Investigar evidências • Identificar vieses • Construir critérios de confiança.
 
-### C. The Challenge (Slide 3)
+### C. The Challenge
 > **Desafio:** Desenvolver uma solução inteligente (SUSANA) capaz de orientar cidadãos sobre a rede de saúde do SUS-DF, validando informações com dados oficiais, mitigando a automedicação e desmistificando o acesso a remédios, vacinas e postos de saúde de forma rastreável e ética.
 
-### D. Roadmap & Cronograma Executado (Slides 5 a 10)
+### D. Roadmap & Cronograma Executado
 * **Semana 1 (Engage • 07/09 a 11/09):** Investigação de casos reais de desinformação, formulação das Guiding Questions iniciais e exploração dos dados abertos de saúde.
 * **Semanas 2-3 (Investigate • 14/09 a 25/09):** Definição do produto (Chatbot SUSANA), divisão dos papéis Scrum, EDA dos dados do SUS e auditoria de fontes oficiais (SES-DF / Ministério da Saúde).
 * **Semanas 4-5 (Act • 28/09 a 09/10):** Construção da arquitetura RAG Híbrida (BM25 + ChromaDB), engenharia de Guardrails Clínicos e desenvolvimento da interface.
@@ -350,22 +350,3 @@ Para assegurar alinhamento integral com o framework CBL (Nichols & Cator, *Chall
 | **NOVA 4** | Privacidade e Conformidade LGPD | **Adicionada pela Equipe** | Garantia de inferência local sem vazamento de dados de cidadãos. |
 | **NOVA 5** | Arquitetura Omnichannel (WhatsApp) | **Adicionada pela Equipe** | Planejamento da evolução do motor para canais de mensageria. |
 | **NOVA 6** | Agendamento Direto no SISREG | **Adicionada e Cortada** | Delimitação consciente: manter foco na orientação de acolhimento. |
-
----
-
-# PARTE 5 — AVALIAÇÃO DO ALINHAMENTO COM O FRAMEWORK CBL
-
-Avaliamos o documento consolidado em relação aos critérios formais da metodologia Challenge Based Learning:
-
-1. **Clareza e Precisão das Perguntas:** **Nota 9.5/10**  
-   *Justificativa:* As questões foram desmembradas de abstrações vagas para hipóteses concretas de investigação em saúde pública e engenharia de software.
-2. **Organização e Progressão Lógica:** **Nota 9.8/10**  
-   *Justificativa:* O fluxo respeita a sequência natural: entendimento do problema (*Engage*) ➔ investigação de fontes e arquitetura (*Investigate*) ➔ prototipação e salvaguardas (*Act*).
-3. **Coerência Temática:** **Nota 10/10**  
-   *Justificativa:* Todas as 26 questões convergem estritamente para o combate à desinformação e facilitação do acesso à rede SUS-DF.
-4. **Alinhamento com os Componentes Oficiais do CBL:** **Nota 9.5/10**  
-   *Justificativa:* Integração formal com a Big Idea e a Essential Question dos slides oficiais da disciplina, estabelecendo clara correspondência com os entregáveis do Roadmap.
-5. **Potencial de Orientação à Investigação Baseada em Evidências:** **Nota 10/10**  
-   *Justificativa:* Cada pergunta foi respondida com evidências empíricas, métricas de benchmark e decisões arquiteturais comprovadas no código da solução.
-6. **Consistência e Qualidade da Formatação Markdown:** **Nota 10/10**  
-   *Justificativa:* Hierarquia de títulos consistente, tipografia limpa, tabelas comparativas legíveis e sem poluição visual.
