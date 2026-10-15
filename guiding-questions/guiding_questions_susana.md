@@ -372,14 +372,3 @@ Avaliamos o documento consolidado em relação aos critérios formais da metodol
 
 > **NOTA GERAL DE ALINHAMENTO CBL:** **9.8 / 10 (Excelente)**  
 > *O material atende rigorosamente aos padrões pedagógicos internacionais do CBL e documenta com transparência a engenharia real da solução SUSANA.*
-
----
-
-# PARTE 6 — RECOMENDAÇÕES FINAIS E PRÓXIMOS PASSOS
-
-1. **Utilização na Apresentação Final (Showcase):**
-   - Utilizar a **Essential Question** como abertura do pitch: *"Como a IA pode ajudar o cidadão a avaliar informações de saúde sem substituir seu pensamento crítico?"*.
-   - Apresentar a **Busca Híbrida e o Dropdown de Fontes** como a resposta concreta de design à questão de explicabilidade.
-2. **Evolução Pós-Showcase:**
-   - Resgatar a questão **GQ 3.3 (WhatsApp)** na primeira sprint de evolução pós-MVP.
-   - Manter a questão **GQ 4.3 (SISREG)** documentada no repositório como evidência de maturidade na gestão de escopo e riscos regulatórios.
