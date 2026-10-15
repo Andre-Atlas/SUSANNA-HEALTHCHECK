@@ -369,6 +369,3 @@ Avaliamos o documento consolidado em relação aos critérios formais da metodol
    *Justificativa:* Cada pergunta foi respondida com evidências empíricas, métricas de benchmark e decisões arquiteturais comprovadas no código da solução.
 6. **Consistência e Qualidade da Formatação Markdown:** **Nota 10/10**  
    *Justificativa:* Hierarquia de títulos consistente, tipografia limpa, tabelas comparativas legíveis e sem poluição visual.
-
-> **NOTA GERAL DE ALINHAMENTO CBL:** **9.8 / 10 (Excelente)**  
-> *O material atende rigorosamente aos padrões pedagógicos internacionais do CBL e documenta com transparência a engenharia real da solução SUSANA.*
