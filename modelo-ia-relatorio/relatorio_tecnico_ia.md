@@ -110,9 +110,6 @@ O modelo recebe instruções estritas que governam seu estilo e proíbem conjetu
 
 Para homologação final da versão 2.0.0, foi desenvolvida uma suíte de testes automatizados ponta a ponta (`scripts/run_automated_eval.py`), executada diretamente contra a API oficial (`/api/chat/stream`).
 
-![Painel de Resultados do Benchmark](assets/painel_metricas_benchmark.jpg)
-*Figura 2: Dashboard de Métricas de Produção do Projeto SUSANA, consolidando 100% de precisão de regressão, zero prescrições e 2.280+ blocos oficiais indexados.*
-
 ### 6.1 Matriz de Resultados dos 18 Cenários Avaliados
 
 | ID | Categoria | Pergunta Avaliada | Status | Tempo | Comportamento Técnico Observado |
