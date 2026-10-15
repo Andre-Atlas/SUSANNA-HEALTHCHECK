@@ -45,32 +45,23 @@ class ChatSessionStorage:
         )
 
     def list_sessions(self, citizen_id: Optional[str] = None) -> List[ChatSessionSummary]:
+        """Lista apenas as sessões do titular. Visitantes mantêm o histórico no navegador."""
+        if not citizen_id:
+            return []
         with self.storage._lock, self.storage._get_connection() as conn:
             cur = conn.cursor()
-            if citizen_id:
-                cur.execute(
-                    """
-                    SELECT s.*, COUNT(m.id) as msg_count 
-                    FROM chat_sessions s
-                    LEFT JOIN chat_messages m ON s.id = m.session_id
-                    WHERE s.citizen_id = ? OR s.citizen_id IS NULL
-                    GROUP BY s.id
-                    ORDER BY s.updated_at DESC
-                    LIMIT 50
-                    """,
-                    (citizen_id,),
-                )
-            else:
-                cur.execute(
-                    """
-                    SELECT s.*, COUNT(m.id) as msg_count 
-                    FROM chat_sessions s
-                    LEFT JOIN chat_messages m ON s.id = m.session_id
-                    GROUP BY s.id
-                    ORDER BY s.updated_at DESC
-                    LIMIT 50
-                    """
-                )
+            cur.execute(
+                """
+                SELECT s.*, COUNT(m.id) as msg_count
+                FROM chat_sessions s
+                LEFT JOIN chat_messages m ON s.id = m.session_id
+                WHERE s.citizen_id = ?
+                GROUP BY s.id
+                ORDER BY s.updated_at DESC
+                LIMIT 50
+                """,
+                (citizen_id,),
+            )
             rows = cur.fetchall()
             return [
                 ChatSessionSummary(
@@ -84,6 +75,14 @@ class ChatSessionStorage:
                 )
                 for r in rows
             ]
+
+    def get_session_owner(self, session_id: str) -> tuple[bool, Optional[str]]:
+        """Retorna (existe, citizen_id) da sessão."""
+        with self.storage._lock, self.storage._get_connection() as conn:
+            row = conn.execute("SELECT citizen_id FROM chat_sessions WHERE id = ?", (session_id,)).fetchone()
+        if not row:
+            return False, None
+        return True, row["citizen_id"]
 
     def get_messages(self, session_id: str) -> List[ChatMessageItem]:
         with self.storage._lock, self.storage._get_connection() as conn:

@@ -47,6 +47,10 @@ class Settings(BaseSettings):
     ingestion_api_key: Optional[str] = "susana-ingest-secret-2026"
     relevance_confident_threshold: float = 0.35
 
+    # Cadastro opcional / sessões de login
+    auth_session_days_remember: int = 30
+    auth_session_hours_default: int = 24
+
     # Pesquisa Online Assíncrona & Complementação de Base
     online_search_enabled: bool = True
     online_search_timeout_s: float = 3.5

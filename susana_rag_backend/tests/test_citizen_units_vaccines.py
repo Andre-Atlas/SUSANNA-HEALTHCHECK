@@ -60,18 +60,7 @@ def test_cns_validation_official_algorithm():
     assert validate_cns("700000000000004") is False  # Provisório com dígito adulterado
 
 
-def _generate_valid_cpf() -> str:
-    import random
-    prefix = [random.randint(1, 8)] + [random.randint(0, 9) for _ in range(8)]
-    s1 = sum(prefix[i] * (10 - i) for i in range(9))
-    d1 = 11 - (s1 % 11)
-    d1 = 0 if d1 >= 10 else d1
-    prefix.append(d1)
-    s2 = sum(prefix[i] * (11 - i) for i in range(10))
-    d2 = 11 - (s2 % 11)
-    d2 = 0 if d2 >= 10 else d2
-    prefix.append(d2)
-    return "".join(str(d) for d in prefix)
+from tests.conftest import generate_valid_cpf as _generate_valid_cpf
 
 
 # ===========================================================================
@@ -83,42 +72,43 @@ def test_citizen_registration_and_login_flow():
     payload = {
         "nome_completo": "Ana Paula de Souza",
         "cpf": cpf_valido,
+        "senha": "segura123",
         "data_nascimento": "1994-05-15",
         "sexo_biologico": "F",
-        "gestante": True,
+        "condicoes": ["gestante"],
         "ra_residencia": "ceilandia",
         "bairro_ou_setor": "QNM 18",
         "telefone": "(61) 98888-7777",
     }
 
-    # Cadastro
+    # Cadastro já autentica
     resp = client.post("/api/citizen/register", json=payload)
-    assert resp.status_code == 200, resp.text
-    data = resp.json()
+    assert resp.status_code == 201, resp.text
+    body = resp.json()
+    data = body["citizen"]
+    assert body["token"]
     assert data["nome_completo"].lower() == "ana paula de souza"
     assert data["faixa_etaria"] == "adulto"
     assert data["gestante"] is True
     assert data["ra_residencia"] == "ceilandia"
-    assert "ra_display" in data
+    assert data["perfil_completo"] is True
     assert data["cpf_mascarado"].startswith("***.")
     citizen_id = data["id"]
 
     # Rejeição de cadastro duplicado com mesmo CPF
     resp_dup = client.post("/api/citizen/register", json=payload)
-    assert resp_dup.status_code in (400, 422)
+    assert resp_dup.status_code == 409
 
-    # Login por CPF e data de nascimento
-    resp_login = client.post(
-        "/api/citizen/login",
-        json={"cpf_or_cns": cpf_valido, "data_nascimento": "1994-05-15"},
-    )
+    # Login por CPF e senha
+    resp_login = client.post("/api/citizen/login", json={"cpf": cpf_valido, "senha": "segura123"})
     assert resp_login.status_code == 200
-    assert resp_login.json()["id"] == citizen_id
-    assert resp_login.json()["nome_completo"].lower() == "ana paula de souza"
+    assert resp_login.json()["citizen"]["id"] == citizen_id
+    headers = {"Authorization": f"Bearer {resp_login.json()['token']}"}
 
     # Atualização de Perfil (ex: mudou de RA para Taguatinga)
     resp_update = client.patch(
-        f"/api/citizen/me?citizen_id={citizen_id}",
+        "/api/citizen/me",
+        headers=headers,
         json={"ra_residencia": "taguatinga", "bairro_ou_setor": "QNB 12", "gestante": False},
     )
     assert resp_update.status_code == 200
@@ -126,14 +116,15 @@ def test_citizen_registration_and_login_flow():
     assert updated_data["ra_residencia"] == "taguatinga"
     assert updated_data["bairro_ou_setor"] == "QNB 12"
     assert updated_data["gestante"] is False
+    assert "gestante" not in updated_data["condicoes"]
 
 
 def test_citizen_registration_rejects_invalid_cpf():
     payload = {
         "nome_completo": "Carlos Falso",
         "cpf": "111.111.111-11",
+        "senha": "segura123",
         "data_nascimento": "1980-01-01",
-        "ra_residencia": "plano_piloto",
     }
     resp = client.post("/api/citizen/register", json=payload)
     assert resp.status_code in (400, 422)
@@ -142,16 +133,17 @@ def test_citizen_registration_rejects_invalid_cpf():
 # ===========================================================================
 # 3. Testes de Multi-Sessões de Chat e Histórico (Janelas Separadas)
 # ===========================================================================
-def test_multi_session_chat_flow():
+def test_multi_session_chat_flow(register_user):
+    headers, _, _ = register_user()
     # 1. Criar primeira sessão
-    resp1 = client.post("/api/chat/sessions", json={"title": "Dúvida sobre Vacina de Gripe"})
+    resp1 = client.post("/api/chat/sessions", headers=headers, json={"title": "Dúvida sobre Vacina de Gripe"})
     assert resp1.status_code == 200
     s1 = resp1.json()
     s1_id = s1["id"]
     assert s1["title"] == "Dúvida sobre Vacina de Gripe"
 
     # 2. Criar segunda sessão (janela separada)
-    resp2 = client.post("/api/chat/sessions", json={"title": "UBS mais próxima em Ceilândia"})
+    resp2 = client.post("/api/chat/sessions", headers=headers, json={"title": "UBS mais próxima em Ceilândia"})
     assert resp2.status_code == 200
     s2 = resp2.json()
     s2_id = s2["id"]
@@ -163,7 +155,7 @@ def test_multi_session_chat_flow():
         "role": "user",
         "content": "Onde posso tomar a vacina da gripe?",
     }
-    resp_m1 = client.post("/api/chat/sessions/messages", json=msg1_req)
+    resp_m1 = client.post("/api/chat/sessions/messages", headers=headers, json=msg1_req)
     assert resp_m1.status_code == 200
 
     msg2_req = {
@@ -172,18 +164,18 @@ def test_multi_session_chat_flow():
         "content": "A vacina contra a Influenza está disponível em todas as UBSs do DF.",
         "source": "rag_corpus",
     }
-    resp_m2 = client.post("/api/chat/sessions/messages", json=msg2_req)
+    resp_m2 = client.post("/api/chat/sessions/messages", headers=headers, json=msg2_req)
     assert resp_m2.status_code == 200
 
     # 4. Listar sessões e checar se ambas aparecem
-    resp_list = client.get("/api/chat/sessions")
+    resp_list = client.get("/api/chat/sessions", headers=headers)
     assert resp_list.status_code == 200
     sessions = resp_list.json()
     assert any(s["id"] == s1_id for s in sessions)
     assert any(s["id"] == s2_id for s in sessions)
 
     # 5. Recuperar histórico da sessão 1
-    resp_hist = client.get(f"/api/chat/sessions/{s1_id}/messages")
+    resp_hist = client.get(f"/api/chat/sessions/{s1_id}/messages", headers=headers)
     assert resp_hist.status_code == 200
     hist = resp_hist.json()
     assert len(hist) == 2
@@ -192,12 +184,12 @@ def test_multi_session_chat_flow():
     assert hist[1]["source"] == "rag_corpus"
 
     # 6. Histórico da sessão 2 deve estar vazio
-    resp_hist2 = client.get(f"/api/chat/sessions/{s2_id}/messages")
+    resp_hist2 = client.get(f"/api/chat/sessions/{s2_id}/messages", headers=headers)
     assert resp_hist2.status_code == 200
     assert len(resp_hist2.json()) == 0
 
     # 7. Excluir sessão 2
-    resp_del = client.delete(f"/api/chat/sessions/{s2_id}")
+    resp_del = client.delete(f"/api/chat/sessions/{s2_id}", headers=headers)
     assert resp_del.status_code == 200
     assert resp_del.json()["status"] == "deleted"
 
