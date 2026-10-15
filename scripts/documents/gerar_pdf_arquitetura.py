@@ -1,4 +1,5 @@
 from fpdf import FPDF
+from pathlib import Path
 
 class PDF(FPDF):
     def header(self):
@@ -43,4 +44,11 @@ def create_pdf(output_path):
     print(f"PDF gerado com sucesso em {output_path}")
 
 if __name__ == '__main__':
-    create_pdf('Projeto_Susana_Visao_Geral.pdf')
+    output_path = (
+        Path(__file__).resolve().parents[2]
+        / 'docs'
+        / 'architecture'
+        / 'Projeto_Susana_Visao_Geral.pdf'
+    )
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    create_pdf(str(output_path))

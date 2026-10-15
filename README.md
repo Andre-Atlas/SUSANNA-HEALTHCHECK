@@ -36,10 +36,22 @@ Toda a engenharia, modelagem e design do projeto estão detalhados na suíte de 
 | **🔬 MLOps e Modelagem** | [`docs/MLOPS_E_MODELAGEM.md`](docs/MLOPS_E_MODELAGEM.md) | Classificador clínico, 5-Fold Stratified CV, MLflow, Honest Benchmark e partições congeladas DEV/TEST. |
 | **🛠️ Guia de Build e Execução** | [`docs/BUILD_E_EXECUCAO.md`](docs/BUILD_E_EXECUCAO.md) | Setup passo a passo, portas, variáveis de ambiente, troubleshooting e suíte de 81 testes. |
 | **🎨 Design System e Identidade Visual** | [`susana-ui/docs/DESIGN_SYSTEM_IDENTIDADE_VISUAL.md`](susana-ui/docs/DESIGN_SYSTEM_IDENTIDADE_VISUAL.md) | Tokens CSS Liquid Blue, atmosfera de orbes, Liquid Glassmorphism e ativos da mascote Suzanna em 3D. |
+| **📄 Relatório Técnico** | [`docs/relatorio_tecnico.md`](docs/relatorio_tecnico.md) | Relatório técnico e métricas do projeto. |
+| **📋 Plano de Prontidão** | [`docs/production-readiness-plan.md`](docs/production-readiness-plan.md) | Requisitos e checklist de prontidão para produção. |
+| **🏛️ Visão Geral em PDF** | [`docs/architecture/Projeto_Susana_Visao_Geral.pdf`](docs/architecture/Projeto_Susana_Visao_Geral.pdf) | Visão arquitetural formatada em PDF. |
+| **🚀 Notas de Versão MLOps** | [`docs/releases/RELEASE_NOTES_MLOPS.md`](docs/releases/RELEASE_NOTES_MLOPS.md) | Registro de alterações de MLOps e avaliações de modelos. |
 
 ---
 
 ## 🚀 Quickstart — Como Executar Localmente
+
+### Pré-requisitos
+- Python 3.11 ou superior
+- Node.js 20.9 ou superior e npm
+- Ollama instalado e em execução:
+```bash
+ollama pull llama3.1:8b
+```
 
 ### 1. Parar Processos Anteriores (Se portas ocupadas)
 ```bash
@@ -50,15 +62,19 @@ lsof -ti:3000 | xargs kill -9 2>/dev/null
 ---
 
 ### 2. Executar o Backend (API FastAPI)
+Em um terminal:
 ```bash
 cd susana_rag_backend
 python3 -m venv .venv
 source .venv/bin/activate
+pip install --upgrade pip
 pip install -r requirements.txt
-uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+cp .env.example .env
+python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 ```
 - API ativa em: **`http://localhost:8000`**
 - Swagger interativo: **`http://localhost:8000/docs`**
+- Healthcheck: **`http://localhost:8000/health`**
 
 ---
 
@@ -93,12 +109,14 @@ npm run build
 ## 📁 Estrutura de Diretórios do Repositório
 
 ```text
-EDA/
+SUSANA/
 ├── docs/                                # Suíte oficial de documentação viva
 │   ├── ARQUITETURA_E_FUNCIONAMENTO.md   # Arquitetura detalhada do sistema
 │   ├── MLOPS_E_MODELAGEM.md             # Engenharia de ML, MLflow e Honest Benchmark
 │   ├── BUILD_E_EXECUCAO.md              # Setup, portas e troubleshooting
-│   └── ...                              # Relatórios e análises técnicas
+│   ├── architecture/                    # Diagramas e PDFs da visão arquitetural
+│   ├── mlops/                           # Playbooks de avaliação de LLMs
+│   └── releases/                        # Notas de versão MLOps
 ├── susana_rag_backend/                  # Backend assíncrono em FastAPI
 │   ├── app/
 │   │   ├── main.py                      # Gateway da API FastAPI
@@ -117,10 +135,14 @@ EDA/
 │   ├── docs/                            # Documentação canônica do Design System
 │   └── src/
 │       ├── app/
-│       │   ├── globals.css              # Tokens Liquid Blue e estilos Glassmorphism (#L e #A)
+│       │   ├── globals.css              # Tokens Liquid Blue e estilos Glassmorphism
 │       │   ├── layout.tsx               # Root layout com fonte Inter
 │       │   └── page.tsx                 # Aplicação completa integrada com chat e módulos
 │       └── components/                  # Componentes modulares de visualização
+├── scripts/                             # Scripts de análise, geração de documentos e notebooks
+│   ├── analysis/
+│   ├── documents/
+│   └── notebooks/
 └── README.md                            # Porta de entrada do repositório
 ```
 

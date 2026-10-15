@@ -1,4 +1,8 @@
+from pathlib import Path
+
 import nbformat as nbf
+
+ROOT_DIR = Path(__file__).resolve().parents[2]
 
 nb = nbf.v4.new_notebook()
 
@@ -133,4 +137,4 @@ obitos_clean.to_parquet('../data/processed/obitos_2022.parquet')
 
 print("Bases tratadas exportadas para data/processed/ com sucesso.")"""))
 
-nbf.write(nb, 'notebooks/EDA_SUS_Digital.ipynb')
+nbf.write(nb, str(ROOT_DIR / 'notebooks' / 'EDA_SUS_Digital.ipynb'))

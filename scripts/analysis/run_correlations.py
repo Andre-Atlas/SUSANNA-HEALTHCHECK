@@ -1,5 +1,8 @@
 import pandas as pd
 import numpy as np
+from pathlib import Path
+
+ROOT_DIR = Path(__file__).resolve().parents[2]
 
 # This is a scratch script to run basic tests on the data for OpenSpec docs.
 print("Loading data...")
@@ -7,14 +10,14 @@ print("Loading data...")
 # Helper to load safely
 def load_csv(path):
     try:
-        df = pd.read_csv(path, sep=';', encoding='iso-8859-1', on_bad_lines='skip')
+        df = pd.read_csv(ROOT_DIR / path, sep=';', encoding='iso-8859-1', on_bad_lines='skip')
         df.columns = [c.strip().lower() for c in df.columns]
         return df
     except:
         return pd.DataFrame()
 
 obitos = load_csv('CORPUS/obitos-ocorridos-no-df/Óbitos Ocorridos no DF - 2022.csv')
-samu = pd.read_csv('CORPUS/Samu/dados_producao_samu-29092026-.csv', encoding='utf-8', on_bad_lines='skip')
+samu = pd.read_csv(ROOT_DIR / 'CORPUS/Samu/dados_producao_samu-29092026-.csv', encoding='utf-8', on_bad_lines='skip')
 samu.columns = [c.strip().lower() for c in samu.columns]
 
 # Print initial shapes
