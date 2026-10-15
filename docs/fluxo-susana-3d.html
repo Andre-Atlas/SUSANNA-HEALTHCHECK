@@ -10,7 +10,23 @@
   #play { position: fixed; top: 18px; right: 18px; z-index: 5; background: #2563eb; color: #fff; border: 0; border-radius: 999px; padding: 12px 22px; font: 600 16px system-ui, sans-serif; cursor: pointer; box-shadow: 0 6px 24px rgba(37, 99, 235, 0.45); }
   #play:hover { background: #1d4ed8; }
   #play.on { background: #b91c1c; box-shadow: none; }
-  #sub { position: fixed; left: 50%; bottom: 96px; transform: translateX(-50%); z-index: 5; max-width: min(900px, 90vw); padding: 14px 22px; border-radius: 14px; background: rgba(3, 7, 18, 0.78); color: #f8fafc; font: 500 21px/1.45 system-ui, sans-serif; text-align: center; display: none; }
+  #voicectl { position: fixed; top: 18px; right: 228px; z-index: 5; display: none; gap: 8px; }
+  #voicectl button { background: #13224d; color: #fff; border: 1px solid #27408b; border-radius: 999px; height: 44px; padding: 0 16px; font: 600 15px system-ui, sans-serif; cursor: pointer; }
+  #voicectl button:hover { background: #1d3270; }
+  #voicectl button:focus-visible { outline: 3px solid #fde68a; outline-offset: 2px; }
+  #voicectl button.on { background: #b45309; border-color: #f59e0b; }
+  #tr { position: fixed; right: 18px; bottom: 92px; z-index: 5; width: min(360px, calc(100vw - 120px)); max-height: 52vh; display: none; flex-direction: column; border-radius: 16px; background: rgba(6, 12, 32, 0.82); border: 1px solid #1e3a8a; backdrop-filter: blur(6px); }
+  #tr header { display: flex; align-items: center; gap: 8px; padding: 10px 10px 8px 16px; border-bottom: 1px solid #1e3a8a; color: #93c5fd; font: 600 13px system-ui, sans-serif; }
+  #tr header span { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #tr header button { background: #13224d; color: #e2e8f0; border: 1px solid #27408b; border-radius: 999px; min-width: 44px; height: 32px; font: 600 13px system-ui, sans-serif; cursor: pointer; }
+  #trbody { overflow-y: auto; padding: 10px 16px 14px; font: 500 15px/1.55 system-ui, sans-serif; color: #94a3b8; scroll-behavior: smooth; }
+  #trbody p { margin: 0 0 8px; transition: color 0.4s; }
+  #trbody p.done { color: #475569; }
+  #trbody p.now { color: #ffffff; }
+  #tr.min { width: auto; }
+  #tr.min #trbody { display: none; }
+  #tr.min header { border-bottom: 0; padding-right: 10px; }
+  #tr.min header span { display: none; }
   #nav { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 6; display: flex; align-items: center; gap: 6px; padding: 6px; border-radius: 999px; background: rgba(8, 15, 38, 0.88); border: 1px solid #1e3a8a; max-width: calc(100vw - 24px); }
   #nav button, #dots button { background: #13224d; color: #e2e8f0; border: 1px solid #27408b; border-radius: 999px; min-width: 44px; height: 44px; padding: 0 14px; font: 600 15px system-ui, sans-serif; cursor: pointer; }
   #nav button:hover, #dots button:hover { background: #1d3270; }
@@ -46,7 +62,14 @@
 </head>
 <body>
 <button id="play" type="button">▶ Ouvir a explicação</button>
-<div id="sub" role="status" aria-live="polite"></div>
+<div id="voicectl" role="group" aria-label="Controles da narração">
+  <button id="vback" type="button" title="Voltar 10 segundos (tecla R)">⟲ 10 s</button>
+  <button id="vpause" type="button" title="Pausar / continuar (Espaço ou P)">⏸ Pausar</button>
+</div>
+<aside id="tr" aria-label="Transcrição da narração">
+  <header><span id="trhead">Narração</span><button id="trmin" type="button" title="Recolher / mostrar o texto (tecla T)" aria-expanded="true">Ocultar texto</button></header>
+  <div id="trbody" aria-live="off"></div>
+</aside>
 <nav id="nav" aria-label="Navegação pela cena">
   <button id="home" type="button" title="Visão geral (tecla 0)">Visão geral</button>
   <button id="prev" type="button" aria-label="Anterior (seta para a esquerda)">◀</button>
@@ -55,6 +78,7 @@
   <button id="zout" type="button" aria-label="Afastar (seta para baixo)">−</button>
   <button id="zin" type="button" aria-label="Aproximar (seta para cima)">+</button>
   <button id="shipbtn" type="button" title="Pilotar a nave (tecla N)">Pilotar nave</button>
+  <button id="musicbtn" type="button" title="Trilha sonora (tecla M)" aria-pressed="false">♪ Música</button>
   <button id="stackbtn" type="button" title="Tecnologias do projeto (tecla K)" aria-expanded="false">Stack</button>
   <button id="helpbtn" type="button" aria-label="Ajuda e atalhos (tecla ?)" aria-expanded="false">?</button>
 </nav>
@@ -78,9 +102,12 @@
     <tr><td>W  S</td><td>inclinar para cima / para baixo</td></tr>
     <tr><td>1 a 9</td><td>ir direto a uma etapa</td></tr>
     <tr><td>0 ou Esc</td><td>voltar à visão geral</td></tr>
-    <tr><td>Espaço</td><td>ouvir / parar a explicação</td></tr>
+    <tr><td>Espaço ou P</td><td>ouvir a explicação; durante ela, pausar / continuar</td></tr>
+    <tr><td>R</td><td>voltar 10 segundos na fala</td></tr>
+    <tr><td>T</td><td>mostrar / ocultar o texto da narração</td></tr>
     <tr><td>N</td><td>entrar / sair da nave</td></tr>
     <tr><td>K</td><td>painel Stack (tecnologias)</td></tr>
+    <tr><td>M</td><td>ligar / desligar a trilha sonora</td></tr>
     <tr><td>Na nave: W ou ↑</td><td>acelerar para a frente</td></tr>
     <tr><td>Na nave: S ou ↓</td><td>frear; parada, dá ré</td></tr>
     <tr><td>Na nave: A D ou ← →</td><td>virar para os lados</td></tr>
@@ -398,14 +425,39 @@ function freeAt(t) {
 
 // ───── narração guiada: a voz conduz a pergunta e a câmera ─────
 const NARR = window.FLUXO || [];
-const audio = new Audio(), playBtn = document.getElementById('play'), sub = document.getElementById('sub');
-const tour = { on: false, i: -1, t0: 0, fromU: 0, userMoved: false, follow: false };
+const audio = new Audio(), playBtn = document.getElementById('play');
+// transcrição lateral: a fala dividida em frases, com a frase atual em destaque
+const trEl = document.getElementById('tr'), trBody = document.getElementById('trbody'), trHead = document.getElementById('trhead'), trMin = document.getElementById('trmin');
+let trSentences = [], trCur = -1;
+function showTranscript(i) {
+  const st = NARR[i], parts = st.text.match(/[^.!?;:]+[.!?;:]*(\s|$)/g) || [st.text];
+  trBody.innerHTML = '';
+  trSentences = parts.map(t => { const el = document.createElement('p'); el.textContent = t.trim(); trBody.appendChild(el); return el; });
+  // peso de cada frase = seu tamanho; serve para estimar quando ela é dita
+  const tot = parts.reduce((a, t) => a + t.length, 0); let acc = 0;
+  trSentences.forEach((el, k) => { el.dataset.from = acc / tot; acc += parts[k].length; });
+  const stepName = st.overview ? (i === 0 ? 'Arquitetura' : i === NARR.length - 1 ? 'Encerramento' : 'Subida do backend') : (STEPS[Math.min(st.u, N - 1)] ? (st.u + 1) + '. ' + STEPS[st.u].name : '');
+  trHead.textContent = 'Fala ' + (i + 1) + ' de ' + NARR.length + ' · ' + stepName;
+  trCur = -1; trBody.scrollTop = 0; trEl.style.display = 'flex';
+}
+function updateTranscript() {
+  if (!tour.on || !trSentences.length || !audio.duration) return;
+  const f = audio.currentTime / audio.duration;
+  let k = 0; while (k + 1 < trSentences.length && Number(trSentences[k + 1].dataset.from) <= f) k++;
+  if (k === trCur) return;
+  trCur = k;
+  trSentences.forEach((el, j) => { el.className = j < k ? 'done' : j === k ? 'now' : ''; });
+  const el = trSentences[k]; trBody.scrollTop = Math.max(0, el.offsetTop - trBody.offsetTop - 40);
+}
+function toggleTranscript() { const min = trEl.classList.toggle('min'); trMin.textContent = min ? 'Mostrar texto' : 'Ocultar texto'; trMin.setAttribute('aria-expanded', String(!min)); }
+trMin.addEventListener('click', toggleTranscript);
+const tour = { on: false, i: -1, t0: 0, fromU: 0, userMoved: false, follow: false, paused: false, pausedAt: 0 };
 let fly = null;
 const flyTo = (cam, tgt) => { fly = { cam: cam.clone(), tgt: tgt.clone() }; };
 function startStep(i, now) {
-  tour.i = i; tour.t0 = now;
+  tour.i = i; tour.t0 = now; tour.paused = false; updatePauseBtn();
   const st = NARR[i];
-  sub.textContent = st.text; sub.style.display = 'block';
+  showTranscript(i);
   // na abertura e no encerramento, visão geral; nas etapas, a câmera acompanha a bolinha
   tour.follow = !st.overview && st.u < N;
   if (!tour.userMoved) { if (tour.follow) fly = null; else flyTo(HOME_CAM, HOME_TGT); }
@@ -423,15 +475,45 @@ function next() {
 function startTour() {
   if (ship.on) setShip(false);
   tour.on = true; tour.userMoved = false; tour.fromU = 0;
-  playBtn.textContent = '■ Parar'; playBtn.classList.add('on');
+  playBtn.textContent = '■ Parar'; playBtn.classList.add('on'); voiceCtl.style.display = 'flex'; applyMusicLevel();
   startStep(0, performance.now() / 1000);
 }
 function stopTour() {
-  tour.on = false; audio.pause(); sub.style.display = 'none';
+  tour.on = false; tour.paused = false; audio.pause(); trEl.style.display = 'none'; trSentences = []; voiceCtl.style.display = 'none';
   playBtn.textContent = '▶ Ouvir a explicação'; playBtn.classList.remove('on');
   goHome();
 }
 playBtn.addEventListener('click', () => tour.on ? stopTour() : startTour());
+// pausar, continuar e voltar alguns segundos na fala
+const voiceCtl = document.getElementById('voicectl'), pauseBtn = document.getElementById('vpause');
+const nowS = () => performance.now() / 1000;
+function updatePauseBtn() { pauseBtn.textContent = tour.paused ? '▶ Continuar' : '⏸ Pausar'; pauseBtn.classList.toggle('on', tour.paused); }
+function togglePause() {
+  if (!tour.on) return;
+  if (tour.paused) {
+    tour.t0 += nowS() - tour.pausedAt; tour.paused = false;
+    const pr = audio.play(); if (pr) pr.catch(() => {});
+  } else {
+    tour.paused = true; tour.pausedAt = nowS(); audio.pause();
+  }
+  updatePauseBtn();
+}
+function rewind(sec) {
+  if (!tour.on) return;
+  // no comecinho de uma fala, voltar leva à fala anterior
+  if (audio.currentTime < 1.5 && tour.i > 0) {
+    const prev = tour.i - 1, wasPaused = tour.paused;
+    tour.fromU = prev > 0 ? NARR[prev - 1].u : 0;
+    startStep(prev, nowS());
+    if (wasPaused) { audio.pause(); tour.paused = true; tour.pausedAt = nowS(); updatePauseBtn(); }
+    return;
+  }
+  audio.currentTime = Math.max(0, audio.currentTime - sec);
+  // a bolinha volta junto, para continuar sincronizada com a voz
+  tour.t0 = (tour.paused ? tour.pausedAt : nowS()) - audio.currentTime;
+}
+pauseBtn.addEventListener('click', togglePause);
+document.getElementById('vback').addEventListener('click', () => rewind(10));
 // ───── navegação: pontos de interesse = etapas (pares) e passagens (ímpares) ─────
 const POIS = [];
 STEPS.forEach((s, k) => {
@@ -499,7 +581,7 @@ window.addEventListener('keydown', e => {
     ArrowUp: () => zoom(0.75), ArrowDown: () => zoom(1.33), '+': () => zoom(0.75), '=': () => zoom(0.75), '-': () => zoom(1.33),
     a: () => orbit(0.26, 0), d: () => orbit(-0.26, 0), w: () => orbit(0, -0.15), s: () => orbit(0, 0.15),
     '0': goHome, Escape: () => helpEl.hidden ? goHome() : toggleHelp(false), Home: goHome,
-    '?': () => toggleHelp(), h: () => toggleHelp(), k: () => toggleStack(), ' ': () => tour.on ? stopTour() : startTour()
+    '?': () => toggleHelp(), h: () => toggleHelp(), k: () => toggleStack(), m: () => toggleMusic(), t: () => toggleTranscript(), ' ': () => tour.on ? togglePause() : startTour(), p: () => tour.on ? togglePause() : startTour(), r: () => { if (tour.on) rewind(10); }
   };
   const fn = map[k] || map[k.toLowerCase && k.toLowerCase()] || (/^[1-9]$/.test(k) ? () => goPOI(2 * (Number(k) - 1)) : null);
   if (!fn) return;
@@ -608,7 +690,7 @@ renderer.domElement.style.cursor = 'grab';
 setTimeout(() => { const t = document.getElementById('toast'); t.style.opacity = '0'; setTimeout(() => t.remove(), 900); }, 6500);
 
 function tourPacket(now) {
-  const st = NARR[tour.i], e = now - tour.t0;
+  const st = NARR[tour.i], e = (tour.paused ? tour.pausedAt : now) - tour.t0;
   const from = tour.fromU; let to = st.u;
   if (to < from) to += N;
   const mv = THREE.MathUtils.smootherstep(Math.min(e / 2.2, 1), 0, 1);
@@ -621,6 +703,69 @@ function tourPacket(now) {
   }
   return { u: u % 1, p, out, br: st.out };
 }
+
+// ───── trilha sonora ambiente, gerada na hora com Web Audio ─────
+// Acordes longos (Dó maior / Lá menor) com filtro e reverberação, e notas soltas da escala pentatônica.
+const music = { ctx: null, master: null, bus: null, on: false, wanted: true, timer: null, next: 0, chord: 0 };
+const CHORDS = [
+  [130.81, 196.0, 246.94, 293.66, 329.63],   // Dó maior com 7ª e 9ª
+  [110.0, 164.81, 196.0, 246.94, 261.63],    // Lá menor com 7ª e 9ª
+  [87.31, 130.81, 164.81, 220.0, 261.63],    // Fá maior com 7ª
+  [98.0, 146.83, 164.81, 220.0, 293.66]      // Sol com 6ª e 9ª
+];
+const SPARKS = [523.25, 587.33, 659.25, 783.99, 880.0, 1046.5];
+function buildMusic() {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const master = ctx.createGain(); master.gain.value = 0; master.connect(ctx.destination);
+  // reverberação: resposta ao impulso feita de ruído que decai em ~5 s
+  const len = ctx.sampleRate * 5, ir = ctx.createBuffer(2, len, ctx.sampleRate);
+  for (let ch = 0; ch < 2; ch++) { const d = ir.getChannelData(ch); for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3); }
+  const verb = ctx.createConvolver(); verb.buffer = ir;
+  const wet = ctx.createGain(); wet.gain.value = 0.55; const dry = ctx.createGain(); dry.gain.value = 0.45;
+  const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 1400; lp.Q.value = 0.3;
+  lp.connect(dry); lp.connect(verb); verb.connect(wet); dry.connect(master); wet.connect(master);
+  // o filtro "respira" bem devagar
+  const lfo = ctx.createOscillator(), lfoGain = ctx.createGain(); lfo.frequency.value = 0.035; lfoGain.gain.value = 500;
+  lfo.connect(lfoGain); lfoGain.connect(lp.frequency); lfo.start();
+  Object.assign(music, { ctx, master, bus: lp, next: ctx.currentTime + 0.1 });
+}
+function tone(freq, start, dur, peak, type, detune) {
+  const { ctx, bus } = music, o = ctx.createOscillator(), g = ctx.createGain();
+  o.type = type; o.frequency.value = freq; o.detune.value = detune;
+  g.gain.setValueAtTime(0, start); g.gain.linearRampToValueAtTime(peak, start + dur * 0.35);
+  g.gain.setValueAtTime(peak, start + dur * 0.6); g.gain.linearRampToValueAtTime(0, start + dur);
+  o.connect(g); g.connect(bus); o.start(start); o.stop(start + dur + 0.1);
+}
+// agenda os próximos acordes e brilhos um pouco à frente do relógio do áudio
+function scheduleMusic() {
+  const { ctx } = music;
+  while (music.next < ctx.currentTime + 4) {
+    const t0 = music.next, chord = CHORDS[music.chord % CHORDS.length];
+    chord.forEach((f, i) => { tone(f, t0 + i * 0.12, 11, 0.045, 'sine', -4); tone(f, t0 + i * 0.12, 11, 0.022, 'triangle', 5); });
+    for (let s = 0; s < 3; s++) if (Math.random() < 0.7) tone(SPARKS[Math.floor(Math.random() * SPARKS.length)], t0 + 1.5 + s * 2.4 + Math.random(), 3.5, 0.018, 'sine', 0);
+    music.chord++; music.next += 8;
+  }
+}
+function musicLevel() { return !music.on ? 0 : (tour.on && !audio.paused ? 0.32 : 0.75); }
+function applyMusicLevel() { if (music.ctx) music.master.gain.setTargetAtTime(musicLevel(), music.ctx.currentTime, 0.8); }
+const musicBtn = document.getElementById('musicbtn');
+function setMusic(on) {
+  music.on = on; music.wanted = on;
+  musicBtn.classList.toggle('on', on); musicBtn.setAttribute('aria-pressed', String(on));
+  if (on) {
+    if (!music.ctx) buildMusic();
+    music.ctx.resume();
+    if (!music.timer) { scheduleMusic(); music.timer = setInterval(scheduleMusic, 1000); }
+  }
+  applyMusicLevel();
+}
+function toggleMusic() { setMusic(!music.on); }
+musicBtn.addEventListener('click', () => { toggleMusic(); musicBtn.blur(); });
+// começa no primeiro gesto do usuário (os navegadores bloqueiam som antes disso)
+const firstGesture = e => { if (e.target === musicBtn) return; window.removeEventListener('pointerdown', firstGesture); window.removeEventListener('keydown', firstGesture); if (music.wanted && !music.on && !(e.key === 'm' || e.key === 'M')) setMusic(true); };
+window.addEventListener('pointerdown', firstGesture); window.addEventListener('keydown', firstGesture);
+// abaixa a música enquanto a narração fala
+['play', 'pause', 'ended'].forEach(ev => audio.addEventListener(ev, applyMusicLevel));
 
 // ───── quadro a quadro ─────
 let lastFrame = null;
@@ -649,6 +794,7 @@ function frame(t, now) {
   });
   galaxy.rotation.y = t * 0.012;
   updateShip(now);
+  updateTranscript();
   // revelação progressiva: cada texto só aparece quando a bolinha passa, quando você chega perto,
   // quando passa o mouse por cima ou quando seleciona aquele ponto
   const dtF = lastFrame === null ? 0.016 : Math.min(now - lastFrame, 0.1); lastFrame = now;
