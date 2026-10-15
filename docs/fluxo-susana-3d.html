@@ -382,19 +382,17 @@ function freeAt(t) {
 // ───── narração guiada: a voz conduz a pergunta e a câmera ─────
 const NARR = window.FLUXO || [];
 const audio = new Audio(), playBtn = document.getElementById('play'), sub = document.getElementById('sub');
-const tour = { on: false, i: -1, t0: 0, fromU: 0, userMoved: false };
+const tour = { on: false, i: -1, t0: 0, fromU: 0, userMoved: false, follow: false };
 let fly = null;
 const flyTo = (cam, tgt) => { fly = { cam: cam.clone(), tgt: tgt.clone() }; };
-function viewFor(u) {
-  if (u <= 0 || u >= N) return { cam: HOME_CAM.clone(), tgt: HOME_TGT.clone() };
-  const p = pos(u), n = normalAt(p);
-  return { tgt: p.clone().setY(0.6), cam: p.clone().addScaledVector(n, 5.2).add(new THREE.Vector3(0, 5.6, 0)) };
-}
 function startStep(i, now) {
   tour.i = i; tour.t0 = now;
   const st = NARR[i];
   sub.textContent = st.text; sub.style.display = 'block';
-  if (!tour.userMoved) { const v = viewFor(st.u); flyTo(v.cam, v.tgt); setWhere(st.u > 0 && st.u < N ? 2 * st.u : -1); }
+  // na abertura e no encerramento, visão geral; nas etapas, a câmera acompanha a bolinha
+  tour.follow = i > 0 && st.u < N;
+  if (!tour.userMoved) { if (tour.follow) fly = null; else flyTo(HOME_CAM, HOME_TGT); }
+  setWhere(tour.follow ? 2 * st.u : -1);
   audio.src = 'fluxo-audio/' + String(i).padStart(2, '0') + '.mp3';
   audio.onended = () => setTimeout(() => { if (tour.on && tour.i === i) next(); }, 700);
   audio.onerror = () => setTimeout(() => { if (tour.on && tour.i === i) next(); }, 6000);
@@ -655,7 +653,15 @@ function frame(t, now) {
   });
   const zoomed = THREE.MathUtils.clamp((camera.position.distanceTo(controls.target) - 9) / 8, 0, 1);
   header.material.opacity = ship.on ? 0 : zoomed;
-  // câmera da narração (até o usuário assumir o controle)
+  // câmera da narração: segue a bolinha de luz, um pouco por fora e por cima dela
+  if (tour.on && tour.follow && !tour.userMoved) {
+    const b = packet.position, dir = new THREE.Vector3(b.x, 0, b.z);
+    if (dir.lengthSq() < 0.5) dir.set(0, 0, 1);
+    dir.normalize();
+    const want = b.clone().addScaledVector(dir, 6.2).add(new THREE.Vector3(0, 5, 0));
+    camera.position.lerp(want, Math.min(1, dtF * 2.2)); controls.target.lerp(b, Math.min(1, dtF * 4));
+  }
+  // voos pedidos pela navegação (até o usuário assumir o controle)
   if (fly) {
     camera.position.lerp(fly.cam, 0.07); controls.target.lerp(fly.tgt, 0.08);
     if (camera.position.distanceTo(fly.cam) < 0.02 && controls.target.distanceTo(fly.tgt) < 0.02) fly = null;
