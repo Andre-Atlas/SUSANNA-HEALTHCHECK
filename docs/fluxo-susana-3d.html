@@ -1,0 +1,674 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Como a Susana responde</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #030712; overflow: hidden; font-family: system-ui, sans-serif; }
+  canvas { display: block; }
+  #play { position: fixed; top: 18px; right: 18px; z-index: 5; background: #2563eb; color: #fff; border: 0; border-radius: 999px; padding: 12px 22px; font: 600 16px system-ui, sans-serif; cursor: pointer; box-shadow: 0 6px 24px rgba(37, 99, 235, 0.45); }
+  #play:hover { background: #1d4ed8; }
+  #play.on { background: #b91c1c; box-shadow: none; }
+  #sub { position: fixed; left: 50%; bottom: 96px; transform: translateX(-50%); z-index: 5; max-width: min(900px, 90vw); padding: 14px 22px; border-radius: 14px; background: rgba(3, 7, 18, 0.78); color: #f8fafc; font: 500 21px/1.45 system-ui, sans-serif; text-align: center; display: none; }
+  #nav { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 6; display: flex; align-items: center; gap: 6px; padding: 6px; border-radius: 999px; background: rgba(8, 15, 38, 0.88); border: 1px solid #1e3a8a; max-width: calc(100vw - 24px); }
+  #nav button, #dots button { background: #13224d; color: #e2e8f0; border: 1px solid #27408b; border-radius: 999px; min-width: 44px; height: 44px; padding: 0 14px; font: 600 15px system-ui, sans-serif; cursor: pointer; }
+  #nav button:hover, #dots button:hover { background: #1d3270; }
+  #nav button:focus-visible, #dots button:focus-visible, #play:focus-visible { outline: 3px solid #fde68a; outline-offset: 2px; }
+  #where { color: #fff; font: 600 15px system-ui, sans-serif; min-width: 240px; max-width: 34vw; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 0 6px; }
+  #dots { position: fixed; left: 18px; top: 50%; transform: translateY(-50%); z-index: 6; display: flex; flex-direction: column; gap: 6px; }
+  #dots button { width: 44px; padding: 0; }
+  #dots button.on, #nav button.on { background: #2563eb; border-color: #93c5fd; }
+  #help { position: fixed; right: 18px; top: 74px; z-index: 7; width: min(380px, calc(100vw - 36px)); padding: 18px 20px; border-radius: 16px; background: rgba(8, 15, 38, 0.95); border: 1px solid #27408b; color: #dbe7ff; font: 500 14px/1.5 system-ui, sans-serif; }
+  #help h2 { margin: 0 0 8px; font-size: 17px; color: #fff; }
+  #help table { border-collapse: collapse; width: 100%; }
+  #help td { padding: 4px 0; vertical-align: top; }
+  #help td:first-child { width: 42%; color: #fde68a; font-weight: 700; padding-right: 10px; }
+  #help[hidden] { display: none; }
+  #shiphud { position: fixed; left: 50%; top: 16px; transform: translateX(-50%); z-index: 6; display: none; align-items: center; gap: 14px; padding: 8px 18px; border-radius: 999px; background: rgba(8, 15, 38, 0.9); border: 1px solid #f59e0b; color: #fde68a; font: 600 14px system-ui, sans-serif; }
+  #shiphud b { color: #fff; font-size: 18px; min-width: 64px; display: inline-block; text-align: right; }
+  #shipkeys { color: #cbd5e1; font-weight: 500; }
+  #toast { position: fixed; left: 50%; top: 22%; transform: translateX(-50%); z-index: 6; padding: 10px 18px; border-radius: 999px; background: rgba(37, 99, 235, 0.92); color: #fff; font: 600 15px system-ui, sans-serif; transition: opacity 0.8s; pointer-events: none; }
+</style>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<script src="fluxo-narracao.js"></script>
+</head>
+<body>
+<button id="play" type="button">▶ Ouvir a explicação</button>
+<div id="sub" role="status" aria-live="polite"></div>
+<nav id="nav" aria-label="Navegação pela cena">
+  <button id="home" type="button" title="Visão geral (tecla 0)">Visão geral</button>
+  <button id="prev" type="button" aria-label="Anterior (seta para a esquerda)">◀</button>
+  <span id="where" aria-live="polite">Visão geral</span>
+  <button id="next" type="button" aria-label="Próximo (seta para a direita)">▶</button>
+  <button id="zout" type="button" aria-label="Afastar (seta para baixo)">−</button>
+  <button id="zin" type="button" aria-label="Aproximar (seta para cima)">+</button>
+  <button id="shipbtn" type="button" title="Pilotar a nave (tecla N)">Pilotar nave</button>
+  <button id="helpbtn" type="button" aria-label="Ajuda e atalhos (tecla ?)" aria-expanded="false">?</button>
+</nav>
+<div id="dots" aria-label="Ir direto a uma etapa"></div>
+<div id="shiphud" role="status"><span>Velocidade <b id="speed">0,0</b></span><span id="shipkeys">W/↑ frente · S/↓ freio e ré · A D girar · Espaço acelera · Shift turbo · N sai da nave</span></div>
+<div id="help" hidden>
+  <h2>Como navegar</h2>
+  <table>
+    <tr><td>← →</td><td>etapa ou passagem anterior / próxima</td></tr>
+    <tr><td>↑ ↓</td><td>aproximar / afastar</td></tr>
+    <tr><td>A  D</td><td>girar a cena para os lados</td></tr>
+    <tr><td>W  S</td><td>inclinar para cima / para baixo</td></tr>
+    <tr><td>1 a 9</td><td>ir direto a uma etapa</td></tr>
+    <tr><td>0 ou Esc</td><td>voltar à visão geral</td></tr>
+    <tr><td>Espaço</td><td>ouvir / parar a explicação</td></tr>
+    <tr><td>N</td><td>entrar / sair da nave</td></tr>
+    <tr><td>Na nave: W ou ↑</td><td>acelerar para a frente</td></tr>
+    <tr><td>Na nave: S ou ↓</td><td>frear; parada, dá ré</td></tr>
+    <tr><td>Na nave: A D ou ← →</td><td>virar para os lados</td></tr>
+    <tr><td>Na nave: Espaço</td><td>acelerar</td></tr>
+    <tr><td>Na nave: Shift</td><td>turbo (acelera mais rápido)</td></tr>
+    <tr><td>Clique numa peça</td><td>a câmera voa até ela</td></tr>
+    <tr><td>Arrastar</td><td>girar livremente</td></tr>
+    <tr><td>Roda do mouse</td><td>zoom na direção do cursor</td></tr>
+    <tr><td>Botão direito</td><td>arrastar a cena para os lados</td></tr>
+  </table>
+  <p style="margin: 10px 0 0">A IA, a busca e o filtro rodam no próprio computador. Só a busca complementar usa a internet, e apenas em sites oficiais.</p>
+  <p style="margin: 10px 0 0">Dica: as explicações de cada passagem (1 → 2, 2 → 3…) só aparecem de perto. Use ← → para visitá-las.</p>
+</div>
+<div id="toast">← → passeia pelas etapas · N pilota a nave · ? mostra todos os comandos</div>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+// ?still=1&t=12 congela a cena; &cam=x,y,z&tgt=x,y,z posiciona a câmera (usado para gerar imagens estáticas)
+const qs = new URLSearchParams(location.search);
+const STILL = qs.has('still'), T0 = Number(qs.get('t') || 0);
+const vec = s => s ? new THREE.Vector3(...s.split(',').map(Number)) : null;
+
+const W = window.innerWidth, H = window.innerHeight;
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(42, W / H, 0.05, 400);
+const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+renderer.setSize(W, H);
+renderer.setClearColor(0x030712);
+document.body.appendChild(renderer.domElement);
+scene.add(camera);
+scene.add(new THREE.HemisphereLight(0xbfdbfe, 0x0b1020, 0.9));
+const sun = new THREE.DirectionalLight(0xffffff, 1.1); sun.position.set(6, 14, 10); scene.add(sun);
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true; controls.zoomToCursor = true; controls.minDistance = 2; controls.maxDistance = 48;
+
+// ───── galáxia: estrelas ao fundo e braços espirais em volta do anel ─────
+let seed = 11;
+const rnd = () => { seed = (seed * 1664525 + 1013904223) % 4294967296; return seed / 4294967296; };
+const gauss = () => (rnd() + rnd() + rnd() - 1.5) / 1.5;
+function points(n, place, size, opacity) {
+  const p = new Float32Array(n * 3), c = new Float32Array(n * 3), col = new THREE.Color();
+  for (let i = 0; i < n; i++) { place(i, p, col); c[i * 3] = col.r; c[i * 3 + 1] = col.g; c[i * 3 + 2] = col.b; }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.BufferAttribute(p, 3)); g.setAttribute('color', new THREE.BufferAttribute(c, 3));
+  return new THREE.Points(g, new THREE.PointsMaterial({ size, vertexColors: true, transparent: true, opacity, depthWrite: false, blending: THREE.AdditiveBlending }));
+}
+scene.add(points(3500, (i, p, col) => {
+  const u = rnd() * 2 - 1, a = rnd() * Math.PI * 2, r = 90 + rnd() * 80, s = Math.sqrt(1 - u * u);
+  p[i * 3] = r * s * Math.cos(a); p[i * 3 + 1] = r * u; p[i * 3 + 2] = r * s * Math.sin(a);
+  col.setHSL(0.6 + rnd() * 0.1, 0.4, 0.6 + rnd() * 0.4);
+}, 0.55, 0.9));
+const galaxy = points(9000, (i, p, col) => {
+  const arm = i % 3, r = 0.8 + Math.pow(rnd(), 0.75) * 26, a = arm / 3 * Math.PI * 2 + r * 0.33 + gauss() * 0.45;
+  p[i * 3] = r * Math.cos(a) + gauss() * 0.5; p[i * 3 + 1] = -1.1 + gauss() * 0.45 * Math.max(0.15, 1 - r / 26); p[i * 3 + 2] = r * Math.sin(a) * 0.75 + gauss() * 0.5;
+  col.set(r < 4 ? '#fde68a' : r < 12 ? '#93c5fd' : (arm === 1 ? '#c084fc' : '#60a5fa')).multiplyScalar(0.55 + rnd() * 0.5);
+}, 0.075, 0.85);
+scene.add(galaxy);
+
+// ───── textos em sprites ─────
+function sprite(w, h) {
+  const c = document.createElement('canvas'); c.width = w; c.height = h;
+  const tex = new THREE.CanvasTexture(c); tex.anisotropy = 8;
+  const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false }));
+  sp.renderOrder = 10;
+  return { sp, ctx: c.getContext('2d'), tex, w, h };
+}
+function wrap(ctx, text, maxW) {
+  const out = []; let cur = '';
+  text.split(' ').forEach(word => {
+    const t = cur ? cur + ' ' + word : word;
+    if (ctx.measureText(t).width > maxW && cur) { out.push(cur); cur = word; } else cur = t;
+  });
+  out.push(cur); return out;
+}
+function stationLabel(num, name, desc, color) {
+  const s = sprite(720, 230), { ctx } = s;
+  ctx.fillStyle = 'rgba(10, 20, 48, 0.88)';
+  ctx.beginPath(); ctx.roundRect(4, 4, 712, 222, 28); ctx.fill();
+  ctx.strokeStyle = color; ctx.lineWidth = 4; ctx.stroke();
+  if (num) {
+    ctx.fillStyle = color; ctx.beginPath(); ctx.arc(70, 70, 44, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#07142e'; ctx.font = '800 52px system-ui, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(num, 70, 73);
+  }
+  ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+  ctx.fillStyle = '#ffffff'; ctx.font = '800 50px system-ui, sans-serif';
+  ctx.fillText(name, num ? 132 : 36, 72);
+  ctx.fillStyle = '#c7dbff'; ctx.font = '500 36px system-ui, sans-serif';
+  wrap(ctx, desc, 650).slice(0, 2).forEach((l, k) => ctx.fillText(l, 36, 150 + k * 44));
+  s.tex.needsUpdate = true;
+  return s.sp;
+}
+// Ficha de uma passagem entre etapas: título e tópicos, legível de perto
+function transitionCard(from, to, title, lines, color) {
+  const tmp = document.createElement('canvas').getContext('2d');
+  tmp.font = '500 34px system-ui, sans-serif';
+  const wrapped = lines.map(l => wrap(tmp, l, 790));
+  const hgt = 150 + wrapped.reduce((a, w) => a + w.length * 44 + 16, 0) + 20;
+  const s = sprite(900, hgt), { ctx } = s;
+  ctx.fillStyle = 'rgba(6, 12, 32, 0.93)';
+  ctx.beginPath(); ctx.roundRect(3, 3, 894, hgt - 6, 26); ctx.fill();
+  ctx.strokeStyle = color; ctx.lineWidth = 3; ctx.stroke();
+  ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
+  ctx.fillStyle = color; ctx.font = '800 32px system-ui, sans-serif'; ctx.fillText('etapa ' + from + '  →  etapa ' + to, 40, 52);
+  ctx.fillStyle = '#ffffff'; ctx.font = '800 46px system-ui, sans-serif'; ctx.fillText(title, 40, 104);
+  let y = 166;
+  ctx.font = '500 34px system-ui, sans-serif';
+  wrapped.forEach(w => {
+    ctx.fillStyle = color; ctx.beginPath(); ctx.arc(52, y, 7, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#dbe7ff';
+    w.forEach((l, k) => ctx.fillText(l, 76, y + k * 44));
+    y += w.length * 44 + 16;
+  });
+  s.tex.needsUpdate = true;
+  s.sp.scale.set(3.5, 3.5 * hgt / 900, 1);
+  s.sp.renderOrder = 20;
+  return s.sp;
+}
+function smallTitle(text, color) {
+  const s = sprite(640, 84), { ctx } = s;
+  ctx.fillStyle = 'rgba(6, 12, 32, 0.75)'; ctx.beginPath(); ctx.roundRect(2, 2, 636, 80, 40); ctx.fill();
+  ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.stroke();
+  ctx.fillStyle = '#e2e8f0'; ctx.font = '700 32px system-ui, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText(text, 320, 44);
+  s.tex.needsUpdate = true; s.sp.scale.set(2.3, 2.3 * 84 / 640, 1);
+  return s.sp;
+}
+
+// ───── anel ─────
+const RX = 11.5, RZ = 6.8, N = 9;
+const pos = k => { const a = k / N * Math.PI * 2; return new THREE.Vector3(RX * Math.sin(a), 0.2, RZ * Math.cos(a)); };
+const normalAt = p => new THREE.Vector3(p.x / (RX * RX), 0, p.z / (RZ * RZ)).normalize();
+const curve = new THREE.CatmullRomCurve3([...Array(N).keys()].map(pos), true, 'centripetal');
+scene.add(new THREE.Mesh(new THREE.TubeGeometry(curve, 300, 0.09, 10, true), new THREE.MeshBasicMaterial({ color: 0x3b82f6 })));
+scene.add(new THREE.Mesh(new THREE.TubeGeometry(curve, 300, 0.26, 10, true), new THREE.MeshBasicMaterial({ color: 0x2563eb, transparent: true, opacity: 0.16, depthWrite: false })));
+
+// ───── as 9 etapas ─────
+const mat = c => new THREE.MeshStandardMaterial({ color: c, emissive: c, emissiveIntensity: 0.18, roughness: 0.45, metalness: 0.1 });
+function group(k, parts) { const g = new THREE.Group(); parts.forEach(p => g.add(p)); g.position.copy(pos(k)); g.position.y = 0.75; g.scale.setScalar(1.25); scene.add(g); return g; }
+function at(m, x, y, z) { m.position.set(x, y, z); return m; }
+// ───── símbolos de cada etapa ─────
+const WHITE = new THREE.MeshStandardMaterial({ color: 0xf8fafc, emissive: 0xffffff, emissiveIntensity: 0.25, roughness: 0.4 });
+const DARK = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.6 });
+// extrusão de uma forma 2D, centrada
+function ext(shape, depth, m, bevel = 0.03) {
+  const g = new THREE.ExtrudeGeometry(shape, { depth, bevelEnabled: true, bevelThickness: bevel, bevelSize: bevel, bevelSegments: 2, curveSegments: 18 });
+  g.center(); return new THREE.Mesh(g, m);
+}
+function roundRect(w, h, r) {
+  const s = new THREE.Shape(), x = -w / 2, y = -h / 2;
+  s.moveTo(x + r, y); s.lineTo(x + w - r, y); s.quadraticCurveTo(x + w, y, x + w, y + r); s.lineTo(x + w, y + h - r);
+  s.quadraticCurveTo(x + w, y + h, x + w - r, y + h); s.lineTo(x + r, y + h); s.quadraticCurveTo(x, y + h, x, y + h - r);
+  s.lineTo(x, y + r); s.quadraticCurveTo(x, y, x + r, y); return s;
+}
+// balão de fala: retângulo arredondado com "rabinho"
+function bubbleShape(w, h, tailLeft) {
+  const s = roundRect(w, h, 0.16), tx = tailLeft ? -w / 2 + 0.22 : w / 2 - 0.22, d = tailLeft ? 1 : -1;
+  const t = new THREE.Shape(); t.moveTo(tx, -h / 2 + 0.02); t.lineTo(tx + d * 0.22, -h / 2 + 0.02); t.lineTo(tx - d * 0.08, -h / 2 - 0.22); t.closePath();
+  return [s, t];
+}
+function bubble(w, h, m, tailLeft) {
+  const g = new THREE.Group(); bubbleShape(w, h, tailLeft).forEach(s => g.add(ext(s, 0.1, m, 0.02))); g.children[1].position.y = -h / 2 - 0.08; g.children[1].position.x = tailLeft ? -w / 2 + 0.25 : w / 2 - 0.25; return g;
+}
+function poly(pts) { const s = new THREE.Shape(); s.moveTo(...pts[0]); pts.slice(1).forEach(q => s.lineTo(...q)); s.closePath(); return s; }
+
+const SYMBOLS = {
+  person: c => { const m = mat(c);
+    return [at(new THREE.Mesh(new THREE.SphereGeometry(0.27, 24, 18), m), 0, 0.5, 0), at(new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.42, 0.72, 24), m), 0, -0.15, 0), at(new THREE.Mesh(new THREE.SphereGeometry(0.42, 24, 12, 0, Math.PI * 2, 0, Math.PI / 2), m), 0, -0.52, 0)]; },
+  chats: c => { const a = bubble(1.0, 0.42, mat(c), true), b = bubble(1.0, 0.42, mat(0x3b82f6), false), d = bubble(1.0, 0.42, mat(c), true);
+    a.position.set(-0.2, 0.55, 0); b.position.set(0.22, 0.02, 0.05); d.position.set(-0.2, -0.5, 0.1); return [a, b, d]; },
+  shield: c => { const s = new THREE.Shape(); s.moveTo(-0.55, 0.6); s.lineTo(0.55, 0.6); s.lineTo(0.55, 0.05); s.quadraticCurveTo(0.5, -0.5, 0, -0.75); s.quadraticCurveTo(-0.5, -0.5, -0.55, 0.05); s.closePath();
+    return [ext(s, 0.16, mat(c)), at(new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.6, 0.06), WHITE), 0, -0.02, 0.14), at(new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.16, 0.06), WHITE), 0, -0.02, 0.14)]; },
+  signpost: c => { const arrow = poly([[-0.5, -0.13], [0.3, -0.13], [0.3, -0.25], [0.55, 0], [0.3, 0.25], [0.3, 0.13], [-0.5, 0.13]]);
+    const a = ext(arrow, 0.06, mat(c), 0.015), b = ext(arrow, 0.06, mat(0xfdba74), 0.015); a.position.set(0.25, 0.42, 0.08); b.position.set(-0.25, 0.02, 0.08); b.rotation.z = Math.PI;
+    return [at(new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 1.6, 12), mat(0x94a3b8)), 0, -0.1, 0), a, b]; },
+  pin: c => { const m = mat(c), cone = new THREE.Mesh(new THREE.ConeGeometry(0.32, 0.62, 24), m); cone.rotation.x = Math.PI; cone.position.y = -0.3;
+    return [at(new THREE.Mesh(new THREE.SphereGeometry(0.42, 28, 20), m), 0, 0.22, 0), cone, at(new THREE.Mesh(new THREE.SphereGeometry(0.15, 16, 12), WHITE), 0, 0.26, 0.33)]; },
+  search: c => { const m = mat(c), parts = [-0.45, -0.12, 0.21].map(y => at(new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.42, 0.24, 28), m), -0.12, y, 0));
+    const lens = at(new THREE.Mesh(new THREE.TorusGeometry(0.26, 0.07, 12, 32), WHITE), 0.38, 0.42, 0.42);
+    const handle = at(new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.42, 10), WHITE), 0.6, 0.12, 0.42); handle.rotation.z = Math.PI / 4;
+    return [...parts, lens, handle]; },
+  check: c => [ext(poly([[-0.62, 0.04], [-0.16, -0.44], [0.62, 0.42], [0.47, 0.57], [-0.16, -0.16], [-0.47, 0.19]]), 0.16, mat(c)),
+               at(new THREE.Mesh(new THREE.TorusGeometry(0.78, 0.05, 10, 48), mat(c)), 0, 0.04, -0.02)],
+  chip: c => { const m = mat(c), g = [new THREE.Mesh(new THREE.BoxGeometry(1.0, 1.0, 0.16), DARK), at(new THREE.Mesh(new THREE.BoxGeometry(0.58, 0.58, 0.06), m), 0, 0, 0.1)];
+    for (let i = 0; i < 5; i++) { const o = -0.36 + i * 0.18;
+      [[o, 0.6, 0.06, 0.2], [o, -0.6, 0.06, 0.2], [0.6, o, 0.2, 0.06], [-0.6, o, 0.2, 0.06]].forEach(([x, y, w, hh]) => g.push(at(new THREE.Mesh(new THREE.BoxGeometry(w, hh, 0.05), mat(0xcbd5e1)), x, y, 0))); }
+    return g; },
+  typing: c => { const b = bubble(1.4, 0.78, mat(c), true);
+    return [b, ...[-0.36, 0, 0.36].map(x => at(new THREE.Mesh(new THREE.SphereGeometry(0.09, 14, 10), mat(0x2563eb)), x, 0.02, 0.12))]; }
+};
+const STEPS = [
+  { name: 'Cidadão', desc: 'digita a pergunta no chat do navegador', c: '#60a5fa', make: SYMBOLS.person },
+  { name: 'Contexto', desc: 'junta a pergunta com o histórico da conversa', c: '#93c5fd', make: SYMBOLS.chats },
+  { name: 'Filtro clínico', desc: 'pedido de diagnóstico ou remédio é recusado', c: '#fbbf24', make: SYMBOLS.shield },
+  { name: 'Intenção', desc: 'saudação ou dúvida vaga? responde na hora', c: '#fb923c', make: SYMBOLS.signpost },
+  { name: 'Interpretação', desc: 'descobre a região e o tema da pergunta', c: '#a78bfa', make: SYMBOLS.pin },
+  { name: 'Busca vetorial', desc: 'acha os 3 trechos mais parecidos entre 2.298', c: '#22d3ee', make: SYMBOLS.search },
+  { name: 'Checagem', desc: 'o trecho serve? se não, busca em sites oficiais', c: '#34d399', make: SYMBOLS.check },
+  { name: 'Llama 3.1', desc: 'IA local (Ollama) escreve a resposta com os trechos', c: '#f472b6', make: SYMBOLS.chip },
+  { name: 'Resposta', desc: 'chega aos poucos, com fontes e sugestões', c: '#e0f2fe', make: SYMBOLS.typing }
+];
+const labels = [], stationLabels = [], badges = [];
+function badge(num, color) {
+  const s = sprite(128, 128), { ctx } = s;
+  ctx.fillStyle = color; ctx.beginPath(); ctx.arc(64, 64, 56, 0, Math.PI * 2); ctx.fill();
+  ctx.strokeStyle = 'rgba(255,255,255,0.85)'; ctx.lineWidth = 5; ctx.stroke();
+  ctx.fillStyle = '#07142e'; ctx.font = '800 68px system-ui, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText(num, 64, 68);
+  s.tex.needsUpdate = true; s.sp.scale.set(0.75, 0.75, 1);
+  return s.sp;
+}
+const stations = STEPS.map((s, k) => {
+  const g = group(k, s.make(new THREE.Color(s.c)));
+  const lab = stationLabel(String(k + 1), s.name, s.desc, s.c);
+  lab.scale.set(4.6, 4.6 * 230 / 720, 1); lab.position.copy(g.position);
+  // etiquetas das peças da frente ficam embaixo, para não cobrir o anel
+  lab.position.y += g.position.z > 3 ? -1.75 : 2.3;
+  lab.material.opacity = 0; scene.add(lab); stationLabels.push(lab);
+  const b = badge(String(k + 1), s.c); b.position.copy(g.position); b.position.y += 1.65; scene.add(b); badges.push(b);
+  return g;
+});
+
+// ───── as passagens entre etapas (aparecem conforme o zoom) ─────
+const TRANS = [
+  ['Envio da pergunta', ['O navegador faz um POST para /api/chat/stream.', 'Vão juntas a mensagem e as últimas mensagens da conversa (history).', 'Se o servidor ainda está iniciando, a resposta é 503; mensagem vazia dá 422.']],
+  ['Pergunta reescrita', ['contextualize() completa perguntas curtas com o histórico: “e onde fica?” vira uma pergunta inteira.', 'Respostas como “1” ou “2” viram a opção que a Susana tinha oferecido.', 'Termos populares são traduzidos: “postinho” vira UBS.']],
+  ['Checagem clínica', ['Regras de palavras procuram sintomas, diagnóstico e dose. Perguntas sobre vacina não contam como remédio.', 'Termos administrativos, como endereço e horário, liberam a pergunta.', 'O classificador estatístico bloqueia quando a chance de ser clínica é de 60% ou mais.', 'Bloqueada, ela sai pelo cubo vermelho, sem chamar a IA.']],
+  ['Roteador de intenção', ['Até 3 palavras, sem conversa anterior: é saudação, e volta com botões.', '“Programas do SUS”: pede para escolher qual programa.', '“Perto de mim” sem região: pergunta a região administrativa.', 'Pergunta específica: segue para a interpretação.']],
+  ['Interpretação (NLU)', ['Normaliza o texto e reconhece a região entre as 33 regiões administrativas.', 'Identifica o público (idoso, gestante, criança) e o tema.', 'Monta a consulta expandida e o filtro: região pedida OU base geral do DF.']],
+  ['Busca no banco vetorial', ['A consulta vira um vetor de 384 números (modelo MiniLM multilíngue).', 'O ChromaDB devolve os 3 trechos mais próximos, primeiro usando o filtro de região.', 'Se nada servir com o filtro, a busca é repetida sem ele.']],
+  ['O trecho serve?', ['Distância muito pequena (até 0,35): aceito na hora.', 'Senão, pergunta e trecho precisam ter palavras importantes em comum.', 'Nada serve: busca online em sites oficiais. Ainda nada: “não encontrei”.']],
+  ['Geração da resposta', ['O Ollama recebe a pergunta, até 4 mensagens anteriores e os trechos.', 'Llama 3.1 8B com temperatura 0,1 e no máximo 350 tokens: respostas estáveis e curtas.', 'Cada pedaço de texto sai como uma linha JSON assim que é gerado.']],
+  ['Entrega no chat', ['O navegador lê o fluxo e vai preenchendo o balão da conversa.', 'A última linha traz as citações com links oficiais e os botões de sugestão.', 'Se a IA falhar no meio, aparece o texto oficial recuperado.']]
+];
+const tcards = TRANS.map(([title, lines], k) => {
+  const a = STEPS[k], b = STEPS[(k + 1) % N], p = curve.getPoint((k + 0.5) / N);
+  const mix = new THREE.Color(a.c).lerp(new THREE.Color(b.c), 0.5), css = '#' + mix.getHexString();
+  const neb = points(420, (i, q, col) => {
+    q[i * 3] = p.x + gauss() * 0.9; q[i * 3 + 1] = p.y + 0.2 + gauss() * 0.45; q[i * 3 + 2] = p.z + gauss() * 0.9;
+    col.copy(mix).lerp(new THREE.Color('#ffffff'), rnd() * 0.4);
+  }, 0.06, 0.9);
+  scene.add(neb);
+  const out = normalAt(p);
+  const titleSp = smallTitle((k + 1) + ' → ' + ((k + 1) % N + 1) + ' · ' + title, css);
+  titleSp.position.copy(p).addScaledVector(out, 1.1); titleSp.position.y = 0.55; scene.add(titleSp);
+  const card = transitionCard(String(k + 1), String((k + 1) % N + 1), title, lines, css);
+  card.position.copy(p).addScaledVector(out, 2.6); card.position.y = 0.5 + card.scale.y / 2; scene.add(card);
+  return { neb, titleSp, card };
+});
+
+// ───── os três desvios, dentro do anel ─────
+function branch(k, end, below, name, desc, color, mesh) {
+  const a = pos(k), b = end.clone(); b.y = 0.2;
+  const line = new THREE.Line(new THREE.BufferGeometry().setFromPoints([a, b]), new THREE.LineDashedMaterial({ color, dashSize: 0.35, gapSize: 0.22 }));
+  line.computeLineDistances(); scene.add(line);
+  mesh.position.copy(b); mesh.position.y = 0.6; mesh.scale.setScalar(1.2); scene.add(mesh);
+  const lab = stationLabel('', name, desc, color);
+  lab.scale.set(4.1, 4.1 * 230 / 720, 1); lab.position.copy(mesh.position); lab.position.y += below ? -1.55 : 1.55; lab.material.opacity = 0; scene.add(lab);
+  return { a, b, mesh, lab };
+}
+const stop = new THREE.Group();
+stop.add(ext((() => { const s = new THREE.Shape(); for (let i = 0; i < 8; i++) { const a = Math.PI / 8 + i * Math.PI / 4; i ? s.lineTo(0.58 * Math.cos(a), 0.58 * Math.sin(a)) : s.moveTo(0.58 * Math.cos(a), 0.58 * Math.sin(a)); } s.closePath(); return s; })(), 0.12, mat(0xef4444)));
+stop.add(at(new THREE.Mesh(new THREE.BoxGeometry(0.62, 0.16, 0.06), WHITE), 0, 0, 0.1));
+const bolt = new THREE.Group();
+bolt.add(ext(poly([[0.12, 0.62], [-0.36, -0.02], [-0.04, -0.02], [-0.16, -0.62], [0.36, 0.08], [0.04, 0.08]]), 0.14, mat(0x2dd4bf)));
+const brBlock = branch(2, new THREE.Vector3(7.0, 0, 1.0), true, 'Recusa', 'orienta procurar a UBS ou o SAMU 192', '#f87171', stop);
+const brQuick = branch(3, new THREE.Vector3(3.2, 0, -1.3), true, 'Resposta rápida', 'com botões de sugestão', '#2dd4bf', bolt);
+const globe = new THREE.Group();
+globe.add(new THREE.Mesh(new THREE.SphereGeometry(0.62, 24, 16), mat(0x7c3aed)));
+globe.add(new THREE.LineSegments(new THREE.WireframeGeometry(new THREE.SphereGeometry(0.66, 12, 8)), new THREE.LineBasicMaterial({ color: 0xe9d5ff, transparent: true, opacity: 0.6 })));
+const brOnline = branch(6, new THREE.Vector3(-5.8, 0, -1.2), false, 'Busca online', 'só em sites oficiais (gov.br, Fiocruz)', '#c084fc', globe);
+const BRANCH = { block: brBlock, quick: brQuick, online: brOnline };
+
+// ───── a pergunta ─────
+const glow = new THREE.SpriteMaterial({ map: (() => { const c = document.createElement('canvas'); c.width = c.height = 128; const g = c.getContext('2d'); const r = g.createRadialGradient(64, 64, 0, 64, 64, 64); r.addColorStop(0, 'rgba(255,255,255,1)'); r.addColorStop(0.35, 'rgba(147,197,253,0.6)'); r.addColorStop(1, 'rgba(37,99,235,0)'); g.fillStyle = r; g.fillRect(0, 0, 128, 128); return new THREE.CanvasTexture(c); })(), transparent: true, depthWrite: false, blending: THREE.AdditiveBlending });
+const packet = new THREE.Group();
+packet.add(new THREE.Mesh(new THREE.SphereGeometry(0.34, 20, 14), new THREE.MeshBasicMaterial({ color: 0xffffff })));
+const halo = new THREE.Sprite(glow); halo.scale.set(1.6, 1.6, 1); packet.add(halo);
+scene.add(packet);
+const tokens = [...Array(8)].map(() => { const m = new THREE.Mesh(new THREE.SphereGeometry(0.11, 10, 8), new THREE.MeshBasicMaterial({ color: 0xf9a8d4 })); scene.add(m); return m; });
+const minis = [brBlock, brQuick].map((br, i) => { const m = new THREE.Mesh(new THREE.SphereGeometry(0.13, 12, 8), new THREE.MeshBasicMaterial({ color: i ? 0x5eead4 : 0xfca5a5 })); scene.add(m); return { m, br, off: i * 0.5 }; });
+
+// ───── título e rodapé fixos na tela ─────
+const D = 10, vh = 2 * D * Math.tan(THREE.MathUtils.degToRad(21)), vw = vh * W / H, hudW = Math.min(vw * 0.94, 16);
+function hud(lines, y, h) {
+  const s = sprite(1600, h), { ctx } = s;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  lines.forEach(([txt, font, color, ly]) => { ctx.font = font; ctx.fillStyle = color; ctx.fillText(txt, 800, ly); });
+  s.tex.needsUpdate = true;
+  s.sp.scale.set(hudW, hudW * h / 1600, 1); s.sp.position.set(0, y, -D); camera.add(s.sp);
+  return s.sp;
+}
+const header = hud([['Como a Susana responde', '800 76px system-ui, sans-serif', '#ffffff', 58], ['do cidadão até a resposta no chat, em 9 etapas', '500 40px system-ui, sans-serif', '#93c5fd', 128]], vh / 2 - hudW * 85 / 1600 - 0.1, 170);
+
+
+const HOME_CAM = new THREE.Vector3(0, 13.2, 21.8), HOME_TGT = new THREE.Vector3(0, 0.1, -0.4);
+camera.position.copy(vec(qs.get('cam')) || HOME_CAM);
+controls.target.copy(vec(qs.get('tgt')) || HOME_TGT);
+
+// ───── movimento livre: a pergunta dá voltas sozinha ─────
+const P = 20, DETOUR = 3.2, U6 = 6 / N;
+function freeAt(t) {
+  const loop = Math.floor(t / P), lt = t % P, detour = loop % 2 === 1;
+  const run = detour ? P - DETOUR : P, tA = U6 * run;
+  if (!detour || lt < tA) return { u: (lt / run) % 1, p: curve.getPoint((lt / run) % 1), out: 0 };
+  if (lt < tA + DETOUR) {
+    const q = (lt - tA) / DETOUR, e = q < 0.5 ? q * 2 : 2 - q * 2;
+    return { u: U6, p: brOnline.a.clone().lerp(brOnline.b, THREE.MathUtils.smootherstep(e, 0, 1)), out: e, br: 'online' };
+  }
+  const u = (lt - DETOUR) / run;
+  return { u, p: curve.getPoint(u), out: 0 };
+}
+
+// ───── narração guiada: a voz conduz a pergunta e a câmera ─────
+const NARR = window.FLUXO || [];
+const audio = new Audio(), playBtn = document.getElementById('play'), sub = document.getElementById('sub');
+const tour = { on: false, i: -1, t0: 0, fromU: 0, userMoved: false };
+let fly = null;
+const flyTo = (cam, tgt) => { fly = { cam: cam.clone(), tgt: tgt.clone() }; };
+function viewFor(u) {
+  if (u <= 0 || u >= N) return { cam: HOME_CAM.clone(), tgt: HOME_TGT.clone() };
+  const p = pos(u), n = normalAt(p);
+  return { tgt: p.clone().setY(0.6), cam: p.clone().addScaledVector(n, 5.2).add(new THREE.Vector3(0, 5.6, 0)) };
+}
+function startStep(i, now) {
+  tour.i = i; tour.t0 = now;
+  const st = NARR[i];
+  sub.textContent = st.text; sub.style.display = 'block';
+  if (!tour.userMoved) { const v = viewFor(st.u); flyTo(v.cam, v.tgt); setWhere(st.u > 0 && st.u < N ? 2 * st.u : -1); }
+  audio.src = 'fluxo-audio/' + String(i).padStart(2, '0') + '.mp3';
+  audio.onended = () => setTimeout(() => { if (tour.on && tour.i === i) next(); }, 700);
+  audio.onerror = () => setTimeout(() => { if (tour.on && tour.i === i) next(); }, 6000);
+  const pr = audio.play(); if (pr) pr.catch(() => {});
+}
+function next() {
+  tour.fromU = NARR[tour.i] ? NARR[tour.i].u : 0;
+  if (tour.i + 1 >= NARR.length) return stopTour();
+  startStep(tour.i + 1, performance.now() / 1000);
+}
+function startTour() {
+  if (ship.on) setShip(false);
+  tour.on = true; tour.userMoved = false; tour.fromU = 0;
+  playBtn.textContent = '■ Parar'; playBtn.classList.add('on');
+  startStep(0, performance.now() / 1000);
+}
+function stopTour() {
+  tour.on = false; audio.pause(); sub.style.display = 'none';
+  playBtn.textContent = '▶ Ouvir a explicação'; playBtn.classList.remove('on');
+  goHome();
+}
+playBtn.addEventListener('click', () => tour.on ? stopTour() : startTour());
+// ───── navegação: pontos de interesse = etapas (pares) e passagens (ímpares) ─────
+const POIS = [];
+STEPS.forEach((s, k) => {
+  POIS.push({ u: k / N, label: (k + 1) + '. ' + s.name, view: () => {
+    const p = pos(k), n = normalAt(p);
+    return { tgt: p.clone().setY(0.6), cam: p.clone().addScaledVector(n, 5.2).add(new THREE.Vector3(0, 5.6, 0)) };
+  } });
+  POIS.push({ u: (k + 0.5) / N, label: (k + 1) + ' → ' + ((k + 1) % N + 1) + ': ' + TRANS[k][0], view: () => {
+    const c = tcards[k].card.position, n = normalAt(c);
+    return { tgt: c.clone(), cam: c.clone().addScaledVector(n, 5.4).add(new THREE.Vector3(0, 1.6, 0)) };
+  } });
+});
+let cur = -1;
+const whereEl = document.getElementById('where'), dotsEl = document.getElementById('dots');
+const dots = STEPS.map((s, k) => {
+  const b = document.createElement('button'); b.type = 'button'; b.textContent = String(k + 1);
+  b.setAttribute('aria-label', 'Ir para a etapa ' + (k + 1) + ': ' + s.name); b.title = s.name + ' (tecla ' + (k + 1) + ')';
+  b.addEventListener('click', () => goPOI(2 * k)); dotsEl.appendChild(b); return b;
+});
+function setWhere(i) {
+  cur = i;
+  whereEl.textContent = i < 0 ? 'Visão geral' : POIS[i].label;
+  dots.forEach((d, k) => d.classList.toggle('on', i === 2 * k || i === 2 * k + 1));
+}
+function goPOI(i) { i = (i + POIS.length) % POIS.length; if (ship.on) { shipTo(POIS[i].u); setWhere(i); return; } const v = POIS[i].view(); if (tour.on) tour.userMoved = true; flyTo(v.cam, v.tgt); setWhere(i); }
+function goHome() { if (ship.on) setShip(false); flyTo(HOME_CAM, HOME_TGT); setWhere(-1); }
+function step(d) { goPOI(cur < 0 ? (d > 0 ? 0 : POIS.length - 1) : cur + d); }
+const camNow = () => fly ? fly.cam : camera.position, tgtNow = () => fly ? fly.tgt : controls.target;
+function zoom(f) {
+  const t = tgtNow().clone(), off = camNow().clone().sub(t);
+  const len = THREE.MathUtils.clamp(off.length() * f, controls.minDistance, controls.maxDistance);
+  flyTo(t.clone().add(off.setLength(len)), t);
+}
+function orbit(yaw, pitch) {
+  const t = tgtNow().clone(), off = camNow().clone().sub(t);
+  const sph = new THREE.Spherical().setFromVector3(off);
+  sph.theta += yaw; sph.phi = THREE.MathUtils.clamp(sph.phi + pitch, 0.15, 1.5);
+  flyTo(t.clone().add(new THREE.Vector3().setFromSpherical(sph)), t);
+}
+document.getElementById('home').addEventListener('click', goHome);
+document.getElementById('prev').addEventListener('click', () => step(-1));
+document.getElementById('next').addEventListener('click', () => step(1));
+document.getElementById('zin').addEventListener('click', () => zoom(0.7));
+document.getElementById('zout').addEventListener('click', () => zoom(1.4));
+const helpEl = document.getElementById('help'), helpBtn = document.getElementById('helpbtn');
+function toggleHelp(show) { helpEl.hidden = show === undefined ? !helpEl.hidden : !show; helpBtn.setAttribute('aria-expanded', String(!helpEl.hidden)); helpBtn.classList.toggle('on', !helpEl.hidden); }
+helpBtn.addEventListener('click', () => toggleHelp());
+window.addEventListener('keydown', e => {
+  if (e.ctrlKey || e.metaKey || e.altKey) return;
+  const k = e.key;
+  if (k === 'n' || k === 'N') { e.preventDefault(); setShip(!ship.on); return; }
+  if (ship.on && SHIP_KEYS[k.length === 1 ? k.toLowerCase() : k]) { e.preventDefault(); return; }
+  const map = {
+    ArrowRight: () => e.shiftKey ? orbit(-0.26, 0) : step(1), ArrowLeft: () => e.shiftKey ? orbit(0.26, 0) : step(-1),
+    ArrowUp: () => zoom(0.75), ArrowDown: () => zoom(1.33), '+': () => zoom(0.75), '=': () => zoom(0.75), '-': () => zoom(1.33),
+    a: () => orbit(0.26, 0), d: () => orbit(-0.26, 0), w: () => orbit(0, -0.15), s: () => orbit(0, 0.15),
+    '0': goHome, Escape: () => helpEl.hidden ? goHome() : toggleHelp(false), Home: goHome,
+    '?': () => toggleHelp(), h: () => toggleHelp(), ' ': () => tour.on ? stopTour() : startTour()
+  };
+  const fn = map[k] || map[k.toLowerCase && k.toLowerCase()] || (/^[1-9]$/.test(k) ? () => goPOI(2 * (Number(k) - 1)) : null);
+  if (!fn) return;
+  if (k === ' ' && document.activeElement && document.activeElement.tagName === 'BUTTON') return;
+  e.preventDefault(); fn();
+});
+// ───── a nave ─────
+const ship = { on: false, v: 0, yaw: 0, roll: 0, keys: {}, obj: new THREE.Group() };
+const SHIP_KEYS = { w: 'fwd', ArrowUp: 'fwd', s: 'back', ArrowDown: 'back', a: 'left', ArrowLeft: 'left', d: 'right', ArrowRight: 'right', ' ': 'boost', Shift: 'turbo' };
+(() => {
+  const white = new THREE.MeshStandardMaterial({ color: 0xe2e8f0, roughness: 0.35, metalness: 0.5 });
+  const blue = new THREE.MeshStandardMaterial({ color: 0x2563eb, emissive: 0x1d4ed8, emissiveIntensity: 0.4, roughness: 0.4 });
+  const body = new THREE.Mesh(new THREE.ConeGeometry(0.32, 1.6, 20), white); body.rotation.x = -Math.PI / 2; ship.obj.add(body);
+  const cab = new THREE.Mesh(new THREE.SphereGeometry(0.22, 16, 12), new THREE.MeshStandardMaterial({ color: 0x7dd3fc, emissive: 0x0ea5e9, emissiveIntensity: 0.5, roughness: 0.1 }));
+  cab.position.set(0, 0.16, -0.15); cab.scale.set(1, 0.7, 1.4); ship.obj.add(cab);
+  const wing = new THREE.Mesh(new THREE.BoxGeometry(1.7, 0.06, 0.55), blue); wing.position.set(0, -0.05, 0.35); ship.obj.add(wing);
+  const fin = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.45, 0.4), blue); fin.position.set(0, 0.25, 0.6); ship.obj.add(fin);
+  ship.flames = [-0.18, 0.18].map(x => { const f = new THREE.Sprite(new THREE.SpriteMaterial({ map: glow.map, color: 0xfbbf24, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending })); f.position.set(x, 0, 0.95); ship.obj.add(f); return f; });
+})();
+ship.obj.visible = false; scene.add(ship.obj);
+const shipBtn = document.getElementById('shipbtn'), shipHud = document.getElementById('shiphud'), speedEl = document.getElementById('speed');
+const fwdOf = yaw => new THREE.Vector3(-Math.sin(yaw), 0, -Math.cos(yaw));
+// coloca a nave no anel, na posição u, apontada no sentido do percurso
+function shipTo(u) {
+  const p = curve.getPoint(u % 1), tan = curve.getTangent(u % 1);
+  ship.obj.position.set(p.x, 1.1, p.z); ship.yaw = Math.atan2(-tan.x, -tan.z); ship.v = 0;
+}
+function setShip(on) {
+  if (on && tour.on) stopTour();
+  ship.on = on; ship.keys = {}; fly = null;
+  ship.obj.visible = on; controls.enabled = !on;
+  shipBtn.classList.toggle('on', on); shipBtn.textContent = on ? 'Sair da nave' : 'Pilotar nave';
+  shipHud.style.display = on ? 'flex' : 'none';
+  if (on) shipTo(cur >= 0 ? POIS[cur].u : 0);
+  else { controls.target.copy(ship.obj.position); }
+}
+shipBtn.addEventListener('click', () => { setShip(!ship.on); shipBtn.blur(); });
+window.addEventListener('keydown', e => { const a = SHIP_KEYS[e.key.length === 1 ? e.key.toLowerCase() : e.key]; if (ship.on && a) ship.keys[a] = true; });
+window.addEventListener('keyup', e => { const a = SHIP_KEYS[e.key.length === 1 ? e.key.toLowerCase() : e.key]; if (a) ship.keys[a] = false; if (e.key === 'Shift') ship.keys.turbo = false; });
+window.addEventListener('blur', () => { ship.keys = {}; });
+let lastShipT = null;
+function updateShip(now) {
+  const dt = lastShipT === null ? 0 : Math.min(now - lastShipT, 0.05); lastShipT = now;
+  if (!ship.on) return;
+  const K = ship.keys, turbo = K.turbo ? 2.6 : K.boost ? 1.6 : 1;
+  const thrust = K.fwd || K.boost || K.turbo;
+  const vmax = 6 * turbo;
+  if (thrust) ship.v = Math.min(ship.v + 5 * turbo * dt, vmax);
+  if (K.back) ship.v = ship.v > 0 ? Math.max(ship.v - 12 * dt, 0) : Math.max(ship.v - 3 * dt, -3);
+  if (!thrust && !K.back) ship.v *= Math.exp(-0.9 * dt);
+  if (ship.v > vmax) ship.v += (vmax - ship.v) * Math.min(1, 2 * dt);
+  const turn = (K.left ? 1 : 0) - (K.right ? 1 : 0);
+  ship.yaw += turn * 1.9 * dt;
+  ship.roll += (turn * 0.5 - ship.roll) * Math.min(1, 6 * dt);
+  const o = ship.obj, f = fwdOf(ship.yaw);
+  o.position.addScaledVector(f, ship.v * dt);
+  const r = Math.hypot(o.position.x, o.position.z); if (r > 30) o.position.multiplyScalar(30 / r);
+  o.position.y = 1.1 + 0.08 * Math.sin(now * 2.2);
+  o.rotation.set(0, ship.yaw, 0); o.rotateZ(ship.roll);
+  const flame = 0.25 + Math.max(0, ship.v) / 6 * 0.6 + (thrust ? 0.3 * turbo : 0);
+  ship.flames.forEach(fl => fl.scale.setScalar(flame * (0.9 + 0.2 * Math.random())));
+  speedEl.textContent = Math.abs(ship.v).toFixed(1).replace('.', ',');
+  // câmera de perseguição
+  const back = 4.6 + Math.abs(ship.v) * 0.22;
+  const want = o.position.clone().addScaledVector(f, -back).add(new THREE.Vector3(0, 1.9 + Math.abs(ship.v) * 0.05, 0));
+  camera.position.lerp(want, Math.min(1, 5 * dt));
+  controls.target.lerp(o.position.clone().addScaledVector(f, 3), Math.min(1, 6 * dt));
+  camera.lookAt(controls.target);
+  // onde a nave está: o ponto de interesse mais próximo
+  let best = -1, bd = 4.5;
+  POIS.forEach((q, i) => { const d = o.position.distanceTo(curve.getPoint(q.u)); if (d < bd) { bd = d; best = i; } });
+  if (best !== cur && best >= 0) setWhere(best);
+}
+
+// arrastar ou girar a roda: o usuário assume a câmera
+const takeOver = () => { fly = null; if (tour.on) tour.userMoved = true; };
+renderer.domElement.addEventListener('wheel', takeOver, { passive: true });
+// clique (sem arrastar) numa peça ou numa passagem: voa até ela
+const ray = new THREE.Raycaster(), pick = [];
+stations.forEach((g, k) => g.traverse(m => { m.userData.poi = 2 * k; if (m.isMesh) pick.push(m); }));
+tcards.forEach(({ titleSp, card }, k) => { titleSp.userData.poi = card.userData.poi = 2 * k + 1; pick.push(titleSp, card); });
+const ghost = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false });
+tcards.forEach((c, k) => { const s = new THREE.Mesh(new THREE.SphereGeometry(1.3, 10, 8), ghost); s.position.copy(curve.getPoint((k + 0.5) / N)); s.userData.poi = 2 * k + 1; scene.add(s); pick.push(s); });
+Object.entries(BRANCH).forEach(([key, br]) => br.mesh.traverse(m => { if (m.isMesh) { m.userData.br = key; pick.push(m); } }));
+let hover = {}, hoverQueued = false, lastMove = null;
+renderer.domElement.addEventListener('pointermove', e => {
+  lastMove = e; if (hoverQueued) return; hoverQueued = true;
+  requestAnimationFrame(() => {
+    hoverQueued = false;
+    ray.setFromCamera(new THREE.Vector2(lastMove.clientX / W * 2 - 1, -(lastMove.clientY / H) * 2 + 1), camera);
+    const hit = ray.intersectObjects(pick.filter(o => o.visible && (!o.isSprite || o.material.opacity > 0.3)), false)[0];
+    hover = hit ? { poi: hit.object.userData.poi, br: hit.object.userData.br } : {};
+    renderer.domElement.style.cursor = hit && hit.object.userData.poi !== undefined ? 'pointer' : 'grab';
+  });
+});
+renderer.domElement.addEventListener('pointerleave', () => { hover = {}; });
+let downAt = null;
+renderer.domElement.addEventListener('pointerdown', e => { downAt = [e.clientX, e.clientY]; takeOver(); });
+renderer.domElement.addEventListener('pointerup', e => {
+  if (!downAt || Math.hypot(e.clientX - downAt[0], e.clientY - downAt[1]) > 5) return;
+  ray.setFromCamera(new THREE.Vector2(e.clientX / W * 2 - 1, -(e.clientY / H) * 2 + 1), camera);
+  const hit = ray.intersectObjects(pick.filter(o => o.visible && (!o.isSprite || o.material.opacity > 0.3)), false)[0];
+  if (hit && hit.object.userData.poi !== undefined) goPOI(hit.object.userData.poi);
+});
+renderer.domElement.style.cursor = 'grab';
+setTimeout(() => { const t = document.getElementById('toast'); t.style.opacity = '0'; setTimeout(() => t.remove(), 900); }, 6500);
+
+function tourPacket(now) {
+  const st = NARR[tour.i], e = now - tour.t0;
+  const from = tour.fromU; let to = st.u;
+  if (to < from) to += N;
+  const mv = THREE.MathUtils.smootherstep(Math.min(e / 2.2, 1), 0, 1);
+  const u = (from + (to - from) * mv) / N;
+  let p = curve.getPoint(u % 1), out = 0;
+  if (st.out && e > 2.4) {
+    const br = BRANCH[st.out], q = Math.min((e - 2.4) / 1.6, 1), back = Math.max(0, (e - 9) / 1.6);
+    out = Math.max(0, Math.min(q, 1 - back));
+    p = br.a.clone().lerp(br.b, THREE.MathUtils.smootherstep(out, 0, 1));
+  }
+  return { u: u % 1, p, out, br: st.out };
+}
+
+// ───── quadro a quadro ─────
+let lastFrame = null;
+function frame(t, now) {
+  const st = tour.on && NARR[tour.i] ? tourPacket(now) : freeAt(t);
+  packet.position.copy(st.p); packet.position.y = 0.45;
+  halo.scale.setScalar(2.3 + 0.35 * Math.sin(t * 6));
+  stations.forEach((g, k) => {
+    let d = Math.abs(st.u - k / N); d = Math.min(d, 1 - d);
+    const on = st.out === 0 && d < 0.03;
+    g.children.forEach(m => { if (m.material && m.material.emissiveIntensity !== undefined) m.material.emissiveIntensity = on ? 0.85 : 0.18; });
+    g.rotation.y = 0.45 * Math.sin(t * 0.7 + k);
+    g.position.y = 0.75 + (on ? 0.25 : 0) + 0.06 * Math.sin(t * 1.4 + k);
+  });
+  globe.rotation.y = t * 0.6;
+  globe.children[0].material.emissiveIntensity = st.out > 0.6 ? 0.9 : 0.2;
+  tokens.forEach((m, j) => {
+    const u = st.u - 0.012 * (j + 1);
+    m.visible = st.out === 0 && st.u > 7 / N + 0.01 && u > 7 / N;
+    if (m.visible) { m.position.copy(curve.getPoint(u)); m.position.y = 0.45; }
+  });
+  minis.forEach(({ m, br, off }) => {
+    const q = ((t / 3.5) + off) % 1;
+    m.position.copy(br.a.clone().lerp(br.b, q)); m.position.y = 0.4 + Math.sin(q * Math.PI) * 0.5;
+    br.mesh.rotation.y = br.mesh === globe ? t * 0.5 : 0.4 * Math.sin(t * 0.8 + off * 6);
+  });
+  galaxy.rotation.y = t * 0.012;
+  updateShip(now);
+  // revelação progressiva: cada texto só aparece quando a bolinha passa, quando você chega perto,
+  // quando passa o mouse por cima ou quando seleciona aquele ponto
+  const dtF = lastFrame === null ? 0.016 : Math.min(now - lastFrame, 0.1); lastFrame = now;
+  const k5 = Math.min(1, dtF * 5), fade = (o, on) => o + ((on ? 1 : 0) - o) * k5;
+  const ref = ship.on ? ship.obj.position : camera.position;
+  const narrated = tour.on && NARR[tour.i] ? NARR[tour.i].u : -1;
+  stationLabels.forEach((lab, k) => {
+    let d = Math.abs(st.u - k / N); d = Math.min(d, 1 - d);
+    const show = (st.out === 0 && d < 0.05) || ref.distanceTo(stations[k].position) < (ship.on ? 6 : 8.5)
+      || cur === 2 * k || hover.poi === 2 * k || narrated === k;
+    lab.userData.o = fade(lab.userData.o || 0, show);
+    // muito perto da câmera, a ficha ficaria enorme: sai da frente
+    lab.material.opacity = lab.userData.o * THREE.MathUtils.clamp((camera.position.distanceTo(lab.position) - 3.5) / 3, 0, 1);
+    badges[k].material.opacity = 1 - lab.userData.o;
+  });
+  tcards.forEach(({ titleSp, card, neb }, k) => {
+    const a = k / N + 0.035, b = (k + 1) / N - 0.035, crossing = st.out === 0 && st.u > a && st.u < b;
+    const showCard = ref.distanceTo(card.position) < (ship.on ? 7 : 9.5) || cur === 2 * k + 1 || hover.poi === 2 * k + 1;
+    const showTitle = !showCard && (crossing || ref.distanceTo(titleSp.position) < (ship.on ? 10 : 12.5));
+    card.userData.o = fade(card.userData.o || 0, showCard);
+    titleSp.userData.o = fade(titleSp.userData.o || 0, showTitle);
+    card.material.opacity = card.userData.o; card.visible = card.userData.o > 0.01;
+    titleSp.material.opacity = titleSp.userData.o; titleSp.visible = titleSp.userData.o > 0.01;
+    neb.material.opacity = 0.45 + 0.25 * Math.sin(t * 1.3 + k) + 0.35 * Math.max(card.userData.o, titleSp.userData.o);
+  });
+  Object.entries(BRANCH).forEach(([key, br]) => {
+    const show = (st.out > 0.05 && st.br === key) || ref.distanceTo(br.mesh.position) < (ship.on ? 6 : 8) || hover.br === key;
+    br.lab.material.opacity = fade(br.lab.material.opacity, show);
+  });
+  const zoomed = THREE.MathUtils.clamp((camera.position.distanceTo(controls.target) - 9) / 8, 0, 1);
+  header.material.opacity = ship.on ? 0 : zoomed;
+  // câmera da narração (até o usuário assumir o controle)
+  if (fly) {
+    camera.position.lerp(fly.cam, 0.07); controls.target.lerp(fly.tgt, 0.08);
+    if (camera.position.distanceTo(fly.cam) < 0.02 && controls.target.distanceTo(fly.tgt) < 0.02) fly = null;
+  }
+  if (!ship.on) controls.update();
+  renderer.render(scene, camera);
+}
+if (STILL) for (let i = 0; i < 90; i++) frame(T0, T0 + i * 0.016);  // vários quadros para as transições assentarem
+else {
+  const start = performance.now() - T0 * 1000;
+  (function loop(ms) { requestAnimationFrame(loop); frame((ms - start) / 1000, ms / 1000); })(performance.now());
+}
+window.addEventListener('resize', () => location.reload());
+</script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+// Roteiro da narração de fluxo-susana-3d.html.
+// u = posição no anel (etapa / 9); out = desvio que a pergunta visita naquele trecho.
+window.FLUXO = [
+  { u: 0, text: "Olá! Esta imagem mostra, em uma volta só, como a Susana responde a uma pergunta. Cada peça em volta do anel é uma etapa, e a bolinha de luz é a pergunta do cidadão viajando pelo sistema. Vamos acompanhar juntos." },
+  { u: 0, text: "Tudo começa aqui na frente, com o cidadão. Ele abre o chat no navegador e escreve a dúvida do jeito que falaria com uma pessoa. Por exemplo: onde eu tomo a vacina da gripe em Taguatinga?" },
+  { u: 1, text: "A pergunta segue para a etapa de contexto, essa pilha de discos azuis. Se a pessoa já estava conversando, a Susana junta a mensagem nova com o que foi dito antes. Assim, uma pergunta curta, como: e no sábado?, continua fazendo sentido." },
+  { u: 2, out: "block", text: "Agora vem o filtro clínico, o losango amarelo. Ele verifica se a pessoa está pedindo um diagnóstico ou um remédio. Se estiver, a pergunta é desviada para o cubo vermelho, a recusa: a Susana não dá orientação médica, e indica procurar a unidade básica de saúde, ou ligar para o SAMU, no cento e noventa e dois." },
+  { u: 3, out: "quick", text: "A pirâmide laranja reconhece a intenção. Se for só um oi, ou uma dúvida vaga demais, a Susana responde na hora, com botões de sugestão, como encontrar uma unidade de saúde ou ver as vacinas disponíveis. Nesses casos, nem é preciso fazer a busca." },
+  { u: 4, text: "Na peça roxa, a Susana interpreta a pergunta. Ela descobre de qual região do Distrito Federal a pessoa está falando, e qual é o assunto: vacinação, farmácia, emergência, e assim por diante." },
+  { u: 5, text: "O cilindro azul é a base de conhecimento. A pergunta é transformada numa sequência de números que representa o seu significado, e o sistema encontra os três trechos mais parecidos, entre dois mil, duzentos e noventa e oito trechos de fontes oficiais." },
+  { u: 6, out: "online", text: "A argola verde confere se esses trechos realmente respondem à pergunta. Quando não respondem, a bolinha faz um desvio até o globo roxo, a busca online, que procura apenas em sites oficiais, do governo e da Fiocruz." },
+  { u: 7, text: "Com os trechos certos em mãos, a esfera rosa entra em ação. É o Lhama três ponto um, um modelo de inteligência artificial que roda no próprio computador. Ele lê os trechos e escreve a resposta com as próprias palavras. Endereços e horários vêm sempre dos trechos oficiais." },
+  { u: 8, text: "Repare nos pontinhos rosas saindo da esfera: é a resposta chegando aos poucos, palavra por palavra. Ela aparece no chat junto com as fontes oficiais, para a pessoa poder conferir, e com sugestões de próximas perguntas." },
+  { u: 9, text: "E assim a volta se completa, de novo no cidadão. Um detalhe importante: o modelo de linguagem, a busca e o filtro rodam no próprio computador. Só a busca complementar acessa a internet, e apenas em sites oficiais. Obrigada por acompanhar!" }
+];
