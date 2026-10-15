@@ -1,4 +1,4 @@
-# 08 - Código-Fonte da Aplicação
+# Código-Fonte da Aplicação
 
 Área reservada para o versionamento do código-fonte da solução SUSANA.
 

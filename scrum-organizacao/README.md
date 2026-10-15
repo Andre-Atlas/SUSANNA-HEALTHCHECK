@@ -1,4 +1,4 @@
-# 05 - Organização Ágil, Scrum e Papéis
+# Organização Ágil, Scrum e Papéis
 
 Estrutura metodológica e organização do time multidisciplinar de engenharia, dados e produto.
 

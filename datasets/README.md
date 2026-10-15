@@ -1,4 +1,4 @@
-# 01 - Datasets & Corpus Oficial
+# Datasets & Corpus Oficial
 
 Este diretório é reservado para o versionamento dos dados, metadados e catálogo de fontes oficiais utilizadas no projeto SUSANA.
 
