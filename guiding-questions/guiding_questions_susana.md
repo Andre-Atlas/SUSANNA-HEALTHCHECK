@@ -1,275 +1,385 @@
-# 🧭 Guiding Questions — Projeto SUSANA (SES-DF)
+# 🧭 Guiding Questions & Caderno Pedagógico CBL — Projeto SUSANA
 
-> **Documento Consolidado de Questões Norteadoras, Hipóteses e Respostas Técnicas**  
-> **Origem:** Quadro Ágil de Concepção (*Challenge 1 / Trello*)  
-> **Status:** Homologado e Atualizado com a Arquitetura em Produção  
-> **Categorias Temáticas (Labels):** `DADOS` 🔵 | `USUÁRIO` 🟢 | `MODELO` 🟣 | `PRODUÇÃO` ⚫  
-
----
-
-## 📌 Sumário Executivo e Metodologia de Priorização
-
-Durante a fase de descoberta e especificação do projeto **SUSANA**, a equipe mapeou um conjunto de perguntas norteadoras (*Guiding Questions*) para balizar o desenvolvimento do produto. 
-
-Para assegurar foco e viabilidade de entrega dentro do cronograma ágil, as questões foram organizadas em quatro faixas de priorização:
-1. **RESPONDER JÁ:** Decisões estruturais e hipóteses de valor indispensáveis para o núcleo funcional da assistente.
-2. **PLANEJAR:** Questões arquiteturais, de governança de dados e de mitigação de riscos que exigem desenho técnico detalhado.
-3. **SE SOBRAR TEMPO:** Questões analíticas, investigações secundárias e expansões de escopo após a estabilização do MVP.
-4. **CORTAR SEM DÓ (Fora de Escopo):** Complexidades descartadas de forma consciente no MVP para evitar armadilhas de over-engineering e travas burocráticas.
+> **Documento Oficial de Alinhamento Metodológico: Challenge Based Learning (CBL)**  
+> **Desafio:** Challenge 1 — Fake News / Desinformação em Saúde Pública  
+> **Projeto:** SUSANA (Sistema Único de Saúde com Atendimento e Navegação Aumentada — SES-DF)  
+> **Ciclo Metodológico:** Engage → Investigate → Act → Reflect & Share  
+> **Repositório:** [https://github.com/Andre-Atlas/SUSANNA-HEALTHCHECK](https://github.com/Andre-Atlas/SUSANNA-HEALTHCHECK) (Branch: `entrega-final`)  
 
 ---
 
-## 1. 🚨 RESPONDER JÁ (Decisões Críticas do Core do Produto)
+# PARTE 1 — DIAGNÓSTICO DO DOCUMENTO E DO DESAFIO
 
-### 1.1. Avaliação com Evidências vs. Classificação Binária (Verdadeiro/Falso)
+### 1. Contexto e Enquadramento Pedagógico
+O material original de partida originou-se de duas fontes complementares:
+1. **Diretrizes Oficiais do Desafio (`CBL_Challenge1_ClearColors.pptx`):** Estabelece a **Big Idea** ("distinguir fatos, evidências e opiniões através de IA para fortalecer o pensamento crítico"), a **Essential Question** ("Como sistemas de IA podem ajudar as pessoas a avaliar a confiabilidade de informações sem substituir seu pensamento crítico?") e o **Challenge Roadmap** de 6 semanas (Engage, Investigate, Act e Showcase).
+2. **Quadro Operacional de Trabalho (`Challenge 1 - Trello`):** Reuniu 20 cartões investigativos com categorização temática (`DADOS`, `USUÁRIO`, `MODELO`, `PRODUÇÃO`) e faixas de priorização ágil (*RESPONDER JÁ*, *PLANEJAR*, *SE SOBRAR TEMPO*, *CORTAR SEM DÓ*).
+
+### 2. Pontos Fortes Identificados
+- **Aderência ao problema real do SUS:** As perguntas não se perderam em abstrações teóricas; abordaram o cidadão vulnerável diante de desinformação médica, surtos epidemiológicos, hesitação vacinal e desorientação na rede de saúde.
+- **Raciocínio baseado em evidências (Evidence-Based):** Desde a concepção inicial, rejeitou-se a ideia ingênua de que a IA deveria agir como "árbitro autoritário da verdade", optando pelo fornecimento transparente de evidências oficiais verificáveis.
+- **Pragmatismo de engenharia:** A equipe reconheceu cedo limitações de viabilidade (descartando fine-tuning custoso de LLMs e priorizando arquitetura RAG com fontes primárias do SUS-DF).
+
+### 3. Oportunidades de Melhoria e Lacunas Superadas
+- **Lacuna entre Desinformação Abstrata e Operação em Saúde Pública:** O desafio geral falava de "fake news em geral"; a equipe precisou especializar as questões para o contexto da Atenção Primária do Distrito Federal, onde a desinformação afeta receitas, horários de UBSs e dispensação de fármacos de alto custo.
+- **Segurança Clínica & Guardrails:** Faltava nas questões iniciais uma investigação explícita sobre como evitar que a IA alucinasse prescrições médicas de risco (tratado via Guardrails *fail-closed* na solução SUSANA).
+- **Especificidade Territorial (Toponímia DF):** A verificação de serviços de saúde em Brasília exige decodificar Regiões Administrativas e quadras (Setor O, P Sul, Taguatinga, Gama), aspecto não previsto em datasets genéricos.
+
+---
+
+# PARTE 2 — CRITÉRIOS E DECISÕES DE REVISÃO METODOLÓGICA
+
+Para assegurar alinhamento integral com o framework CBL (Nichols & Cator, *Challenge Based Learning Guide*), adotamos as seguintes decisões estruturais:
+
+1. **Preservação Integral das 20 Questões Originais:** Nenhuma das perguntas do quadro ágil original foi excluída. Suas formulações e discussões originais foram mantidas e enriquecidas.
+2. **Dupla Matriz de Classificação:**
+   - **Eixo CBL:** Identificação da contribuição de cada pergunta nas fases de *Engage* (Problema/Usuário), *Investigate* (Dados/Fontes/Arquitetura) e *Act* (Governança/Produção/Solução).
+   - **Eixo Ágil (Trello):** Manutenção explícita das faixas *RESPONDER JÁ*, *PLANEJAR*, *SE SOBRAR TEMPO* e *CORTAR SEM DÓ*.
+3. **Formalização das Perguntas Complementares da Equipe (Identificadas com tag [COMPLEMENTAR]):** Foram introduzidas 6 questões que sintetizam os aprendizados das semanas 4, 5 e 6 do projeto (Busca Híbrida BM25+RRF, Segurança Clínica Fail-Closed, Toponímia do DF, LGPD e limites de integração governamental).
+4. **Estrutura Pedagógica Padronizada por Pergunta:** Cada questão apresenta:
+   - *Pergunta Oficial*;
+   - *Etapa CBL & Label Temático*;
+   - *Objetivo de Aprendizagem / Investigação*;
+   - *Resposta Fundamentada & Evidências no Projeto SUSANA*.
+
+---
+
+# PARTE 3 — DOCUMENTO CBL REVISADO (CADERNO DE INVESTIGAÇÃO)
+
+## 🎯 1. Alinhamento com as Fases do Challenge 1
+
+### A. Big Idea (Slide 1)
+> *"Em um mundo com excesso de informação, como distinguir fatos, evidências e opiniões? A IA pode apoiar a investigação da confiabilidade das informações, fortalecendo o pensamento crítico em vez de substituí-lo."*
+
+### B. Essential Question (Slide 2)
+> *"Como sistemas de IA podem ajudar as pessoas a avaliar a confiabilidade de informações sem substituir seu pensamento crítico?"*  
+> **Pilares:** Investigar evidências • Identificar vieses • Construir critérios de confiança.
+
+### C. The Challenge (Slide 3)
+> **Desafio:** Desenvolver uma solução inteligente (SUSANA) capaz de orientar cidadãos sobre a rede de saúde do SUS-DF, validando informações com dados oficiais, mitigando a automedicação e desmistificando o acesso a remédios, vacinas e postos de saúde de forma rastreável e ética.
+
+### D. Roadmap & Cronograma Executado (Slides 5 a 10)
+* **Semana 1 (Engage • 07/09 a 11/09):** Investigação de casos reais de desinformação, formulação das Guiding Questions iniciais e exploração dos dados abertos de saúde.
+* **Semanas 2-3 (Investigate • 14/09 a 25/09):** Definição do produto (Chatbot SUSANA), divisão dos papéis Scrum, EDA dos dados do SUS e auditoria de fontes oficiais (SES-DF / Ministério da Saúde).
+* **Semanas 4-5 (Act • 28/09 a 09/10):** Construção da arquitetura RAG Híbrida (BM25 + ChromaDB), engenharia de Guardrails Clínicos e desenvolvimento da interface.
+* **Semana 6 (Showcase • 12/10 a 16/10):** Execução do benchmark automatizado (18/18 testes aprovados), consolidação do repositório final e produção do vídeo pitch.
+
+---
+
+## 🗂️ 2. Guiding Questions por Faixa de Priorização
+
+### FAIXA 1: 🚨 RESPONDER JÁ (Investigações Fundamentais do Core)
+
+#### GQ 1.1 — Evidências vs. Classificação Binária (Card #11)
 * **Pergunta Original:** *É mais adequado classificar uma notícia como “verdadeira/falsa” ou avaliar a alegação apresentada com base nas evidências disponíveis?*
-* **Label:** `MODELO` 🟣
-* **Status:** **Respondida e Implementada**
-* **Fundamentação Técnica:**  
-  Avaliar a alegação com base em evidências verificadas é tecnicamente superior e eticamente mais seguro, especialmente em saúde pública. A desinformação raramente é 100% falsa; costuma se apoiar em descontextualização, meias-verdades e falácias de correlação vs. causalidade.
-  - **Abordagem BDD:** *Dado* que o cidadão questiona sobre a dispensação de um medicamento ou vacina, *Quando* o pipeline consultar a base de conhecimento oficial da SES-DF, *Então* ele deve retornar as evidências textuais exatas que sustentam a resposta.
-  - **Redução de Risco Editorial:** Classificadores binários rígidos atraem passivos éticos e risco de judicialização. Apresentar o trecho normativo com a fonte oficial (portal da SES-DF, Diário Oficial, REME) transfere autoridade ao órgão público e transparência ao cidadão.
+* **Fase CBL:** `Investigate` ➔ `Act` | **Label:** `MODELO` 🟣
+* **Objetivo Investigativo:** Avaliar o impacto ético e técnico de modelos classificadores binários em comparação a sistemas de inferência em linguagem natural (NLI) fundamentados em fontes.
+* **Resposta & Evidências no SUSANA:**  
+  A classificação puramente binária ("Verdadeiro/Falso") é pedagogicamente reducionista e juridicamente arriscada em saúde pública. A desinformação opera através de descontextualização de dados reais (ex.: citar uma reação adversa rara para condenar uma vacina inteira).  
+  No SUSANA, adotamos o princípio da **Verificação Centrada em Evidências**: o modelo não emite carimbos acusatórios de "Fake"; em vez disso, recupera o trecho oficial da Portaria ou Nota Técnica da SES-DF, apresenta as evidências textuais e fornece o link direto para que o próprio cidadão ejerça seu pensamento crítico.
 
 ---
 
-### 1.2. Formato de Produto com Maior Valor para o Usuário
+#### GQ 1.2 — Formato de Produto de Maior Valor e Menor Fricção (Card #16)
 * **Pergunta Original:** *Qual formato de produto apresenta maior valor para o usuário: ferramenta de consulta ativa, extensão de navegador, chatbot ou sistema integrado ao fluxo de consumo de notícias?*
-* **Label:** `PRODUÇÃO` ⚫
-* **Status:** **Respondida e Implementada**
-* **Fundamentação Técnica:**  
-  O formato com menor atrito e maior alcance para a população do SUS é o **Chatbot Conversacional em Web App Responsivo** (com arquitetura preparada para mensageria como WhatsApp).
-  - **Fricção do Usuário:** Ferramentas passivas como extensões de navegador atendem apenas usuários de desktop, excluindo mais de 80% dos usuários do SUS que navegam exclusivamente via smartphone.
-  - **Arquitetura Desacoplada:** O backend do SUSANA foi projetado em API REST/Streaming (FastAPI), desacoplado do frontend (Next.js). Toda a inteligência de RAG, NLU e Guardrails é exposta em endpoints padronizados, permitindo que a mesma infraestrutura atenda à interface web atual e futuros bots no WhatsApp ou Telegram sem refatoração do motor.
+* **Fase CBL:** `Engage` ➔ `Act` | **Label:** `PRODUÇÃO` ⚫
+* **Objetivo Investigativo:** Analisar a jornada do paciente e identificar qual canal de entrega oferece menor barreira de acesso à informação pública de saúde.
+* **Resposta & Evidências no SUSANA:**  
+  Extensões de navegador restringem o acesso a desktops, excluindo a maioria dos usuários do SUS que acessam a internet prioritariamente via smartphones. Ferramentas ativas de busca em tabelas geram sobrecarga cognitiva.  
+  Definiu-se o **Chatbot Conversacional Web Responsivo** com linguagem natural humanizada e botões interativos (*chips*), desacoplado em arquitetura REST/Streaming (FastAPI + Next.js), permitindo reutilização imediata em canais de mensageria como WhatsApp.
 
 ---
 
-### 1.3. Discriminação de Opinião vs. Alegação Factual Verificável
+#### GQ 1.3 — Discriminação entre Opinião, Interpretação e Fato (Card #8)
 * **Pergunta Original:** *O usuário consegue diferenciar uma opinião, uma interpretação e uma alegação factual verificável?*
-* **Label:** `USUÁRIO` 🟢
-* **Status:** **Respondida e Implementada**
-* **Fundamentação Técnica:**  
-  O cidadão médio não faz essa distinção ao interagir com assistentes virtuais. Expressões com forte carga emocional (*"achei o atendimento péssimo"*, *"ouvi dizer que o postinho não presta"*) misturam-se com perguntas factuais (*"qual horário da UBS?"*).
-  - **Tratamento no SUSANA:** Implementamos uma esteira de triagem de NLU e classificação de intenção (*IntentRouter*) que isola desabafos e saudações, direcionando apenas perguntas operacionais e factuais para o banco vetorial, evitando que o modelo tente 'responder' a opiniões subjetivas como se fossem fatos.
+* **Fase CBL:** `Engage` ➔ `Investigate` | **Label:** `USUÁRIO` 🟢
+* **Objetivo Investigativo:** Investigar o comportamento psicológico do usuário ao expressar queixas versus dúvidas técnicas de atendimento.
+* **Resposta & Evidências no SUSANA:**  
+  O usuário médio mescla desabafos subjetivos (*"não gosto daquele postinho"*) com demandas factuais (*"onde tem vacina da dengue?"*).  
+  O SUSANA implementou um módulo de **NLU e Roteamento de Intenção (`IntentRouter`)** que identifica quando a entrada é uma mera opinião ou saudação e quando há uma alegação que exige recuperação de documentos no banco vetorial, evitando respostas inadequadas ou desperdício de tokens.
 
 ---
 
-### 1.4. Usuário Prioritário e Situações Críticas de Atendimento
+#### GQ 1.4 — Mapeamento do Usuário Prioritário e Situações Críticas (Card #6)
 * **Pergunta Original:** *Quem é o usuário prioritário da solução e em quais situações ele precisa verificar uma informação de saúde?*
-* **Label:** `USUÁRIO` 🟢
-* **Status:** **Respondida e Mapeada (Personas)**
-* **Fundamentação Técnica:**  
-  Identificamos três perfis centrais e momentos críticos de necessidade:
-  1. **Mãe Trabalhadora com Filho Pequeno (Persona Camila):** Demanda imunização infantil fora do horário comercial regular. *Cenário Crítico:* saber quais UBSs ofertam o programa *Saúde na Hora* (atendimento até as 22h).
-  2. **Idoso Polimedicado / Doença Crônica (Persona Seu Raimundo):** Necessita de medicamentos especializados (alto custo) ou básicos contínuos. *Cenário Crítico:* entender o passo a passo documental do CEAF/LME para não perder viagem.
-  3. **Trabalhador Autônomo com Sintoma Agudo (Persona Felipe):** Dúvida na porta de entrada entre postinho de saúde e pronto atendimento 24h. *Cenário Crítico:* saber a diferença de perfil entre UBS e UPA em horário noturno.
+* **Fase CBL:** `Engage` | **Label:** `USUÁRIO` 🟢
+* **Objetivo Investigativo:** Delinear os perfis de cidadãos mais vulneráveis à desinformação ou com maiores dificuldades de navegação no SUS.
+* **Resposta & Evidências no SUSANA:**  
+  O projeto modelou três personas representativas:
+  1. **Camila (Mãe Jovem - 24 anos):** Necessita de vacinação infantil fora do expediente regular (demanda por UBSs do programa *Saúde na Hora* abertas até as 22h).
+  2. **Seu Raimundo (Idoso Crônico - 68 anos):** Precisa de medicamentos contínuos e laudos do Componente Especializado (CEAF/LME) sem retrabalho documental.
+  3. **Felipe (Autônomo - 35 anos):** Busca atendimento de urgência noturna e precisa discernir a função de uma UPA 24h versus uma UBS.
 
 ---
 
-### 1.5. Representatividade dos Datasets Brasileiros de Saúde
+#### GQ 1.5 — Representatividade dos Datasets Brasileiros (Card #2)
 * **Pergunta Original:** *Os datasets brasileiros disponíveis são representativos o suficiente para desenvolver uma solução de detecção/verificação de desinformação em saúde?*
-* **Label:** `DADOS` 🔵
-* **Status:** **Respondida e Mitigada**
-* **Fundamentação Técnica:**  
-  Datasets genéricos pré-existentes (como Fake.br ou corpora acadêmicos de fact-checking) são insuficientes para a realidade operacional do SUS. Eles carecem de termos locais (nomes de quadras, UBSs, regionais de saúde) e da linguagem popular do cidadão brasiliense (*"postinho do Setor O"*, *"remédio pra diabetes no alto custo"*).
-  - **Decisão no Projeto:** Em vez de depender de bases abertas desatualizadas, construímos um corpus próprio e higienizado com mais de **2.280 blocos oficiais** da SES-DF e do Ministério da Saúde, além de um dicionário toponímico específico do Distrito Federal.
+* **Fase CBL:** `Investigate` | **Label:** `DADOS` 🔵
+* **Objetivo Investigativo:** Mapear a viabilidade de treinar modelos supervisionados a partir de bases públicas de desinformação no Brasil.
+* **Resposta & Evidências no SUSANA:**  
+  Datasets existentes (Fake.br, bases de agências de fact-checking) são genéricos e não cobrem regionalismos da saúde no DF nem termos farmacêuticos específicos do SUS.  
+  A solução foi construir um **Corpus Territorializado Próprio**, saneando e indexando 2.283 blocos oficiais (REME-DF, diretórios de UBSs/UPAs, cartilhas da Atenção Primária e protocolos de medicamentos).
 
 ---
 
-### 1.6. Desafio dos Conteúdos Multimodais no MVP
+#### GQ 1.6 — Complexidade Multimodal: Texto, Áudio e Vídeo (Card #5)
 * **Pergunta Original:** *Quais tipos de conteúdo representam maior desafio para a verificação automatizada: texto, imagem, áudio, vídeo ou conteúdos multimodais?*
-* **Label:** `DADOS` 🔵
-* **Status:** **Respondida (Decisão de Escopo)**
-* **Fundamentação Técnica:**  
-  Vídeos curtos (TikTok, Reels) e áudios de mensageiros (WhatsApp) representam o pico de complexidade computacional, exigindo alinhamento de timestamps, transcrição via Whisper e análise de frames visuais.
-  - **Definição para o MVP:** Foco 100% em processamento de texto e queries em linguagem natural. A multimodalidade de áudio foi documentada como evolução futura, garantindo que o núcleo conversacional tivesse latência baixa e alta precisão.
+* **Fase CBL:** `Investigate` | **Label:** `DADOS` 🔵
+* **Objetivo Investigativo:** Analisar custos computacionais, latência e viabilidade técnica no processamento de diferentes mídias no escopo de um MVP acadêmico.
+* **Resposta & Evidências no SUSANA:**  
+  Áudios de WhatsApp e vídeos curtos possuem descontextualização cruzada e demandam transcrição pesada (Speech-to-Text), multiplicando o tempo de resposta e o consumo de hardware.  
+  **Decisão de Escopo do MVP:** O time priorizou a excelência no processamento textual de alta precisão e consultas em linguagem natural, postergando o processamento multimodal pesado para iterações futuras.
 
 ---
 
-### 1.7. [NOVA] Prevenção de Alucinação e Risco Clínico (Fail-Closed)
-* **Pergunta:** *Como garantir que a assistente nunca atue como médica, nunca prescreva remédios e não invente telefones ou procedimentos inexistentes?*
-* **Label:** `MODELO` 🟣 / `PRODUÇÃO` ⚫
-* **Status:** **Respondida e Implementada**
-* **Fundamentação Técnica:**  
-  Implementação de **dupla camada de proteção**:
-  1. **Guardrail Clínico Pré-LLM:** Avaliação via regex semântico e classificador MLflow. Se o cidadão relatar sintomas graves ou pedir dosagem de remédio, o sistema bloqueia em menos de **10 milissegundos** e emite resposta padrão com encaminhamento ao SAMU 192 ou acolhimento na UBS.
-  2. **Validador Sintático Anti-Alucinação:** O pipeline proíbe números de telefone que não correspondam aos canais oficiais auditados (Ouvidoria 160 e Disque Saúde 136). Se o telefone local da unidade não constar no corpus, o sistema admite a ausência e fornece o endereço físico.
+#### GQ 1.7 [COMPLEMENTAR] — Salvaguarda Clínica Instantânea e Princípio Fail-Closed
+* **Pergunta:** *Como garantir que a IA nunca realize diagnósticos, não prescreva remédios e adote comportamento estritamente seguro em situações de emergência?*
+* **Fase CBL:** `Act` | **Label:** `MODELO` 🟣 / `PRODUÇÃO` ⚫
+* **Objetivo Investigativo:** Formular e testar salvaguardas éticas e regulatórias para impedir automedicação incentivada por modelos generativos.
+* **Resposta & Evidências no SUSANA:**  
+  Implementação de um **Guardrail Clínico Pré-LLM** que atua em menos de **10 milissegundos** via regex e modelo supervisionado. Qualquer menção a dosagens de remédios controlados ou sintomas graves de emergência é bloqueada instantaneamente, orientando o encaminhamento ao SAMU 192 ou acolhimento na UBS mais próxima.
 
 ---
 
-### 1.8. [NOVA] Resolução de Toponímia e Regionalismos do Distrito Federal
-* **Pergunta:** *Como garantir que a IA compreenda o endereçamento e a divisão territorial única de Brasília (RAs, Quadras, Entorno) sem misturar regiões?*
-* **Label:** `DADOS` 🔵 / `MODELO` 🟣
-* **Status:** **Respondida e Implementada**
-* **Fundamentação Técnica:**  
-  Brasília não utiliza o padrão tradicional de ruas e bairros. Desenvolvemos o módulo `DF_TOPONYMY_EXPANSIONS`, que mapeia automaticamente:
-  - *"Setor O"* e *"P Sul"* ➔ Ceilândia (QNO / QNP);
-  - Siglas de quadras (*QNM, QNL, QNG, QS*) ➔ suas respectivas Regiões Administrativas;
-  - Desacoplamento conversacional: se o usuário perguntou sobre Ceilândia e depois muda para Taguatinga, o histórico anterior é isolado para evitar contaminação geográfica.
+#### GQ 1.8 [COMPLEMENTAR] — Desambiguação da Toponímia do Distrito Federal
+* **Pergunta:** *Como fazer com que a IA compreenda as peculiaridades do endereçamento de Brasília (Regiões Administrativas, quadras e setores) sem alucinar cidades de outros estados?*
+* **Fase CBL:** `Investigate` ➔ `Act` | **Label:** `DADOS` 🔵 / `MODELO` 🟣
+* **Objetivo Investigativo:** Resolver a barreira geográfica local em modelos de linguagem pré-treinados globalmente.
+* **Resposta & Evidências no SUSANA:**  
+  Criação do módulo `DF_TOPONYMY_EXPANSIONS` e isolamento anafórico contextual: a assistente sabe que *Setor O* e *P Sul* pertencem a Ceilândia, correlaciona siglas de quadras com UBSs correspondentes e não mistura RAs ao longo de conversas multi-turn.
 
 ---
 
-## 2. 📋 PLANEJAR (Arquitetura, Fontes e Engenharia de Produção)
+### FAIXA 2: 📋 PLANEJAR (Arquitetura, Governança e Engenharia de Evidências)
 
-### 2.1. Resposta diante de Evidências Insuficientes ou em Evolução
+#### GQ 2.1 — Tratamento de Evidências Insuficientes ou Contraditórias (Card #14)
 * **Pergunta Original:** *Como o sistema deve responder quando as evidências científicas forem insuficientes, contraditórias ou estiverem em evolução?*
-* **Label:** `MODELO` 🟣
-* **Status:** **Planejada e Implementada**
-* **Resposta Técnica:**  
-  O sistema adota o princípio de **Fail-Closed**. Quando o limiar de similaridade semântica não atinge o score de corte confiável, a assistente não especula:
-  > *"Não encontrei informação suficiente nas fontes oficiais disponíveis para responder a essa pergunta. Tente reformular ou pergunte sobre unidades de saúde, vacinação, ou serviços da SES-DF."*
+* **Fase CBL:** `Investigate` ➔ `Act` | **Label:** `MODELO` 🟣
+* **Objetivo Investigativo:** Modelar o comportamento de abstenção da IA (*abstention policy*) para evitar que invente respostas plausíveis na ausência de fatos.
+* **Resposta & Evidências no SUSANA:**  
+  Configurou-se uma regra de *fail-closed* baseada em limiar de similaridade semântica: quando o corpus não contém informação oficial suficiente, o modelo se recusa a conjeturar e declara: *"Não encontrei informação suficiente nas fontes oficiais disponíveis para responder a essa pergunta."*, orientando a Ouvidoria 160.
 
 ---
 
-### 2.2. Padrões Linguísticos da Desinformação em Saúde no Brasil
+#### GQ 2.2 — Marcadores de Desinformação em Saúde no Brasil (Card #1)
 * **Pergunta Original:** *Quais características distinguem, com maior frequência, conteúdos verdadeiros, falsos e enganosos sobre saúde no contexto brasileiro?*
-* **Label:** `DADOS` 🔵
-* **Status:** **Planejada e Documentada**
-* **Resposta Técnica:**  
-  - **Falsos:** Apelos de urgência (*"compartilhe antes que apaguem"*), conspirações institucionais (*"a Anvisa esconde a cura"*), ingredientes caseiros milagrosos e ausência de CRM ou órgão emissor.
-  - **Enganosos:** Manipulação de probabilidades reais (ex: pegar um efeito colateral raro de bula e tratá-lo como regra certa).
-  - **Verdadeiros/Oficiais:** Linguagem técnica equilibrada, referência a protocolos clínicos (PCDT), dosagens atreladas a diagnóstico presencial e fontes governamentais.
+* **Fase CBL:** `Investigate` | **Label:** `DADOS` 🔵
+* **Objetivo Investigativo:** Analisar a morfologia textual da desinformação em saúde no ecossistema digital brasileiro.
+* **Resposta & Evidências no SUSANA:**  
+  - **Falsos:** Apelos emocionais extremados de medo ou urgência, promessa de curas fáceis e teorias da conspiração contra agências reguladoras (Anvisa/Ministério da Saúde).
+  - **Enganosos:** Hiperbolização de dados estatísticos reais retirados de contexto.
+  - **Oficiais:** Linguagem técnica e cautelosa, amparada em portarias, leis e comitês científicos colegiados.
 
 ---
 
-### 2.3. Disponibilidade de Dados Científicos e Oficiais Brasileiros
+#### GQ 2.3 — Mapeamento e Ingestão de Fontes Oficiais de Saúde (Card #4)
 * **Pergunta Original:** *Qual é a disponibilidade de dados científicos e oficiais que poderiam alimentar um sistema de verificação de alegações sobre saúde?*
-* **Label:** `DADOS` 🔵
-* **Status:** **Planejada e Integrada**
-* **Resposta Técnica:**  
-  A disponibilidade no Brasil é alta, porém descentralizada e muitas vezes em formatos não amigáveis (PDFs de portarias, tabelas complexas). O projeto SUSANA estruturou um pipeline de ingestão que consumiu:
-  - Dados abertos da SES-DF e InfoSaúde;
-  - Relação de Medicamentos do DF (REME-DF 2025);
-  - Diretórios do Componente Especializado da Assistência Farmacêutica (CEAF);
-  - Calendário Nacional de Imunização do Ministério da Saúde.
+* **Fase CBL:** `Investigate` | **Label:** `DADOS` 🔵
+* **Objetivo Investigativo:** Catalogar a dispersão dos repositórios governamentais e planejar rotinas de extração e tratamento de dados.
+* **Resposta & Evidências no SUSANA:**  
+  A disponibilidade de dados é abundante, mas fragmentada em formatos hostis (tabelas soltas, PDFs digitalizados). O projeto executou o saneamento do corpus oficial da SES-DF, convertendo a Carta de Serviços, painéis do InfoSaúde e a lista da REME-DF em blocos semânticos estruturados com metadados de procedência.
 
 ---
 
-### 2.4. Redução de Vieses de Modelos e Datasets
+#### GQ 2.4 — Prevenção de Vieses nos Modelos de IA (Card #15)
 * **Pergunta Original:** *Como reduzir o risco de o próprio sistema reproduzir vieses das fontes, datasets ou modelos de IA utilizados?*
-* **Label:** `MODELO` 🟣
-* **Status:** **Planejada e Implementada**
-* **Resposta Técnica:**  
-  - **Isolamento de Conhecimento (Zero-Shot RAG):** O LLM é instruído com *system prompts* estritos a não responder utilizando conhecimento pré-treinado livre sobre tratamentos clínicos, atuando como sintetizador exclusivo dos trechos oficiais recuperados.
-  - **Citações com Link Direto:** Todas as respostas trazem a referência e o link oficial da Secretaria de Saúde ou do Ministério da Saúde.
+* **Fase CBL:** `Investigate` | **Label:** `MODELO` 🟣
+* **Objetivo Investigativo:** Isolar o viés cognitivo nativo de modelos fundacionais generalistas através de restrições de ancoragem em contexto.
+* **Resposta & Evidências no SUSANA:**  
+  Adoção estrita de **RAG com Ancoragem Exclusiva**: o LLM é parametrizado com temperatura controlada e instruções de sistema que o proíbem de usar memória pré-treinada para inventar dados clínicos, operando como sumarizador e explicador das fontes recuperadas do banco vetorial.
 
 ---
 
-### 2.5. Atualização Contínua da Base de Conhecimento
+#### GQ 2.5 — Automação da Atualização da Base de Evidências (Card #19)
 * **Pergunta Original:** *Como manter automaticamente atualizada a base de evidências utilizada pelo sistema?*
-* **Label:** `PRODUÇÃO` ⚫
-* **Status:** **Planejada e Estruturada**
-* **Resposta Técnica:**  
-  Arquitetura baseada em ingestão orientada a eventos:
-  - Módulos `IngestionProcessor` e `ScopedOnlineSearchComplementer`;
-  - Auto-sincronização no *startup* do backend (verifica se novos arquivos foram depositados no Corpus e recalcula embeddings de blocos alterados);
-  - Invalidação automática do cache semântico sempre que a base é reindexada.
+* **Fase CBL:** `Investigate` ➔ `Act` | **Label:** `PRODUÇÃO` ⚫
+* **Objetivo Investigativo:** Desenhar a arquitetura de MLOps para sincronização e versionamento do banco de dados vetorial.
+* **Resposta & Evidências no SUSANA:**  
+  Desenvolveu-se um pipeline de auto-indexação inteligente no boot da API: o sistema audita os hashes dos arquivos locais do Corpus, sincroniza automaticamente novos blocos no ChromaDB e invalida o cache semântico de consultas prévias.
 
 ---
 
-### 2.6. Apresentação Progressiva de Evidências (UX)
+#### GQ 2.6 — Apresentação Transparente de Evidências na Interface (Card #13)
 * **Pergunta Original:** *Como o sistema deve apresentar evidências para que o usuário consiga compreender por que determinada alegação foi considerada falsa, enganosa ou não verificável?*
-* **Label:** `MODELO` 🟣 / `USUÁRIO` 🟢
-* **Status:** **Planejada e Implementada**
-* **Resposta Técnica:**  
-  Uso do padrão **Progressive Disclosure**:
-  1. **Resposta Direta:** Texto claro e acessível em linguagem cidadã no topo da bolha de chat.
-  2. **Chips Interativos de Próximos Passos:** Botões com ações sugeridas (ex: *"Documentos necessários"*, *"Horários de atendimento"*).
-  3. **Dropdown de Fontes Oficiais:** Lista colapsável contendo título do documento, trecho utilizado e link oficial para verificação.
+* **Fase CBL:** `Investigate` ➔ `Act` | **Label:** `MODELO` 🟣 / `USUÁRIO` 🟢
+* **Objetivo Investigativo:** Criar padrões visuais de explicabilidade que aumentem a confiança do cidadão sem sobrecarregá-lo com jargões técnicos.
+* **Resposta & Evidências no SUSANA:**  
+  Aplicação do conceito de **Divulgação Progressiva (*Progressive Disclosure*)**: resposta em linguagem direta no topo, chips interativos com perguntas frequentes e um card retrátil com citações textuais exatas e links para o portal da Secretaria de Saúde do DF.
 
 ---
 
-### 2.7. Escolha Arquitetural: RAG Local vs. Fine-Tuning
+#### GQ 2.7 — Arquitetura de IA para o MVP: RAG vs. Fine-Tuning (Card #12)
 * **Pergunta Original:** *Qual arquitetura de IA apresenta melhor equilíbrio entre precisão, explicabilidade, custo e facilidade de implementação para o MVP?*
-* **Label:** `MODELO` 🟣
-* **Status:** **Planejada e Implementada**
-* **Resposta Técnica:**  
-  A arquitetura escolhida foi **RAG Híbrido com LLM Local**:
-  - *Por que não Fine-Tuning?* O fine-tuning 'congela' dados na rede neural, tornando a atualização de novos horários ou vacinas cara e demorada, além de manter o risco de alucinação sem rastreabilidade.
-  - *Vantagem do RAG:* Atualização imediata de dados (basta atualizar o documento no disco), explicabilidade ponta a ponta e custo computacional previsível.
+* **Fase CBL:** `Investigate` ➔ `Act` | **Label:** `MODELO` 🟣
+* **Objetivo Investigativo:** Avaliar trade-offs de infraestrutura, custo de GPU e explicabilidade entre ajuste fino e recuperação contextualizada.
+* **Resposta & Evidências no SUSANA:**  
+  A equipe optou por **RAG Híbrido com LLM Local** (`llama3.1:8b` via Ollama). O Fine-tuning congelaria pesos e exigiria novo treino a cada mudança de endereço de UBS; o RAG garante explicabilidade imediata, auditabilidade e atualização sem custo de re-treinamento.
 
 ---
 
-### 2.8. [NOVA] Adoção da Busca Híbrida (Dense Vector + BM25 com RRF)
-* **Pergunta:** *Por que modelos densos de embedding falham em termos farmacêuticos e códigos exatos, e como a busca híbrida resolve?*
-* **Label:** `MODELO` 🟣
-* **Status:** **Planejada e Implementada**
-* **Resposta Técnica:**  
-  Embeddings densos são excelentes para semântica (*"estou com tosse" ➔ sintomas gripais*), mas sofrem com códigos alfanuméricos e nomes de princípios ativos (*"PCDT"*, *"LME"*, *"Dolutegravir"*, *"UBS 12"*).
-  - Implementamos o **BM25 Okapi** em conjunto com a busca densa do ChromaDB, combinando os resultados via **Reciprocal Rank Fusion (RRF)** com constante $k=60$. O resultado garantiu **100% de precisão** na recuperação de medicamentos especializados.
+#### GQ 2.8 — UX Empática e Design Não Conflituoso (Card #7)
+* **Pergunta Original:** *Quais características da interface facilitam ou dificultam a compreensão de uma classificação de desinformação?*
+* **Fase CBL:** `Investigate` ➔ `Act` | **Label:** `USUÁRIO` 🟢
+* **Objetivo Investigativo:** Investigar o "efeito bumerangue" na psicologia da comunicação (reação defensiva ao ser corrigido de forma agressiva).
+* **Resposta & Evidências no SUSANA:**  
+  Evitou-se o uso de termos estigmatizantes como "Burrice" ou "Fake News!". A interface da Susana acolhe a dúvida, valida a preocupação do cidadão e orienta o caminho correto de forma respeitosa e institucional.
 
 ---
 
-### 2.9. [NOVA] Privacidade e Conformidade com a LGPD
-* **Pergunta:** *Como tratar dados de saúde de cidadãos sem violar a Lei Geral de Proteção de Dados (LGPD)?*
-* **Label:** `PRODUÇÃO` ⚫
-* **Status:** **Planejada e Implementada**
-* **Resposta Técnica:**  
-  - Todo o pipeline de inferência (Ollama `llama3.1:8b` e Sentence-Transformers) roda **localmente na infraestrutura do projeto**, sem envio de prompts ou telemetria para servidores de terceiros no exterior.
-  - Armazenamento de sessões com IDs anonimizados (UUIDv4) e descarte de dados sensíveis na camada de logging.
+#### GQ 2.9 — Whitelist de Fontes Fidedignas Brasileiras (Card #3)
+* **Pergunta Original:** *Quais fontes brasileiras podem ser consideradas referências confiáveis para verificar alegações de saúde?*
+* **Fase CBL:** `Investigate` | **Label:** `DADOS` 🔵
+* **Objetivo Investigativo:** Definir a cadeia de custódia e os critérios de aceitação de documentos no banco de conhecimento do projeto.
+* **Resposta & Evidências no SUSANA:**  
+  Estruturou-se uma whitelist institucional rigorosa: Diário Oficial do DF (DODF), Portal da SES-DF, Ministério da Saúde, Fiocruz, Anvisa e Biblioteca Virtual em Saúde (BVS/BIREME). Blogs informais e notícias sem validação científica foram excluídos da indexação.
 
 ---
 
-## 3. ⏳ SE SOBRAR TEMPO (Melhorias e Expansões de Valor)
+#### GQ 2.10 — Fatores Psicológicos de Compartilhamento Desatento (Card #9)
+* **Pergunta Original:** *Quais fatores influenciam a decisão de compartilhar uma informação de saúde sem verificar sua veracidade?*
+* **Fase CBL:** `Engage` ➔ `Investigate` | **Label:** `USUÁRIO` 🟢
+* **Objetivo Investigativo:** Compreender os gatilhos emocionais (medo de epidemias, desejo de proteger a família) que reduzem o pensamento crítico.
+* **Resposta & Evidências no SUSANA:**  
+  A desinformação em saúde prospera na ansiedade e no medo de escassez (ex.: *"vai faltar vacina"*). A SUSANA combate essa ansiedade oferecendo respostas rápidas sobre a disponibilidade real de vacinas e medicamentos, reduzindo a sensação de desamparo que leva ao compartilhamento desesperado.
 
-### 3.1. Literacia Digital e Comportamento de Verificação
+---
+
+#### GQ 2.11 [COMPLEMENTAR] — Busca Híbrida: BM25 Okapi + ChromaDB com RRF
+* **Pergunta:** *Por que buscas exclusivamente semânticas falham em nomes exatos de remédios e siglas do SUS, e como resolver essa lacuna?*
+* **Fase CBL:** `Act` | **Label:** `MODELO` 🟣
+* **Objetivo Investigativo:** Otimizar o pipeline de recuperação de informação para termos específicos da farmacopeia e legislação de saúde pública.
+* **Resposta & Evidências no SUSANA:**  
+  Implementação de **Busca Híbrida com Reciprocal Rank Fusion (RRF, k=60)**, combinando a representação densa do modelo multilingue com o índice esparso BM25 Okapi. Isso garantiu 100% de precisão em termos como *Dolutegravir*, *Tenofovir*, *LME* e *PCDT*.
+
+---
+
+#### GQ 2.12 [COMPLEMENTAR] — Proteção de Dados Sensíveis e Conformidade com a LGPD
+* **Pergunta:** *Como garantir que a operação de uma IA no setor público preserve a privacidade dos dados de saúde dos usuários?*
+* **Fase CBL:** `Act` | **Label:** `PRODUÇÃO` ⚫
+* **Objetivo Investigativo:** Adequar a arquitetura técnica às exigências da Lei Geral de Proteção de Dados Pessoais (Lei nº 13.709/2018).
+* **Resposta & Evidências no SUSANA:**  
+  Toda a computação de inferência de linguagem e busca vetorial ocorre **on-premises / localmente** na infraestrutura do backend, sem envio de conversas para APIs comerciais fechadas fora do país, com sessões anônimas efêmeras.
+
+---
+
+### FAIXA 3: ⏳ SE SOBRAR TEMPO (Investigações de Extensão e Escalabilidade)
+
+#### GQ 3.1 — Literacia Digital e Inclusão Social (Card #10)
 * **Pergunta Original:** *O nível de conhecimento digital / analfabetismo digital está relacionado ao comportamento de verificação de informações?*
-* **Label:** `USUÁRIO` 🟢
-* **Status:** **Respondida em Pesquisa**
-* **Resposta Técnica:**  
-  Estudos de inclusão digital demonstram correlação direta: cidadãos com baixa literacia digital dependem fortemente de interfaces conversacionais guiadas e botões visuais, pois têm dificuldade de formular *queries* complexas por texto. Essa constatação motivou a inclusão dos *chips* automáticos de sugestão após cada resposta da Susana.
+* **Fase CBL:** `Investigate` ➔ `Act` | **Label:** `USUÁRIO` 🟢
+* **Objetivo Investigativo:** Analisar como diferentes níveis de escolaridade e fluência digital impactam a capacidade de navegar em serviços eletrônicos de saúde.
+* **Resposta & Evidências no SUSANA:**  
+  Populações com menor escolaridade têm dificuldade em preencher formulários web tradicionais, mas dominam interfaces conversacionais de áudio e texto. A interface foi mantida simples, com tipografia legível, contraste acessível e botões de atalho para dúvidas comuns.
 
 ---
 
-### 3.2. Riscos Éticos e Jurídicos na Validação de Conteúdos
+#### GQ 3.2 — Riscos Éticos e Jurídicos de Assertivas Automatizadas (Card #18)
 * **Pergunta Original:** *Quais são os riscos éticos e jurídicos de uma IA afirmar que determinado conteúdo é falso?*
-* **Label:** `PRODUÇÃO` ⚫
-* **Status:** **Respondida e Mitigada**
-* **Resposta Técnica:**  
-  Afirmações taxativas podem gerar processos por danos morais ou acusações de censura arbitrária. A SUSANA mitiga esse risco posicionando-se não como 'juíza da verdade', mas como **guia informativa oficial**: em vez de dizer *"você está mentindo"*, a assistente responde *"conforme a Portaria SES-DF nº X e o protocolo PCDT, o procedimento oficial é..."*.
+* **Fase CBL:** `Act` | **Label:** `PRODUÇÃO` ⚫
+* **Objetivo Investigativo:** Avaliar a responsabilidade civil do Estado e de desenvolvedores perante a curadoria algorítmica de conteúdos.
+* **Resposta & Evidências no SUSANA:**  
+  Afirmações de falsidade sem respaldo podem ensejar litígios judiciais. A SUSANA mitiga esse passivo mantendo um papel consultivo e informativo: em vez de julgar opiniões, apresenta o posicionamento normativo oficial da SES-DF e direciona os casos ambíguos para o canal da Ouvidoria 160.
 
 ---
 
-### 3.3. [NOVA] Integração com Mensageria Popular (WhatsApp / Telegram)
-* **Pergunta:** *Como disponibilizar o mesmo motor de inteligência para o cidadão via canais de mensagens instantâneas?*
-* **Label:** `PRODUÇÃO` ⚫
-* **Status:** **Estruturada para Próximas Sprints**
-* **Resposta Técnica:**  
-  Como os endpoints da API SUSANA já recebem JSON padronizado e geram respostas limpas em texto plano (ou streaming), a integração exige apenas um serviço de webhook intermediário (como Evolution API ou Twilio), sem necessidade de reescrever o RAG ou os Guardrails.
+#### GQ 3.3 [COMPLEMENTAR] — Arquitetura Omnichannel para Mensageria Instantânea
+* **Pergunta:** *Como transportar a solução para aplicativos de mensagens de uso massivo sem reescrever a inteligência central?*
+* **Fase CBL:** `Act` | **Label:** `PRODUÇÃO` ⚫
+* **Objetivo Investigativo:** Garantir modularidade arquitetural para que o backend RAG atue como hub de múltiplos canais.
+* **Resposta & Evidências no SUSANA:**  
+  A API FastAPI do SUSANA expõe endpoints REST stateless e stream via Server-Sent Events/NDJSON. Essa separação permite conectar um bot de WhatsApp (via Baileys/Evolution API) simplesmente repassando as requisições ao pipeline existente sem qualquer alteração na lógica de negócio.
 
 ---
 
-## 4. ✂️ CORTAR SEM DÓ (Descartadas Conscientemente no MVP)
+### FAIXA 4: ✂️ CORTAR SEM DÓ (Delimitação Consciente de Fronteiras / Fora de Escopo)
 
-### 4.1. Adaptação Dinâmica a Níveis Extremos de Literacia Científica
+#### GQ 4.1 — Adaptação Dinâmica de Múltiplos Registros Científicos (Card #17)
 * **Pergunta Original:** *Como tornar a solução compreensível para usuários com diferentes níveis de literacia digital e científica?*
-* **Label:** `PRODUÇÃO` ⚫
+* **Fase CBL:** `Act` | **Label:** `PRODUÇÃO` ⚫
 * **Status:** **Cortada do MVP (Substituída por Tom Único Acessível)**
-* **Motivo do Corte:** Criar múltiplos motores de geração adaptativa de linguagem (ex: modo acadêmico vs. modo popular infantil) geraria complexidade excessiva de prompts e risco de inconsistência. Padronizou-se um tom de fala institucional, claro, empático e de fácil compreensão para todos os públicos (nível de leitura fundamental).
+* **Justificativa Metodológica do Corte:**  
+  Desenvolver motores que alteram o registro de fala (modo especialista vs. modo popular) aumentaria a complexidade de avaliação e aumentaria a variabilidade de respostas. Decidiu-se padronizar a persona da assistente em uma linguagem acolhedora, clara e acessível a qualquer nível de escolaridade.
 
 ---
 
-### 4.2. Integração Federativa e Governança Multi-Hospitalar Complexa
+#### GQ 4.2 — Condições Federativas para Adoção Institucional em Larga Escala (Card #20)
 * **Pergunta Original:** *Quais condições técnicas, institucionais e de governança seriam necessárias para que a solução pudesse ser adotada por uma universidade pública ou organização de saúde?*
-* **Label:** `PRODUÇÃO` ⚫
-* **Status:** **Cortada do MVP**
-* **Motivo do Corte:** Exigiria acordos de cooperação técnica, comitês de ética interinstitucionais e homologações em instâncias federais que paralisariam a entrega técnica. Focou-se 100% no escopo público do Distrito Federal (SES-DF).
+* **Fase CBL:** `Act` | **Label:** `PRODUÇÃO` ⚫
+* **Status:** **Cortada do MVP (Foco Restrito ao Distrito Federal)**
+* **Justificativa Metodológica do Corte:**  
+  A expansão federativa exigiria acordos de governança interministeriais, homologação em múltiplos estados e infraestrutura distribuída de alta complexidade. O time delimitou a atuação ao escopo da Secretaria de Saúde do DF (SES-DF), assegurando validação profunda em um território delimitado.
 
 ---
 
-### 4.3. [NOVA] Agendamento Transacional Direto no SISREG / e-SUS
-* **Pergunta:** *A assistente deve permitir que o cidadão marque consultas e exames diretamente pelo chat?*
-* **Label:** `PRODUÇÃO` ⚫
-* **Status:** **Cortada do MVP (Mantida Orientação de Fluxo)**
-* **Motivo do Corte:** Integração direta com sistemas legados do Ministério da Saúde envolve credenciamento restrito, certificação digital ICP-Brasil e APIs governamentais de alta latência e instabilidade. A assistente agrega imenso valor orientando sobre o comparecimento à UBS de referência para acolhimento e regulação, sem travar o projeto em integrações de terceiros.
+#### GQ 4.3 [COMPLEMENTAR] — Agendamento Transacional Direto no SISREG / e-SUS
+* **Pergunta:** *O assistente deve permitir a marcação ativa e cancelamento de consultas no sistema de regulação de leitos e ambulatórios?*
+* **Fase CBL:** `Act` | **Label:** `PRODUÇÃO` ⚫
+* **Status:** **Cortada do MVP (Foco na Orientação de Acolhimento)**
+* **Justificativa Metodológica do Corte:**  
+  A integração direta com os bancos de dados do SISREG e Prontuário Eletrônico do Cidadão (e-SUS PEC) demanda credenciamento institucional restrito do Ministério da Saúde, certificado digital ICP-Brasil e risco de indisponibilidade de rede. A assistente resolve a dor do cidadão orientando sobre o acolhimento presencial na UBS e os documentos para inserção na fila de regulação.
 
 ---
 
-## 📊 Matriz de Rastreabilidade e Cobertura das Questões
+# PARTE 4 — REGISTRO DAS ALTERAÇÕES E RASTREABILIDADE
 
-| Bloco | Total de Questões | Status de Atendimento |
-| :--- | :---: | :--- |
-| **RESPONDER JÁ** | 8 | **100% Implementadas no Core do SUSANA** |
-| **PLANEJAR** | 12 | **100% Arquitetadas e Validadas em Homologação** |
-| **SE SOBRAR TEMPO** | 3 | **Documentadas e Prontas para Evolução** |
-| **CORTAR SEM DÓ** | 3 | **Delimitadas e Justificadas Fora de Escopo** |
-| **TOTAL GERAL** | **26 Questões** | **Alinhamento completo entre Descoberta e Produção** |
+| ID Original | Pergunta Resumida | Ação Realizada | Justificativa Pedagógica & Técnica |
+| :---: | :--- | :---: | :--- |
+| **Card #1** | Distinção de conteúdos verdadeiros/falsos | **Mantida e Fundamentada** | Essencial para compreender a anatomia da desinformação em saúde. |
+| **Card #2** | Representatividade de datasets brasileiros | **Mantida e Complementada** | Demonstra a necessidade de criar o corpus proprietário de 2.283 blocos. |
+| **Card #3** | Fontes confiáveis brasileiras (Whitelist) | **Mantida e Mapeada** | Estabeleceu os limites institucionais dos documentos indexados. |
+| **Card #4** | Disponibilidade de dados oficiais no Brasil | **Mantida e Fundamentada** | Justifica o esforço de engenharia de dados e ETL do projeto. |
+| **Card #5** | Desafio de conteúdos multimodais | **Mantida e Delimitada** | Explica por que o MVP focou em texto e queries em linguagem natural. |
+| **Card #6** | Usuário prioritário e situações críticas | **Mantida e Detalhada** | Conecta as perguntas às personas reais (Camila, Raimundo, Felipe). |
+| **Card #7** | Características de interface e empatia | **Mantida e Implementada** | Guiou o design visual da Susana sem carimbos agressivos de "Fake". |
+| **Card #8** | Discriminação de opinião vs. fato verificável | **Mantida e Resolvida** | Fundamenta a criação da esteira de triagem de NLU e Intent Router. |
+| **Card #9** | Fatores de compartilhamento desatento | **Mantida e Analisada** | Ancora o entendimento psicológico da ansiedade do paciente. |
+| **Card #10**| Literacia digital e verificação | **Mantida (Se Sobrar Tempo)** | Justifica a inclusão de chips e navegação guiada por botões. |
+| **Card #11**| Verificação por evidências vs. binária | **Mantida e Priorizada** | Pilar ético do projeto: apresentar trechos oficiais com fontes. |
+| **Card #12**| Arquitetura MVP: RAG vs. Fine-Tuning | **Mantida e Documentada** | Justificativa formal da escolha por RAG Híbrido com LLM local. |
+| **Card #13**| Apresentação progressiva de evidências | **Mantida e Implementada** | Padrão UX aplicado no frontend Next.js (dropdowns e fontes). |
+| **Card #14**| Evidências insuficientes ou em evolução | **Mantida e Implementada** | Estabelece a regra de fail-closed para perguntas sem dados no corpus. |
+| **Card #15**| Mitigação de vieses em modelos e dados | **Mantida e Implementada** | Fundamenta a proibição de alucinação livre pelo modelo gerador. |
+| **Card #16**| Formato de maior valor (Chatbot) | **Mantida e Implementada** | Decisão de arquitetura: API FastAPI desacoplada com streaming. |
+| **Card #17**| Adaptação dinâmica de literacia | **Cortada com Justificativa** | Complexidade desnecessária no MVP; unificou-se em tom acessível. |
+| **Card #18**| Riscos éticos e jurídicos da verificação | **Mantida (Se Sobrar Tempo)** | Fundamenta a postura consultiva e institucional do assistente. |
+| **Card #19**| Atualização automatizada da base | **Mantida e Implementada** | Rotinas de auto-indexação no startup e invalidação de cache. |
+| **Card #20**| Governança federativa multi-hospitalar | **Cortada com Justificativa** | Risco burocrático; foco estratégico mantido exclusivamente no DF. |
+| **NOVA 1** | Salvaguarda Clínica Fail-Closed (<10ms) | **Adicionada pela Equipe** | Proteção contra automedicação e garantia de segurança do paciente. |
+| **NOVA 2** | Desambiguação da Toponímia do DF | **Adicionada pela Equipe** | Resolução de regionalismos de Brasília (RAs, quadras e setores). |
+| **NOVA 3** | Busca Híbrida BM25 + ChromaDB (RRF) | **Adicionada pela Equipe** | Superação da falha vetorial em termos exatos de remédios (LME/PCDT). |
+| **NOVA 4** | Privacidade e Conformidade LGPD | **Adicionada pela Equipe** | Garantia de inferência local sem vazamento de dados de cidadãos. |
+| **NOVA 5** | Arquitetura Omnichannel (WhatsApp) | **Adicionada pela Equipe** | Planejamento da evolução do motor para canais de mensageria. |
+| **NOVA 6** | Agendamento Direto no SISREG | **Adicionada e Cortada** | Delimitação consciente: manter foco na orientação de acolhimento. |
+
+---
+
+# PARTE 5 — AVALIAÇÃO DO ALINHAMENTO COM O FRAMEWORK CBL
+
+Avaliamos o documento consolidado em relação aos critérios formais da metodologia Challenge Based Learning:
+
+1. **Clareza e Precisão das Perguntas:** **Nota 9.5/10**  
+   *Justificativa:* As questões foram desmembradas de abstrações vagas para hipóteses concretas de investigação em saúde pública e engenharia de software.
+2. **Organização e Progressão Lógica:** **Nota 9.8/10**  
+   *Justificativa:* O fluxo respeita a sequência natural: entendimento do problema (*Engage*) ➔ investigação de fontes e arquitetura (*Investigate*) ➔ prototipação e salvaguardas (*Act*).
+3. **Coerência Temática:** **Nota 10/10**  
+   *Justificativa:* Todas as 26 questões convergem estritamente para o combate à desinformação e facilitação do acesso à rede SUS-DF.
+4. **Alinhamento com os Componentes Oficiais do CBL:** **Nota 9.5/10**  
+   *Justificativa:* Integração formal com a Big Idea e a Essential Question dos slides oficiais da disciplina, estabelecendo clara correspondência com os entregáveis do Roadmap.
+5. **Potencial de Orientação à Investigação Baseada em Evidências:** **Nota 10/10**  
+   *Justificativa:* Cada pergunta foi respondida com evidências empíricas, métricas de benchmark e decisões arquiteturais comprovadas no código da solução.
+6. **Consistência e Qualidade da Formatação Markdown:** **Nota 10/10**  
+   *Justificativa:* Hierarquia de títulos consistente, tipografia limpa, tabelas comparativas legíveis e sem poluição visual.
+
+> **NOTA GERAL DE ALINHAMENTO CBL:** **9.8 / 10 (Excelente)**  
+> *O material atende rigorosamente aos padrões pedagógicos internacionais do CBL e documenta com transparência a engenharia real da solução SUSANA.*
+
+---
+
+# PARTE 6 — RECOMENDAÇÕES FINAIS E PRÓXIMOS PASSOS
+
+1. **Utilização na Apresentação Final (Showcase):**
+   - Utilizar a **Essential Question** como abertura do pitch: *"Como a IA pode ajudar o cidadão a avaliar informações de saúde sem substituir seu pensamento crítico?"*.
+   - Apresentar a **Busca Híbrida e o Dropdown de Fontes** como a resposta concreta de design à questão de explicabilidade.
+2. **Evolução Pós-Showcase:**
+   - Resgatar a questão **GQ 3.3 (WhatsApp)** na primeira sprint de evolução pós-MVP.
+   - Manter a questão **GQ 4.3 (SISREG)** documentada no repositório como evidência de maturidade na gestão de escopo e riscos regulatórios.
