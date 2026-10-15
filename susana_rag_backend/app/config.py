@@ -16,6 +16,7 @@ class Settings(BaseSettings):
     )
 
     environment: str = "development"
+    cors_origins: str = "*"
 
     # LLM local (Ollama)
     ollama_base_url: str = "http://localhost:11434"

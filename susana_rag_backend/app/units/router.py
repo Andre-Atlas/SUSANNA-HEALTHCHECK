@@ -22,14 +22,16 @@ def get_units_service() -> UnitsDirectoryService:
 @router.get("", response_model=UnitsListResponse)
 def list_units(
     ra: Optional[str] = None,
+    tipo: Optional[str] = None,
     type: Optional[str] = None,
     servico: Optional[str] = None,
     q: Optional[str] = None,
-    limit: int = 100,
+    limit: int = 500,
     service: UnitsDirectoryService = Depends(get_units_service),
 ):
     """Consulta unidades de saúde públicas do DF filtradas por RA, tipo ou texto."""
-    return service.search_units(ra=ra, tipo=type, servico=servico, query=q, limit=limit)
+    effective_tipo = tipo or type
+    return service.search_units(ra=ra, tipo=effective_tipo, servico=servico, query=q, limit=limit)
 
 
 @router.get("/ras", response_model=List[RADistributionItem])

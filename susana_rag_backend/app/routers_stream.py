@@ -55,7 +55,7 @@ async def chat_stream_endpoint(req: ChatRequest):
     # 2. Guardrails (avaliado com contexto expandido)
     if guardrails.is_clinical(contextualized_msg):
         def clinical_block_gen():
-            yield json.dumps({"type": "chunk", "content": "Desculpe, não posso ajudar com essa questão. A Susana fornece apenas informações administrativas do SUS-DF. "}) + "\n"
+            yield json.dumps({"type": "chunk", "content": "Desculpe, não posso ajudar com essa questão. A SUSANNA fornece apenas informações administrativas do SUS-DF. "}) + "\n"
             yield json.dumps({"type": "done", "is_blocked": True, "options": []}) + "\n"
         return StreamingResponse(clinical_block_gen(), media_type="application/x-ndjson")
 
@@ -76,7 +76,7 @@ async def chat_stream_endpoint(req: ChatRequest):
 
     if intent == "GREETING_OR_TOO_SHORT" and not req.history:
         def greeting_gen():
-            yield json.dumps({"type": "chunk", "content": "Olá! Sou a Suzanna. Posso ajudar com informações sobre UBSs, UPAs, Vacinação, Medicamentos e outros serviços do SUS-DF. Como posso ajudar você hoje?"}) + "\n"
+            yield json.dumps({"type": "chunk", "content": "Olá! Sou a SUSANNA. Posso ajudar com informações sobre UBSs, UPAs, Vacinação, Medicamentos e outros serviços do SUS-DF. Como posso ajudar você hoje?"}) + "\n"
             options = [
                 {"label": "📍 Encontrar UBS", "query": "onde encontrar uma UBS mais próxima?"},
                 {"label": "💉 Vacinas disponíveis", "query": "quais vacinas estão disponíveis nas UBSs?"},
@@ -152,7 +152,7 @@ async def chat_stream_endpoint(req: ChatRequest):
     def llm_gen():
         llm_query = msg
         if req.history:
-            history_text = "\n".join([("Cidadão: " if m.is_user() else "Susana: ") + m.get_text() for m in req.history[-4:]])
+            history_text = "\n".join([("Cidadão: " if m.is_user() else "SUSANNA: ") + m.get_text() for m in req.history[-4:]])
             llm_query = f"HISTÓRICO RECENTE DA CONVERSA:\n{history_text}\n\nPERGUNTA ATUAL DO CIDADÃO: {msg}"
             
         try:

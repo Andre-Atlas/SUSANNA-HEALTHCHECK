@@ -235,12 +235,50 @@ def test_units_directory_and_ra_filtering():
     assert resp_busca.json()["total"] > 0
 
 
-    # 5. Verificar campos geográficos percentuais de SVG
+    # 5. Verificar campos geográficos percentuais de SVG e novos metadados enriquecidos
     primeira_unidade = data_ceilandia["units"][0]
     assert "svg_x" in primeira_unidade
     assert "svg_y" in primeira_unidade
     assert 0.0 <= primeira_unidade["svg_x"] <= 100.0
     assert 0.0 <= primeira_unidade["svg_y"] <= 100.0
+    assert "telefone" in primeira_unidade and primeira_unidade["telefone"] is not None
+    assert "atendimento_24h" in primeira_unidade and isinstance(primeira_unidade["atendimento_24h"], bool)
+    assert "bairro" in primeira_unidade and primeira_unidade["bairro"] is not None
+
+    # 6. Validar que hospitais e UPAs possuem atendimento_24h == True
+    unidades_24h = [u for u in data_hosp["units"] if u["tipo"] in ("hospital", "upa")]
+    if unidades_24h:
+        assert any(u["atendimento_24h"] is True for u in unidades_24h)
+
+    # 7. Validar unidades especializadas: CAPS
+    resp_caps = client.get("/api/units?tipo=caps")
+    assert resp_caps.status_code == 200
+    data_caps = resp_caps.json()
+    assert data_caps["total"] >= 15
+    assert all("caps" in u["nome"].lower() or u["tipo"] == "caps" for u in data_caps["units"])
+    assert all(-16.2 <= u["lat"] <= -15.4 and -48.5 <= u["lng"] <= -47.1 for u in data_caps["units"])
+
+    # 8. Validar unidades especializadas: Policlínicas
+    resp_poli = client.get("/api/units?tipo=policlinica")
+    assert resp_poli.status_code == 200
+    data_poli = resp_poli.json()
+    assert data_poli["total"] >= 12
+    assert all("policl" in u["nome"].lower() or u["tipo"] == "policlinica" for u in data_poli["units"])
+
+    # 9. Validar unidades especializadas: Farmácia
+    resp_farm = client.get("/api/units?tipo=farmacia")
+    assert resp_farm.status_code == 200
+    data_farm = resp_farm.json()
+    assert data_farm["total"] >= 12
+    assert all("farm" in u["nome"].lower() or u["tipo"] == "farmacia" for u in data_farm["units"])
+
+    # 10. Validar unidades especializadas: Laboratórios (incluindo LACEN)
+    resp_lab = client.get("/api/units?tipo=laboratorio")
+    assert resp_lab.status_code == 200
+    data_lab = resp_lab.json()
+    assert data_lab["total"] >= 15
+    assert any("lacen" in u["nome"].lower() for u in data_lab["units"])
+    assert any("laborat" in u["nome"].lower() for u in data_lab["units"])
 
 
 

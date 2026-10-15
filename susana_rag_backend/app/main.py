@@ -135,9 +135,15 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+cors_list = (
+    [o.strip() for o in settings.cors_origins.split(",") if o.strip()]
+    if settings.cors_origins != "*"
+    else ["*"]
+)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=cors_list,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -181,7 +187,7 @@ async def chat_endpoint(req: ChatRequest):
         return ChatResponse(
             response=(
                 "Desculpe, não posso ajudar com essa questão. "
-                "A Susana fornece apenas informações administrativas e institucionais da SES-DF. "
+                "A SUSANNA fornece apenas informações administrativas e institucionais da SES-DF. "
                 "Para orientações clínicas, procure uma Unidade Básica de Saúde (UBS) ou ligue para o SAMU 192."
             ),
             is_blocked=True,
@@ -236,6 +242,10 @@ app.include_router(units_router)
 # Include official PNI vaccine guide router
 from app.vaccines.router import router as vaccines_router
 app.include_router(vaccines_router)
+
+# Include official epidemiological surveillance router
+from app.surveillance.router import router as surveillance_router
+app.include_router(surveillance_router)
 
 
 class OnlineSearchRequest(BaseModel):

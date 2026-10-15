@@ -10,7 +10,7 @@ class HealthUnitItem(BaseModel):
     nome: str
     ra: str
     ra_display: str
-    tipo: str  # ubs, upa, hospital, caps, policlinica, regional, farmacia
+    tipo: str  # ubs, upa, hospital, caps, policlinica, regional, farmacia, laboratorio
     tipo_display: str
     cluster: str
     endereco: str
@@ -18,8 +18,13 @@ class HealthUnitItem(BaseModel):
     servicos: List[str]
     referencia_emergencia: Optional[str] = None
     url: Optional[str] = None
-    svg_x: float  # Coordenada percentual no mapa SVG (0 a 100)
-    svg_y: float  # Coordenada percentual no mapa SVG (0 a 100)
+    telefone: Optional[str] = None
+    atendimento_24h: bool = False
+    bairro: Optional[str] = None
+    lat: float = -15.7942  # Latitude geográfica real WGS84
+    lng: float = -47.8822  # Longitude geográfica real WGS84
+    svg_x: float  # Coordenada percentual legada
+    svg_y: float  # Coordenada percentual legada
 
 
 class UnitsListResponse(BaseModel):
@@ -33,3 +38,5 @@ class RADistributionItem(BaseModel):
     ra: str
     ra_display: str
     unit_count: int
+    lat: Optional[float] = None
+    lng: Optional[float] = None
