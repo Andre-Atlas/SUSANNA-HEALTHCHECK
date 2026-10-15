@@ -1,6 +1,8 @@
-# 02 - Requisitos Funcionais e Não Funcionais
+# Requisitos Funcionais e Não Funcionais
 
-Este diretório documenta a especificação técnica dos requisitos do sistema SUSANA.
+Este diretório documenta a especificação técnica dos requisitos do sistema **Meu SUS Brasília (SUSANA)**.
+
+Consulte a especificação completa e rastreabilidade em: [Especificação de Requisitos](file:///Users/aluno2/SUSANA/requisitos/requisitos_susana.md).
 
 ## 📋 Categorias de Requisitos
 - **Requisitos Funcionais (RF):**
