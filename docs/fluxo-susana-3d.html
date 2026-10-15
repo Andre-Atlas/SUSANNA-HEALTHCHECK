@@ -28,6 +28,12 @@
   #shiphud { position: fixed; left: 50%; top: 16px; transform: translateX(-50%); z-index: 6; display: none; align-items: center; gap: 14px; padding: 8px 18px; border-radius: 999px; background: rgba(8, 15, 38, 0.9); border: 1px solid #f59e0b; color: #fde68a; font: 600 14px system-ui, sans-serif; }
   #shiphud b { color: #fff; font-size: 18px; min-width: 64px; display: inline-block; text-align: right; }
   #shipkeys { color: #cbd5e1; font-weight: 500; }
+  #stack { position: fixed; right: 18px; top: 74px; z-index: 7; width: min(440px, calc(100vw - 36px)); padding: 14px; border-radius: 16px; background: rgba(8, 15, 38, 0.95); border: 1px solid #27408b; color: #dbe7ff; font: 500 13px/1.45 system-ui, sans-serif; display: flex; flex-direction: column; gap: 6px; max-height: calc(100vh - 170px); overflow-y: auto; }
+  #stack[hidden] { display: none; }
+  #stack h2 { margin: 2px 4px 4px; font-size: 16px; color: #fff; }
+  #stack button { text-align: left; background: #0f1d44; color: #dbe7ff; border: 1px solid #27408b; border-radius: 12px; padding: 10px 12px; font: inherit; cursor: pointer; }
+  #stack button:hover, #stack button:focus-visible { background: #1d3270; outline: 2px solid #fde68a; }
+  #stack b { color: #fff; font-size: 14px; } #stack i { color: #fde68a; font-style: normal; }
   #toast { position: fixed; left: 50%; top: 22%; transform: translateX(-50%); z-index: 6; padding: 10px 18px; border-radius: 999px; background: rgba(37, 99, 235, 0.92); color: #fff; font: 600 15px system-ui, sans-serif; transition: opacity 0.8s; pointer-events: none; }
 </style>
 <script type="importmap">
@@ -49,10 +55,20 @@
   <button id="zout" type="button" aria-label="Afastar (seta para baixo)">−</button>
   <button id="zin" type="button" aria-label="Aproximar (seta para cima)">+</button>
   <button id="shipbtn" type="button" title="Pilotar a nave (tecla N)">Pilotar nave</button>
+  <button id="stackbtn" type="button" title="Tecnologias do projeto (tecla K)" aria-expanded="false">Stack</button>
   <button id="helpbtn" type="button" aria-label="Ajuda e atalhos (tecla ?)" aria-expanded="false">?</button>
 </nav>
 <div id="dots" aria-label="Ir direto a uma etapa"></div>
 <div id="shiphud" role="status"><span>Velocidade <b id="speed">0,0</b></span><span id="shipkeys">W/↑ frente · S/↓ freio e ré · A D girar · Espaço acelera · Shift turbo · N sai da nave</span></div>
+<div id="stack" hidden aria-label="Tecnologias do projeto">
+  <h2>Stack · passe o mouse para ver onde cada uma atua</h2>
+  <button type="button" data-st="0,8"><b>Next.js 16 + React 19</b> · <i>navegador (servido em :3000)</i><br>Tela do chat, sessões, fetch com AbortController e leitura do stream NDJSON.</button>
+  <button type="button" data-st="1,3,4,8"><b>FastAPI + Uvicorn</b> · <i>processo Python :8000</i><br>Rotas, validação Pydantic, contexto, IntentRouter, NLU e StreamingResponse.</button>
+  <button type="button" data-st="2"><b>scikit-learn</b> · <i>dentro do processo do FastAPI</i><br>Guardrail clínico: TF-IDF (1–2 gramas) + regressão logística, bloqueio com p ≥ 0,60.</button>
+  <button type="button" data-st="5,6"><b>sentence-transformers + ChromaDB</b> · <i>embutido, PersistentClient em data/chroma_db</i><br>MiniLM multilíngue 384d; índice HNSW por cosseno com 2.298 trechos; busca híbrida e checagem de relevância.</button>
+  <button type="button" data-st="7"><b>Ollama · llama3.1:8b</b> · <i>processo :11434</i><br>Geração token a token via /api/chat (stream), temperatura 0,1, seed 42, contexto 4096, até 350 tokens.</button>
+  <button type="button" data-st="2"><b>MLflow</b> · <i>SQLite (mlflow.db) + mlruns/</i><br>Model Registry do guardrail: carregado no startup por models:/susana-guardrail@champion; treino com CV de 5 partes e gate (F1 e recall ≥ 0,95).</button>
+</div>
 <div id="help" hidden>
   <h2>Como navegar</h2>
   <table>
@@ -64,6 +80,7 @@
     <tr><td>0 ou Esc</td><td>voltar à visão geral</td></tr>
     <tr><td>Espaço</td><td>ouvir / parar a explicação</td></tr>
     <tr><td>N</td><td>entrar / sair da nave</td></tr>
+    <tr><td>K</td><td>painel Stack (tecnologias)</td></tr>
     <tr><td>Na nave: W ou ↑</td><td>acelerar para a frente</td></tr>
     <tr><td>Na nave: S ou ↓</td><td>frear; parada, dá ré</td></tr>
     <tr><td>Na nave: A D ou ← →</td><td>virar para os lados</td></tr>
@@ -257,15 +274,15 @@ const SYMBOLS = {
     return [b, ...[-0.36, 0, 0.36].map(x => at(new THREE.Mesh(new THREE.SphereGeometry(0.09, 14, 10), mat(0x2563eb)), x, 0.02, 0.12))]; }
 };
 const STEPS = [
-  { name: 'Cidadão', desc: 'digita a pergunta no chat do navegador', c: '#60a5fa', make: SYMBOLS.person },
-  { name: 'Contexto', desc: 'junta a pergunta com o histórico da conversa', c: '#93c5fd', make: SYMBOLS.chats },
-  { name: 'Filtro clínico', desc: 'pedido de diagnóstico ou remédio é recusado', c: '#fbbf24', make: SYMBOLS.shield },
-  { name: 'Intenção', desc: 'saudação ou dúvida vaga? responde na hora', c: '#fb923c', make: SYMBOLS.signpost },
-  { name: 'Interpretação', desc: 'descobre a região e o tema da pergunta', c: '#a78bfa', make: SYMBOLS.pin },
-  { name: 'Busca vetorial', desc: 'acha os 3 trechos mais parecidos entre 2.298', c: '#22d3ee', make: SYMBOLS.search },
-  { name: 'Checagem', desc: 'o trecho serve? se não, busca em sites oficiais', c: '#34d399', make: SYMBOLS.check },
-  { name: 'Llama 3.1', desc: 'IA local (Ollama) escreve a resposta com os trechos', c: '#f472b6', make: SYMBOLS.chip },
-  { name: 'Resposta', desc: 'chega aos poucos, com fontes e sugestões', c: '#e0f2fe', make: SYMBOLS.typing }
+  { name: 'Cidadão', desc: 'Next.js · page.tsx: POST /api/chat/stream com histórico', c: '#60a5fa', make: SYMBOLS.person },
+  { name: 'Contexto', desc: 'FastAPI · Pydantic + ConversationalContextManager', c: '#93c5fd', make: SYMBOLS.chats },
+  { name: 'Filtro clínico', desc: 'regex + scikit-learn TF-IDF/LogReg (MLflow @champion)', c: '#fbbf24', make: SYMBOLS.shield },
+  { name: 'Intenção', desc: 'IntentRouter: regras determinísticas, resposta com chips', c: '#fb923c', make: SYMBOLS.signpost },
+  { name: 'Interpretação', desc: 'NLU: 33 RAs, público e tema → filtro de metadados', c: '#a78bfa', make: SYMBOLS.pin },
+  { name: 'Busca vetorial', desc: 'MiniLM 384d + ChromaDB HNSW cosseno, híbrida, top-3', c: '#22d3ee', make: SYMBOLS.search },
+  { name: 'Checagem', desc: 'is_relevant(): distância ≤ 0,35 ou termos em comum', c: '#34d399', make: SYMBOLS.check },
+  { name: 'Llama 3.1', desc: 'Ollama :11434 · /api/chat stream, T=0,1, ctx 4096', c: '#f472b6', make: SYMBOLS.chip },
+  { name: 'Resposta', desc: 'StreamingResponse NDJSON → ReadableStream no React', c: '#e0f2fe', make: SYMBOLS.typing }
 ];
 const labels = [], stationLabels = [], badges = [];
 function badge(num, color) {
@@ -290,7 +307,7 @@ const stations = STEPS.map((s, k) => {
 
 // ───── as passagens entre etapas (aparecem conforme o zoom) ─────
 const TRANS = [
-  ['Envio da pergunta', ['O navegador faz um POST para /api/chat/stream.', 'Vão juntas a mensagem e as últimas mensagens da conversa (history).', 'Se o servidor ainda está iniciando, a resposta é 503; mensagem vazia dá 422.']],
+  ['Envio da pergunta', ['A mensagem é gravada na sessão: POST /api/chat/sessions/messages (SQLite em modo WAL).', 'Depois, fetch POST /api/chat/stream com a mensagem e as 4 últimas mensagens (history), cancelável por AbortController.', 'Servidor ainda iniciando: 503; corpo inválido: 422 (Pydantic).']],
   ['Pergunta reescrita', ['contextualize() completa perguntas curtas com o histórico: “e onde fica?” vira uma pergunta inteira.', 'Respostas como “1” ou “2” viram a opção que a Susana tinha oferecido.', 'Termos populares são traduzidos: “postinho” vira UBS.']],
   ['Checagem clínica', ['Regras de palavras procuram sintomas, diagnóstico e dose. Perguntas sobre vacina não contam como remédio.', 'Termos administrativos, como endereço e horário, liberam a pergunta.', 'O classificador estatístico bloqueia quando a chance de ser clínica é de 60% ou mais.', 'Bloqueada, ela sai pelo cubo vermelho, sem chamar a IA.']],
   ['Roteador de intenção', ['Até 3 palavras, sem conversa anterior: é saudação, e volta com botões.', '“Programas do SUS”: pede para escolher qual programa.', '“Perto de mim” sem região: pergunta a região administrativa.', 'Pergunta específica: segue para a interpretação.']],
@@ -298,7 +315,7 @@ const TRANS = [
   ['Busca no banco vetorial', ['A consulta vira um vetor de 384 números (modelo MiniLM multilíngue).', 'O ChromaDB devolve os 3 trechos mais próximos, primeiro usando o filtro de região.', 'Se nada servir com o filtro, a busca é repetida sem ele.']],
   ['O trecho serve?', ['Distância muito pequena (até 0,35): aceito na hora.', 'Senão, pergunta e trecho precisam ter palavras importantes em comum.', 'Nada serve: busca online em sites oficiais. Ainda nada: “não encontrei”.']],
   ['Geração da resposta', ['O Ollama recebe a pergunta, até 4 mensagens anteriores e os trechos.', 'Llama 3.1 8B com temperatura 0,1 e no máximo 350 tokens: respostas estáveis e curtas.', 'Cada pedaço de texto sai como uma linha JSON assim que é gerado.']],
-  ['Entrega no chat', ['O navegador lê o fluxo e vai preenchendo o balão da conversa.', 'A última linha traz as citações com links oficiais e os botões de sugestão.', 'Se a IA falhar no meio, aparece o texto oficial recuperado.']]
+  ['Entrega no chat', ['res.body.getReader() + TextDecoder: cada linha JSON com content é somada ao balão.', 'A linha final (type: done) traz citations com URLs oficiais resolvidas e os chips de sugestão.', 'A resposta é salva na sessão. Se o LLM falhar no meio, vai o texto do trecho oficial.']]
 ];
 const tcards = TRANS.map(([title, lines], k) => {
   const a = STEPS[k], b = STEPS[(k + 1) % N], p = curve.getPoint((k + 0.5) / N);
@@ -358,7 +375,7 @@ function hud(lines, y, h) {
   s.sp.scale.set(hudW, hudW * h / 1600, 1); s.sp.position.set(0, y, -D); camera.add(s.sp);
   return s.sp;
 }
-const header = hud([['Como a Susana responde', '800 76px system-ui, sans-serif', '#ffffff', 58], ['do cidadão até a resposta no chat, em 9 etapas', '500 40px system-ui, sans-serif', '#93c5fd', 128]], vh / 2 - hudW * 85 / 1600 - 0.1, 170);
+const header = hud([['Como a Susana responde', '800 76px system-ui, sans-serif', '#ffffff', 58], ['Next.js · FastAPI · scikit-learn · ChromaDB · Ollama · MLflow, em 9 etapas', '500 38px system-ui, sans-serif', '#93c5fd', 128]], vh / 2 - hudW * 85 / 1600 - 0.1, 170);
 
 
 const HOME_CAM = new THREE.Vector3(0, 13.2, 21.8), HOME_TGT = new THREE.Vector3(0, 0.1, -0.4);
@@ -390,7 +407,7 @@ function startStep(i, now) {
   const st = NARR[i];
   sub.textContent = st.text; sub.style.display = 'block';
   // na abertura e no encerramento, visão geral; nas etapas, a câmera acompanha a bolinha
-  tour.follow = i > 0 && st.u < N;
+  tour.follow = !st.overview && st.u < N;
   if (!tour.userMoved) { if (tour.follow) fly = null; else flyTo(HOME_CAM, HOME_TGT); }
   setWhere(tour.follow ? 2 * st.u : -1);
   audio.src = 'fluxo-audio/' + String(i).padStart(2, '0') + '.mp3';
@@ -460,8 +477,18 @@ document.getElementById('next').addEventListener('click', () => step(1));
 document.getElementById('zin').addEventListener('click', () => zoom(0.7));
 document.getElementById('zout').addEventListener('click', () => zoom(1.4));
 const helpEl = document.getElementById('help'), helpBtn = document.getElementById('helpbtn');
-function toggleHelp(show) { helpEl.hidden = show === undefined ? !helpEl.hidden : !show; helpBtn.setAttribute('aria-expanded', String(!helpEl.hidden)); helpBtn.classList.toggle('on', !helpEl.hidden); }
+function toggleHelp(show) { helpEl.hidden = show === undefined ? !helpEl.hidden : !show; if (!helpEl.hidden && typeof stackEl !== 'undefined' && !stackEl.hidden) { stackEl.hidden = true; stackBtn.classList.remove('on'); stackHi = null; } helpBtn.setAttribute('aria-expanded', String(!helpEl.hidden)); helpBtn.classList.toggle('on', !helpEl.hidden); }
 helpBtn.addEventListener('click', () => toggleHelp());
+// painel Stack: passar o mouse (ou focar) numa tecnologia acende as etapas em que ela atua
+let stackHi = null;
+const stackEl = document.getElementById('stack'), stackBtn = document.getElementById('stackbtn');
+function toggleStack(show) { stackEl.hidden = show === undefined ? !stackEl.hidden : !show; stackBtn.setAttribute('aria-expanded', String(!stackEl.hidden)); stackBtn.classList.toggle('on', !stackEl.hidden); if (!stackEl.hidden) toggleHelp(false); else stackHi = null; }
+stackBtn.addEventListener('click', () => toggleStack());
+stackEl.querySelectorAll('button').forEach(b => {
+  const ids = b.dataset.st.split(',').map(Number), on = () => { stackHi = ids; }, off = () => { stackHi = null; };
+  b.addEventListener('mouseenter', on); b.addEventListener('focus', on); b.addEventListener('mouseleave', off); b.addEventListener('blur', off);
+  b.addEventListener('click', () => goPOI(2 * ids[0]));
+});
 window.addEventListener('keydown', e => {
   if (e.ctrlKey || e.metaKey || e.altKey) return;
   const k = e.key;
@@ -472,7 +499,7 @@ window.addEventListener('keydown', e => {
     ArrowUp: () => zoom(0.75), ArrowDown: () => zoom(1.33), '+': () => zoom(0.75), '=': () => zoom(0.75), '-': () => zoom(1.33),
     a: () => orbit(0.26, 0), d: () => orbit(-0.26, 0), w: () => orbit(0, -0.15), s: () => orbit(0, 0.15),
     '0': goHome, Escape: () => helpEl.hidden ? goHome() : toggleHelp(false), Home: goHome,
-    '?': () => toggleHelp(), h: () => toggleHelp(), ' ': () => tour.on ? stopTour() : startTour()
+    '?': () => toggleHelp(), h: () => toggleHelp(), k: () => toggleStack(), ' ': () => tour.on ? stopTour() : startTour()
   };
   const fn = map[k] || map[k.toLowerCase && k.toLowerCase()] || (/^[1-9]$/.test(k) ? () => goPOI(2 * (Number(k) - 1)) : null);
   if (!fn) return;
@@ -603,7 +630,7 @@ function frame(t, now) {
   halo.scale.setScalar(2.3 + 0.35 * Math.sin(t * 6));
   stations.forEach((g, k) => {
     let d = Math.abs(st.u - k / N); d = Math.min(d, 1 - d);
-    const on = st.out === 0 && d < 0.03;
+    const on = (st.out === 0 && d < 0.03) || (stackHi && stackHi.includes(k));
     g.children.forEach(m => { if (m.material && m.material.emissiveIntensity !== undefined) m.material.emissiveIntensity = on ? 0.85 : 0.18; });
     g.rotation.y = 0.45 * Math.sin(t * 0.7 + k);
     g.position.y = 0.75 + (on ? 0.25 : 0) + 0.06 * Math.sin(t * 1.4 + k);
@@ -631,7 +658,7 @@ function frame(t, now) {
   stationLabels.forEach((lab, k) => {
     let d = Math.abs(st.u - k / N); d = Math.min(d, 1 - d);
     const show = (st.out === 0 && d < 0.05) || ref.distanceTo(stations[k].position) < (ship.on ? 6 : 8.5)
-      || cur === 2 * k || hover.poi === 2 * k || narrated === k;
+      || cur === 2 * k || hover.poi === 2 * k || narrated === k || (stackHi && stackHi.includes(k));
     lab.userData.o = fade(lab.userData.o || 0, show);
     // muito perto da câmera, a ficha ficaria enorme: sai da frente
     lab.material.opacity = lab.userData.o * THREE.MathUtils.clamp((camera.position.distanceTo(lab.position) - 3.5) / 3, 0, 1);
