@@ -1,0 +1,22 @@
+[
+  {"id": "id-test-01", "query": "Qual o endereço da UBS 1 de Águas Claras?", "category": "UNIDADE", "expected_keywords": ["ubs", "aguas claras"]},
+  {"id": "id-test-02", "query": "Como retirar remédios na farmácia da UBS 5 do Gama?", "category": "UNIDADE", "expected_keywords": ["ubs", "5", "gama", "farmacia"]},
+  {"id": "id-test-03", "query": "É obrigatório apresentar comprovante de residência para ser atendido na UBS?", "category": "FAQ", "expected_keywords": ["residencia", "ubs", "atendimento"]},
+  {"id": "id-test-04", "query": "Onde tem atendimento de psiquiatria e psicologia no CAPS de Samambaia?", "category": "UNIDADE", "expected_keywords": ["caps", "samambaia"]},
+  {"id": "id-test-05", "query": "Qual hospital público faz atendimento de emergência pediátrica no DF?", "category": "EMERGENCIA", "expected_keywords": ["hospital", "emergencia", "pediatria"]},
+  {"id": "id-test-06", "query": "Como renovar o LME para continuar recebendo remédio de alto custo?", "category": "MEDICAMENTO", "expected_keywords": ["lme", "alto custo", "ceaf"]},
+  {"id": "id-test-07", "query": "Posso mudar o número do meu Cartão SUS se me mudar de cidade?", "category": "FAQ", "expected_keywords": ["cartao", "sus", "cns", "mudar"]},
+  {"id": "id-test-08", "query": "Onde fica a UPA do Recanto das Emas e qual o horário?", "category": "EMERGENCIA", "expected_keywords": ["upa", "recanto das emas"]},
+  {"id": "id-test-09", "query": "Onde tomar a vacina da febre amarela em Brasília?", "category": "VACINACAO", "expected_keywords": ["vacina", "febre amarela", "ubs"]},
+  {"id": "id-test-10", "query": "Como funciona o Consultório na Rua da Secretaria de Saúde?", "category": "SERVICO", "expected_keywords": ["consultorio na rua", "ubs"]},
+  {"id": "id-test-11", "query": "Qual a documentação para marcar cirurgia eletiva no Hospital de Base ou HRT?", "category": "SERVICO", "expected_keywords": ["cirurgia", "regulacao", "hrt"]},
+  {"id": "id-test-12", "query": "Onde encontro posto de coleta de leite materno no Distrito Federal?", "category": "SERVICO", "expected_keywords": ["leite materno", "maternidade"]},
+  {"id": "id-test-13", "query": "Como saber qual é a minha unidade básica de saúde de referência?", "category": "FAQ", "expected_keywords": ["ubs", "referencia", "endereco"]},
+  {"id": "id-test-14", "query": "A UPA de São Sebastião atende suturas e pequenos curativos?", "category": "EMERGENCIA", "expected_keywords": ["upa", "sao sebastiao"]},
+  {"id": "id-test-15", "query": "Como emitir a declaração de vacinação para matrícula escolar no DF?", "category": "VACINACAO", "expected_keywords": ["declaracao", "vacinacao", "matricula"]},
+  {"id": "id-test-16", "query": "Onde fica a Farmácia Escola do HUB da UnB?", "category": "MEDICAMENTO", "expected_keywords": ["hub", "farmacia escola"]},
+  {"id": "id-test-17", "query": "Como funciona o acolhimento para dependência de álcool e drogas no CAPS AD?", "category": "UNIDADE", "expected_keywords": ["caps ad", "alcool", "drogas"]},
+  {"id": "id-test-18", "query": "Onde posso registrar reclamação ou elogio na Ouvidoria da SES-DF?", "category": "INSTITUCIONAL", "expected_keywords": ["ouvidoria", "162", "ses-df"]},
+  {"id": "id-test-19", "query": "Qual horário de funcionamento da UBS 01 de Santa Maria?", "category": "UNIDADE", "expected_keywords": ["ubs", "santa maria", "horario"]},
+  {"id": "id-test-20", "query": "Quando devo procurar a emergência do Hospital Regional de Sobradinho?", "category": "UNIDADE", "expected_keywords": ["hrs", "sobradinho", "hospital regional"]}
+]

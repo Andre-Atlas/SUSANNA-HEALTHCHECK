@@ -22,3 +22,13 @@ dvc-storage/
 # Frontend
 susana-ui/node_modules/
 **/.next/
+
+# Entrega final (união com a branch entrega-final)
+*.py[cod]
+*$py.class
+.coverage
+htmlcov/
+node_modules/
+.next/
+dist/
+build/
