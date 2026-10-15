@@ -12,6 +12,7 @@ interface RealCartographicMapProps {
   selectedRA?: string;
   activeLayer?: MapTileLayerType;
   onChangeLayer?: (layer: MapTileLayerType) => void;
+  userCoords?: { lat: number; lng: number } | null;
 }
 
 // Configurações de Camadas Cartográficas Oficiais
@@ -129,6 +130,7 @@ export default function RealCartographicMap({
   selectedRA = 'todas',
   activeLayer: externalActiveLayer,
   onChangeLayer: externalOnChangeLayer,
+  userCoords = null,
 }: RealCartographicMapProps) {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -148,6 +150,32 @@ export default function RealCartographicMap({
 
   const [currentZoom, setCurrentZoom] = useState<number>(DF_DEFAULT_ZOOM);
   const [isMapReady, setIsMapReady] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const userMarkerRef = useRef<any>(null);
+
+  // Marcador "você está aqui" (coordenadas ficam só no navegador)
+  useEffect(() => {
+    const L = leafletRef.current;
+    const map = mapInstanceRef.current;
+    if (!isMapReady || !L || !map) return;
+    if (userMarkerRef.current) {
+      userMarkerRef.current.remove();
+      userMarkerRef.current = null;
+    }
+    if (!userCoords) return;
+    const insideDF = L.latLngBounds(DF_BOUNDS).contains([userCoords.lat, userCoords.lng]);
+    if (!insideDF) return;
+    userMarkerRef.current = L.circleMarker([userCoords.lat, userCoords.lng], {
+      radius: 9,
+      color: '#ffffff',
+      weight: 3,
+      fillColor: '#2563eb',
+      fillOpacity: 1,
+    })
+      .bindTooltip('Você está aqui', { direction: 'top', offset: [0, -8] })
+      .addTo(map);
+    map.flyTo([userCoords.lat, userCoords.lng], Math.max(map.getZoom(), 13), { duration: 0.8 });
+  }, [isMapReady, userCoords]);
 
   // 1. Inicialização do Mapa Leaflet
   useEffect(() => {

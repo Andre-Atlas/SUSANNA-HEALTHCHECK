@@ -3,6 +3,7 @@
 import React, { useState, useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import type { MapTileLayerType } from './RealCartographicMap';
+import { formatKm, haversineKm, sortByDistance, type Coords } from '@/lib/geo';
 
 export interface HealthUnitItem {
   id: string;
@@ -45,6 +46,8 @@ interface HealthUnitsInteractiveMapProps {
   onSelectUnit: (unit: HealthUnitItem | null) => void;
   onAskSuzanna: (unit: HealthUnitItem) => void;
   isLoading?: boolean;
+  /** Localização atual (só no aparelho): ordena por distância e mostra "você" no mapa. */
+  userCoords?: Coords | null;
 }
 
 // Cores semânticas oficiais do SUS Digital
@@ -102,12 +105,13 @@ export const HealthUnitsInteractiveMap: React.FC<HealthUnitsInteractiveMapProps>
   selectedUnit,
   onSelectUnit,
   onAskSuzanna,
+  userCoords = null,
 }) => {
   const [viewMode, setViewMode] = useState<'mapa' | 'lista'>('mapa');
   const [mapLayer, setMapLayer] = useState<MapTileLayerType>('osm');
 
   // Filtragem e busca em memória instantânea para sincronia visual
-  const filteredUnits = useMemo(() => {
+  const matchedUnits = useMemo(() => {
     return units.filter((u) => {
       // Filtro de RA
       if (selectedRA && selectedRA !== 'todas' && selectedRA !== '') {
@@ -161,6 +165,13 @@ export const HealthUnitsInteractiveMap: React.FC<HealthUnitsInteractiveMapProps>
       return true;
     });
   }, [units, selectedRA, activeType, searchQuery]);
+
+  const filteredUnits = useMemo(
+    () => (userCoords ? sortByDistance(matchedUnits, userCoords) : matchedUnits),
+    [matchedUnits, userCoords]
+  );
+  const distanceTo = (u: HealthUnitItem) =>
+    userCoords && u.lat != null && u.lng != null ? formatKm(haversineKm(userCoords, { lat: u.lat, lng: u.lng })) : null;
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '100%' }}>
@@ -403,6 +414,7 @@ export const HealthUnitsInteractiveMap: React.FC<HealthUnitsInteractiveMapProps>
             selectedRA={selectedRA}
             activeLayer={mapLayer}
             onChangeLayer={setMapLayer}
+            userCoords={userCoords}
           />
 
           {/* Banner informativo quando nenhuma unidade for encontrada no Modo Mapa */}
@@ -704,6 +716,7 @@ export const HealthUnitsInteractiveMap: React.FC<HealthUnitsInteractiveMapProps>
                   </div>
                   <div style={{ fontSize: '12px', color: '#2563eb', fontWeight: 500 }}>
                     📍 {u.bairro || u.ra_display}
+                    {distanceTo(u) && <span style={{ color: '#64748b', fontWeight: 400 }}> · {distanceTo(u)}</span>}
                   </div>
                   <div style={{ fontSize: '11px', color: '#64748b' }}>
                     🏢 {u.endereco}

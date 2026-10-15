@@ -1,7 +1,19 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import { Navigation } from 'lucide-react';
 import { buildApiUrl, createApiUrl } from '@/lib/api';
+import { authHeaders } from '@/lib/apiClient';
+import type { AgendaProposal, CitizenProfile } from '@/lib/types';
+import { AuthProvider, useAuth } from '@/context/AuthProvider';
+import { GeoProvider, useGeo } from '@/context/GeoProvider';
+import { AgendaProvider, useAgenda } from '@/context/AgendaProvider';
+import { AuthDialog } from '@/components/Auth/AuthDialog';
+import { ProfileSheet } from '@/components/Auth/ProfileSheet';
+import { AgendaView } from '@/components/Agenda/AgendaView';
+import { UpcomingCard } from '@/components/Agenda/UpcomingCard';
+import { ReminderToast } from '@/components/Agenda/ReminderToast';
+import { AgendaProposalCard, type ProposalState } from '@/components/Chat/AgendaProposalCard';
 import { EpidemiologicalDashboard } from '@/components/Surveillance/EpidemiologicalDashboard';
 import { HealthUnitsInteractiveMap } from '@/components/UnitsMap/HealthUnitsInteractiveMap';
 
@@ -10,7 +22,8 @@ import { HealthUnitsInteractiveMap } from '@/components/UnitsMap/HealthUnitsInte
 // =========================================================================
 interface InteractiveOption {
   label: string;
-  query: string;
+  query?: string;
+  action?: 'open_auth';
 }
 
 interface CitationItem {
@@ -25,23 +38,8 @@ interface ChatMessage {
   source?: string;
   options?: InteractiveOption[];
   citations?: CitationItem[];
-}
-
-interface CitizenProfile {
-  id: string;
-  nome_completo: string;
-  primeiro_nome: string;
-  cpf_mascarado: string;
-  cns_mascarado?: string;
-  data_nascimento: string;
-  idade_anos: number;
-  faixa_etaria: string;
-  sexo_biologico: string;
-  gestante: boolean;
-  ra_residencia: string;
-  ra_display: string;
-  bairro_ou_setor?: string;
-  telefone?: string;
+  proposal?: AgendaProposal;
+  proposalState?: ProposalState;
 }
 
 interface ChatSessionItem {
@@ -112,33 +110,31 @@ const RECORDS = [
   },
 ];
 
-export default function Home() {
+// Ordem das abas (índice ↔ hash)
+const TAB_HASHES = ['inicio', 'assistente', 'agenda', 'servicos', 'monitoramento', 'historico'];
+const TAB_AGENDA = 2;
+
+export default function Page() {
+  return (
+    <AuthProvider>
+      <GeoProvider>
+        <AgendaProvider>
+          <Home />
+        </AgendaProvider>
+      </GeoProvider>
+    </AuthProvider>
+  );
+}
+
+function Home() {
   // Navigation State
   const [viewMode, setViewMode] = useState<'landing' | 'app'>('landing');
   const [activeTab, setActiveTab] = useState<number>(0);
 
-  // Citizen Profile & Auth State
-  const [citizen, setCitizen] = useState<CitizenProfile | null>(null);
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [authMode, setAuthMode] = useState<'cadastro' | 'login'>('cadastro');
-  const [authLoading, setAuthLoading] = useState(false);
-  const [authError, setAuthError] = useState<string | null>(null);
-  const [authSuccess, setAuthSuccess] = useState<string | null>(null);
-
-  // Citizen Registration Form
-  const [formNome, setFormNome] = useState('');
-  const [formCpf, setFormCpf] = useState('');
-  const [formCns, setFormCns] = useState('');
-  const [formDataNasc, setFormDataNasc] = useState('1994-05-18');
-  const [formSexo, setFormSexo] = useState('F');
-  const [formGestante, setFormGestante] = useState(false);
-  const [formRa, setFormRa] = useState('ceilandia');
-  const [formBairro, setFormBairro] = useState('Ceilândia Sul');
-  const [formTelefone, setFormTelefone] = useState('(61) 98765-4321');
-
-  // Citizen Login Form
-  const [loginDoc, setLoginDoc] = useState('');
-  const [loginDataNasc, setLoginDataNasc] = useState('');
+  // Conta opcional, agenda e localização (compartilhadas via contexto)
+  const { citizen, status: authStatus, openAuth, setProfileOpen, logout } = useAuth();
+  const agenda = useAgenda();
+  const geo = useGeo();
 
   // Multi-Session Chat State
   const [sessions, setSessions] = useState<ChatSessionItem[]>([]);
@@ -160,8 +156,6 @@ export default function Home() {
   const [raList, setRaList] = useState<RADistribution[]>([]);
   const [selectedRA, setSelectedRA] = useState<string>('todas');
   const [selectedPin, setSelectedPin] = useState<HealthUnitItem | null>(null);
-  const [selectedDay, setSelectedDay] = useState<number | null>(null);
-  const [appointmentNotice, setAppointmentNotice] = useState<string | null>(null);
 
   // Vaccines Guide State
   const [vaccines, setVaccines] = useState<VaccineItem[]>([]);
@@ -178,41 +172,19 @@ export default function Home() {
   // Carregamento Inicial do Cidadão e RAs
   // -------------------------------------------------------------------------
   useEffect(() => {
-    // 1. Carregar perfil do cidadão salvo ou buscar do backend
-    const savedCitizen = localStorage.getItem('susana_citizen');
-    if (savedCitizen) {
-      try {
-        const parsed = JSON.parse(savedCitizen);
-        setCitizen(parsed);
-      } catch {
-        fetchDefaultCitizen();
-      }
-    } else {
-      fetchDefaultCitizen();
-    }
-
-    // 2. Carregar lista de RAs oficiais do DF
+    // 1. Carregar lista de RAs oficiais do DF
     fetchRasList();
 
-    // 3. Carregar sessões de chat
-    fetchChatSessions();
-
-    // 4. Carregar guia oficial de vacinas
+    // 2. Carregar guia oficial de vacinas
     fetchVaccineGuide('todas');
   }, []);
 
-  const fetchDefaultCitizen = async () => {
-    try {
-      const res = await fetch(buildApiUrl('/api/citizen/me'));
-      if (res.ok) {
-        const data: CitizenProfile = await res.json();
-        setCitizen(data);
-        localStorage.setItem('susana_citizen', JSON.stringify(data));
-      }
-    } catch (err) {
-      console.warn('Backend ainda iniciando ou inacessível para cidadão padrão:', err);
-    }
-  };
+  // Sessões de chat: recarrega ao entrar/sair da conta (visitante usa sessão anônima)
+  useEffect(() => {
+    if (authStatus === 'loading') return;
+    fetchChatSessions(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [authStatus]);
 
   const fetchRasList = async () => {
     try {
@@ -229,15 +201,15 @@ export default function Home() {
   // -------------------------------------------------------------------------
   // Multi-Sessões de Chat
   // -------------------------------------------------------------------------
-  const fetchChatSessions = async () => {
+  const fetchChatSessions = async (selectFirst = false) => {
     try {
-      const res = await fetch(buildApiUrl('/api/chat/sessions'));
+      const res = await fetch(buildApiUrl('/api/chat/sessions'), { headers: authHeaders() });
       if (res.ok) {
         const list: ChatSessionItem[] = await res.json();
         setSessions(list);
-        if (list.length > 0 && !currentSessionId) {
+        if (list.length > 0 && (selectFirst || !currentSessionId)) {
           loadSessionMessages(list[0].id);
-        } else if (list.length === 0) {
+        } else if (list.length === 0 && (selectFirst || !currentSessionId)) {
           createNewSession();
         }
       }
@@ -255,11 +227,8 @@ export default function Home() {
     try {
       const res = await fetch(buildApiUrl('/api/chat/sessions'), {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          title: 'Nova conversa',
-          citizen_id: citizen?.id || null,
-        }),
+        headers: authHeaders({ 'Content-Type': 'application/json' }),
+        body: JSON.stringify({ title: 'Nova conversa' }),
       });
 
       if (res.ok) {
@@ -307,7 +276,7 @@ export default function Home() {
     setIsSessionsDrawerOpen(false);
 
     try {
-      const res = await fetch(buildApiUrl(`/api/chat/sessions/${sessionId}/messages`));
+      const res = await fetch(buildApiUrl(`/api/chat/sessions/${sessionId}/messages`), { headers: authHeaders() });
       if (res.ok) {
         const msgs = await res.json();
         if (msgs.length === 0) {
@@ -342,7 +311,7 @@ export default function Home() {
   const deleteSession = async (sessionId: string, e: React.MouseEvent) => {
     e.stopPropagation();
     try {
-      await fetch(buildApiUrl(`/api/chat/sessions/${sessionId}`), { method: 'DELETE' });
+      await fetch(buildApiUrl(`/api/chat/sessions/${sessionId}`), { method: 'DELETE', headers: authHeaders() });
       setSessions((prev) => prev.filter((s) => s.id !== sessionId));
       if (currentSessionId === sessionId) {
         const remaining = sessions.filter((s) => s.id !== sessionId);
@@ -438,8 +407,9 @@ export default function Home() {
     const fetchRecs = async () => {
       try {
         const url = createApiUrl('/api/vaccines/recommendations');
-        url.searchParams.set('data_nascimento', citizen.data_nascimento);
+        url.searchParams.set('data_nascimento', citizen.data_nascimento!);
         url.searchParams.set('gestante', String(citizen.gestante));
+        if (citizen.condicoes?.length) url.searchParams.set('condicoes', citizen.condicoes.join(','));
 
         const res = await fetch(url.toString());
         if (res.ok) {
@@ -454,6 +424,10 @@ export default function Home() {
     fetchRecs();
   }, [citizen]);
 
+  // Recomendações só valem para quem está conectado
+  const myRecVaccines = citizen ? recVaccines : [];
+  const myRecAlert = citizen ? recAlert : null;
+
   // -------------------------------------------------------------------------
   // Sync com Hash Routing
   // -------------------------------------------------------------------------
@@ -464,15 +438,9 @@ export default function Home() {
         setViewMode('landing');
       } else {
         setViewMode('app');
-        const tabMap: Record<string, number> = {
-          inicio: 0,
-          assistente: 1,
-          servicos: 2,
-          monitoramento: 3,
-          historico: 4,
-        };
-        if (tabMap[hash] !== undefined) {
-          setActiveTab(tabMap[hash]);
+        const idx = TAB_HASHES.indexOf(hash);
+        if (idx >= 0) {
+          setActiveTab(idx);
         }
       }
     };
@@ -501,8 +469,7 @@ export default function Home() {
 
   const navigateToTab = (index: number) => {
     setActiveTab(index);
-    const tabs = ['inicio', 'assistente', 'servicos', 'monitoramento', 'historico'];
-    window.location.hash = `#/${tabs[index]}`;
+    window.location.hash = `#/${TAB_HASHES[index]}`;
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -549,7 +516,7 @@ export default function Home() {
     if (currentSessionId) {
       fetch(buildApiUrl('/api/chat/sessions/messages'), {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: authHeaders({ 'Content-Type': 'application/json' }),
         body: JSON.stringify({
           session_id: currentSessionId,
           role: 'user',
@@ -558,12 +525,17 @@ export default function Home() {
       }).catch(() => {});
     }
 
+    // Se a última proposta de agenda ainda espera data/horário, a resposta completa a mesma proposta
+    const lastBot = [...messages].reverse().find((m) => !m.isUser);
+    const pendingProposalId =
+      lastBot?.proposal && lastBot.proposalState === 'open' && lastBot.proposal.faltando.length > 0
+        ? lastBot.proposal.proposal_id
+        : null;
+
     try {
       const res = await fetch(buildApiUrl('/api/chat/stream'), {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: authHeaders({ 'Content-Type': 'application/json' }),
         signal: abortController.signal,
         body: JSON.stringify({
           message: q,
@@ -574,6 +546,7 @@ export default function Home() {
             role: m.isUser ? 'user' : 'assistant',
             content: m.text,
           })),
+          pending_proposal_id: pendingProposalId,
         }),
       });
 
@@ -587,9 +560,12 @@ export default function Home() {
       let botSources = '';
       let botOptions: InteractiveOption[] = [];
       let botCitations: CitationItem[] = [];
+      let botProposal: AgendaProposal | undefined;
 
       setMessages((prev) => [
-        ...prev,
+        ...prev.map((m) =>
+          pendingProposalId && m.proposal?.proposal_id === pendingProposalId ? { ...m, proposalState: 'dismissed' as ProposalState } : m
+        ),
         { id: botMsgId, text: '', isUser: false, source: 'Consultando base SES-DF…' },
       ]);
       while (true) {
@@ -609,6 +585,10 @@ export default function Home() {
           if (jsonStr === '[DONE]') continue;
           try {
             const data = JSON.parse(jsonStr);
+            if (data.type === 'agenda_proposal' && data.proposal) {
+              botProposal = data.proposal as AgendaProposal;
+              continue;
+            }
             if (data.token) {
               accumulatedText += data.token;
             } else if (data.content) {
@@ -641,6 +621,8 @@ export default function Home() {
                   source: botSources || 'Fonte: Ministério da Saúde / SES-DF',
                   options: botOptions.length > 0 ? botOptions : msg.options,
                   citations: botCitations.length > 0 ? botCitations : msg.citations,
+                  proposal: botProposal ?? msg.proposal,
+                  proposalState: botProposal ? msg.proposalState ?? 'open' : msg.proposalState,
                 }
               : msg
           )
@@ -651,7 +633,7 @@ export default function Home() {
       if (currentSessionId && accumulatedText) {
         fetch(buildApiUrl('/api/chat/sessions/messages'), {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: authHeaders({ 'Content-Type': 'application/json' }),
           body: JSON.stringify({
             session_id: currentSessionId,
             role: 'assistant',
@@ -699,7 +681,7 @@ export default function Home() {
         if (currentSessionId) {
           fetch(buildApiUrl('/api/chat/sessions/messages'), {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: authHeaders({ 'Content-Type': 'application/json' }),
             body: JSON.stringify({
               session_id: currentSessionId,
               role: 'assistant',
@@ -718,92 +700,6 @@ export default function Home() {
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
       setIsBotTyping(false);
-    }
-  };
-
-  // -------------------------------------------------------------------------
-  // Handlers de Cadastro e Login do Cidadão
-  // -------------------------------------------------------------------------
-  const handleRegisterCitizen = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setAuthLoading(true);
-    setAuthError(null);
-    setAuthSuccess(null);
-
-    try {
-      const cleanCpf = formCpf.replace(/\D/g, '');
-      const cleanCns = formCns.replace(/\D/g, '') || null;
-
-      const payload = {
-        nome_completo: formNome.trim(),
-        cpf: cleanCpf,
-        cns: cleanCns,
-        data_nascimento: formDataNasc,
-        sexo_biologico: formSexo,
-        gestante: formGestante,
-        ra_residencia: formRa,
-        bairro_ou_setor: formBairro.trim() || null,
-        telefone: formTelefone.trim() || null,
-      };
-
-      const res = await fetch(buildApiUrl('/api/citizen/register'), {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
-
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.detail || 'Erro ao realizar cadastro.');
-      }
-
-      setCitizen(data);
-      localStorage.setItem('susana_citizen', JSON.stringify(data));
-      setAuthSuccess('Cadastro realizado com sucesso!');
-      setTimeout(() => {
-        setIsAuthModalOpen(false);
-        setAuthSuccess(null);
-      }, 1200);
-    } catch (err: any) {
-      setAuthError(err.message || 'Falha na validação dos dados.');
-    } finally {
-      setAuthLoading(false);
-    }
-  };
-
-  const handleLoginCitizen = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setAuthLoading(true);
-    setAuthError(null);
-    setAuthSuccess(null);
-
-    try {
-      const cleanDoc = loginDoc.replace(/\D/g, '');
-      const res = await fetch(buildApiUrl('/api/citizen/login'), {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          cpf_or_cns: cleanDoc,
-          data_nascimento: loginDataNasc,
-        }),
-      });
-
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.detail || 'Documento ou data de nascimento incorretos.');
-      }
-
-      setCitizen(data);
-      localStorage.setItem('susana_citizen', JSON.stringify(data));
-      setAuthSuccess(`Bem-vindo de volta, ${data.primeiro_nome}!`);
-      setTimeout(() => {
-        setIsAuthModalOpen(false);
-        setAuthSuccess(null);
-      }, 1000);
-    } catch (err: any) {
-      setAuthError(err.message || 'Falha ao autenticar.');
-    } finally {
-      setAuthLoading(false);
     }
   };
 
@@ -937,111 +833,67 @@ export default function Home() {
               SUS Digital
             </div>
 
-            {/* Cartão de Identificação do Cidadão no Sidebar */}
-            <div
-              style={{
-                padding: '10px 12px',
-                margin: '0 0 16px',
-                borderRadius: '14px',
-                background: 'rgba(255, 255, 255, 0.45)',
-                border: '1px solid var(--b2)',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.03)',
-              }}
+            {/* Cartão do cidadão: visitante ou conta opcional */}
+            <button
+              type="button"
+              className="who"
+              onClick={() => (citizen ? setProfileOpen(true) : openAuth('login'))}
+              aria-label={citizen ? 'Abrir meu perfil' : 'Entrar ou criar conta'}
             >
-              <div
-                style={{
-                  fontSize: '10px',
-                  fontWeight: 600,
-                  color: '#64748b',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.04em',
-                }}
-              >
-                Cidadão do DF
-              </div>
-              <div
-                style={{
-                  fontWeight: 600,
-                  fontSize: '13px',
-                  color: '#0f172a',
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  marginTop: '2px',
-                }}
-              >
-                {citizen ? citizen.nome_completo : 'Cidadão não identificado'}
-              </div>
-              <div style={{ fontSize: '11px', color: '#2563eb', marginTop: '2px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                <span>📍</span>
-                <span style={{ fontWeight: 500 }}>{citizen ? citizen.ra_display : 'Distrito Federal'}</span>
-              </div>
-              {citizen?.cpf_mascarado && (
-                <div style={{ fontSize: '10px', color: '#64748b', marginTop: '2px' }}>
-                  CPF: {citizen.cpf_mascarado}
-                </div>
-              )}
+              <span className={`av${citizen ? '' : ' anon'}`} aria-hidden>
+                {citizen ? citizen.primeiro_nome.charAt(0) : '?'}
+              </span>
+              <span style={{ minWidth: 0 }}>
+                <b>{citizen ? citizen.primeiro_nome : 'Visitante'}</b>
+                <small>{citizen ? citizen.ra_display : 'Entrar ou criar conta'}</small>
+                {citizen && !citizen.perfil_completo && <span className="chip">Perfil incompleto</span>}
+              </span>
+            </button>
+
+            {[
+              'Início',
+              'Assistente',
+              'Agenda',
+              'Serviços e Vacinas',
+              'Monitoramento',
+              'Histórico',
+            ].map((label, i) => (
               <button
-                type="button"
-                onClick={() => {
-                  setAuthMode(citizen ? 'cadastro' : 'login');
-                  setIsAuthModalOpen(true);
-                }}
-                style={{
-                  marginTop: '8px',
-                  width: '100%',
-                  fontSize: '11px',
-                  fontWeight: 500,
-                  padding: '5px 8px',
-                  borderRadius: '8px',
-                  border: '1px solid rgba(37,99,235,0.2)',
-                  background: 'rgba(255,255,255,0.85)',
-                  cursor: 'pointer',
-                  color: '#1e40af',
-                  transition: 'all 0.2s ease',
-                }}
+                key={label}
+                className={activeTab === i ? 'on' : ''}
+                onClick={() => navigateToTab(i)}
+                aria-current={activeTab === i ? 'page' : undefined}
               >
-                {citizen ? '👤 Alterar dados / Perfil' : '🔐 Identificar / Cadastrar'}
+                {label}
+                {i === TAB_AGENDA && agenda.pendencias > 0 && (
+                  <span className="badge" aria-label={`${agenda.pendencias} pendências`}>
+                    {agenda.pendencias}
+                  </span>
+                )}
               </button>
-            </div>
+            ))}
 
+            {/* No celular a barra vira pílula: acesso compacto ao perfil */}
             <button
-              className={activeTab === 0 ? 'on' : ''}
-              onClick={() => navigateToTab(0)}
+              type="button"
+              className="who-m"
+              onClick={() => (citizen ? setProfileOpen(true) : openAuth('login'))}
+              aria-label={citizen ? 'Abrir meu perfil' : 'Entrar ou criar conta'}
             >
-              Início
-            </button>
-            <button
-              className={activeTab === 1 ? 'on' : ''}
-              onClick={() => navigateToTab(1)}
-            >
-              Assistente
-            </button>
-            <button
-              className={activeTab === 2 ? 'on' : ''}
-              onClick={() => navigateToTab(2)}
-            >
-              Serviços e Vacinas
-            </button>
-            <button
-              className={activeTab === 3 ? 'on' : ''}
-              onClick={() => navigateToTab(3)}
-            >
-              Monitoramento
-            </button>
-            <button
-              className={activeTab === 4 ? 'on' : ''}
-              onClick={() => navigateToTab(4)}
-            >
-              Histórico
+              {citizen ? citizen.primeiro_nome : 'Entrar'}
             </button>
 
+            {citizen && (
+              <button type="button" style={{ marginTop: 'auto' }} onClick={() => logout()}>
+                Sair da conta
+              </button>
+            )}
             <button
               id="out"
-              style={{ marginTop: 'auto' }}
+              style={{ marginTop: citizen ? undefined : 'auto' }}
               onClick={exitApp}
             >
-              ← Sair
+              ← Voltar ao início
             </button>
           </aside>
 
@@ -1054,12 +906,12 @@ export default function Home() {
               </h1>
               <p className="sub">
                 {citizen
-                  ? `Prontuário ativo em ${citizen.ra_display} · ${citizen.faixa_etaria.toUpperCase()} (${citizen.idade_anos} anos). Resumo de saúde pública oficial do DF.`
-                  : 'Seu resumo de saúde e serviços da rede pública do Distrito Federal.'}
+                  ? `${citizen.ra_display}${citizen.idade_anos != null ? ` · ${citizen.idade_anos} anos` : ''}. Seu resumo de saúde pública no DF.`
+                  : 'Seu resumo de saúde e serviços da rede pública do Distrito Federal. Use sem cadastro ou crie uma conta opcional.'}
               </p>
 
               {/* Banner de Recomendação em Destaque */}
-              {recAlert && (
+              {myRecAlert && (
                 <div
                   className="pill"
                   style={{
@@ -1074,7 +926,7 @@ export default function Home() {
                   }}
                 >
                   <span>📢</span>
-                  <span>{recAlert}</span>
+                  <span>{myRecAlert}</span>
                 </div>
               )}
 
@@ -1083,7 +935,7 @@ export default function Home() {
                   className="c g hv q"
                   onClick={() => {
                     setServiceSubTab('mapa');
-                    navigateToTab(2);
+                    navigateToTab(3);
                   }}
                 >
                   <b>Agendar na sua UBS</b>
@@ -1093,11 +945,11 @@ export default function Home() {
                   className="c g hv q"
                   onClick={() => {
                     setServiceSubTab('vacinas');
-                    navigateToTab(2);
+                    navigateToTab(3);
                   }}
                 >
                   <b>Guia de Vacinação PNI</b>
-                  <span>{recVaccines.length > 0 ? `${recVaccines.length} doses indicadas para seu perfil` : 'Calendário por idade'}</span>
+                  <span>{myRecVaccines.length > 0 ? `${myRecVaccines.length} doses indicadas para seu perfil` : 'Calendário por idade'}</span>
                 </div>
                 <div
                   className="c g hv q"
@@ -1112,21 +964,7 @@ export default function Home() {
               </div>
 
               <div className="grid" style={{ marginTop: '24px' }}>
-                <div className="c g" style={{ gridColumn: '1 / -1' }}>
-                  <h3>Próximos agendamentos e acompanhamento</h3>
-                  <ul className="tl">
-                    <li>
-                      Acolhimento Primário · UBS de referência ({citizen ? citizen.ra_display : 'DF'})
-                      <br />
-                      <small>Segunda a sexta-feira · Atendimento por ordem de chegada ou agendamento</small>
-                    </li>
-                    <li>
-                      Campanhas de Vacinação Ativas
-                      <br />
-                      <small>Influenza, COVID-19 e rotina nas salas de vacina de todas as UBSs</small>
-                    </li>
-                  </ul>
-                </div>
+                <UpcomingCard onOpenAgenda={() => navigateToTab(TAB_AGENDA)} />
               </div>
             </section>
 
@@ -1262,8 +1100,20 @@ export default function Home() {
                       )}
                       <div className="b">
                         <div style={{ whiteSpace: 'pre-wrap', lineHeight: '1.5' }}>
-                          {m.text}
+                          {m.text.replace(/\*\*(.+?)\*\*/g, '$1')}
                         </div>
+
+                        {/* Proposta de lembrete: só vira evento após confirmação */}
+                        {m.proposal && !(m.proposalState === 'dismissed' && m.proposal.faltando.length > 0) && (
+                          <AgendaProposalCard
+                            proposal={m.proposal}
+                            state={m.proposalState || 'open'}
+                            onStateChange={(st) =>
+                              setMessages((prev) => prev.map((x) => (x.id === m.id ? { ...x, proposalState: st } : x)))
+                            }
+                            onOpenAgenda={() => navigateToTab(TAB_AGENDA)}
+                          />
+                        )}
 
                         {/* Chips de Opções Interativas (Possíveis dúvidas) */}
                         {m.options && m.options.length > 0 && (
@@ -1272,7 +1122,7 @@ export default function Home() {
                               <button
                                 key={oi}
                                 type="button"
-                                onClick={() => handleSendMessage(opt.query)}
+                                onClick={() => (opt.action === 'open_auth' ? openAuth('login') : opt.query && handleSendMessage(opt.query))}
                                 style={{
                                   cursor: 'pointer',
                                   fontSize: '13px',
@@ -1473,8 +1323,21 @@ export default function Home() {
               </div>
             </section>
 
-            {/* ----------------- SECTION 2: SERVIÇOS & VACINAS ----------------- */}
-            <section className={activeTab === 2 ? 'on' : ''}>
+            {/* ----------------- SECTION 2: AGENDA PERSONALIZADA ----------------- */}
+            <section className={activeTab === TAB_AGENDA ? 'on' : ''}>
+              <h1>
+                Minha <b>agenda</b>
+              </h1>
+              <p className="sub">
+                {citizen
+                  ? 'Vacinas pendentes para o seu perfil e lembretes de consultas, exames e medicamentos.'
+                  : 'Lembretes e vacinas personalizados para quem cria uma conta opcional.'}
+              </p>
+              <AgendaView onAskSusanna={handleAskSuzannaFromDashboard} />
+            </section>
+
+            {/* ----------------- SECTION 3: SERVIÇOS & VACINAS ----------------- */}
+            <section className={activeTab === 3 ? 'on' : ''}>
               <h1>
                 Serviços, <b>Unidades e Vacinação</b>
               </h1>
@@ -1501,8 +1364,24 @@ export default function Home() {
               {/* ---------------- SUBVIEW 1: MAPA DE UNIDADES ---------------- */}
               {serviceSubTab === 'mapa' && (
                 <>
+                  {geo.status !== 'granted' && geo.status !== 'unavailable' && (
+                    <div className="ag-banner" role="note">
+                      <Navigation size={18} aria-hidden />
+                      <span style={{ flex: 1 }}>
+                        {geo.status === 'denied'
+                          ? 'Localização bloqueada no navegador. Libere nas configurações do site para ver as unidades mais próximas.'
+                          : 'Veja as unidades mais próximas de você. A localização fica só neste aparelho.'}
+                      </span>
+                      {geo.status !== 'denied' && (
+                        <button type="button" className="sx-btn sm" onClick={() => geo.request()}>
+                          Usar minha localização
+                        </button>
+                      )}
+                    </div>
+                  )}
                   {/* Novo Mapa Interativo Estilizado com Busca em Tempo Real e Card Flutuante */}
                   <HealthUnitsInteractiveMap
+                    userCoords={geo.coords}
                     units={units}
                     raList={raList}
                     selectedRA={selectedRA}
@@ -1524,91 +1403,6 @@ export default function Home() {
                     }}
                   />
 
-                  {/* Calendário de Agendamentos Integrado */}
-                  <div style={{ marginTop: '20px' }}>
-                    <div className="c g">
-                      <h3>Outubro 2026 · Agendamento e Acolhimento</h3>
-                      <p className="mut" style={{ fontSize: '12px', margin: '0 0 12px' }}>
-                        Dias livres para acolhimento e vacinação na sua região ({selectedPin ? selectedPin.nome : citizen ? citizen.ra_display : 'Distrito Federal'}):
-                      </p>
-                      <div className="cal" id="cal">
-
-                        {['D', 'S', 'T', 'Q', 'Q', 'S', 'S'].map((dayName, idx) => (
-                          <span key={idx} className="h">
-                            {dayName}
-                          </span>
-                        ))}
-
-                        {/* 4 Empty offset days for Oct 1st 2026 */}
-                        {[0, 1, 2, 3].map((pad) => (
-                          <span key={`pad-${pad}`}></span>
-                        ))}
-
-                        {/* 1 to 31 */}
-                        {Array.from({ length: 31 }, (_, i) => i + 1).map((day) => {
-                          const isAvailable = [8, 9, 13, 15, 16, 20, 22, 27, 29].includes(day);
-                          const isSelected = selectedDay === day;
-                          return (
-                            <span
-                              key={day}
-                              onClick={() => isAvailable && setSelectedDay(day)}
-                              className={isSelected ? 'a s' : isAvailable ? 'a' : ''}
-                            >
-                              {day}
-                            </span>
-                          );
-                        })}
-                      </div>
-
-                      <div style={{ marginTop: '14px' }}>
-                        {selectedDay ? (
-                          <div>
-                            <p style={{ margin: 0, fontSize: '13px', color: '#0f172a' }}>
-                              Dia <b>{selectedDay} de outubro</b> selecionado.{' '}
-                            </p>
-                            <button
-                              type="button"
-                              className="btn"
-                              onClick={() => {
-                                const unitName = selectedPin ? selectedPin.nome : `UBS de ${citizen ? citizen.ra_display : 'referência'}`;
-                                setAppointmentNotice(`Agendamento confirmado para o dia ${selectedDay}/10 às 14h na ${unitName}.`);
-                                setTimeout(() => setAppointmentNotice(null), 5000);
-                              }}
-                              style={{
-                                marginTop: '8px',
-                                fontSize: '12px',
-                                padding: '6px 12px',
-                                background: '#2563eb',
-                                color: '#ffffff',
-                              }}
-                            >
-                              Confirmar Horário às 14h
-                            </button>
-                          </div>
-                        ) : (
-                          <p className="mut" style={{ margin: 0, fontSize: '12px' }}>
-                            Selecione um dos dias azuis disponíveis no calendário.
-                          </p>
-                        )}
-
-                        {appointmentNotice && (
-                          <div
-                            className="pill"
-                            style={{
-                              marginTop: '10px',
-                              background: 'rgba(22,101,52,0.1)',
-                              border: '1px solid rgba(22,101,52,0.25)',
-                              color: '#166534',
-                              fontWeight: 500,
-                              fontSize: '12px',
-                            }}
-                          >
-                            ✓ {appointmentNotice}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
                 </>
               )}
 
@@ -1616,7 +1410,7 @@ export default function Home() {
               {serviceSubTab === 'vacinas' && (
                 <>
                   {/* Banner de Recomendação Personalizada do Cidadão */}
-                  {citizen && (
+                  {citizen?.data_nascimento && (
                     <div
                       className="c g"
                       style={{
@@ -1628,10 +1422,10 @@ export default function Home() {
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
                         <div>
                           <div style={{ fontSize: '11px', fontWeight: 600, color: '#2563eb', textTransform: 'uppercase' }}>
-                            Recomendação Personalizada para {citizen.primeiro_nome} ({citizen.idade_anos} anos · {citizen.faixa_etaria})
+                            Recomendação para {citizen.primeiro_nome}{citizen.idade_anos != null ? ` (${citizen.idade_anos} anos)` : ''}
                           </div>
                           <div style={{ fontSize: '13px', fontWeight: 500, color: '#0f172a', marginTop: '2px' }}>
-                            {recAlert || 'Suas vacinas estão de acordo com o calendário nacional de imunizações do Ministério da Saúde.'}
+                            {myRecAlert || 'Suas vacinas estão de acordo com o calendário nacional de imunizações do Ministério da Saúde.'}
                           </div>
                         </div>
 
@@ -1696,7 +1490,7 @@ export default function Home() {
                       gap: '14px',
                     }}
                   >
-                    {(showOnlyRecs && recVaccines.length > 0 ? recVaccines : vaccines).map((vac) => (
+                    {(showOnlyRecs && myRecVaccines.length > 0 ? myRecVaccines : vaccines).map((vac) => (
                       <div
                         key={vac.id}
                         className="c g"
@@ -1775,13 +1569,13 @@ export default function Home() {
               )}
             </section>
 
-            {/* ----------------- SECTION 3: MONITORAMENTO ----------------- */}
-            <section className={activeTab === 3 ? 'on' : ''}>
+            {/* ----------------- SECTION 4: MONITORAMENTO ----------------- */}
+            <section className={activeTab === 4 ? 'on' : ''}>
               <EpidemiologicalDashboard onAskSuzanna={handleAskSuzannaFromDashboard} />
             </section>
 
-            {/* ----------------- SECTION 4: HISTÓRICO ----------------- */}
-            <section className={activeTab === 4 ? 'on' : ''}>
+            {/* ----------------- SECTION 5: HISTÓRICO ----------------- */}
+            <section className={activeTab === 5 ? 'on' : ''}>
               <h1>
                 Histórico <b>clínico</b>
               </h1>
@@ -1834,312 +1628,10 @@ export default function Home() {
         </div>
       </div>
 
-      {/* =========================================================================
-          MODAL DE CADASTRO / LOGIN DO CIDADÃO (DADOS 100% REAIS)
-      ========================================================================= */}
-      {isAuthModalOpen && (
-        <div
-          style={{
-            position: 'fixed',
-            inset: 0,
-            background: 'rgba(10, 27, 61, 0.45)',
-            backdropFilter: 'blur(10px)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 9999,
-            padding: '16px',
-          }}
-        >
-          <div
-            className="g"
-            style={{
-              width: '100%',
-              maxWidth: '520px',
-              padding: '24px',
-              borderRadius: '24px',
-              background: 'rgba(255, 255, 255, 0.95)',
-              boxShadow: '0 20px 40px rgba(0,0,0,0.2)',
-              position: 'relative',
-              maxHeight: '90vh',
-              overflowY: 'auto',
-            }}
-          >
-            {/* Fechar Modal */}
-            <button
-              type="button"
-              onClick={() => setIsAuthModalOpen(false)}
-              style={{
-                position: 'absolute',
-                top: '16px',
-                right: '16px',
-                background: 'transparent',
-                border: 'none',
-                fontSize: '18px',
-                cursor: 'pointer',
-                color: '#64748b',
-              }}
-            >
-              ✕
-            </button>
-
-            <h2 style={{ margin: '0 0 6px', fontSize: '20px', color: '#0a1b3d' }}>
-              Identificação do <b>Cidadão SUS-DF</b>
-            </h2>
-            <p style={{ margin: '0 0 16px', fontSize: '13px', color: '#64748b' }}>
-              Validação algorítmica oficial de CPF (módulo 11) e Cartão SUS (DATASUS).
-            </p>
-
-            {/* Alternância de Abas: Cadastro vs Login */}
-            <div className="tabs g" style={{ marginBottom: '16px', width: '100%' }}>
-              <button
-                type="button"
-                className={authMode === 'cadastro' ? 'on' : ''}
-                onClick={() => setAuthMode('cadastro')}
-                style={{ flex: 1 }}
-              >
-                Novo Cadastro
-              </button>
-              <button
-                type="button"
-                className={authMode === 'login' ? 'on' : ''}
-                onClick={() => setAuthMode('login')}
-                style={{ flex: 1 }}
-              >
-                Já Cadastrado (Login)
-              </button>
-            </div>
-
-            {/* Mensagens de Feedback */}
-            {authError && (
-              <div
-                style={{
-                  padding: '10px 14px',
-                  borderRadius: '10px',
-                  background: 'rgba(239,68,68,0.1)',
-                  border: '1px solid rgba(239,68,68,0.3)',
-                  color: '#b91c1c',
-                  fontSize: '12px',
-                  marginBottom: '14px',
-                }}
-              >
-                ⚠️ {authError}
-              </div>
-            )}
-            {authSuccess && (
-              <div
-                style={{
-                  padding: '10px 14px',
-                  borderRadius: '10px',
-                  background: 'rgba(22,101,52,0.1)',
-                  border: '1px solid rgba(22,101,52,0.3)',
-                  color: '#15803d',
-                  fontSize: '12px',
-                  marginBottom: '14px',
-                }}
-              >
-                ✓ {authSuccess}
-              </div>
-            )}
-
-            {/* Formulário de Cadastro */}
-            {authMode === 'cadastro' ? (
-              <form onSubmit={handleRegisterCitizen} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                <div>
-                  <label style={{ fontSize: '11px', fontWeight: 600, color: '#475569', display: 'block', marginBottom: '2px' }}>
-                    Nome Completo *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="Ex: Carlos Eduardo de Oliveira"
-                    value={formNome}
-                    onChange={(e) => setFormNome(e.target.value)}
-                    style={{ width: '100%', padding: '8px 12px', borderRadius: '8px', border: '1px solid var(--b2)', fontSize: '13px' }}
-                  />
-                </div>
-
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                  <div>
-                    <label style={{ fontSize: '11px', fontWeight: 600, color: '#475569', display: 'block', marginBottom: '2px' }}>
-                      CPF (Módulo 11) *
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="000.000.000-00"
-                      value={formCpf}
-                      onChange={(e) => setFormCpf(e.target.value)}
-                      style={{ width: '100%', padding: '8px 12px', borderRadius: '8px', border: '1px solid var(--b2)', fontSize: '13px' }}
-                    />
-                  </div>
-                  <div>
-                    <label style={{ fontSize: '11px', fontWeight: 600, color: '#475569', display: 'block', marginBottom: '2px' }}>
-                      Data de Nascimento *
-                    </label>
-                    <input
-                      type="date"
-                      required
-                      value={formDataNasc}
-                      onChange={(e) => setFormDataNasc(e.target.value)}
-                      style={{ width: '100%', padding: '8px 12px', borderRadius: '8px', border: '1px solid var(--b2)', fontSize: '13px' }}
-                    />
-                  </div>
-                </div>
-
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                  <div>
-                    <label style={{ fontSize: '11px', fontWeight: 600, color: '#475569', display: 'block', marginBottom: '2px' }}>
-                      Cartão SUS / CNS (Opcional)
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="15 dígitos"
-                      value={formCns}
-                      onChange={(e) => setFormCns(e.target.value)}
-                      style={{ width: '100%', padding: '8px 12px', borderRadius: '8px', border: '1px solid var(--b2)', fontSize: '13px' }}
-                    />
-                  </div>
-                  <div>
-                    <label style={{ fontSize: '11px', fontWeight: 600, color: '#475569', display: 'block', marginBottom: '2px' }}>
-                      Sexo Biológico
-                    </label>
-                    <select
-                      value={formSexo}
-                      onChange={(e) => setFormSexo(e.target.value)}
-                      style={{ width: '100%', padding: '8px 12px', borderRadius: '8px', border: '1px solid var(--b2)', fontSize: '13px' }}
-                    >
-                      <option value="F">Feminino</option>
-                      <option value="M">Masculino</option>
-                    </select>
-                  </div>
-                </div>
-
-                {formSexo === 'F' && (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '6px 0' }}>
-                    <input
-                      type="checkbox"
-                      id="gestanteCheck"
-                      checked={formGestante}
-                      onChange={(e) => setFormGestante(e.target.checked)}
-                      style={{ width: '16px', height: '16px', cursor: 'pointer' }}
-                    />
-                    <label htmlFor="gestanteCheck" style={{ fontSize: '12px', color: '#1e3a8a', cursor: 'pointer', fontWeight: 500 }}>
-                      Cidadã está gestante (ativa guia de imunização materna dTpa e pré-natal)
-                    </label>
-                  </div>
-                )}
-
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                  <div>
-                    <label style={{ fontSize: '11px', fontWeight: 600, color: '#475569', display: 'block', marginBottom: '2px' }}>
-                      Região Administrativa (RA) *
-                    </label>
-                    <select
-                      value={formRa}
-                      onChange={(e) => setFormRa(e.target.value)}
-                      style={{ width: '100%', padding: '8px 12px', borderRadius: '8px', border: '1px solid var(--b2)', fontSize: '13px' }}
-                    >
-                      {raList.map((r) => (
-                        <option key={r.ra} value={r.ra}>
-                          {r.ra_display}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <label style={{ fontSize: '11px', fontWeight: 600, color: '#475569', display: 'block', marginBottom: '2px' }}>
-                      Bairro ou Setor
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="Ex: QNM 18 / Setor Sul"
-                      value={formBairro}
-                      onChange={(e) => setFormBairro(e.target.value)}
-                      style={{ width: '100%', padding: '8px 12px', borderRadius: '8px', border: '1px solid var(--b2)', fontSize: '13px' }}
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label style={{ fontSize: '11px', fontWeight: 600, color: '#475569', display: 'block', marginBottom: '2px' }}>
-                    Telefone para Contato
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="(61) 98888-7777"
-                    value={formTelefone}
-                    onChange={(e) => setFormTelefone(e.target.value)}
-                    style={{ width: '100%', padding: '8px 12px', borderRadius: '8px', border: '1px solid var(--b2)', fontSize: '13px' }}
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={authLoading}
-                  className="btn"
-                  style={{
-                    marginTop: '8px',
-                    padding: '10px',
-                    background: '#2563eb',
-                    color: '#ffffff',
-                    fontWeight: 600,
-                    width: '100%',
-                  }}
-                >
-                  {authLoading ? 'Validando documento…' : 'Salvar e Acessar'}
-                </button>
-              </form>
-            ) : (
-              /* Formulário de Login */
-              <form onSubmit={handleLoginCitizen} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                <div>
-                  <label style={{ fontSize: '11px', fontWeight: 600, color: '#475569', display: 'block', marginBottom: '2px' }}>
-                    CPF ou Cartão Nacional de Saúde (CNS) *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="Digite seu CPF ou CNS cadastrado"
-                    value={loginDoc}
-                    onChange={(e) => setLoginDoc(e.target.value)}
-                    style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1px solid var(--b2)', fontSize: '13px' }}
-                  />
-                </div>
-
-                <div>
-                  <label style={{ fontSize: '11px', fontWeight: 600, color: '#475569', display: 'block', marginBottom: '2px' }}>
-                    Data de Nascimento (Confirmação 2FA) *
-                  </label>
-                  <input
-                    type="date"
-                    required
-                    value={loginDataNasc}
-                    onChange={(e) => setLoginDataNasc(e.target.value)}
-                    style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1px solid var(--b2)', fontSize: '13px' }}
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={authLoading}
-                  className="btn"
-                  style={{
-                    marginTop: '8px',
-                    padding: '10px',
-                    background: '#2563eb',
-                    color: '#ffffff',
-                    fontWeight: 600,
-                    width: '100%',
-                  }}
-                >
-                  {authLoading ? 'Verificando…' : 'Entrar no SUS Digital'}
-                </button>
-              </form>
-            )}
-          </div>
-        </div>
-      )}
+      {/* Conta opcional: entrada/cadastro, perfil e lembretes */}
+      <AuthDialog onOpenAgenda={() => enterApp(TAB_AGENDA)} />
+      <ProfileSheet />
+      <ReminderToast onOpenAgenda={() => enterApp(TAB_AGENDA)} />
     </>
   );
 }
