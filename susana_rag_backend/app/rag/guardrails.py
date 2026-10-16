@@ -26,6 +26,13 @@ CLINICAL_PATTERNS: list[tuple[str, re.Pattern]] = [
     ("prescricao", re.compile(r"\b(que (remédio|medicamento) (devo |posso )?(tomar|usar)|me (receite|prescreva|indique)|posso tomar|devo tomar|preciso tomar)\b", re.I)),
     ("sintomas", re.compile(r"\b(estou (sentindo|com)|sinto (muita |uma )?(dor|febre|tontura|enjoo|mal)|meu filho (está|tá) (com|doente)|sintomas? de)\b", re.I)),
     ("tratamento", re.compile(r"\b(como (tratar|curar|combater|prevenir)|tratamento (para|de|do|da)|(é |está )?(grave|perigoso|contagioso))\b", re.I)),
+    ("prescricao_popular", re.compile(
+        r"\b(qual|que|algum) (rem[eé]dio|medicamento|comprimido|antibi[oó]tico|rem[eé]dio)s? "
+        r"(eu )?(tomo|tomar|uso|usar|dou|dar|posso|devo|[eé] bom|serve|resolve)\b"
+        r"|\bme (receit\w+|prescrev\w+|indic\w+ (um|uma) (rem[eé]dio|medicamento|antibi[oó]tico))\b"
+        r"|\b(receit(a|ar|e)|prescri(c[aã]o|[cç]ao)) (de |d[oe] |um |uma )?(rem[eé]dio|antibi[oó]tico|medicamento)\b", re.I)),
+    ("interacao", re.compile(r"\bposso (tomar|usar|misturar)\b.*\b(com|junto|e)\b.*\b(paracetamol|dipirona|ibuprofeno|rem[eé]dio|[aá]lcool|antibi[oó]tico)\b|\b(paracetamol|dipirona|ibuprofeno|amoxicilina|rivotril)\b.*\b(mg|dose|junto|misturar|posso)\b", re.I)),
+    ("diagnostico_popular", re.compile(r"\b(ser[aá] que ([eé]|tenho|estou)|voc[eê] acha que [eé]|isso [eé] (grave|normal|perigoso)|o que (eu )?(tenho|pode ser)|(ta|est[aá]) com (manchas?|c[oó]ceira|incha[cç]o|caro[cç]o))\b", re.I)),
     ("dosagem", re.compile(r"\b(quantos? (mg|ml|comprimidos?|gotas)|dose (de|do|da)|dosagem|posologia)\b", re.I)),
 ]
 
@@ -34,7 +41,7 @@ ADMINISTRATIVE_OVERRIDES = re.compile(
     r"marcar (consulta|exame)|onde (fica|é|tem|posso)|lista de (espera|medicamentos)|"
     r"retirar (medicamento|remédio)|farmácia (do sus|popular|básica)|cartão (do sus|nacional)|"
     r"calendário (de vacinação|vacinal)|campanha de vacinação|vacina(s|ção)?|vacinar|"
-    r"imunização|samu|192|postinho(s)?|posto(s)?|ubs|upa|verifique|mostre|exiba|listar|"
+    r"imunização|samu|192|animal pe[cç]onhento|risco de raiva|soro antiof|soro antirr|postinho(s)?|posto(s)?|ubs|upa|verifique|mostre|exiba|listar|"
     r"opç(ão|ões)|primeir[oa]|segund[oa]|terceir[oa]|"
     r"como (chegar|marcar|agendar|retirar|funciona|fazer)|"
     r"quais (documentos|ubs|postos|horários|vacinas|serviços))\b|^[0-9]{1,2}$",
