@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SUSANNA · Como o projeto funciona</title>
+<meta name="description" content="Fluxograma, arquitetura, treinamento dos modelos, MLflow, SDD e perguntas frequentes do projeto SUSANNA (SUS Digital), assistente de saúde pública do Distrito Federal.">
+<link rel="icon" href="assets/avatar.webp" type="image/webp">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap bar">
+    <a class="brand" href="#inicio"><img src="assets/avatar.webp" alt="" width="34" height="34"><span>SUSANNA</span></a>
+    <nav id="nav" aria-label="Seções">
+      <a href="#fluxo">Fluxo</a>
+      <a href="#arquitetura">Arquitetura</a>
+      <a href="#chromadb">ChromaDB</a>
+      <a href="#modelos">Modelos</a>
+      <a href="#treinamento">Treinamento</a>
+      <a href="#mlflow">MLflow</a>
+      <a href="#sdd">SDD</a>
+      <a href="#avaliacao">Avaliação</a>
+      <a href="#api">API</a>
+      <a href="#faq">Perguntas</a>
+    </nav>
+    <a class="gh" href="https://github.com/Andre-Atlas/SUSANNA-HEALTHCHECK" rel="noopener">GitHub</a>
+  </div>
+</header>
+
+<main>
+<section id="inicio" class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Projeto SUSANNA · SUS Digital</p>
+    <h1>Uma assistente de saúde pública que <em>só responde com fonte oficial</em></h1>
+    <p class="lead">A SUSANNA ajuda o cidadão do Distrito Federal a encontrar unidades, horários, vacinas, medicamentos e serviços do SUS-DF. Ela não faz diagnóstico, receita nem dose, e roda o modelo de linguagem no próprio servidor. Esta página explica como tudo funciona.</p>
+
+    <form class="ask" id="askForm" role="search">
+      <label for="q" class="sr">Pergunte ao projeto</label>
+      <input id="q" type="search" placeholder="Pergunte ao projeto: como o ChromaDB funciona? o que é o guardrail? como foi o treino?" autocomplete="off">
+      <button type="submit">Buscar</button>
+    </form>
+    <div class="chips" id="chips"></div>
+
+    <ul class="stats">
+      <li><b>383</b><span>unidades de saúde</span></li>
+      <li><b>33</b><span>regiões administrativas</span></li>
+      <li><b>2.368</b><span>trechos no ChromaDB</span></li>
+      <li><b>3</b><span>modelos de IA</span></li>
+      <li><b>237</b><span>testes automatizados</span></li>
+    </ul>
+  </div>
+</section>
+
+<section id="faq-resultado" class="wrap hidden" aria-live="polite">
+  <h2>Resultado da busca</h2>
+  <div id="faqResults"></div>
+</section>
+
+<section id="fluxo" class="wrap">
+  <h2>Fluxograma: o caminho de uma pergunta</h2>
+  <p class="sub">Cada mensagem do chat passa por estas etapas antes de virar resposta. A maior parte é código determinístico; o modelo de linguagem só entra no final.</p>
+  <figure class="diagram">
+<pre class="mermaid">
+flowchart TD
+  A["Cidadão digita a pergunta"] --> B["1 Contextualização<br/>resolve 'e o horário?' com a conversa"]
+  B --> C["2 Normalização popular<br/>abreviações, erros, acentos, urgência"]
+  C --> D{"3 É pedido de<br/>lembrete ou agenda?"}
+  D -- "sim" --> D1["Proposta de evento<br/>cidadão confirma ou descarta"]
+  D -- "não" --> E{"4 Guardrail clínico<br/>regex + modelo ML"}
+  E -- "clínica" --> E1["Bloqueia e orienta<br/>UBS ou SAMU 192"]
+  E -- "administrativa" --> F{"5 Tem assunto de saúde<br/>ou serviço?"}
+  F -- "não" --> F1["Fora do tema:<br/>mensagem de não encontrei"]
+  F -- "sim" --> G["6 NLU<br/>região, persona, intenção"]
+  G --> H["7 Busca no ChromaDB<br/>vetor + filtro de região + reordenação"]
+  H --> I{"8 Resultado<br/>relevante?"}
+  I -- "não" --> I1["Tenta sem filtro e<br/>busca online restrita"]
+  I1 --> J{"Relevante?"}
+  J -- "não" --> J1["Não encontrei informação<br/>em urgência cita o SAMU 192"]
+  J -- "sim" --> K
+  I -- "sim" --> K["9 Llama 3.1 8B local<br/>só com os trechos oficiais"]
+  K --> L["10 Streaming NDJSON<br/>texto, fontes e atalhos"]
+  L --> M["Histórico salvo<br/>no SQLite"]
+</pre>
+  </figure>
+  <div class="grid two">
+    <article class="card">
+      <h3>Por que nessa ordem?</h3>
+      <p>O guardrail vem antes da busca e do modelo para que um pedido clínico nunca chegue ao Llama. A normalização vem antes de tudo porque o embedding é sensível a abreviações e acentos: "cobra me mordeu" não tinha nada em comum com "animais peçonhentos" até a ponte de vocabulário existir.</p>
+    </article>
+    <article class="card">
+      <h3>Se algo falhar</h3>
+      <p>Sem o Ollama, a API devolve os trechos oficiais encontrados, sem texto gerado. Sem resposta relevante, o sistema diz que não encontrou, em vez de inventar. Se o modelo de guardrail não carregar, as regras de regex continuam bloqueando.</p>
+    </article>
+  </div>
+
+  <h3 class="mt">Sequência de uma resposta em streaming</h3>
+  <figure class="diagram">
+<pre class="mermaid">
+sequenceDiagram
+  autonumber
+  participant U as Navegador
+  participant N as Next.js
+  participant F as FastAPI
+  participant C as ChromaDB
+  participant O as Ollama Llama 3.1
+  U->>N: POST /api/chat/stream
+  N->>F: rewrite para 127.0.0.1:8000
+  F->>F: contextualiza, normaliza, guardrail, NLU
+  F->>C: consulta vetorial com filtro de região
+  C-->>F: 3 trechos mais próximos
+  F->>O: pergunta + trechos oficiais
+  loop a cada pedaço de texto
+    O-->>F: token(s)
+    F-->>U: linha JSON chunk
+  end
+  F-->>U: linha JSON done com fontes e atalhos
+</pre>
+  </figure>
+</section>
+
+<section id="arquitetura" class="wrap">
+  <h2>Arquitetura</h2>
+  <p class="sub">Três camadas: interface, API e dados/IA. O navegador só fala com o Next.js, que repassa <code>/api/*</code> ao FastAPI.</p>
+  <figure class="diagram">
+<pre class="mermaid">
+flowchart LR
+  subgraph FE["Frontend · Next.js 16"]
+    UI["Início, Assistente, Agenda,<br/>Serviços e Vacinas, Monitoramento"]
+  end
+  subgraph BE["Backend · FastAPI"]
+    R1["chat/stream<br/>RAG + guardrail + NLU"]
+    R2["citizen<br/>conta e perfil"]
+    R3["agenda e vaccines"]
+    R4["units e surveillance"]
+    R5["ingestion<br/>webhook protegido"]
+  end
+  subgraph DATA["Dados e IA"]
+    CH[("ChromaDB<br/>2.368 trechos")]
+    SQ[("SQLite WAL<br/>cidadãos, agenda, histórico")]
+    ML["MLflow<br/>guardrail champion"]
+    OL["Ollama<br/>Llama 3.1 8B"]
+    EM["MiniLM<br/>embeddings"]
+  end
+  SRC["Fontes oficiais<br/>saude.df.gov.br, dados.df.gov.br, gov.br"]
+  UI -->|"/api/*"| R1 & R2 & R3 & R4
+  R1 --> CH
+  R1 --> OL
+  R1 --> ML
+  R1 --> EM
+  R2 & R3 & R4 --> SQ
+  SRC --> R5 --> CH
+</pre>
+  </figure>
+
+  <h3 class="mt">Módulos do backend</h3>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Módulo</th><th>Pasta</th><th>Responsabilidade</th></tr></thead>
+    <tbody>
+      <tr><td>Chat em streaming</td><td><code>app/routers_stream.py</code></td><td>Orquestra contextualização, guardrail, NLU, busca e geração, e devolve NDJSON.</td></tr>
+      <tr><td>RAG</td><td><code>app/rag/</code></td><td>Normalizador, NLU, guardrail, retriever, embeddings, busca focada, cache semântico e busca online restrita.</td></tr>
+      <tr><td>LLM</td><td><code>app/llm/</code></td><td>Adaptador do Ollama, prompts e bloco de perfil do cidadão.</td></tr>
+      <tr><td>Cidadão</td><td><code>app/citizen/</code></td><td>Cadastro opcional, login com token, perfil, senha PBKDF2-SHA256, limite de tentativas.</td></tr>
+      <tr><td>Agenda e vacinas</td><td><code>app/agenda/</code>, <code>app/vaccines/</code></td><td>Lembretes, vacinas pendentes por perfil e propostas criadas pelo chat com confirmação.</td></tr>
+      <tr><td>Unidades</td><td><code>app/units/</code></td><td>Catálogo de 383 unidades, coordenadas e distribuição por região.</td></tr>
+      <tr><td>Vigilância</td><td><code>app/surveillance/</code></td><td>Painel epidemiológico com dados oficiais.</td></tr>
+      <tr><td>Ingestão</td><td><code>app/ingestion/</code></td><td>Webhook, coleta, divisão em trechos e reindexação, só de domínios oficiais.</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="grid three mt">
+    <article class="card"><h3>Hexagonal</h3><p>O pipeline depende de portas (<code>LLMPort</code>, retriever, embedder). Trocar o Ollama por outro modelo não muda o domínio e facilita testar com mocks.</p></article>
+    <article class="card"><h3>Segurança</h3><p>Webhook com chave obrigatória (HTTP 403 sem ela), TLS verificado, lista fechada de domínios, busca online com proteção anti-SSRF e senhas com PBKDF2.</p></article>
+    <article class="card"><h3>Concorrência</h3><p>Inferência fora do event loop (<code>run_in_threadpool</code>), cache semântico com <code>RLock</code> e invalidação após cada ingestão.</p></article>
+  </div>
+</section>
+
+<section id="chromadb" class="wrap">
+  <h2>Como o ChromaDB funciona</h2>
+  <p class="sub">É o banco de busca por significado. Guarda cada trecho do corpus com um vetor de 384 números e devolve os mais próximos da pergunta. Não contém nenhum modelo treinado.</p>
+  <figure class="diagram">
+<pre class="mermaid">
+flowchart LR
+  subgraph IDX["Indexação, uma vez ou a cada atualização"]
+    A["Fontes<br/>txt, json, csv"] --> B["Divide em trechos<br/>com id e metadados"]
+    B --> C["MiniLM gera<br/>vetor de 384 números"]
+    C --> D[("Coleção persistente<br/>índice HNSW, cosseno")]
+  end
+  subgraph BUS["Busca, a cada pergunta"]
+    Q["Pergunta normalizada"] --> V["Vetor da pergunta"]
+    V --> F["Filtro por região<br/>até 40 candidatos"]
+    V --> G["Busca global<br/>pelo menos 300 candidatos"]
+    F --> RR["Reordena por regras lexicais<br/>nome exato da unidade"]
+    G --> RR
+    RR --> T["Top 3 trechos"]
+  end
+  D -.-> F
+  D -.-> G
+</pre>
+  </figure>
+  <div class="grid two">
+    <article class="card"><h3>Distância e relevância</h3><p>A distância é de cosseno: 0 é idêntico. O trecho só vale se a distância for até 0,65 e houver termos de saúde em comum, ou se for até 0,35 (muito confiante). Fora disso, o sistema não responde.</p></article>
+    <article class="card"><h3>Por que reordenar</h3><p>O vetor sozinho confunde "UBS 1" com "UBS 5" ou duas regiões de nome parecido. A reordenação sobe os trechos que contêm exatamente a unidade ou região citada.</p></article>
+    <article class="card"><h3>Filtro de região</h3><p>A NLU detecta uma das 33 regiões administrativas e filtra por ela, aceitando também documentos gerais do DF. Se o filtro restringir demais, a busca refaz sem ele.</p></article>
+    <article class="card"><h3>Cache semântico</h3><p>Perguntas quase idênticas (distância até 0,06) reaproveitam a resposta por até uma hora. Cada ingestão nova invalida o cache.</p></article>
+  </div>
+</section>
+
+<section id="modelos" class="wrap">
+  <h2>Modelos de ML e o papel de cada um</h2>
+  <div class="grid three">
+    <article class="card model">
+      <span class="tag trained">treinado por nós</span>
+      <h3>Guardrail clínico</h3>
+      <p class="kv"><b>Tipo</b> TF-IDF (1 a 2 gramas) + regressão logística</p>
+      <p>Decide se a pergunta é clínica (diagnóstico, remédio, dose) e deve ser bloqueada, ou administrativa. Bloqueia a partir de 0,60 de probabilidade. Funciona junto de regras de regex.</p>
+    </article>
+    <article class="card model">
+      <span class="tag pre">pré-treinado</span>
+      <h3>MiniLM multilíngue</h3>
+      <p class="kv"><b>Modelo</b> paraphrase-multilingual-MiniLM-L12-v2</p>
+      <p>Transforma perguntas e trechos em vetores de 384 números, para a busca por significado. Entende português, mas não conhece gírias fora do corpus.</p>
+    </article>
+    <article class="card model">
+      <span class="tag pre">pré-treinado</span>
+      <h3>Llama 3.1 8B</h3>
+      <p class="kv"><b>Execução</b> Ollama, local · temp 0,1 · ctx 4096</p>
+      <p>Escreve a resposta usando apenas os 3 trechos oficiais recuperados, em até 130 palavras. O prompt proíbe diagnóstico e prescrição. Nenhum dado de saúde sai do servidor.</p>
+    </article>
+  </div>
+  <p class="note">Além dos três modelos, há o <strong>normalizador popular</strong>: regras e listas de termos (não aprendidas) que traduzem a escrita do dia a dia para o vocabulário oficial. Foi ele o principal responsável pela melhora com linguagem informal.</p>
+
+  <h3 class="mt">Camada de linguagem popular</h3>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Etapa</th><th>Exemplo de entrada</th><th>O que acontece</th></tr></thead>
+    <tbody>
+      <tr><td>Abreviações</td><td><code>pq o postinho ta fechado hj?</code></td><td>vira "por que o postinho ta fechado hoje?"</td></tr>
+      <tr><td>Alongamentos</td><td><code>socorrooooo</code></td><td>vira "socorro"</td></tr>
+      <tr><td>Erros de digitação</td><td><code>vaciina</code>, <code>unidde bsica</code></td><td>corrigidos pelo vocabulário do domínio</td></tr>
+      <tr><td>Acentos</td><td><code>cartao sus</code></td><td>vira "cartão sus", que o embedding entende melhor</td></tr>
+      <tr><td>Vocabulário popular</td><td><code>um cachorro me mordeu</code></td><td>acrescenta "risco de raiva, soro antirrábico, HRAN, HRT"</td></tr>
+      <tr><td>Urgência</td><td><code>socorro quero uma ambulancia</code></td><td>acrescenta "SAMU 192, UPA 24 horas"</td></tr>
+      <tr><td>Complemento curto</td><td><code>pra idoso tb?</code></td><td>herda o assunto da pergunta anterior</td></tr>
+      <tr><td>Fora do tema</td><td><code>socorro meu carro quebrou na estrada</code></td><td>nem chega à busca</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="treinamento" class="wrap">
+  <h2>Como foi o treinamento</h2>
+  <p class="sub">Só o guardrail clínico é treinado. O script é <code>ml/guardrails/train.py</code>.</p>
+  <figure class="diagram">
+<pre class="mermaid">
+flowchart TD
+  A["Dados<br/>283 frases originais<br/>+ 134 populares"] --> B["Normaliza cada frase<br/>como em produção"]
+  B --> C["Divisão estratificada<br/>75 por cento treino, 25 por cento teste"]
+  C --> D["Pipeline<br/>TF-IDF 1 a 2 gramas<br/>+ Regressão Logística balanceada"]
+  D --> E["Avaliação<br/>teste + validação cruzada 5 partes"]
+  E --> F["Registra no MLflow<br/>nova versão do modelo"]
+  F --> G{"Portão de promoção<br/>recall clínico no teste ≥ 0,95<br/>F1 CV ≥ campeão − 0,02 e ≥ 0,85"}
+  G -- "aprovado" --> H["Alias champion<br/>+ exporta .pkl de reserva"]
+  G -- "reprovado" --> I["Campeão antigo<br/>continua em uso"]
+  H --> J["Backend carrega<br/>models:/susana-guardrail@champion"]
+</pre>
+  </figure>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Versão</th><th>Dados</th><th>Teste (acurácia)</th><th>Recall clínico</th><th>F1 validação cruzada</th></tr></thead>
+    <tbody>
+      <tr><td>v6</td><td>283 frases · teste de 71</td><td>97,2%</td><td>97,0% (32 de 33)</td><td>0,982</td></tr>
+      <tr><td><b>v7 · atual</b></td><td>417 frases · teste de 105</td><td>97,1%</td><td>96,0% (48 de 50)</td><td>0,972</td></tr>
+    </tbody>
+  </table></div>
+  <p class="note">As duas versões usam conjuntos de teste diferentes, então os números não comparam diretamente. A v7 foi treinada com mais linguagem popular e é a primeira testada com frases desse tipo. Os dados foram escritos pela equipe, não coletados de cidadãos.</p>
+
+  <h3 class="mt">O que não foi treinado</h3>
+  <p>O MiniLM e o Llama são usados como vieram, sem ajuste (<em>fine-tuning</em>). Em vez disso, o comportamento é controlado por recuperação de documentos, prompt restrito e o normalizador.</p>
+</section>
+
+<section id="mlflow" class="wrap">
+  <h2>MLflow: experimentos e registro de modelos</h2>
+  <p class="sub">O MLflow guarda métricas de cada experimento e o registro do guardrail. O backend carrega o modelo pelo alias <code>champion</code>.</p>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Experimento</th><th>Execuções</th><th>O que mede</th></tr></thead>
+    <tbody>
+      <tr><td><code>susana-guardrails-train</code></td><td>7</td><td>Acurácia, precisão, recall clínico, F1, ROC-AUC, matriz de confusão e validação cruzada de cada versão.</td></tr>
+      <tr><td><code>susana-retrieval-honest-eval</code></td><td>7</td><td>Recall@1 e @3, perguntas válidas rejeitadas, perguntas fora do tema aceitas e latência P50/P95 da busca.</td></tr>
+      <tr><td><code>susana-colloquial-battery</code></td><td>4</td><td>Acerto das baterias de linguagem popular, por categoria.</td></tr>
+      <tr><td><code>susana-llm-benchmark</code></td><td>6</td><td>Comparação de 6 LLMs locais: latência, tokens por segundo, fundamentação e erros.</td></tr>
+      <tr><td><code>susana-embeddings-benchmark</code></td><td>4</td><td>Taxa de acerto no top 3 de dois modelos de embedding.</td></tr>
+      <tr><td><code>susana-rag</code></td><td>362</td><td>Uma execução por consulta: latência total, latência do LLM e distância do melhor trecho.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3 class="mt">Comparação de LLMs locais</h3>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Modelo</th><th>Latência média</th><th>Tokens/s</th><th>Fundamentação</th></tr></thead>
+    <tbody>
+      <tr class="pick"><td><b>llama3.1 · escolhido</b></td><td>1,64 s</td><td>31,3</td><td>1,00</td></tr>
+      <tr><td>phi3.5</td><td>2,28 s</td><td>58,0</td><td>1,00</td></tr>
+      <tr><td>qwen2.5:3b</td><td>0,72 s</td><td>42,1</td><td>0,94</td></tr>
+      <tr><td>qwen2.5:7b</td><td>1,21 s</td><td>25,8</td><td>0,94</td></tr>
+      <tr><td>mistral</td><td>1,26 s</td><td>24,8</td><td>0,94</td></tr>
+      <tr><td>gemma2</td><td>1,71 s</td><td>19,2</td><td>0,94</td></tr>
+    </tbody>
+  </table></div>
+  <p class="note">Benchmark pequeno (7 perguntas de teste), medido na máquina de desenvolvimento. "Fundamentação" é a fração de respostas apoiadas nos trechos fornecidos. Indica uma ordem de grandeza, não uma classificação definitiva.</p>
+
+  <h3 class="mt">Como abrir o MLflow</h3>
+<pre class="code"><code>cd susana_rag_backend
+source .venv/bin/activate
+mlflow ui --backend-store-uri sqlite:///mlflow.db --port 5001
+# abra http://localhost:5001</code></pre>
+</section>
+
+<section id="sdd" class="wrap">
+  <h2>SDD: desenvolvimento guiado por especificação</h2>
+  <p class="sub">O projeto usa <strong>OpenSpec</strong> (<code>schema: spec-driven</code>). Cada mudança relevante nasce como proposta, ganha design e cenários testáveis, e só depois vira código.</p>
+  <figure class="diagram">
+<pre class="mermaid">
+flowchart LR
+  P["proposal.md<br/>por que e o que muda"] --> D["design.md<br/>arquitetura e ADRs"]
+  D --> S["specs/<br/>cenários GIVEN WHEN THEN"]
+  S --> T["tasks.md<br/>lista de tarefas"]
+  T --> I["Implementação<br/>e testes"]
+  I --> A["Arquivo<br/>openspec/changes/archive"]
+</pre>
+  </figure>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Mudança</th><th>Tema</th><th>Tarefas</th></tr></thead>
+    <tbody>
+      <tr><td><code>susana-assistant-rag</code></td><td>Interface de chat, backend RAG e guardrails. A proposta inicial previa LangChain, NeMo Guardrails e Redis; a implementação final usa componentes próprios.</td><td>0 de 9 marcadas (lista não atualizada)</td></tr>
+      <tr><td><code>susana-local-llm-ml</code></td><td>LLM local, embeddings, guardrail de ML e arquitetura hexagonal (ADR-1 a ADR-4).</td><td>29 de 29</td></tr>
+      <tr><td><code>susana-autonomous-ingestion</code></td><td>Ingestão autônoma, avaliação honesta e concorrência (ADR-5 a ADR-8).</td><td>26 de 26</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3 class="mt">Decisões de arquitetura registradas</h3>
+  <div class="grid two">
+    <article class="card"><h3>ADR-1 · LLM local</h3><p>Ollama com Llama 3.1 8B, para manter a soberania dos dados da SES-DF e a conformidade com a LGPD.</p></article>
+    <article class="card"><h3>ADR-2 · Guardrail de ML</h3><p>Classificador no lugar de só regex, que é fácil de burlar. Falha do guardrail resulta em bloqueio (fail-closed).</p></article>
+    <article class="card"><h3>ADR-5 · Upsert por URL</h3><p>A indexação deixou de apagar blocos que não estão na carga atual; atualiza e remove de forma cirúrgica por URL.</p></article>
+    <article class="card"><h3>ADR-8 · Webhook fechado</h3><p>Chave secreta obrigatória e lista fechada de domínios oficiais; o resto é rejeitado antes de chegar ao processador.</p></article>
+  </div>
+  <p class="note">Exemplo de cenário da especificação: dez requisições simultâneas com o mesmo documento devem resultar em exatamente uma indexação com sucesso e nove ignoradas como duplicadas.</p>
+</section>
+
+<section id="avaliacao" class="wrap">
+  <h2>Avaliação e testes</h2>
+  <div class="grid three">
+    <article class="card big"><b>237</b><span>testes automatizados do backend passando</span></article>
+    <article class="card big"><b>20/20</b><span>perguntas formais respondidas, nos conjuntos dev e teste</span></article>
+    <article class="card big"><b>0/15</b><span>perguntas fora do tema aceitas, nos dois conjuntos</span></article>
+  </div>
+
+  <h3 class="mt">Baterias de linguagem popular</h3>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Conjunto</th><th>Perguntas</th><th>1ª rodada, antes dos ajustes</th><th>Depois dos ajustes</th></tr></thead>
+    <tbody>
+      <tr><td>Desenvolvimento</td><td>67</td><td>73,1%</td><td>100% <small>(usado para criar as regras)</small></td></tr>
+      <tr><td>Reserva</td><td>45</td><td>88,9%</td><td>97,8%</td></tr>
+      <tr><td>Cego</td><td>36</td><td>83,3%</td><td>97,2%</td></tr>
+    </tbody>
+  </table></div>
+  <p class="note"><strong>Leia com cuidado:</strong> corrigi as falhas vistas nos conjuntos de reserva e cego, então os valores finais deixaram de ser independentes. A estimativa honesta é a da primeira rodada. Cada conjunto cobre abreviações, urgência, gírias, erros de digitação, perguntas encadeadas, pedidos clínicos (devem ser bloqueados) e perguntas fora do tema (devem ser recusadas).</p>
+
+  <h3 class="mt">Limitações conhecidas</h3>
+  <ul class="limits">
+    <li>Os dados são estáticos: a SUSANNA não sabe se uma unidade está aberta hoje.</li>
+    <li>A normalização popular é feita por regras e listas; uma gíria nova pode não ser entendida.</li>
+    <li>Os conjuntos de teste são pequenos e escritos pela equipe, então não representam o uso real por cidadãos.</li>
+    <li>Quando o corpus tem pouco material (por exemplo, mordedura de cachorro), o Llama pode misturar temas.</li>
+    <li>As respostas às vezes começam com um pedido de desculpas sobre "orientações médicas", efeito do prompt de segurança.</li>
+  </ul>
+</section>
+
+<section id="api" class="wrap">
+  <h2>API e como executar</h2>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Grupo</th><th>Rotas principais</th></tr></thead>
+    <tbody>
+      <tr><td>Saúde do serviço</td><td><code>GET /health</code></td></tr>
+      <tr><td>Chat</td><td><code>POST /api/chat/stream</code> (NDJSON) · <code>POST /api/chat</code> · <code>POST /api/search/online</code></td></tr>
+      <tr><td>Conversas</td><td><code>GET/POST /api/chat/sessions</code> · <code>GET /api/chat/sessions/{id}/messages</code> · <code>DELETE</code></td></tr>
+      <tr><td>Cidadão</td><td><code>POST /api/citizen/register</code> · <code>login</code> · <code>logout</code> · <code>GET/PUT/PATCH/DELETE /me</code> · <code>POST /me/password</code></td></tr>
+      <tr><td>Agenda</td><td><code>GET /api/agenda</code> · <code>/overview</code> · <code>POST/PATCH/DELETE /events</code> · <code>/vaccines/pending</code> · <code>/proposals/{id}/confirm</code></td></tr>
+      <tr><td>Vacinas</td><td><code>GET /api/vaccines/guide</code> · <code>/recommendations</code></td></tr>
+      <tr><td>Unidades</td><td><code>GET /api/units</code> · <code>/ras</code> · <code>/{id}</code></td></tr>
+      <tr><td>Vigilância</td><td><code>GET /api/surveillance/summary</code> · <code>/categories</code> · <code>/conditions</code> · <code>/dashboard/{id}</code></td></tr>
+      <tr><td>Ingestão</td><td><code>POST /api/ingestion/webhook</code> (exige chave) · <code>GET /status</code></td></tr>
+    </tbody>
+  </table></div>
+  <p class="note">A documentação interativa do FastAPI fica em <code>/docs</code> quando o backend está rodando.</p>
+
+  <h3 class="mt">Rodando localmente</h3>
+<pre class="code"><code># 1. Modelo de linguagem
+ollama pull llama3.1:8b
+
+# 2. Backend (porta 8000)
+cd susana_rag_backend
+python -m venv .venv &amp;&amp; source .venv/bin/activate
+pip install -r requirements.txt
+uvicorn app.main:app --host 127.0.0.1 --port 8000
+
+# 3. Frontend (porta 3000)
+cd ../susana-ui
+npm install &amp;&amp; npm run dev
+
+# Testes
+cd ../susana_rag_backend &amp;&amp; pytest tests/</code></pre>
+  <p>Para demonstrações, o script <code>scripts/demo_local.sh</code> sobe backend, site compilado e um túnel HTTPS temporário. O guia de implantação na Oracle Cloud está em <code>docs/GUIA_DEPLOY_ORACLE_CLOUD.md</code>.</p>
+</section>
+
+<section id="faq" class="wrap">
+  <h2>Perguntas frequentes</h2>
+  <p class="sub">Use a busca no topo da página ou filtre aqui.</p>
+  <input id="faqFilter" class="filter" type="search" placeholder="Filtrar perguntas" aria-label="Filtrar perguntas">
+  <div id="faqList"></div>
+</section>
+
+<section class="wrap team">
+  <h2>Equipe e documentos</h2>
+  <p>Projeto da Residência em Inteligência Artificial (Instituto Eldorado), em Challenge-Based Learning. André Alves Acioli (Engenharia de IA e MLOps), Samuel de Souza Rodrigues (Engenharia de Software), Ingrid Hanna Nóbrega (Product Owner e validação clínica) e Guilherme Barros Jr. (Ciência de Dados e Scrum Master).</p>
+  <p class="links">
+    <a href="https://github.com/Andre-Atlas/SUSANNA-HEALTHCHECK">Repositório</a>
+    <a href="https://github.com/Andre-Atlas/SUSANNA-HEALTHCHECK/blob/main/docs/ARQUITETURA_E_FUNCIONAMENTO.md">Arquitetura completa</a>
+    <a href="https://github.com/Andre-Atlas/SUSANNA-HEALTHCHECK/blob/main/docs/MLOPS_E_MODELAGEM.md">MLOps e modelagem</a>
+    <a href="https://github.com/Andre-Atlas/SUSANNA-HEALTHCHECK/blob/main/modelo-ia-relatorio/relatorio_tecnico_ia.md">Relatório técnico</a>
+    <a href="https://github.com/Andre-Atlas/SUSANNA-HEALTHCHECK/tree/main/openspec">OpenSpec</a>
+  </p>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">SUSANNA · SUS Digital · A assistente informa serviços e fontes oficiais e não substitui atendimento médico. Em emergência, ligue 192 (SAMU).</div>
+</footer>
+
+<script src="faq.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
