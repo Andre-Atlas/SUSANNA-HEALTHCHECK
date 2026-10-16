@@ -13,6 +13,9 @@
 
 ---
 
+<img width="1014" height="906" alt="image" src="https://github.com/user-attachments/assets/4881b667-af41-4775-a24d-54ea9477aaf0" />
+
+
 ## 📖 Visão Geral
 
 O **SUS Digital (Projeto Suzanna)** é uma plataforma desenvolvida para modernizar e humanizar o acesso aos serviços públicos de saúde do Distrito Federal (SES-DF). O sistema combina:
