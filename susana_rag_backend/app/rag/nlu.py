@@ -207,6 +207,14 @@ class NaturalLanguageInferencer:
     @classmethod
     def extract_intent_and_cluster(cls, normalized_text: str, persona: str) -> Tuple[str, str]:
         """Classifica a intenção primária e o cluster correspondente."""
+        # 0. Acidentes com animais (mordedura, peçonhentos): urgência, mesmo que o texto cite "vacina/soro"
+        if any(w in normalized_text for w in ["risco de raiva", "animal peconhento", "mordedura", "picada"]):
+            return "URGENCIA_SINTOMAS", "urgencia_emergencia"
+
+        # 0b. Doação de leite materno (Banco de Leite Humano): não é pré-natal nem puericultura
+        if "banco de leite" in normalized_text or "doar leite" in normalized_text or "doacao de leite" in normalized_text or "coleta de leite" in normalized_text or "leite humano" in normalized_text:
+            return "BANCO_DE_LEITE", "saude_materno_infantil"
+
         # 1. Vacinação
         if any(w in normalized_text for w in ["vacina", "vacinacao", "vacinar", "imunizacao", "gotinha", "doses", "calendario vacinal"]):
             return "VACINACAO", "vacinacao"
@@ -222,7 +230,7 @@ class NaturalLanguageInferencer:
             return "MEDICAMENTOS_FARMACIA", "medicamentos_farmacia"
 
         # 4. Urgência e Sintomas Graves / Dengue
-        if any(w in normalized_text for w in ["urgencia", "emergencia", "upa", "pronto socorro", "samu", "192", "dor no peito", "falta de ar", "desmaio", "convulsao", "dengue", "febre alta", "alerta"]):
+        if any(w in normalized_text for w in ["urgencia", "emergencia", "upa", "pronto socorro", "samu", "192", "socorro", "ambulancia", "urgente", "acidente", "dor no peito", "falta de ar", "desmaio", "convulsao", "dengue", "febre alta", "alerta"]):
             return "URGENCIA_SINTOMAS", "urgencia_emergencia"
 
         # 5. Horário de Funcionamento
@@ -239,6 +247,9 @@ class NaturalLanguageInferencer:
     @classmethod
     def infer(cls, query: str, history: Optional[Sequence[Any]] = None) -> NLUInferenceResult:
         """Executa a inferência completa de NLU sobre a pergunta do usuário."""
+        from app.rag.conversation import expand_popular_terms  # idempotente: o roteador já envia o texto normalizado
+
+        query = expand_popular_terms(query)
         norm_query = cls.normalize_text(query)
 
         # 1. Extração Geográfica
@@ -293,7 +304,9 @@ class NaturalLanguageInferencer:
         elif intent == "MEDICAMENTOS_FARMACIA":
             expansion_terms.extend(["farmácia da UBS", "dispensação de medicamentos básicos", "reme-df"])
         elif intent == "URGENCIA_SINTOMAS":
-            if any(w in norm_query for w in ["samu", "192", "socorro", "ambulancia"]):
+            if any(w in norm_query for w in ["risco de raiva", "animal peconhento"]):
+                pass  # a normalização popular já acrescentou o vocabulário oficial
+            elif any(w in norm_query for w in ["samu", "192", "socorro", "ambulancia"]):
                 expansion_terms.extend(["SAMU 192 serviço de atendimento móvel de urgência ambulância socorro"])
             else:
                 expansion_terms.extend(["UPA 24 horas", "urgência e emergência", "hospital regional"])
