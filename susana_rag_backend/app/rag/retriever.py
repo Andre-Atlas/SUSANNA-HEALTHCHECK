@@ -371,10 +371,10 @@ class SemanticCache:
     def invalidate_negatives(self) -> int:
         """Invalida exclusivamente respostas negativas ('Não encontrei'), preservando consultas legítimas."""
         with self._lock:
-            from app.rag.pipeline import NO_RESULT_MESSAGE
+            from app.rag.pipeline import EMERGENCY_NO_RESULT_MESSAGE, NO_RESULT_MESSAGE
             to_del = []
             for k, (_, v, _) in self._items.items():
-                if isinstance(v, dict) and v.get("response") == NO_RESULT_MESSAGE:
+                if isinstance(v, dict) and v.get("response") in (NO_RESULT_MESSAGE, EMERGENCY_NO_RESULT_MESSAGE):
                     to_del.append(k)
             for k in to_del:
                 del self._items[k]

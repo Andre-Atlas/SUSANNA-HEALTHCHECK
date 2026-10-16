@@ -22,6 +22,18 @@ NO_RESULT_MESSAGE = (
     "unidades de saúde, vacinação, ou serviços da SES-DF."
 )
 
+EMERGENCY_NO_RESULT_MESSAGE = (
+    "Se for uma emergência, ligue agora para o SAMU: 192 (gratuito), ou vá à UPA 24 horas ou ao pronto-socorro "
+    "do hospital mais próximo. " + NO_RESULT_MESSAGE
+)
+
+
+def no_result_message(text: str) -> str:
+    """Mensagem de ausência de resposta; em urgência, traz sempre o SAMU 192 antes de qualquer coisa."""
+    from app.rag.normalizer import detect_urgency
+
+    return EMERGENCY_NO_RESULT_MESSAGE if detect_urgency(text) else NO_RESULT_MESSAGE
+
 
 class RAGPipeline:
     def __init__(
@@ -63,6 +75,18 @@ class RAGPipeline:
         nlu_res = NaturalLanguageInferencer.infer(message, history=history)
         effective_query = nlu_res.expanded_query
 
+        from app.rag.normalizer import looks_off_topic
+
+        if looks_off_topic(message):
+            logger.info("OFF TOPIC: %s...", message[:60])
+            return {
+                "response": NO_RESULT_MESSAGE,
+                "source": None,
+                "citations": [],
+                "nlu": {"ra": nlu_res.ra, "ra_display": nlu_res.ra_display, "intent": nlu_res.intent,
+                        "persona": nlu_res.persona, "cluster": nlu_res.cluster},
+            }
+
         # 2. Embed query
         vec = self.embedder.encode_queries([effective_query])[0]
 
@@ -82,20 +106,13 @@ class RAGPipeline:
                 }
                 return res_dict
 
-        # 4. Busca Vetorial Filtrada e Hierárquica
+        # 4. Busca Vetorial Filtrada e Hierárquica (com segunda chance focada no tema oficial)
+        from app.rag.retrieval_flow import search_best
+
         try:
-            results = self.retriever.search(
-                vec,
-                k=self.top_k,
-                query_text=effective_query,
-                where_filter=nlu_res.metadata_filter,
-            )
+            results = search_best(self.retriever, self.embedder, nlu_res, self.top_k, nlu_res.metadata_filter)
         except TypeError:
-            results = self.retriever.search(
-                vec,
-                k=self.top_k,
-                query_text=effective_query,
-            )
+            results = self.retriever.search(vec, k=self.top_k, query_text=effective_query)
 
         def _check_relevant(chunks: Sequence[RetrievedChunk]) -> bool:
             return is_relevant(chunks, effective_query, self.similarity_threshold, self.confident_threshold) or is_relevant(chunks, message, self.similarity_threshold, self.confident_threshold)
@@ -104,7 +121,7 @@ class RAGPipeline:
             # Fallback seguro para busca global sem filtro caso o filtro tenha restringido demais
             if nlu_res.metadata_filter:
                 try:
-                    fallback_results = self.retriever.search(vec, k=self.top_k, query_text=effective_query, where_filter=None)
+                    fallback_results = search_best(self.retriever, self.embedder, nlu_res, self.top_k, None)
                 except TypeError:
                     fallback_results = self.retriever.search(vec, k=self.top_k, query_text=effective_query)
                 if _check_relevant(fallback_results):
@@ -135,7 +152,7 @@ class RAGPipeline:
         if not _check_relevant(results):
             logger.info("LOW RELEVANCE: (dist > %.2f) para: %s...", self.similarity_threshold, message[:60])
             out = {
-                "response": NO_RESULT_MESSAGE,
+                "response": no_result_message(message),
                 "source": None,
                 "citations": [],
                 "nlu": {

@@ -8,6 +8,8 @@ from __future__ import annotations
 import re
 from typing import Any, Dict, List, Optional, Sequence, Tuple
 
+from app.rag.normalizer import add_urgency_terms, apply_context_rules, normalize_informal
+
 
 # Mapeamento de termos populares / coloquiais para terminologia oficial do SUS-DF
 POPULAR_SYNONYMS: List[Tuple[re.Pattern, str]] = [
@@ -19,25 +21,25 @@ POPULAR_SYNONYMS: List[Tuple[re.Pattern, str]] = [
     (re.compile(r"\bpegar\s+rem[eé]dios?\b", re.I), "retirada de medicamentos na Farmácia da UBS e Farmácia de Alto Custo"),
     (re.compile(r"\bretirar\s+rem[eé]dios?\b", re.I), "retirada de medicamentos Farmácia da UBS"),
     (re.compile(r"\bmarcar\s+(m[eé]dico|consulta)\b", re.I), "agendamento e acolhimento na UBS"),
+    (re.compile(r"\bvacina\s+(da|de|contra|anti)\s*(raiva|rr[aá]bica)\b|\bvacina\s+antirr[aá]bica\b", re.I),
+     "profilaxia antirrábica pós-exposição soro antirrábico"),
     (re.compile(r"\bpr[eé][- ]natal\b", re.I), "pré-natal da gestante na UBS"),
     (re.compile(r"\bteste\s+do\s+pezinho\b", re.I), "triagem neonatal teste do pezinho na UBS"),
-    (re.compile(r"\bcart[aã]o\s+sus\s+do\s+beb[eê]\b", re.I), "cadastro do Cartão Nacional de Saúde recém-nascido na UBS"),
-    # Acidentes com animais peçonhentos: o corpus fala em "animais peçonhentos", "soro" e "HRAN/HRT";
-    # o cidadão diz "cobra me mordeu". Sem esta ponte, a busca semântica não reconhece a resposta.
-    (re.compile(r"\b(cobras?|serpentes?|jararacas?|cascav[eé]is|cascavel)\b", re.I),
-     r"\1 acidente com animal peçonhento soro antiofídico HRAN HRT"),
-    (re.compile(r"\bescorpi(?:[aã]o|[oõ]es)s?\b", re.I),
-     "escorpião acidente com animal peçonhento soro antiescorpiônico HRAN HRT"),
-    (re.compile(r"\baranhas?\b", re.I), "aranha acidente com animal peçonhento HRAN HRT"),
+    (re.compile(r"\bcart[aã]o\s+(do\s+)?sus\s+d[oa]\s+(minha\s+|meu\s+)?(beb[eê]|rec[eé]m[- ]nascid[oa]|neném|filh[oa]\s+rec[eé]m[- ]nascid[oa])\b", re.I), "cadastro do Cartão Nacional de Saúde recém-nascido na UBS"),
 ]
 
 
 def expand_popular_terms(text: str) -> str:
-    """Substitui termos populares pelos termos formais equivalentes."""
-    result = text
+    """
+    Traduz a escrita popular para o vocabulário dos documentos oficiais:
+    abreviações e erros de digitação, termos do dia a dia (postinho, cobra, mordeu) e
+    palavras de urgência (que acrescentam SAMU 192/UPA à consulta). Idempotente.
+    """
+    result = normalize_informal(text)
     for pattern, replacement in POPULAR_SYNONYMS:
         result = pattern.sub(replacement, result)
-    return result
+    result = apply_context_rules(result)
+    return add_urgency_terms(result, text)
 
 
 class ConversationalContextManager:
@@ -66,6 +68,26 @@ class ConversationalContextManager:
                     options.append(cleaned)
 
         return options
+
+    _FOLLOWUP_STOP = {
+        "para", "pra", "pro", "de", "do", "da", "dos", "das", "no", "na", "em", "um", "uma", "o", "a", "os", "as",
+        "e", "ou", "mas", "tambem", "também", "tb", "tbm", "mesmo", "so", "só", "sim", "nao", "não", "que", "se",
+        "eu", "me", "meu", "minha", "voce", "você", "vc", "agora", "entao", "então", "ai", "aí", "isso", "esse",
+        "essa", "tem", "ter", "tinha", "seria", "fica", "ficaria", "vai", "vou", "posso", "pode", "ainda", "la", "lá",
+    }
+
+    _ANCHOR = re.compile(
+        r"\b(ubs|upa|hospital|hospitais|farm[aá]cia|vacina\w*|samu|caps|hrt|hran|hrs|hmib|posto|postinho|"
+        r"ouvidoria|cart[aã]o|sisreg|policl[ií]nica|maternidade)\b", re.I)
+
+    @classmethod
+    def _is_thin_followup(cls, message: str) -> bool:
+        """Pergunta curta cujas palavras de conteúdo (sem artigos/preposições/abreviações) são no máximo duas."""
+        words = re.findall(r"[a-zA-ZÀ-ÿ0-9]+", message.lower())
+        if not words or len(words) > 6:
+            return False
+        content = [w for w in words if w not in cls._FOLLOWUP_STOP]
+        return len(content) <= 2
 
     @classmethod
     def contextualize(
@@ -118,9 +140,16 @@ class ConversationalContextManager:
             base_topic = expand_popular_terms(last_user_msg) if last_user_msg else "serviços de saúde SUS-DF"
             return f"{expanded_current} {base_topic}"
 
+        # 2b. Complemento curto sem tema próprio ("pra idoso tb?", "e no sábado?", "sem cartão?"):
+        # herda o tema da pergunta anterior do cidadão.
+        if last_user_msg and cls._is_thin_followup(raw_msg):
+            return f"{expanded_current} {expand_popular_terms(last_user_msg)}"
+
         # 3. Tratar perguntas relativas: "e onde fica?", "qual o horário?", "funciona sábado?"
         if any(raw_msg.lower().startswith(p) for p in ["e ", "mas ", "onde ", "qual ", "quando ", "como "]):
-            if last_user_msg:
+            # Uma pergunta que já cita um serviço próprio ("qual o horário da UPA de Taguatinga?")
+            # não deve herdar o assunto anterior.
+            if last_user_msg and not cls._ANCHOR.search(raw_msg):
                 # Adiciona entidade anterior se não estiver presente
                 return f"{expanded_current} {expand_popular_terms(last_user_msg)}"
 

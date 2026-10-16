@@ -157,6 +157,14 @@ async def chat_stream_endpoint(
         nlu_res.metadata_filter = {"$or": [{"ra": citizen.ra_residencia}, {"ra": "geral_df"}]}
     effective_search_query = nlu_res.expanded_query
 
+    from app.rag.normalizer import looks_off_topic
+    if looks_off_topic(contextualized_msg):
+        from app.rag.pipeline import NO_RESULT_MESSAGE as _OFF_TOPIC_MSG
+        def off_topic_gen():
+            yield json.dumps({"type": "chunk", "content": _OFF_TOPIC_MSG}) + "\n"
+            yield json.dumps({"type": "done", "source": None, "citations": [], "options": [], "is_blocked": False}) + "\n"
+        return StreamingResponse(off_topic_gen(), media_type="application/x-ndjson")
+
     profile_block = None
     if citizen is not None:
         from app.agenda.router import pending_for
@@ -180,26 +188,16 @@ async def chat_stream_endpoint(
         return StreamingResponse(location_gen(), media_type="application/x-ndjson")
 
     def _retrieve_chunks():
-        v = pipeline.embedder.encode_queries([effective_search_query])[0]
-        chunks = pipeline.retriever.search(
-            v,
-            k=pipeline.top_k,
-            query_text=effective_search_query,
-            where_filter=nlu_res.metadata_filter,
-        )
+        from app.rag.retrieval_flow import search_best
+
         def _check_relevant(res: Sequence[RetrievedChunk]) -> bool:
             return is_relevant(res, effective_search_query, pipeline.similarity_threshold, pipeline.confident_threshold) or is_relevant(res, contextualized_msg, pipeline.similarity_threshold, pipeline.confident_threshold)
 
-        if not _check_relevant(chunks):
-            if nlu_res.metadata_filter:
-                fallback_chunks = pipeline.retriever.search(
-                    v,
-                    k=pipeline.top_k,
-                    query_text=effective_search_query,
-                    where_filter=None,
-                )
-                if _check_relevant(fallback_chunks):
-                    chunks = fallback_chunks
+        chunks = search_best(pipeline.retriever, pipeline.embedder, nlu_res, pipeline.top_k, nlu_res.metadata_filter)
+        if not _check_relevant(chunks) and nlu_res.metadata_filter:
+            fallback_chunks = search_best(pipeline.retriever, pipeline.embedder, nlu_res, pipeline.top_k, None)
+            if _check_relevant(fallback_chunks):
+                chunks = fallback_chunks
         return chunks
 
     results = await run_in_threadpool(_retrieve_chunks)
@@ -219,9 +217,10 @@ async def chat_stream_endpoint(
                 logger.debug("Falha na busca online durante streaming: %s", ex)
 
     if not results or not _check_results_relevant(results):
-        from app.rag.pipeline import NO_RESULT_MESSAGE
+        from app.rag.pipeline import no_result_message
+        no_result_text = no_result_message(msg)
         def no_result_stream_gen():
-            yield json.dumps({"type": "chunk", "content": NO_RESULT_MESSAGE}) + "\n"
+            yield json.dumps({"type": "chunk", "content": no_result_text}) + "\n"
             yield json.dumps({"type": "done", "source": None, "citations": [], "options": [], "is_blocked": False}) + "\n"
         return StreamingResponse(no_result_stream_gen(), media_type="application/x-ndjson")
 

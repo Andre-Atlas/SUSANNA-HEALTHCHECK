@@ -24,6 +24,8 @@ logger = logging.getLogger("susana.ml.train")
 
 ROOT = Path(__file__).resolve().parent.parent.parent
 DATA_PATH = ROOT / "data" / "guardrails_dataset.csv"
+# Linguagem popular: abreviações, urgência, gírias e erros de digitação (as duas classes)
+COLLOQUIAL_PATH = ROOT / "data" / "guardrails_colloquial.csv"
 
 def main():
     settings = get_settings()
@@ -33,6 +35,14 @@ def main():
 
     logger.info("Carregando dataset de %s", DATA_PATH)
     df = pd.read_csv(DATA_PATH)
+    if COLLOQUIAL_PATH.exists():
+        colloquial = pd.read_csv(COLLOQUIAL_PATH)
+        df = pd.concat([df, colloquial], ignore_index=True).drop_duplicates(subset="text")
+        logger.info("Dataset ampliado com %d frases em linguagem popular", len(colloquial))
+
+    # O modelo classifica o texto já normalizado pelo pré-processador (é o que chega em produção)
+    from app.rag.conversation import expand_popular_terms
+    df["text"] = df["text"].map(expand_popular_terms)
 
     # Label encoding robusto: CLINICAL / 1 = 1, ADMINISTRATIVE / 0 = 0
     label_map = {"CLINICAL": 1, "1": 1, 1: 1, "ADMINISTRATIVE": 0, "0": 0, 0: 0}
@@ -83,17 +93,6 @@ def main():
         logger.info("\n%s", classification_report(y_test, preds, target_names=["ADMIN", "CLINICAL"]))
         logger.info("Test Metrics: Acc=%.3f, Prec=%.3f, Rec=%.3f, F1=%.3f, AUC=%.3f", acc, prec, rec, f1, auc)
         logger.info("5-Fold CV F1: %.3f (+/- %.3f)", cv_scores["test_f1"].mean(), cv_scores["test_f1"].std())
-
-        # Exportação direta em .pkl para uso autônomo e entregável
-        import joblib
-        pkl_path = ROOT / "data" / "guardrail_model.pkl"
-        joblib.dump(pipeline, pkl_path)
-        
-        # Cópia para raiz models/
-        root_models_path = ROOT.parent / "models" / "guardrail_model.pkl"
-        root_models_path.parent.mkdir(parents=True, exist_ok=True)
-        joblib.dump(pipeline, root_models_path)
-        logger.info("Modelo serializado exportado com sucesso em: %s e %s", pkl_path, root_models_path)
 
         # Logs detalhados no MLflow
         mlflow.log_params({
@@ -155,6 +154,18 @@ def main():
             versions = client.search_model_versions(f"name='{model_name}'")
             latest_version = max(int(v.version) for v in versions)
             client.set_registered_model_alias(model_name, "champion", str(latest_version))
+            # Exportação em .pkl para uso autônomo (somente de modelo aprovado no gate)
+            import joblib
+            pkl_path = ROOT / "data" / "guardrail_model.pkl"
+            joblib.dump(pipeline, pkl_path)
+        
+            # Cópia para raiz models/
+            root_models_path = ROOT.parent / "models" / "guardrail_model.pkl"
+            root_models_path.parent.mkdir(parents=True, exist_ok=True)
+            joblib.dump(pipeline, root_models_path)
+            logger.info("Modelo serializado exportado com sucesso em: %s e %s", pkl_path, root_models_path)
+
+
             print(f"Alias @champion atribuído à versão {latest_version}")
             logger.info("Alias @champion atribuído à versão %s", latest_version)
         else:
