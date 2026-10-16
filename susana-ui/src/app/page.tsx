@@ -568,50 +568,49 @@ function Home() {
         ),
         { id: botMsgId, text: '', isUser: false, source: 'Consultando base SES-DF…' },
       ]);
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
+      // O streaming chega em pacotes que podem cortar uma linha JSON ao meio (comum pela internet).
+      // A parte final incompleta fica no buffer até o resto chegar.
+      let lineBuffer = '';
 
-        const chunk = decoder.decode(value, { stream: true });
-        const lines = chunk.split('\n');
-
-        for (const line of lines) {
-          const trimmed = line.trim();
-          if (!trimmed) continue;
-          let jsonStr = trimmed;
-          if (trimmed.startsWith('data: ')) {
-            jsonStr = trimmed.slice(6).trim();
+      const processLine = (line: string) => {
+        const trimmed = line.trim();
+        if (!trimmed) return;
+        let jsonStr = trimmed;
+        if (trimmed.startsWith('data: ')) {
+          jsonStr = trimmed.slice(6).trim();
+        }
+        if (jsonStr === '[DONE]') return;
+        try {
+          const data = JSON.parse(jsonStr);
+          if (data.type === 'agenda_proposal' && data.proposal) {
+            botProposal = data.proposal as AgendaProposal;
+            return;
           }
-          if (jsonStr === '[DONE]') continue;
-          try {
-            const data = JSON.parse(jsonStr);
-            if (data.type === 'agenda_proposal' && data.proposal) {
-              botProposal = data.proposal as AgendaProposal;
-              continue;
-            }
-            if (data.token) {
-              accumulatedText += data.token;
-            } else if (data.content) {
-              accumulatedText += data.content;
-            }
-            if (data.sources && Array.isArray(data.sources)) {
-              botSources = 'Fonte: ' + data.sources.join(', ');
-            } else if (data.source) {
-              botSources = 'Fonte: ' + data.source;
-            }
-            if (data.options && Array.isArray(data.options)) {
-              botOptions = data.options;
-            }
-            if (data.citations && Array.isArray(data.citations)) {
-              botCitations = data.citations;
-            }
-          } catch {
-            if (!trimmed.startsWith('{')) {
-              accumulatedText += jsonStr;
-            }
+          if (data.token) {
+            accumulatedText += data.token;
+          } else if (data.content) {
+            accumulatedText += data.content;
+          }
+          if (data.sources && Array.isArray(data.sources)) {
+            botSources = 'Fonte: ' + data.sources.join(', ');
+          } else if (data.source) {
+            botSources = 'Fonte: ' + data.source;
+          }
+          if (data.options && Array.isArray(data.options)) {
+            botOptions = data.options;
+          }
+          if (data.citations && Array.isArray(data.citations)) {
+            botCitations = data.citations;
+          }
+        } catch {
+          // Linha completa que não é JSON: texto puro. Fragmentos de JSON nunca entram no texto.
+          if (!trimmed.startsWith('{') && !trimmed.endsWith('}')) {
+            accumulatedText += jsonStr;
           }
         }
+      };
 
+      const renderBotMessage = () =>
         setMessages((prev) =>
           prev.map((msg) =>
             msg.id === botMsgId
@@ -627,6 +626,24 @@ function Home() {
               : msg
           )
         );
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        lineBuffer += decoder.decode(value, { stream: true });
+        const lines = lineBuffer.split('\n');
+        lineBuffer = lines.pop() ?? '';
+        for (const line of lines) processLine(line);
+
+        renderBotMessage();
+      }
+
+      // Último trecho, caso o stream termine sem quebra de linha
+      lineBuffer += decoder.decode();
+      if (lineBuffer.trim()) {
+        processLine(lineBuffer);
+        renderBotMessage();
       }
 
       // Salva mensagem do bot na sessão ativa
@@ -780,7 +797,7 @@ function Home() {
           <div className="f glass rv">
             <i>01</i>
             <h3>Atendimento por IA</h3>
-            <p>Respostas fundamentadas em 346 unidades e diretrizes clínicas oficiais do SUS.</p>
+            <p>Respostas fundamentadas em 383 unidades e diretrizes clínicas oficiais do SUS.</p>
           </div>
           <div className="f glass rv">
             <i>02</i>
@@ -976,7 +993,7 @@ function Home() {
                     Fale com a <b>SUSANNA</b>
                   </h1>
                   <p className="sub" style={{ margin: '4px 0 0' }}>
-                    Respostas em streaming fundamentadas em 346 unidades e diretrizes clínicas oficiais do SUS-DF.
+                    Respostas em streaming fundamentadas em 383 unidades e diretrizes clínicas oficiais do SUS-DF.
                   </p>
                 </div>
 
