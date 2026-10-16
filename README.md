@@ -2,6 +2,8 @@
 > **Plataforma Unificada de Inteligência em Saúde Pública para o Distrito Federal**  
 > *RAG Semântico · NLU em Português · Governança Clínica · 33 Regiões Administrativas · Liquid Glassmorphism*
 
+![Tela inicial do SUS Digital com a assistente Suzanna](docs/images/image.png)
+
 ---
 
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
