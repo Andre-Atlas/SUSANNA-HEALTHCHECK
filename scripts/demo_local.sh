@@ -30,9 +30,13 @@ trap cleanup INT TERM
 
 # Libera as portas de execuções anteriores
 pkill -f "uvicorn app.main:app" 2>/dev/null
-pkill -f "next start -p $SITE_PORT" 2>/dev/null
 pkill -f "cloudflared tunnel --no-autoupdate" 2>/dev/null
-sleep 1
+# O 'next start' deixa um processo filho (next-server) segurando a porta: mata quem estiver nela
+for port in 8000 "$SITE_PORT"; do
+  pids=$(lsof -ti "tcp:$port" -sTCP:LISTEN 2>/dev/null)
+  [ -n "$pids" ] && kill $pids 2>/dev/null
+done
+sleep 2
 
 # 1. Backend em modo produção (recusa a chave de ingestão padrão, que é pública no repositório)
 cd "$ROOT/susana_rag_backend" || exit 1
