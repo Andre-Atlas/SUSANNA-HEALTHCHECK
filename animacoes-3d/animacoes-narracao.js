@@ -1,0 +1,212 @@
+window.NARR = {
+  "visao": [
+    "Esta cena resume o README. Você está vendo duas plataformas lado a lado. A da esquerda, esverdeada, é a assistente Susana. Os dois cubos sobre ela estão brilhando: o azul é a interface de chat e o verde é o backend. A Susana responde perguntas administrativas da Secretaria de Saúde do Distrito Federal usando um modelo de linguagem que roda na própria máquina, sempre citando a fonte.",
+    "Os cubos da esquerda continuam acesos. Juntos eles formam a primeira metade do repositório: o chat na web, a API, o motor de busca e geração, e o controle de modelos. Perguntas clínicas devem ser barradas antes de chegar ao modelo.",
+    "Agora o brilho passa para a plataforma da direita. A pilha de placas lilases representa os arquivos com dados abertos do SUS do Distrito Federal, e o cubo amarelo são os notebooks e scripts de análise. Essa é a segunda metade: a análise exploratória, que foi a primeira etapa do trabalho.",
+    "Observe a bolinha amarela saindo da pilha de dados, à direita, em direção à Susana. Ela representa os arquivos exportados pela análise. No meio do caminho ela fica vermelha e cai no vão entre as plataformas. É isso que acontece no projeto: esses arquivos foram descritos como sendo para a assistente, mas ela nunca os lê. As duas metades não se conectam.",
+    "Abaixo das plataformas aparece um resumo em números. São vinte e sete trechos de texto indexados, cada um representado por um vetor de trezentas e oitenta e quatro dimensões, e três trechos recuperados a cada pergunta.",
+    "Os números mudam para o filtro de segurança e os testes. O classificador teve nota de zero vírgula cinquenta e sete, treinado com apenas cinquenta e sete frases. E de catorze testes automatizados, treze passam e um falha.",
+    "Para fechar: se o tempo for curto, a leitura recomendada são os documentos um, quatro, cinco, nove e dez. O nove, sobre limitações, é o mais importante para apresentar a uma banca."
+  ],
+  "fluxo": [
+    "Esta cena mostra o caminho de uma pergunta pelo sistema. Há seis peças em linha: à esquerda a placa azul do navegador, depois o cubo verde da API, o losango amarelo do filtro de segurança, a esfera facetada roxa que gera os vetores, o cilindro azul claro do banco vetorial e, isolada à direita, a esfera rosa do Ollama, que roda o modelo de linguagem. A moldura verde indica que as quatro peças do meio vivem no mesmo processo. Repare na bolinha branca: ela sai do navegador e salta até a API. É a pergunta sobre o telefone do Hospital de Taguatinga sendo enviada.",
+    "A bolinha salta da API para o losango amarelo. É o filtro de segurança perguntando: isto é uma pergunta clínica? Como não é, o losango acende e a pergunta segue adiante.",
+    "Agora a bolinha, verde porque foi aprovada, vai até a esfera roxa. Ali o texto da pergunta é transformado em uma lista de trezentos e oitenta e quatro números, que representa o seu significado.",
+    "A bolinha roxa carrega esse vetor até o cilindro do banco vetorial. O banco compara com os vinte e sete trechos guardados e devolve os três mais parecidos. O melhor deles é o trecho dos hospitais regionais.",
+    "A bolinha sai da moldura verde e atravessa até a esfera rosa. Isso mostra que o Ollama é um processo separado: a API envia para ele as instruções, os três trechos e a pergunta.",
+    "Veja a fila de bolinhas rosas voltando por cima, do Ollama até a API e depois até o navegador. Cada bolinha é um pedaço da resposta. O modelo escreve palavra por palavra e a API repassa cada pedaço assim que ele sai, por isso o texto aparece aos poucos na tela.",
+    "Começa o segundo cenário, agora com uma pergunta clínica: que remédio tomar para dor de cabeça. A bolinha sai do navegador e chega à API pelo mesmo caminho.",
+    "A bolinha vai até o losango do filtro de segurança, e desta vez ele bloqueia. Repare que as três peças seguintes ficam apagadas: o gerador de vetores, o banco e o modelo de linguagem nem são chamados.",
+    "A bolinha fica vermelha e volta do filtro para a API, que monta a mensagem de recusa sozinha, sem usar o modelo.",
+    "Por fim, a bolinha vermelha retorna ao navegador. A tela mostra um pedido de desculpas e marca a resposta como bloqueada."
+  ],
+  "frontend": [
+    "Esta cena mostra o frontend. O painel escuro à esquerda é a tela do chat no navegador, e o bloco verde à direita é o backend. Repare no balão azul claro que acabou de surgir no painel: é a mensagem do cidadão sendo acrescentada ao histórico, logo depois de ele apertar Enter.",
+    "Agora aparece um balão branco pulsando, logo abaixo. É o balão vazio da assistente, que será preenchido aos poucos. O efeito pulsante é o indicador de carregamento.",
+    "Veja a bolinha branca saindo do balão do cidadão e voando até o bloco verde. É a requisição saindo do navegador direto para o backend. Como ela parte do navegador, e não do servidor da página, o backend precisa liberar esse acesso entre origens diferentes.",
+    "Agora os retângulos rosas vêm do backend, um de cada vez, e entram no balão branco. Cada retângulo é uma linha com um pedacinho de texto. Observe o balão: a frase vai crescendo a cada chegada. É assim que a leitura em fluxo funciona: a primeira palavra aparece assim que é gerada.",
+    "A resposta ficou completa e apareceu um rodapé azul embaixo do balão: fonte oficial, hospitais regionais. Ele vem da última linha enviada pelo backend, que traz os dados finais da resposta.",
+    "O balão mudou: a borda ficou vermelha e o rodapé diz fora de escopo, não clínico. É a aparência usada quando o filtro de segurança barra a pergunta, como a do remédio para dor de cabeça.",
+    "Agora a borda está amarela, com o aviso informação ausente. Esse é o terceiro visual: a pergunta não foi bloqueada, mas a resposta veio sem nenhuma fonte.",
+    "Atenção a este defeito. Dois retângulos vermelhos saem do backend e desaparecem antes de chegar ao balão. Eles representam uma linha que chegou cortada em dois pacotes de rede. O código não junta as duas metades, então esse pedaço se perde, e a frase no balão fica com um buraco.",
+    "O balão volta ao normal para o resumo das outras fragilidades: a página não confere se o servidor respondeu com erro, o endereço do backend está fixo no código, e o histórico existe só na memória do navegador. Recarregou a página, a conversa some."
+  ],
+  "backend": [
+    "Esta cena tem duas partes. A primeira mostra a subida do backend. Você vê oito cubos cinzas numerados, um para cada etapa da inicialização, e acima deles um aviso em vermelho: enquanto a preparação não termina, as rotas de chat respondem com erro quinhentos e três. Antes mesmo dessas etapas, o programa já carregou as configurações e o filtro de segurança.",
+    "Os dois primeiros cubos ficam verdes. O primeiro é a configuração do registro de experimentos. O segundo é o carregamento do modelo que gera os vetores, a etapa mais lenta, de dois a cinco segundos.",
+    "Agora acendem os cubos três, quatro, cinco e seis: o banco vetorial é aberto, o cliente do modelo de linguagem é criado, o cache de respostas também, e tudo é montado em um único orquestrador.",
+    "O cubo sete acende. É a leitura dos textos da base. Só entram trechos que ainda não existiam, por isso o registro mostra zero novos de vinte e sete.",
+    "O último cubo acende e o aviso lá em cima fica verde: sistema pronto. Essa etapa final é o aquecimento, uma chamada vazia que obriga o modelo de quase cinco gigabytes a já ficar carregado na memória, para o primeiro usuário não esperar.",
+    "A cena muda para a segunda parte: duas fileiras de cubos, que são as duas rotas de chat. Na fileira de cima, a bolinha branca atravessa cinco etapas: filtro de segurança, cache, busca, modelo de linguagem e registro. É a rota de resposta completa. Só que quem a usa são os testes automatizados.",
+    "Agora a bolinha percorre a fileira de baixo, que é a rota usada pela tela. Repare nos dois cubos vermelhos transparentes: eles marcam o que falta nesse caminho. Não há cache e não há registro.",
+    "Os dois cubos fantasmas piscam para reforçar a consequência: o caminho que o usuário realmente usa não aproveita o cache, não deixa registro e não é coberto por nenhum teste.",
+    "Veja a bolinha vermelha parada no começo da fileira de cima, pulsando, enquanto a branca anda na de baixo. Ela mostra o bloqueio: as rotas são declaradas como assíncronas, mas fazem trabalho pesado por dentro. Enquanto uma pergunta é processada, as outras ficam esperando.",
+    "Para terminar, os códigos de resposta: duzentos para respostas normais, inclusive as bloqueadas; quatrocentos e vinte e dois para mensagem inválida; quinhentos para erro interno; e quinhentos e três enquanto o sistema ainda está subindo."
+  ],
+  "vetores": [
+    "Esta cena mostra a busca por significado. A esfera de linhas finas, girando devagar, é o espaço dos vetores. Cada ponto colorido é um dos vinte e sete trechos da base, e as cores agrupam os assuntos: unidades, emergência, serviços, vacinação. Repare na linha branca crescendo do centro até a superfície: é a pergunta sobre o telefone do hospital virando um ponto na esfera. As posições aqui são ilustrativas.",
+    "Agora saem três linhas verdes do ponto branco até os três trechos mais próximos, que crescem e pulsam. O ângulo entre eles é pequeno, o que significa assunto parecido. A distância medida foi de zero vírgula vinte e cinco.",
+    "A pergunta muda para: como fazer bolo de chocolate. Veja a nova linha branca: ela aponta para o outro lado da esfera, longe de todos os pontos coloridos.",
+    "Mesmo assim, três linhas vermelhas ligam a pergunta aos três trechos menos distantes. Sempre existem três mais próximos, ainda que não tenham nada a ver. A distância agora é de um vírgula zero, vetores quase perpendiculares.",
+    "As linhas ficam laranjas para marcar o problema. O limite configurado era um vírgula dois, acima dessa distância, então ele nunca barrava nada, e os trechos sem relação seguiam para o modelo de linguagem. Um limite entre zero vírgula seis e zero vírgula sete separaria os dois casos."
+  ],
+  "guardrail": [
+    "Esta cena mostra o filtro de segurança por dentro. Há três argolas em linha, que são as três camadas de decisão: a azul, das palavras administrativas; a amarela, do classificador estatístico; e a cinza apagada, das palavras clínicas, que quase nunca é usada. Embaixo ficam duas placas: a verde, libera, e a vermelha, bloqueia. A bolinha branca que entra pela esquerda é a pergunta sobre o horário de funcionamento da U B S, chegando à primeira argola.",
+    "A bolinha fica verde e desce direto da argola azul para a placa verde. A palavra horário é administrativa, então a mensagem é liberada na hora. Decisão correta.",
+    "Nova mensagem: que remédio devo tomar para dor de cabeça. A bolinha chega à argola azul e não encontra nenhuma palavra administrativa.",
+    "Ela segue até a argola amarela, onde o classificador calcula a chance de ser uma pergunta clínica: sessenta e seis por cento.",
+    "A bolinha fica vermelha e desce para a placa de bloqueio. O limite era sessenta e cinco por cento, então ela foi barrada, mas por apenas um ponto de diferença.",
+    "Terceira mensagem: estou sentindo muita febre e dor no corpo. De novo a bolinha passa pela argola azul sem encontrar nada.",
+    "Na argola amarela, o classificador dá sessenta por cento, abaixo do limite.",
+    "Repare no erro: a bolinha fica laranja e desce para a placa verde. A mensagem foi liberada. A argola cinza, que reconheceria a expressão estou sentindo, nunca é consultada quando o classificador está funcionando. É exatamente o teste automatizado que falha.",
+    "Última mensagem: qual a dose de dipirona e onde fica a U B S. Ela mistura um pedido clínico com um administrativo, e chega à argola azul.",
+    "A bolinha fica laranja e desce direto para a placa verde. As palavras onde fica bastaram para liberar tudo, e a parte clínica chega intacta ao modelo de linguagem. É a segunda falha do filtro."
+  ],
+  "mlops": [
+    "Esta cena acompanha o treino do classificador de segurança. As peças estão em linha: a placa azul clara é o arquivo com as cinquenta e sete frases; depois vêm a divisão dos dados, o treino, a nota, o portão de promoção em forma de argola laranja e, no fim, a caixa verde do registro de modelos, com a etiqueta amarela champion. A bolinha branca sai do arquivo e vai para a divisão. Há um detalhe grave aqui: sete frases clínicas estavam com o rótulo em outro formato e acabaram tratadas como administrativas.",
+    "A bolinha passa da divisão para o treino. Das cinquenta e sete frases, quarenta e duas servem para ensinar o modelo e quinze ficam guardadas para a prova, sempre com a mesma divisão, para o experimento poder ser repetido.",
+    "Do treino, a bolinha vai até a esfera rosa, que é a nota. O resultado foi zero vírgula cinquenta e sete, medido em apenas quinze exemplos. Com tão pouco, uma única frase a mais ou a menos muda bastante a nota.",
+    "Agora a bolinha laranja atravessa a argola. Esse é o portão de promoção, que deveria barrar modelos ruins. Só que a condição escrita era nota maior ou igual a zero, que é sempre verdadeira. Qualquer modelo passava.",
+    "A bolinha chega à caixa verde, o registro de modelos. Cada treino cria uma versão nova, e a etiqueta champion passa a apontar para ela. Neste banco existia só a versão um.",
+    "Veja a bolinha descendo da caixa do registro para a caixa de baixo, que é o backend. Ao iniciar, ele pede o modelo pela etiqueta champion, sem saber o número da versão.",
+    "Aparece uma caixa cinza transparente acima da versão um: uma versão dois hipotética. Acompanhe a etiqueta amarela: ela sobe para a versão dois e depois desce de volta para a um. Isso é a reversão: se a versão nova for ruim, basta reapontar a etiqueta e reiniciar o backend, sem mexer em código.",
+    "No canto inferior esquerdo surgem duas barras quase do mesmo tamanho. A azul é o tempo total de uma resposta, três segundos e quarenta e cinco centésimos. A rosa é só o modelo de linguagem, três segundos e quarenta e três. Ou seja, quase todo o tempo de espera vem da geração do texto.",
+    "Para fechar, as pendências: a ferramenta de versionamento de dados foi instalada mas nunca inicializada, não há comparações de modelos registradas neste banco, e só uma das duas rotas grava essas medições."
+  ],
+  "eda07": [
+    "Esta cena é sobre a análise exploratória dos dados. Você vê um gráfico de dispersão: cada um dos doze pontos azuis é um mês de dois mil e vinte e dois. No eixo de baixo estão os chamados do SAMU, e no eixo lateral, os óbitos. A linha amarela mostra a tendência. Os pontos são ilustrativos; os resultados são os do estudo.",
+    "Repare nos dois pontos laranjas pulsando no canto superior direito. São meses fora do padrão, e são eles que puxam a linha para cima. Por isso uma medida de correlação dá zero vírgula sessenta e a outra, que olha só a ordem dos meses, dá zero vírgula vinte e nove. Com apenas doze pontos, essa segunda não se distingue de zero.",
+    "Os pontos se rearranjam e agora ficam bem alinhados com a linha amarela. O gráfico passou a comparar atendimentos ambulatoriais com cirurgias. Meses com mais consultas têm mais cirurgias, e as duas medidas concordam. Ainda assim são doze pontos, e correlação não prova causa.",
+    "A cena muda para a comparação por região. À esquerda, sete caixas azuis com as regiões de saúde, vindas da base de óbitos. À direita, uma única caixa rosa pulsando, escrito SAMU: nessa base a coluna de região tem sempre o mesmo valor. No meio aparece o aviso de cruzamento vazio. Não há como comparar.",
+    "Veja a caixa rosa se dividindo em sete, uma para cada região, e as linhas verdes ligando os dois lados. Essa foi a solução: descobrir a região pelo nome da base da ambulância. Por exemplo, a abreviação de Sobradinho indica a região Norte. Depois, comparar por taxa a cada cem mil habitantes. É uma regra frágil, que pode errar.",
+    "Com as regiões ligadas, ficam duas ressalvas. Os óbitos são contados pelo lugar onde a pessoa morava, e o SAMU pelo lugar da base da ambulância, que não são a mesma geografia. E os arquivos exportados no final não são lidos pelo chat."
+  ],
+  "run08": [
+    "Esta cena mostra como colocar tudo no ar. À esquerda há quatro colunas, uma para cada serviço, que começam achatadas. À direita, pequenas pilhas de blocos cinzas, que são os catorze testes separados por grupo. Repare na primeira coluna, a rosa, subindo: é o Ollama, que precisa estar rodando com o modelo já baixado.",
+    "Sobe a coluna verde, o backend, na porta oito mil. Ele está pronto quando o registro mostra a mensagem de sistema pronto, com vinte e sete documentos.",
+    "Agora sobe a coluna azul, o frontend, na porta três mil. É nesse endereço que o chat abre no navegador.",
+    "A quarta coluna, roxa, é o painel do registro de experimentos. Ela é opcional: o sistema funciona sem ela.",
+    "Com tudo no ar, uma bolinha branca passa por cima das colunas, do frontend ao backend e ao Ollama. É o roteiro de demonstração: uma pergunta de telefone que funciona, uma de remédio que é bloqueada, a do bolo de chocolate e a de febre, que expõe a falha do filtro.",
+    "Olhe para a direita: os blocos dos testes vão ficando verdes um a um, conforme os testes rodam. Um deles, na pilha do filtro de segurança, fica vermelho. O resultado é treze aprovados e um reprovado, em pouco mais de um minuto, porque os testes usam os serviços reais.",
+    "O bloco vermelho está pulsando. É o teste que envia a frase estou sentindo muita febre e dor no corpo e espera um bloqueio que não acontece. O teste está certo: ele denuncia um defeito real.",
+    "Um último cuidado: alguns comandos mudam o estado do projeto. O treino troca o modelo em uso, a coleta sobrescreve os textos da base, e a comparação de modelos baixa dezenas de gigabytes. Depois de qualquer um deles, é preciso reiniciar o backend."
+  ],
+  "limites": [
+    "Esta cena é um mural das limitações do projeto. São seis colunas de plaquinhas, cada coluna uma categoria e cada plaquinha um problema numerado. Agora só a primeira coluna, vermelha, está acesa e saltada para a frente: é a segurança clínica, com sete itens, os mais graves. Entre eles, o classificador fraco e o portão de promoção que aprovava qualquer modelo.",
+    "O destaque passa para a coluna laranja, das fontes. Sete dos vinte e sete trechos eram texto de demonstração com endereços fictícios, e a fonte mostrada na tela é sempre a do trecho mais próximo, mesmo que o modelo tenha usado outro.",
+    "Acende a coluna amarela, o caminho que o usuário realmente percorre. A rota usada pela tela não tinha cache, não deixava registro e não tinha nenhum teste.",
+    "Agora a coluna roxa, do controle de modelos. As notas de versão falavam em quarta versão e em comparações entre modelos, mas neste banco só havia a versão um e nenhuma comparação registrada.",
+    "A coluna azul é a maior, com dez itens de arquitetura e código: lógica duplicada entre as duas rotas, chamadas que travam o servidor, e um tempo de resposta medido bem acima do prometido.",
+    "Por último, a coluna azul clara, da análise de dados: correlações calculadas com apenas doze pontos e regiões do SAMU deduzidas a partir de pedaços de texto.",
+    "Agora preste atenção: seis plaquinhas vão ficando verdes, uma após a outra, quase todas na coluna da segurança. São as correções prioritárias: combinar palavras-chave e classificador, corrigir os rótulos, criar um portão de verdade e baixar o limite de distância. Quatro mudanças pequenas que atacam o risco clínico.",
+    "O mural inteiro volta a acender. A leitura honesta é esta: uma prova de conceito com a arquitetura certa e a execução incompleta, em que os defeitos mais graves são baratos de corrigir."
+  ],
+  "perguntas": [
+    "Esta cena reúne as perguntas prováveis do professor. As cinquenta cartas formam um anel, e as cores indicam os temas. A cada pergunta o anel gira, e a carta escolhida vem para a frente, sobe e cresce. A primeira é a carta dois: o que é RAG, e por que usar em vez de só um modelo de linguagem? A resposta: é buscar trechos relevantes em uma base própria e entregá-los ao modelo junto com a pergunta. Sozinho, o modelo responde de memória, pode inventar um telefone e não cita fonte.",
+    "O anel gira até a carta nove, do tema de busca: como é medida a semelhança? Pela distância de cosseno, que olha o ângulo entre dois vetores. Zero quer dizer mesmo significado, e um, nenhuma relação.",
+    "Sobe a carta treze: e se a pergunta não tiver nada a ver com a base? A ideia era responder não encontrei quando a distância passasse de um limite. Mas o limite estava alto demais e nunca disparava; a pergunta do bolo de chocolate chegava ao modelo.",
+    "Carta dezesseis, já no tema do modelo de linguagem: o que é temperatura, e por que tão baixa? Ela controla o quanto o modelo arrisca na escolha das palavras. Para repetir fielmente uma fonte oficial, queremos o mínimo de criatividade.",
+    "Carta dezenove: e se o Ollama cair? O sistema não devolve erro. Ele entrega o texto bruto dos trechos encontrados, porque a busca não depende do modelo de linguagem.",
+    "O anel gira para a parte amarela, do filtro de segurança, e sobe a carta vinte e cinco: o filtro funciona bem? A resposta honesta é não. A nota era baixa e o teste de sintomas falhava, por causa de poucos dados, rótulos errados e uma lógica que deixava o classificador vencer as palavras-chave.",
+    "Carta vinte e sete: qual medida importa para o filtro? De todas as perguntas clínicas, quantas foram barradas. Deixar passar uma pergunta clínica é muito mais grave que recusar uma administrativa.",
+    "Carta trinta, no tema de operações: como desfazer a troca por um modelo ruim? Basta reapontar a etiqueta champion para a versão anterior e reiniciar o backend. Nenhuma linha de código muda.",
+    "Carta trinta e cinco: como funciona a resposta em fluxo? O backend envia uma linha para cada pedaço de texto gerado, e o navegador vai lendo e acrescentando ao balão. É um formato simples, de um objeto por linha, e não o padrão de eventos que um documento antigo citava.",
+    "Carta quarenta e um, sobre testes: como o projeto é testado? Com catorze testes que sobem a aplicação inteira. Treze passam e um falha, justamente o do filtro de segurança.",
+    "Carta quarenta e quatro, de estatística: o que as correlações mostraram? Relações moderadas entre SAMU e óbitos, e entre atendimentos e cirurgias. Mas são só doze pontos, e nada disso indica causa.",
+    "Carta quarenta e sete, de ética: que cuidados com a lei de proteção de dados foram tomados? Tudo é processado localmente, sem contas nem histórico. Ficaram pendentes o registro do texto das perguntas e a falta de autenticação.",
+    "E a última carta, a cinquenta: qual foi a principal lição? Em um sistema com modelo de linguagem, o difícil não é gerar texto, é controlar o que entra e o que sai. A arquitetura fica pronta rápido; a validação é o trabalho."
+  ],
+  "arq": [
+    "Esta cena mostra a arquitetura da segunda versão do sistema. Há duas fileiras de caixas ligadas por linhas finas. Em cima, da esquerda para a direita: o cidadão, a interface, a API, o filtro de segurança, o interpretador de linguagem e o cache. Embaixo: o banco de sessões, o gerador de respostas, a busca online, o banco vetorial e a ingestão. A bolinha branca sai do cidadão e chega à interface: é a pergunta, onde tomo vacina da gripe em Taguatinga.",
+    "A bolinha vai da interface para a API, levando a mensagem, a sessão e o histórico da conversa.",
+    "Da API ela salta para a caixa amarela, o filtro de segurança, que tem duas partes: regras de palavras e um classificador treinado. Na dúvida ou no erro, ele bloqueia.",
+    "Aprovada, a bolinha fica verde e segue para a caixa laranja. O interpretador extrai da frase a intenção, vacina; a região, Taguatinga; e o público, adulto. Tudo com regras rápidas, sem chamar nenhum modelo.",
+    "A bolinha chega ao cache, no canto superior direito. Se uma pergunta igual já tivesse sido respondida, a resposta sairia daqui na hora. Desta vez não há.",
+    "Então ela desce para o banco vetorial, logo abaixo. A busca é filtrada pelos dados que o interpretador extraiu: tema de vacinas e região de Taguatinga, mais a base geral do Distrito Federal.",
+    "Com os trechos encontrados, a bolinha atravessa a fileira de baixo até a caixa rosa, o gerador, que escreve a resposta com as citações oficiais.",
+    "A bolinha sobe do gerador de volta para a API, e a resposta é guardada no cache para a próxima vez.",
+    "Da API, a bolinha desce para a caixa cinza: a conversa é gravada no banco de sessões, junto com o cadastro do cidadão.",
+    "E finalmente volta para a interface, onde o texto aparece aos poucos, com as fontes e as opções para clicar.",
+    "Segundo cenário: e quando o banco local não tem a resposta? A bolinha roxa sai do banco vetorial para a busca online, que só consulta páginas oficiais de saúde e do governo, e recusa qualquer endereço interno.",
+    "O conteúdo encontrado segue para a caixa verde da ingestão, que roda em segundo plano, confere a conexão segura e evita gravar o mesmo conteúdo duas vezes.",
+    "A bolinha verde volta para o banco vetorial: o conhecimento novo passa a fazer parte da base, e o cache esquece as respostas antigas de não encontrei.",
+    "Terceiro cenário, uma pergunta clínica. A bolinha vermelha vai da API ao filtro de segurança e para ali.",
+    "Ela volta para a API com a resposta padrão: a assistente não faz diagnóstico nem prescreve remédios, e orienta procurar a unidade de saúde mais próxima."
+  ],
+  "build": [
+    "Esta cena acompanha o guia de instalação e testes da segunda versão. À esquerda, três colunas ainda achatadas: backend, frontend e Ollama. À direita, nove pilhas de blocos cinzas, uma para cada arquivo de testes, com a quantidade escrita em cima. Antes de tudo, os requisitos: Python, Node, o gerenciador de pacotes e o Git.",
+    "A coluna verde sobe: é o backend. O guia manda criar o ambiente Python, instalar as dependências, copiar o arquivo de configuração e iniciar o servidor na porta oito mil.",
+    "Agora sobe a coluna azul, o frontend: instalar os pacotes e iniciar em modo de desenvolvimento, na porta três mil.",
+    "A terceira coluna, rosa, é o Ollama. Segundo o guia ele é opcional, porque o backend consegue responder mesmo sem ele.",
+    "Olhe para a direita: os blocos vão ficando verdes, pilha por pilha, enquanto os testes rodam. São oitenta e um ao todo, cobrindo cadastro, interpretação de linguagem, conversas de várias mensagens, busca online, concorrência, ingestão, respostas, busca vetorial e citações.",
+    "Quatro pilhas estão pulsando: são as maiores. A mais alta, com dezesseis testes, cobre as respostas e as citações. Depois vêm a da busca vetorial, com doze, e as de interpretação de linguagem e de ingestão, com dez cada.",
+    "Por fim, as dicas para problemas comuns: se a porta estiver ocupada, encerrar o processo antigo; se o banco vetorial acusar bloqueio, garantir que só um backend esteja aberto; e se a tela ficar estranha, apagar a pasta temporária do frontend."
+  ],
+  "mlopsm": [
+    "Esta cena resume o documento de operações e modelagem da segunda versão. São três fileiras de caixas. A de cima, azul clara, é o caminho dos dados. A do meio, amarela, é o treino do filtro de segurança. A de baixo, roxa, é a avaliação. Comece pela de cima: a bolinha vai da coleta oficial até o diretório de saúde, que mapeia trezentas e quarenta e seis unidades nas trinta e três regiões administrativas.",
+    "A bolinha segue para a terceira caixa. Cada unidade é dividida em trechos, e cada trecho recebe etiquetas: região, tema, tipo de unidade, serviços e horário.",
+    "No fim da fileira, os trechos entram no banco vetorial: dois mil trezentos e sessenta e cinco blocos.",
+    "Agora a fileira do meio. A bolinha sai do conjunto de frases rotuladas e vai para a validação cruzada em cinco partes, que treina e testa cinco vezes, cada vez com uma fatia diferente.",
+    "A bolinha laranja chega à caixa laranja, o portão de promoção. Um modelo novo só assume se não for pior que o atual e se barrar pelo menos noventa e cinco por cento das perguntas clínicas.",
+    "Passando pelo portão, vem a calibração, que ajusta as probabilidades para que sessenta por cento signifique mesmo sessenta por cento de confiança.",
+    "A bolinha verde chega à caixa verde: o modelo aprovado é salvo e passa a ser usado.",
+    "Fileira de baixo. A bolinha sai das partições congeladas, que são conjuntos de perguntas separados e nunca usados para ajustar o sistema, e vai para o programa de avaliação.",
+    "Os resultados informados no documento: o trecho certo aparece em primeiro lugar em noventa e cinco por cento dos casos, nenhuma pergunta fora do assunto é aceita, e a busca responde em poucas dezenas de milissegundos.",
+    "A última caixa, azul, é o registro de experimentos, onde ficam guardados os parâmetros e as medidas de cada rodada.",
+    "A caixa do banco vetorial, lá em cima à direita, está pulsando. Ela lembra a ingestão contínua: conteúdo novo entra sem reiniciar o sistema, páginas atualizadas substituem as antigas, e o cache descarta só as respostas de não encontrei."
+  ],
+  "analysis": [
+    "Esta cena resume o documento original da análise exploratória. O gráfico mostra doze pontos azuis, um para cada mês de dois mil e vinte e dois, com os chamados do SAMU no eixo de baixo e os óbitos no eixo lateral. O documento compara dois jeitos de agrupar os dados, e agrupar por mês é o mais limpo. Os pontos são ilustrativos.",
+    "Repare nos dois pontos laranjas pulsando lá no alto. A correlação linear é moderada, zero vírgula sessenta, mas a que considera só a ordem dos meses é fraca, zero vírgula vinte e nove. Os picos de chamados acompanham os óbitos em volume, mas a ordem dos meses mais intensos não é a mesma.",
+    "Os pontos se movem e se alinham à linha amarela. Agora são atendimentos ambulatoriais contra cirurgias. As duas medidas são altas: meses com mais consultas geram mais cirurgias, como um funil.",
+    "O gráfico dá lugar às regiões. À esquerda, as caixas azuis das regiões de saúde, que vêm da base de óbitos. À direita, uma só caixa rosa: o SAMU registra tudo em uma única região. O aviso no centro mostra o resultado: cruzamento vazio e erro no cálculo.",
+    "A caixa rosa se desdobra em sete, e as linhas verdes ligam cada uma à sua região. É a primeira solução: abandonar a coluna de região e deduzi-la pelo nome do estabelecimento.",
+    "A segunda solução é calcular a taxa por cem mil habitantes, usando a população de cada região, para que as regiões mais populosas não dominem os gráficos."
+  ],
+  "refin": [
+    "Esta cena mostra o plano de refinamento feito depois do primeiro teste de qualidade. Em cima, cinco caixas vermelhas pulsando: os problemas encontrados. Embaixo, cinco caixas verdes: a ação planejada para cada um. O sistema estava funcionando, mas precisava melhorar na busca, na fidelidade às fontes e no contexto da conversa.",
+    "A bolinha desce da primeira caixa vermelha para a verde logo abaixo. O problema: o modelo juntou dois endereços diferentes do mesmo hospital. A ação: instruir o modelo a avisar da inconsistência e citar as duas fontes.",
+    "Segunda coluna. A pergunta, onde posso tomar vacina, trouxe o calendário de vacinação, e não as unidades. A ação é combinar busca por significado com busca por palavras, e dar prioridade a unidades de saúde quando a pergunta tem onde ou perto.",
+    "Terceira coluna. A pergunta, qual a unidade de pronto atendimento mais perto de mim, gerava um erro genérico. A ação: explicar que o sistema não vê a localização e pedir a região administrativa.",
+    "Quarta coluna. A assistente explicou como uma doença é transmitida, o que é saúde em geral, e não um serviço. A decisão foi restringir o escopo e bloquear perguntas enciclopédicas.",
+    "Quinta coluna. Dez perguntas de teste eram muito pouco. A ação: ampliar para quarenta, divididas em cinco categorias, com medidas de acerto da busca e de fidelidade da resposta.",
+    "Duas caixas verdes pulsam: a primeira e a terceira. São os próximos passos sugeridos, por serem ajustes rápidos que não exigem refazer o índice."
+  ],
+  "planrel": [
+    "Esta cena mostra o plano do relatório técnico. As cinco caixas azuis de cima são as seções do relatório, em ordem. As seis de baixo são os assuntos das duas seções centrais: três azuis claras sobre dados e três rosas sobre modelos. A primeira caixa está pulsando: é a introdução, que apresenta a assistente e o desafio de informar sem inventar conteúdo clínico.",
+    "A bolinha vai da introdução para a segunda seção, sobre a preparação dos dados.",
+    "Ela desce para o primeiro assunto: coleta e limpeza, ou seja, como os dados brutos foram filtrados.",
+    "Depois desce para o segundo: a divisão dos textos em trechos e a geração dos vetores.",
+    "E para o terceiro: o banco vetorial local, onde a busca por significado acontece.",
+    "A bolinha avança na fileira de cima para a terceira seção, sobre a abordagem de inteligência artificial.",
+    "Desce para a primeira caixa rosa: o modelo de linguagem local, escolhido para manter os dados na própria máquina.",
+    "Depois para a segunda: o classificador clínico, mais rápido que um modelo de linguagem para moderar as perguntas.",
+    "E para a terceira: o roteador de intenções, que usa regras simples para encaminhar perguntas vagas sem gastar tempo do modelo.",
+    "De volta à fileira de cima, a bolinha chega à quarta seção: como as instruções dadas ao modelo garantem que ele não invente fatos e cite as fontes.",
+    "E termina na quinta seção, a conclusão, com os próximos passos.",
+    "O plano fecha com perguntas para confirmar antes de escrever: qual modelo de vetores, qual modelo de linguagem, qual algoritmo do classificador, se houve balanceamento dos dados e se o relatório deve trazer trechos de código."
+  ],
+  "prod": [
+    "Esta cena mostra o plano para levar a assistente a produto. São nove caixas, da fase zero à fase oito, ligadas pelas dependências. As cores indicam o andamento na época do plano: amarelo é parcial, azul é em progresso e cinza é pendente. A fase zero, à esquerda, está pulsando: é o ponto de partida.",
+    "A bolinha sai da fase zero para a fase um. A fase zero define o contrato do produto e mede o estado inicial, alinhando documentos antigos à arquitetura real.",
+    "Da fase um para a dois. A fase um cuida da base de textos: inventário, validação por formato e data de cada informação, para que uma leitura errada não vire um fato falso.",
+    "Da fase dois para a três. A fase dois é o índice e a busca. Em um subconjunto os resultados foram muito bons, mas o índice completo, com cerca de cento e seis mil blocos, ainda não tinha sido construído.",
+    "Da fase três para a quatro. A fase três, em azul, trata do modelo de linguagem e do filtro de segurança. No teste rápido, a pergunta clínica foi bloqueada antes do modelo, mas pelo conjunto de regras, porque o classificador não foi encontrado.",
+    "Da fase quatro para a cinco. A fase quatro unifica as duas rotas de chat e padroniza as citações.",
+    "A fase cinco pulsa sozinha: é a interface, com endereço configurável, leitura correta do fluxo e acessibilidade.",
+    "Agora a bolinha desce da fase três para a seis, a caixa amarela de baixo: avaliação e integração contínua, com centenas de casos de teste rotulados.",
+    "Da seis para a sete: desempenho e resiliência. Medir o tempo de partida, fazer cópias de segurança e simular falhas.",
+    "E da sete para a oito, a última: empacotar, documentar a operação e rodar um piloto controlado.",
+    "Todas as caixas acendem juntas para lembrar os critérios de aprovação: todos os casos clínicos críticos bloqueados antes do modelo, busca com alto acerto, toda resposta com fonte real e tempo de resposta dentro do limite.",
+    "E continuam acesas para os riscos que impedem o lançamento: resposta clínica não bloqueada, dado atribuído à unidade errada, citação inexistente, ou o sistema dizendo que está saudável sem o modelo carregado."
+  ],
+  "relatorio": [
+    "Esta cena resume o relatório técnico. À esquerda, três pares de barras comparam algoritmos para o filtro de segurança. À direita, quatro placas formam a matriz de confusão, que mostra os acertos e os erros do modelo escolhido. O desafio central do relatório é separar o que é informação administrativa do que é clínica.",
+    "Antes da busca existe um roteador de intenções, feito de regras simples. Ele separa mensagens muito curtas, perguntas vagas que pedem esclarecimento, pedidos como explique melhor, que dependem da conversa anterior, e dúvidas específicas, que seguem para o banco vetorial.",
+    "Olhe para as barras. O primeiro par, da regressão logística, está pulsando. A barra rosa é a proporção de perguntas clínicas barradas, e a azul é a nota geral. Ela ficou com oitenta e quatro por cento nas duas, acima dos outros dois algoritmos.",
+    "Agora as quatro placas da direita acendem. Na prova com quinze exemplos separados, sete administrativas foram liberadas e quatro clínicas bloqueadas, que são as placas verdes. Houve um bloqueio indevido, na placa amarela, e três perguntas clínicas que passaram, na vermelha.",
+    "Só a placa vermelha pulsa. São os erros mais perigosos: frases como, posso tomar um remédio junto com outro, que usam palavras que o modelo nunca viu no treino. O relatório propõe treinar com todos os dados e manter as regras de palavras como reforço.",
+    "Agora a placa amarela. É uma pergunta administrativa sobre documentos para retirar remédio, bloqueada por causa da palavra remédio. A regra de palavras administrativas corrige esse caso.",
+    "Para fechar, a geração: o modelo de linguagem roda localmente, cita os trechos numerados quando informa dados críticos, e só pode usar conhecimento geral para explicar conceitos básicos."
+  ]
+};
