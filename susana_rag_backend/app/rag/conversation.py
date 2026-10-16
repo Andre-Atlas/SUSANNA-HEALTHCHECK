@@ -22,6 +22,13 @@ POPULAR_SYNONYMS: List[Tuple[re.Pattern, str]] = [
     (re.compile(r"\bpr[eé][- ]natal\b", re.I), "pré-natal da gestante na UBS"),
     (re.compile(r"\bteste\s+do\s+pezinho\b", re.I), "triagem neonatal teste do pezinho na UBS"),
     (re.compile(r"\bcart[aã]o\s+sus\s+do\s+beb[eê]\b", re.I), "cadastro do Cartão Nacional de Saúde recém-nascido na UBS"),
+    # Acidentes com animais peçonhentos: o corpus fala em "animais peçonhentos", "soro" e "HRAN/HRT";
+    # o cidadão diz "cobra me mordeu". Sem esta ponte, a busca semântica não reconhece a resposta.
+    (re.compile(r"\b(cobras?|serpentes?|jararacas?|cascav[eé]is|cascavel)\b", re.I),
+     r"\1 acidente com animal peçonhento soro antiofídico HRAN HRT"),
+    (re.compile(r"\bescorpi(?:[aã]o|[oõ]es)s?\b", re.I),
+     "escorpião acidente com animal peçonhento soro antiescorpiônico HRAN HRT"),
+    (re.compile(r"\baranhas?\b", re.I), "aranha acidente com animal peçonhento HRAN HRT"),
 ]
 
 
