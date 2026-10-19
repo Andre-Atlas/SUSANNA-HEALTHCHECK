@@ -1,0 +1,127 @@
+{
+  "version": 1,
+  "profile": "web",
+  "modules": [
+    "core",
+    "lane-design",
+    "lane-architecture",
+    "lane-audit",
+    "stack-react"
+  ],
+  "lanes": [
+    "design",
+    "arquitetura",
+    "auditoria"
+  ],
+  "stacks": [
+    "react"
+  ],
+  "sources": {
+    "superpowers": {
+      "repo": "Andre-Atlas/superpowers",
+      "ref": "bb92a77741419a4ab5f06e711a283343f1ada0c3"
+    },
+    "ecc": {
+      "repo": "Andre-Atlas/ECC",
+      "ref": "76aaa77df6adc5b889e689007bf99b9a4f74af34"
+    },
+    "skills": {
+      "repo": "Andre-Atlas/skills",
+      "ref": "13e4063a1cf913f5606d57d42ab83a86f5001e04"
+    },
+    "atlas": {
+      "repo": "Andre-Atlas/ATLAS",
+      "ref": "main"
+    }
+  },
+  "skills": {
+    "atlas": [
+      "atlas-lane-architecture",
+      "atlas-lane-audit",
+      "atlas-lane-design",
+      "atlas-maestro"
+    ],
+    "superpowers": [
+      "brainstorming",
+      "dispatching-parallel-agents",
+      "executing-plans",
+      "finishing-a-development-branch",
+      "receiving-code-review",
+      "requesting-code-review",
+      "subagent-driven-development",
+      "systematic-debugging",
+      "test-driven-development",
+      "using-git-worktrees",
+      "verification-before-completion",
+      "writing-plans"
+    ],
+    "ecc": [
+      "accessibility",
+      "agent-architecture-audit",
+      "api-design",
+      "architecture-decision-records",
+      "backend-patterns",
+      "blueprint",
+      "brand-discovery",
+      "click-path-audit",
+      "coding-standards",
+      "contract-first",
+      "council",
+      "database-migrations",
+      "design-system",
+      "dev-team",
+      "e2e-testing",
+      "frontend-a11y",
+      "frontend-design-direction",
+      "frontend-patterns",
+      "git-workflow",
+      "hexagonal-architecture",
+      "intent-driven-development",
+      "make-interfaces-feel-better",
+      "nextjs-turbopack",
+      "product-capability",
+      "production-audit",
+      "react-patterns",
+      "react-performance",
+      "react-testing",
+      "search-first",
+      "security-review",
+      "security-scan",
+      "skill-scout",
+      "verification-loop"
+    ],
+    "skills": [
+      "find-skills"
+    ]
+  },
+  "agents": {
+    "atlas": [
+      "audit-lead",
+      "design-director",
+      "maestro"
+    ],
+    "ecc": [
+      "a11y-architect",
+      "architect",
+      "build-error-resolver",
+      "code-architect",
+      "code-explorer",
+      "code-reviewer",
+      "comment-analyzer",
+      "database-reviewer",
+      "doc-updater",
+      "e2e-runner",
+      "performance-optimizer",
+      "planner",
+      "pr-test-analyzer",
+      "react-build-resolver",
+      "react-reviewer",
+      "refactor-cleaner",
+      "security-reviewer",
+      "silent-failure-hunter",
+      "tdd-guide",
+      "type-design-analyzer",
+      "typescript-reviewer"
+    ]
+  }
+}
