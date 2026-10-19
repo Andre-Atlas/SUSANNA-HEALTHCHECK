@@ -16,6 +16,8 @@ import { ReminderToast } from '@/components/Agenda/ReminderToast';
 import { AgendaProposalCard, type ProposalState } from '@/components/Chat/AgendaProposalCard';
 import { EpidemiologicalDashboard } from '@/components/Surveillance/EpidemiologicalDashboard';
 import { HealthUnitsInteractiveMap } from '@/components/UnitsMap/HealthUnitsInteractiveMap';
+import Mascot3D from '@/components/Mascot3D/Mascot3D';
+import { VideoShowcase } from '@/components/Landing/VideoShowcase';
 
 // =========================================================================
 // Tipos e Interfaces da Plataforma SUS Digital
@@ -773,19 +775,38 @@ function Home() {
             >
               Acessar Plataforma
             </a>
+            <a
+              className="btn ghost"
+              href="#video"
+              onClick={(e) => {
+                e.preventDefault();
+                document.getElementById('video')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+            >
+              Ver em ação
+            </a>
+            <ul role="list" className="trust" aria-label="Em números">
+              <li><b>383</b> unidades de saúde</li>
+              <li><b>33</b> Regiões Administrativas</li>
+              <li>Respostas com <b>fontes</b></li>
+            </ul>
           </div>
 
           {/* Mascot Stage */}
           <div className="stage rv">
-            <img
-              src="/images/suzanna-hero.webp"
+            <div className="orb" aria-hidden="true" />
+            <Mascot3D
+              className="mascot"
+              fallbackSrc="/images/suzanna-hero.webp"
               alt="SUSANNA, a assistente virtual do SUS Digital, acenando"
             />
             <div className="tag glass t1">
+              <em>Exemplo</em>
               Vacinação em andamento
               <small>{citizen ? citizen.ra_display : 'Distrito Federal'}</small>
             </div>
             <div className="tag glass t2">
+              <em>Exemplo</em>
               Próxima consulta
               <small>Clínico geral · UBS 14h</small>
             </div>
@@ -793,23 +814,31 @@ function Home() {
         </section>
 
         {/* 3 Pillars / Feature Cards */}
-        <section className="feat">
-          <div className="f glass rv">
-            <i>01</i>
+        <div className="feat-head rv">
+          <div className="eyebrow">O que a SUSANNA faz</div>
+          <h2 id="feat-title">
+            Três jeitos de cuidar da <em>sua saúde</em>
+          </h2>
+        </div>
+        <section className="feat" aria-labelledby="feat-title">
+          <div className="f glass rv" style={{ transitionDelay: '0ms' }}>
+            <i aria-hidden="true">01</i>
             <h3>Atendimento por IA</h3>
             <p>Respostas fundamentadas em 383 unidades e diretrizes clínicas oficiais do SUS.</p>
           </div>
-          <div className="f glass rv">
-            <i>02</i>
+          <div className="f glass rv" style={{ transitionDelay: '120ms' }}>
+            <i aria-hidden="true">02</i>
             <h3>Histórico e Vacinas</h3>
             <p>Guia Oficial do PNI por ciclo de vida, consultas e exames unificados.</p>
           </div>
-          <div className="f glass rv">
-            <i>03</i>
+          <div className="f glass rv" style={{ transitionDelay: '240ms' }}>
+            <i aria-hidden="true">03</i>
             <h3>33 Regiões do DF</h3>
             <p>Mapa interativo das UBSs, UPAs 24h e Hospitais Regionais de Brasília.</p>
           </div>
         </section>
+
+        <VideoShowcase />
 
         {/* Chat CTA Banner */}
         <section id="chat">
