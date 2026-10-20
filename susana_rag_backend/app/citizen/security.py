@@ -16,7 +16,7 @@ import re
 import secrets
 import threading
 import time
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 PBKDF2_ITERATIONS = 600_000
 _SCHEME = "pbkdf2_sha256"
@@ -32,7 +32,7 @@ def hash_password(password: str, iterations: int = PBKDF2_ITERATIONS) -> str:
     return f"{_SCHEME}${iterations}${_b64(salt)}${_b64(digest)}"
 
 
-def verify_password(password: str, stored: str | None) -> bool:
+def verify_password(password: str, stored: Optional[str]) -> bool:
     if not stored:
         return False
     try:

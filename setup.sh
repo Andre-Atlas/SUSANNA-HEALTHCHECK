@@ -223,7 +223,10 @@ check_venv_healthy() {
   local vpy
   vpy="$(venv_python_path)"
   [ -n "$vpy" ] || return 1
-  "$vpy" -W ignore -c "import fastapi, uvicorn, pydantic_settings, chromadb, sentence_transformers, mlflow, pytest, httpx" >/dev/null 2>&1
+  (
+    cd "$BACKEND_DIR" && \
+    "$vpy" -W ignore -c "import fastapi, uvicorn, pydantic_settings, eval_type_backport, chromadb, sentence_transformers, mlflow, pytest, httpx; from app.main import app"
+  ) >/dev/null 2>&1
 }
 
 find_system_python() {
@@ -283,21 +286,34 @@ setup_backend() {
     vpy="$(venv_python_path)"
     ok "Ambiente virtual Python (.venv) já está íntegro ($("$vpy" --version 2>&1))."
   else
-    local sys_py
-    sys_py="$(find_system_python || true)"
-    [ -n "$sys_py" ] || die "Python 3.9+ não encontrado. Instale Python 3.11+ (ex: 'brew install python@3.11' ou 'sudo apt install python3 python3-venv')."
-    info "Criando ambiente virtual em susana_rag_backend/.venv usando $sys_py ($("$sys_py" --version 2>&1))..."
-    rm -rf "$BACKEND_DIR/.venv"
-    "$sys_py" -m venv "$BACKEND_DIR/.venv" || die "Falha ao criar .venv. Em Ubuntu/Debian, instale: sudo apt install python3-venv"
+    local existing_vpy
+    existing_vpy="$(venv_python_path)"
+    if [ -n "$existing_vpy" ] && "$existing_vpy" -m pip --version >/dev/null 2>&1; then
+      info "Atualizando pacotes pendentes no .venv existente..."
+      "$existing_vpy" -m pip install -r "$BACKEND_DIR/requirements.txt" >/dev/null 2>&1 || true
+    fi
 
-    local vpy
-    vpy="$(venv_python_path)"
-    [ -n "$vpy" ] || die "Executável Python não encontrado dentro de .venv."
+    if check_venv_healthy; then
+      local vpy
+      vpy="$(venv_python_path)"
+      ok "Ambiente virtual Python (.venv) atualizado e validado ($("$vpy" --version 2>&1))."
+    else
+      local sys_py
+      sys_py="$(find_system_python || true)"
+      [ -n "$sys_py" ] || die "Python 3.9+ não encontrado. Instale Python 3.11+ (ex: 'brew install python@3.11' ou 'sudo apt install python3 python3-venv')."
+      info "Criando ambiente virtual em susana_rag_backend/.venv usando $sys_py ($("$sys_py" --version 2>&1))..."
+      rm -rf "$BACKEND_DIR/.venv"
+      "$sys_py" -m venv "$BACKEND_DIR/.venv" || die "Falha ao criar .venv. Em Ubuntu/Debian, instale: sudo apt install python3-venv"
 
-    info "Instalando dependências do Backend (requirements.txt)..."
-    "$vpy" -m pip install --upgrade pip setuptools wheel >/dev/null
-    "$vpy" -m pip install -r "$BACKEND_DIR/requirements.txt" || die "Falha ao instalar requirements.txt."
-    ok "Dependências Python instaladas com sucesso."
+      local vpy
+      vpy="$(venv_python_path)"
+      [ -n "$vpy" ] || die "Executável Python não encontrado dentro de .venv."
+
+      info "Instalando dependências do Backend (requirements.txt)..."
+      "$vpy" -m pip install --upgrade pip setuptools wheel >/dev/null
+      "$vpy" -m pip install -r "$BACKEND_DIR/requirements.txt" || die "Falha ao instalar requirements.txt."
+      ok "Dependências Python instaladas com sucesso."
+    fi
   fi
 
   # Arquivo .env
@@ -323,6 +339,14 @@ m.predict_proba(['Qual o horário da UBS 1 da Asa Sul?'])
   else
     ok "Modelo clínico Guardrail (data/guardrail_model.pkl) validado."
   fi
+
+  # Validação do modelo de Embeddings (garante que está em cache local antes de subir o servidor)
+  info "Validando modelo de embeddings (SentenceTransformer)..."
+  (
+    cd "$BACKEND_DIR" && \
+    "$vpy" -W ignore -c "from app.config import get_settings; from app.rag.embeddings import Embedder; s = get_settings(); Embedder(s.embedding_model, s.embedding_max_seq_length)"
+  ) >/dev/null 2>&1 || die "Falha ao validar/baixar o modelo de embeddings."
+  ok "Modelo de embeddings validado no cache local."
 
   # Validação de diretórios de dados e índice ChromaDB
   mkdir -p "$BACKEND_DIR/data/chroma_db" "$BACKEND_DIR/data/corpus" "$BACKEND_DIR/mlruns"
@@ -446,7 +470,8 @@ start_services() {
     cd "$BACKEND_DIR" || exit 1
     exec "$vpy" -m uvicorn app.main:app --host 0.0.0.0 --port "$API_PORT"
   ) >"$LOG_DIR/backend.log" 2>&1 &
-  pids+=($!)
+  local backend_pid=$!
+  pids+=("$backend_pid")
 
   info "Aguardando inicialização do pipeline RAG e modelos..."
   local backend_ok=0
@@ -455,12 +480,22 @@ start_services() {
       backend_ok=1
       break
     fi
+    if ! kill -0 "$backend_pid" 2>/dev/null; then
+      printf "\n${RED}--- Últimas linhas de %s ---${NC}\n" "$LOG_DIR/backend.log" >&2
+      tail -n 30 "$LOG_DIR/backend.log" >&2 || true
+      die "O processo do Backend encerrou inesperadamente durante a inicialização."
+    fi
     sleep 1
   done
-  [ "$backend_ok" -eq 1 ] || die "O Backend não respondeu a tempo. Verifique o log em: $LOG_DIR/backend.log"
+  if [ "$backend_ok" -ne 1 ]; then
+    printf "\n${RED}--- Últimas linhas de %s ---${NC}\n" "$LOG_DIR/backend.log" >&2
+    tail -n 30 "$LOG_DIR/backend.log" >&2 || true
+    die "O Backend não respondeu a tempo. Verifique o log em: $LOG_DIR/backend.log"
+  fi
   ok "Backend online em http://localhost:$API_PORT"
 
   # 2. Inicia Frontend Next.js
+  local frontend_pid
   if [ "$mode" = "prod" ]; then
     if [ ! -f "$FRONTEND_DIR/.next/BUILD_ID" ] || [ "$FORCE_REINSTALL" = "1" ]; then
       info "Compilando Frontend para produção (npm run build)..."
@@ -472,14 +507,16 @@ start_services() {
       cd "$FRONTEND_DIR" || exit 1
       exec env BACKEND_URL="http://127.0.0.1:$API_PORT" npm run start -- -p "$WEB_PORT"
     ) >"$LOG_DIR/frontend.log" 2>&1 &
-    pids+=($!)
+    frontend_pid=$!
+    pids+=("$frontend_pid")
   else
     info "Iniciando Frontend em modo desenvolvimento na porta $WEB_PORT..."
     (
       cd "$FRONTEND_DIR" || exit 1
       exec env BACKEND_URL="http://127.0.0.1:$API_PORT" npm run dev -- -p "$WEB_PORT"
     ) >"$LOG_DIR/frontend.log" 2>&1 &
-    pids+=($!)
+    frontend_pid=$!
+    pids+=("$frontend_pid")
   fi
 
   local frontend_ok=0
@@ -488,9 +525,18 @@ start_services() {
       frontend_ok=1
       break
     fi
+    if ! kill -0 "$frontend_pid" 2>/dev/null; then
+      printf "\n${RED}--- Últimas linhas de %s ---${NC}\n" "$LOG_DIR/frontend.log" >&2
+      tail -n 30 "$LOG_DIR/frontend.log" >&2 || true
+      die "O processo do Frontend encerrou inesperadamente durante a inicialização."
+    fi
     sleep 1
   done
-  [ "$frontend_ok" -eq 1 ] || die "O Frontend não respondeu a tempo. Verifique o log em: $LOG_DIR/frontend.log"
+  if [ "$frontend_ok" -ne 1 ]; then
+    printf "\n${RED}--- Últimas linhas de %s ---${NC}\n" "$LOG_DIR/frontend.log" >&2
+    tail -n 30 "$LOG_DIR/frontend.log" >&2 || true
+    die "O Frontend não respondeu a tempo. Verifique o log em: $LOG_DIR/frontend.log"
+  fi
   ok "Frontend online em http://localhost:$WEB_PORT"
 
   printf "\n${GREEN}======================================================================${NC}\n"

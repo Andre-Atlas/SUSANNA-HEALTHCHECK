@@ -282,6 +282,6 @@ async def chat_stream_endpoint(
             logger.error("Error streaming LLM: %s", e)
             fallback_text = f"\n\n[Informações oficiais recuperadas]:\n{results[0].text}" if results else "\n\nConsulte uma UBS próxima ou ligue 160."
             yield json.dumps({"type": "chunk", "content": fallback_text}) + "\n"
-            yield json.dumps({"type": "done", "source": best_source, "error": True, "options": []}) + "\n"
+            yield json.dumps({"type": "done", "source": best_source, "error": True, "options": [], "is_blocked": False}) + "\n"
 
     return StreamingResponse(llm_gen(), media_type="application/x-ndjson")
