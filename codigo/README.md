@@ -41,8 +41,18 @@ O código funcional da solução **SUSANA (SUS Digital — Meu SUS Brasília)** 
 
 ## 🧪 Comandos de Execução e Teste
 
+### Execução Automática Unificada (Recomendado)
 ```bash
-# Backend: ambiente, testes (151) e servidor
+# Configura Python .venv, .env, Guardrail, ChromaDB, npm install e sobe Backend (:8000) + Frontend (:3000)
+bash setup.sh --start
+
+# Executa os 237 testes do Backend + build de produção do Frontend
+bash setup.sh --test
+```
+
+### Execução Manual Passo a Passo
+```bash
+# Backend: ambiente, testes (237) e servidor
 cd susana_rag_backend
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt

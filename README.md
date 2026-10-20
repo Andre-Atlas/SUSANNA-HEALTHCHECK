@@ -10,7 +10,7 @@
 [![Next.js 16](https://img.shields.io/badge/Next.js-16_Turbopack-black?logo=next.js&logoColor=white)](https://nextjs.org)
 [![ChromaDB](https://img.shields.io/badge/ChromaDB-Vector_Store-orange)](https://www.trychroma.com)
 [![MLflow](https://img.shields.io/badge/MLflow-Experiment_Tracking-blue?logo=mlflow&logoColor=white)](https://mlflow.org)
-[![Pytest](https://img.shields.io/badge/Tests-151_passed-brightgreen?logo=pytest&logoColor=white)](https://pytest.org)
+[![Pytest](https://img.shields.io/badge/Tests-237_passed-brightgreen?logo=pytest&logoColor=white)](https://pytest.org)
 [![Acessibilidade](https://img.shields.io/badge/WCAG-2.1_AA-success)](https://www.w3.org/WAI/standards-guidelines/wcag/)
 
 ---
@@ -68,65 +68,81 @@ Toda a engenharia, modelagem e design do projeto estão detalhados na suíte de 
 
 ---
 
-## 🚀 Quickstart — Como Executar Localmente
+## 🚀 Quickstart — Como Instalar e Rodar em Poucos Comandos
 
-### Pré-requisitos
-- Python 3.11 ou superior
-- Node.js 20.9 ou superior e npm
-- Ollama instalado e em execução:
+O repositório conta com o script multiplataforma **`setup.sh`** (compatível com **macOS**, **Linux** e **Windows WSL2/Git Bash**), que detecta e configura automaticamente o ambiente Python, o modelo clínico de Guardrail, o índice ChromaDB, os pacotes Node.js e o Ollama opcional.
+
+### Opção 1 — Instalação e Execução Automática (3 comandos)
 ```bash
-ollama pull llama3.1:8b
+git clone https://github.com/Andre-Atlas/SUSANNA-HEALTHCHECK.git
+cd SUSANNA-HEALTHCHECK
+bash setup.sh --start
+```
+- **Interface Web (Next.js 16):** **`http://localhost:3000`**
+- **API Backend (FastAPI):** **`http://localhost:8000`**
+- **Swagger Interativo:** **`http://localhost:8000/docs`**
+- **Healthcheck:** **`http://localhost:8000/health`**
+
+### Opção 2 — Via Docker Compose (Qualquer máquina com Docker)
+```bash
+bash setup.sh --docker
 ```
 
-### 1. Parar Processos Anteriores (Se portas ocupadas)
-```bash
-lsof -ti:8000 | xargs kill -9 2>/dev/null
-lsof -ti:3000 | xargs kill -9 2>/dev/null
-```
+### Outros Comandos Úteis do `setup.sh`
+| Comando | O que faz |
+| :--- | :--- |
+| `bash setup.sh` | Apenas instala dependências, cria `.venv`/`.env` e valida modelos (sem subir servidores) |
+| `bash setup.sh --start` | Ajusta o ambiente (se necessário) e sobe Backend (`:8000`) + Frontend (`:3000`) em modo dev |
+| `bash setup.sh --prod` | Compila o Frontend (`npm run build`) e inicia Backend + Frontend em modo produção |
+| `bash setup.sh --test` | Roda os **237 testes automatizados** (`pytest`) do Backend + validação de build do Frontend |
+| `bash setup.sh --stop` | Encerra processos locais nas portas `8000`/`3000` e/ou contêineres Docker |
 
 ---
 
-### 2. Executar o Backend (API FastAPI)
-Em um terminal:
+### Execução Manual Passo a Passo (Opcional)
+
+Caso prefira rodar cada serviço manualmente em terminais separados:
+
+#### Pré-requisitos
+- Python 3.9+ (recomendado 3.11+)
+- Node.js 18.17+ (recomendado 20+) e npm
+- Ollama (opcional para geração LLM local; sem ele o chat opera em modo RAG determinístico oficial):
+  ```bash
+  ollama pull llama3.1:8b
+  ```
+
+#### 1. Backend (API FastAPI)
 ```bash
 cd susana_rag_backend
-python3 -m venv .venv
-source .venv/bin/activate
-pip install --upgrade pip
-pip install -r requirements.txt
-cp .env.example .env
+python3 -m venv .venv && source .venv/bin/activate
+pip install --upgrade pip && pip install -r requirements.txt
+cp -n .env.example .env
 python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 ```
-- API ativa em: **`http://localhost:8000`**
-- Swagger interativo: **`http://localhost:8000/docs`**
-- Healthcheck: **`http://localhost:8000/health`**
 
----
-
-### 3. Executar o Frontend (Next.js 16)
-Em outro terminal:
+#### 2. Frontend (Next.js 16)
 ```bash
 cd susana-ui
 npm install
 npm run dev
 ```
-- Acesse a interface web em: **`http://localhost:3000`**
 
 ---
 
 ## 🧪 Suíte de Testes Automatizados
 
-Para executar a validação de regressão do backend (151 testes passando sem dados mockados):
+Em um único comando na raiz:
 ```bash
-cd susana_rag_backend
-source .venv/bin/activate
-pytest tests/ -v
+bash setup.sh --test
 ```
 
-Para validar a compilação de produção do frontend Next.js:
+Ou manualmente:
 ```bash
-cd susana-ui
-npm run build
+# Backend (237 testes passando sem dados mockados)
+cd susana_rag_backend && ./.venv/bin/pytest tests/ -v
+
+# Frontend (compilação de produção Next.js)
+cd susana-ui && npm run build
 ```
 
 ---

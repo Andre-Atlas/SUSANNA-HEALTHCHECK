@@ -6,14 +6,21 @@ services:
     container_name: susana-backend
     restart: unless-stopped
     environment:
-      - ENVIRONMENT=production
-      - CORS_ORIGINS=*
-      - CHROMA_PERSIST_DIRECTORY=/app/data/chroma_db
-      - RELEVANCE_CONFIDENT_THRESHOLD=0.35
-      - ONLINE_SEARCH_ENABLED=true
+      - ENVIRONMENT=${ENVIRONMENT:-production}
+      - CORS_ORIGINS=${CORS_ORIGINS:-*}
+      - CHROMA_DIR=/app/data/chroma_db
+      - APP_DB_PATH=/app/data/db/susana_app.db
+      - INGESTION_API_KEY=${INGESTION_API_KEY:-susana-docker-local-key-2026}
+      - RELEVANCE_CONFIDENT_THRESHOLD=${RELEVANCE_CONFIDENT_THRESHOLD:-0.35}
+      - ONLINE_SEARCH_ENABLED=${ONLINE_SEARCH_ENABLED:-true}
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     volumes:
       - susana_chroma_data:/app/data/chroma_db
-      - susana_app_data:/app/data
+      - susana_app_data:/app/data/db
+    ports:
+      - "${API_PORT:-8000}:8000"
     expose:
       - "8000"
     healthcheck:
@@ -29,11 +36,16 @@ services:
       dockerfile: Dockerfile
       args:
         - NEXT_PUBLIC_API_URL=
+        - BACKEND_URL=http://backend:8000
     container_name: susana-frontend
     restart: unless-stopped
+    environment:
+      - BACKEND_URL=http://backend:8000
     depends_on:
       backend:
         condition: service_healthy
+    ports:
+      - "${WEB_PORT:-3000}:3000"
     expose:
       - "3000"
     healthcheck:

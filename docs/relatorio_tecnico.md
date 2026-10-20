@@ -144,7 +144,7 @@ print(f"ROC-AUC Teste:        {run.data.metrics['test_roc_auc']:.4f}")
 #### Inspeção Visual via Interface Web
 Para inicializar o painel interativo do MLflow e comparar curvas e corridas visualmente:
 ```bash
-cd /Users/aluno2/SUSANA/susana_rag_backend
+cd susana_rag_backend
 mlflow ui --backend-store-uri "sqlite:///mlflow.db" --port 5001
 ```
 

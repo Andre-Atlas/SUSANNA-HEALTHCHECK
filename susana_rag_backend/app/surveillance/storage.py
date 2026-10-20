@@ -30,10 +30,11 @@ class SurveillanceStorage:
 
     def __init__(self, db_path: Optional[Path] = None):
         if db_path is None:
-            backend_dir = Path(__file__).resolve().parent.parent.parent
-            self.db_path = backend_dir / "data" / "susana_app.db"
+            from app.config import get_settings
+
+            self.db_path = Path(get_settings().app_db_path)
         else:
-            self.db_path = db_path
+            self.db_path = Path(db_path)
 
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
         self._lock = threading.RLock()

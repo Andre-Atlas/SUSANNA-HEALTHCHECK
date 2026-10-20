@@ -14,14 +14,24 @@
 set -u
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-CLOUDFLARED="${CLOUDFLARED:-$HOME/tools/cloudflared/cloudflared}"
+export PATH="$HOME/.local/bin:/opt/homebrew/bin:/usr/local/bin:$PATH"
+if [ -z "${CLOUDFLARED:-}" ]; then
+  if command -v cloudflared >/dev/null 2>&1; then
+    CLOUDFLARED="$(command -v cloudflared)"
+  else
+    CLOUDFLARED="$HOME/tools/cloudflared/cloudflared"
+  fi
+fi
 SITE_PORT="${SITE_PORT:-3001}"
 LOG="${TMPDIR:-/tmp}/susana-demo"
 mkdir -p "$LOG"
 
 die() { echo "ERRO: $*" >&2; exit 1; }
-[ -x "$CLOUDFLARED" ] || die "cloudflared não encontrado em $CLOUDFLARED"
-[ -x "$ROOT/susana_rag_backend/.venv/bin/uvicorn" ] || die "ambiente do backend não encontrado (.venv)"
+[ -x "$CLOUDFLARED" ] || die "cloudflared não encontrado no PATH nem em $CLOUDFLARED (instale com 'brew install cloudflared' ou defina CLOUDFLARED=...)"
+if [ ! -x "$ROOT/susana_rag_backend/.venv/bin/uvicorn" ]; then
+  echo "Configurando o ambiente automaticamente via setup.sh..."
+  bash "$ROOT/setup.sh" --skip-ollama || die "falha ao preparar o ambiente com setup.sh"
+fi
 curl -s -m 3 http://localhost:11434/api/tags >/dev/null || echo "AVISO: Ollama não respondeu; abra o app Ollama, senão o chat usa só os trechos oficiais."
 
 PIDS=()
@@ -57,7 +67,7 @@ PIDS+=($!)
 for _ in $(seq 1 30); do curl -s -m 2 -o /dev/null "http://localhost:$SITE_PORT/" && break; sleep 1; done
 
 # 3. Túnel público com HTTPS
-"$CLOUDFLARED" tunnel --no-autoupdate --url "http://localhost:$SITE_PORT" > "$LOG/tunnel.log" 2>&1 &
+"$CLOUDFLARED" tunnel --no-autoupdate --protocol "${TUNNEL_PROTOCOL:-http2}" --url "http://localhost:$SITE_PORT" > "$LOG/tunnel.log" 2>&1 &
 PIDS+=($!)
 URL=""
 for _ in $(seq 1 40); do
@@ -66,9 +76,11 @@ for _ in $(seq 1 40); do
 done
 [ -n "$URL" ] || die "o túnel não abriu (veja $LOG/tunnel.log)"
 
-# Mantém o Mac acordado enquanto o script roda
-caffeinate -dims -w $$ &
-PIDS+=($!)
+# Mantém o Mac acordado enquanto o script roda (apenas macOS)
+if command -v caffeinate >/dev/null 2>&1; then
+  caffeinate -dims -w $$ &
+  PIDS+=($!)
+fi
 
 echo "============================================================"
 echo " SUSANNA no ar:  $URL"

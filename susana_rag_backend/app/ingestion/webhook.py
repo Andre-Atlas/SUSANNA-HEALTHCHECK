@@ -7,7 +7,7 @@ from typing import Optional
 from fastapi import APIRouter, Depends, Header, HTTPException, status
 from pydantic import BaseModel
 
-from app.config import get_settings
+from app.config import DEFAULT_INGESTION_KEY, get_settings
 from app.ingestion.contracts import IngestionResult, RawDocumentPayload
 from app.ingestion.processor import IngestionProcessor
 
@@ -46,6 +46,9 @@ def verify_ingestion_key(
     """Valida a chave secreta de autenticação do webhook de forma fail-closed."""
     settings = get_settings()
     expected_key = settings.ingestion_api_key or os.getenv("INGESTION_API_KEY")
+    if settings.environment == "production" and expected_key == DEFAULT_INGESTION_KEY:
+        # A chave padrão é pública (está no repositório): nunca aceitar em produção
+        expected_key = None
     if not expected_key:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

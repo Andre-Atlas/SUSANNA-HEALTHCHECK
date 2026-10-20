@@ -2,6 +2,26 @@
 
 ---
 
+## ⚡ 0. Instalação e Execução Rápida (Qualquer Máquina)
+
+Na raiz do repositório, o script **`setup.sh`** automatiza toda a preparação do sistema em **macOS**, **Linux** e **Windows (WSL2 / Git Bash)**:
+
+```bash
+# 1. Configura todo o sistema (Python .venv, .env, Guardrail ML, ChromaDB e npm install) e inicia tudo:
+bash setup.sh --start
+```
+
+Outros modos disponíveis no `setup.sh`:
+```bash
+bash setup.sh            # Apenas instala e ajusta o ambiente (sem subir servidores)
+bash setup.sh --prod     # Compila o frontend e sobe tudo em modo produção
+bash setup.sh --docker   # Compila e sobe tudo via Docker Compose
+bash setup.sh --test     # Roda os 237 testes do backend (pytest) + build do frontend
+bash setup.sh --stop     # Libera as portas 8000/3000 e para contêineres Docker
+```
+
+---
+
 ## 📋 1. Pré-Requisitos de Ambiente
 
 Para executar e testar todos os módulos da plataforma, certifique-se de que o ambiente local possui:
@@ -31,21 +51,25 @@ Copie o arquivo de exemplo se necessário:
 cp .env.example .env
 ```
 
-Configurações principais suportadas:
+Configurações principais suportadas (`susana_rag_backend/.env`):
 ```ini
-# Configuração do Gateway FastAPI
-HOST=0.0.0.0
-PORT=8000
-DEBUG=False
+# Ambiente (development | production)
+ENVIRONMENT=development
+
+# LLM Local (Ollama)
+OLLAMA_BASE_URL=http://localhost:11434
+OLLAMA_MODEL=llama3.1:8b
 
 # Limiar de Relevância Semântica
+SIMILARITY_THRESHOLD=0.55
 RELEVANCE_CONFIDENT_THRESHOLD=0.35
 
-# ChromaDB
-CHROMA_PERSIST_DIRECTORY=data/chroma_db
+# Persistência (ChromaDB e SQLite WAL)
+CHROMA_DIR=data/chroma_db
+APP_DB_PATH=data/susana_app.db
 
 # Chave Secreta para Webhooks de Ingestão
-INGESTION_SECRET_KEY=chave_secreta_homologacao_sus_2026
+INGESTION_API_KEY=susana-ingest-secret-2026
 ```
 
 ### 2.3. Inicialização do Servidor FastAPI
