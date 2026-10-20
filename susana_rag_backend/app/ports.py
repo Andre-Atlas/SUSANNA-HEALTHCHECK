@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Iterator, List, Sequence
+from typing import Iterator, List, Optional, Sequence
 
 try:  # Python 3.9: Protocol existe em typing
     from typing import Protocol
@@ -16,7 +16,7 @@ class RetrievedChunk:
     text: str
     source: str
     distance: float
-    url: str | None = None
+    url: Optional[str] = None
 
 
 @dataclass(frozen=True)

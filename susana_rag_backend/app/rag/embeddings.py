@@ -27,10 +27,22 @@ def _resolve(model_name: str) -> str:
 
 class Embedder:
     def __init__(self, model_name: str, max_seq_length: int = 512):
+        from huggingface_hub import snapshot_download
         from sentence_transformers import SentenceTransformer  # import tardio (pesado)
 
         self.model_name = _resolve(model_name)
-        self._model = SentenceTransformer(self.model_name)
+        try:
+            local_dir = snapshot_download(self.model_name, local_files_only=True)
+            self._model = SentenceTransformer(local_dir, local_files_only=True)
+        except Exception:
+            logger.info("Modelo %s não encontrado no cache local; baixando do Hugging Face...", self.model_name)
+            self._model = SentenceTransformer(self.model_name)
+        if str(getattr(self._model, "device", "")).startswith("mps"):
+            try:
+                self._model.encode(["ok"], show_progress_bar=False)
+            except Exception:
+                logger.info("MPS indisponível neste ambiente; usando CPU para embeddings.")
+                self._model = self._model.to("cpu")
         model_max_positions = self._model[0].auto_model.config.max_position_embeddings
         self._model.max_seq_length = min(max_seq_length, model_max_positions)
         self._q_prefix, self._p_prefix = _PREFIXES.get(_family(self.model_name), ("", ""))

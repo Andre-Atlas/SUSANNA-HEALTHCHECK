@@ -10,6 +10,7 @@ import logging
 import os
 import time
 from contextlib import asynccontextmanager
+from typing import Optional
 
 import mlflow
 from fastapi import FastAPI, HTTPException
@@ -36,7 +37,7 @@ logger = logging.getLogger("susana")
 # ---------------------------------------------------------------------------
 settings = get_settings()
 guardrails = GuardrailsClassifier()
-pipeline: RAGPipeline | None = None
+pipeline: Optional[RAGPipeline] = None
 
 
 # ---------------------------------------------------------------------------
@@ -159,7 +160,7 @@ class ChatRequest(BaseModel):
 
 class ChatResponse(BaseModel):
     response: str
-    source: str | None = None
+    source: Optional[str] = None
     is_blocked: bool = False
     latency_ms: int = 0
 
