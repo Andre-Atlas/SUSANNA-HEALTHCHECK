@@ -5,9 +5,14 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Optional
 
+from pydantic import AliasChoices, Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 BACKEND_DIR = Path(__file__).resolve().parent.parent
+
+
+# Valor de desenvolvimento (público no repositório): em produção é recusado.
+DEFAULT_INGESTION_KEY = "susana-ingest-secret-2026"
 
 
 class Settings(BaseSettings):
@@ -37,14 +42,25 @@ class Settings(BaseSettings):
         else (BACKEND_DIR.parent / "CORPUS")
     )
     legacy_docs_file: Path = BACKEND_DIR / "data" / "sus_docs.txt"
-    chroma_dir: Path = BACKEND_DIR / "data" / "chroma_db"
+    chroma_dir: Path = Field(
+        default=BACKEND_DIR / "data" / "chroma_db",
+        validation_alias=AliasChoices("chroma_dir", "CHROMA_DIR", "CHROMA_PERSIST_DIRECTORY"),
+    )
+    # SQLite de contas, agenda e vigilância (em produção fica num volume próprio)
+    app_db_path: Path = Field(
+        default=BACKEND_DIR / "data" / "susana_app.db",
+        validation_alias=AliasChoices("app_db_path", "APP_DB_PATH"),
+    )
 
     # Guardrail
     guardrail_model_uri: str = "models:/susana-guardrail@champion"
     guardrail_enabled_ml: bool = True
 
     # Ingestão Autônoma & Segurança
-    ingestion_api_key: Optional[str] = "susana-ingest-secret-2026"
+    ingestion_api_key: Optional[str] = Field(
+        default=DEFAULT_INGESTION_KEY,
+        validation_alias=AliasChoices("ingestion_api_key", "INGESTION_API_KEY", "INGESTION_SECRET_KEY"),
+    )
     relevance_confident_threshold: float = 0.35
 
     # Cadastro opcional / sessões de login

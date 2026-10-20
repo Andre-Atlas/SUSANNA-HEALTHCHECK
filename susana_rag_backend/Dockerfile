@@ -3,7 +3,7 @@
 # Suporte nativo a arquiteturas ARM64 (Ampere A1 OCI) e AMD64 (x86_64)
 # =========================================================================
 
-FROM python:3.9-slim
+FROM python:3.11-slim
 
 WORKDIR /app
 
@@ -27,10 +27,9 @@ RUN python -c "from sentence_transformers import SentenceTransformer; SentenceTr
 COPY app/ ./app/
 COPY data/ ./data/
 COPY ml/ ./ml/
-COPY models/ ./models/
 
 # Cria diretórios de runtime com permissões adequadas
-RUN mkdir -p /app/data/chroma_db /app/data/corpus /app/mlruns && \
+RUN mkdir -p /app/data/chroma_db /app/data/corpus /app/data/db /app/mlruns && \
     useradd -m -u 1001 appuser && \
     chown -R appuser:appuser /app
 
