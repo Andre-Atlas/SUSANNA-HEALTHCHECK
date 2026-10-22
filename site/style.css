@@ -105,3 +105,6 @@ footer{margin-top:56px;padding:26px 0;border-top:1px solid var(--line);color:var
 }
 @media (max-width:520px){.ask{flex-direction:column}.ask button{padding:13px}.lead{font-size:16.5px}}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+.showcase{margin:20px 0 0}
+.showcase video{display:block;width:100%;aspect-ratio:16/9;background:#000;border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow)}
