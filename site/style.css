@@ -112,3 +112,60 @@ footer{margin-top:56px;padding:26px 0;border-top:1px solid var(--line);color:var
 
 .showcase{margin:20px 0 0}
 .showcase video{display:block;width:100%;aspect-ratio:16/9;background:#000;border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow)}
+
+/* ---------- Figuras em SVG (diagramas e gráficos gerados para caber na tela) ---------- */
+.fig{position:relative;margin:0;padding:46px 18px 14px;background:var(--surface);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow)}
+.fig + .fig,.diagram + .fig,.fig + .diagram{margin-top:18px}
+.figscroll{overflow-x:auto}
+.fig svg.d{display:block;width:100%;height:auto;max-height:calc(100vh - 170px);margin:0 auto}
+.fig figcaption{margin-top:10px;font-size:14px;color:var(--mut)}
+.fig figcaption b{color:var(--ink)}
+.charts{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.charts .fig p{margin:10px 0 0;font-size:14.5px;color:var(--mut)}
+.charts .fig p b{color:var(--ink)}
+
+svg.d{font-family:inherit}
+svg.d .box{fill:var(--surface);stroke:var(--line);stroke-width:1.5}
+svg.d .box.ml{fill:color-mix(in srgb,var(--ok) 13%,var(--surface));stroke:var(--ok);stroke-width:2}
+svg.d .box.llm{fill:color-mix(in srgb,var(--b2) 15%,var(--surface));stroke:var(--b2);stroke-width:2}
+svg.d .box.dec{fill:var(--b4);stroke:var(--b3);stroke-width:1.5}
+svg.d .box.hub{fill:color-mix(in srgb,var(--warn) 12%,var(--surface));stroke:var(--warn);stroke-width:1.5}
+svg.d .box.exit{fill:var(--surface);stroke:var(--mut);stroke-width:1.3;stroke-dasharray:5 4}
+svg.d .band{fill:color-mix(in srgb,var(--b4) 55%,transparent);stroke:var(--line)}
+svg.d .n{font-size:13.5px;font-weight:700;fill:var(--ink)}
+svg.d .t{font-size:12.5px;fill:var(--mut)}
+svg.d .tk{fill:var(--ink)}
+svg.d .lbl{font-size:12px;font-style:italic;fill:var(--mut)}
+svg.d .hdr{font-size:11.5px;font-weight:700;letter-spacing:.08em;fill:var(--mut)}
+svg.d .edge{fill:none;stroke:var(--mut);stroke-width:1.5}
+svg.d .edge.dot{stroke-dasharray:4 4}
+svg.d .ah{fill:var(--mut)}
+svg.d .gridl{stroke:var(--line);stroke-width:1}
+svg.d .axl{stroke:var(--mut);stroke-width:1.2}
+svg.d .ax{font-size:11.5px;fill:var(--mut)}
+svg.d .val{font-size:11.5px;font-weight:700;fill:var(--ink)}
+svg.d .gbar.a{fill:var(--b3);opacity:.55}
+svg.d .gbar.b{fill:var(--b1)}
+svg.d .cell.ok{fill:color-mix(in srgb,var(--ok) 16%,var(--surface));stroke:var(--ok);stroke-width:1.5}
+svg.d .cell.bad{fill:color-mix(in srgb,var(--warn) 16%,var(--surface));stroke:var(--warn);stroke-width:1.5}
+svg.d .big{font-size:30px;font-weight:700;fill:var(--ink)}
+
+/* botão de ampliar e tela cheia */
+.zoom{position:absolute;top:10px;right:12px;z-index:2;padding:5px 12px;border-radius:99px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-size:13px;font-weight:600;cursor:pointer;box-shadow:var(--shadow)}
+.zoom:hover{border-color:var(--b2);color:var(--b2)}
+.diagram{position:relative;padding-top:46px}
+.diagram pre.mermaid svg{max-height:calc(100vh - 170px)}
+#lightbox{width:96vw;height:94vh;max-width:none;max-height:none;padding:52px 20px 20px;border:0;border-radius:18px;background:var(--surface);color:var(--ink)}
+#lightbox::backdrop{background:rgba(5,10,25,.72)}
+#lightbox .close{position:absolute;top:12px;right:16px}
+#lightbox .lbbody{width:100%;height:100%;display:flex;align-items:center;justify-content:center;overflow:auto}
+#lightbox .lbbody svg{width:100% !important;height:100% !important;max-width:none !important;max-height:none !important}
+
+@media (max-width:860px){.charts{grid-template-columns:1fr}}
+@media (max-width:760px){
+  .figscroll svg.d{min-width:720px;max-height:none}
+  .charts .figscroll svg.d{min-width:480px}
+  .zoom{top:8px;right:8px}
+}
+
+.fig + .tablewrap{margin-top:18px}

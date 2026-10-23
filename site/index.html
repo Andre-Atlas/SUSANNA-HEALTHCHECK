@@ -6,7 +6,7 @@
 <title>SUSANNA · Como o projeto funciona</title>
 <meta name="description" content="Fluxograma, arquitetura, treinamento dos modelos, MLflow, SDD e perguntas frequentes do projeto SUSANNA (SUS Digital), assistente de saúde pública do Distrito Federal.">
 <link rel="icon" href="assets/avatar.webp" type="image/webp">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=20261023">
 </head>
 <body>
 
@@ -17,12 +17,12 @@
       <a href="#video">Vídeo</a>
       <a href="#fluxo">Fluxo</a>
       <a href="#arquitetura">Arquitetura</a>
-      <a href="#chromadb">ChromaDB</a>
       <a href="#modelos">Modelos</a>
+      <a href="#chromadb">ChromaDB</a>
       <a href="#treinamento">Treinamento</a>
+      <a href="#avaliacao">Métricas</a>
       <a href="#mlflow">MLflow</a>
       <a href="#sdd">SDD</a>
-      <a href="#avaliacao">Avaliação</a>
       <a href="#api">API</a>
       <a href="#faq">Perguntas</a>
     </nav>
@@ -49,7 +49,7 @@
     <ul class="stats">
       <li><b>383</b><span>unidades de saúde</span></li>
       <li><b>33</b><span>regiões administrativas</span></li>
-      <li><b>2.368</b><span>trechos no ChromaDB</span></li>
+      <li><b>2.337</b><span>trechos no ChromaDB</span></li>
       <li><b>3</b><span>modelos de IA</span></li>
       <li><b>237</b><span>testes automatizados</span></li>
     </ul>
@@ -74,38 +74,19 @@
 
 <section id="fluxo" class="wrap">
   <h2>Fluxograma: o caminho de uma pergunta</h2>
-  <p class="sub">Cada mensagem do chat passa por estas etapas antes de virar resposta. A maior parte é código determinístico; o modelo de linguagem só entra no final.</p>
-  <figure class="diagram">
-<pre class="mermaid">
-flowchart TD
-  A["Cidadão digita a pergunta"] --> B["1 Contextualização<br/>resolve 'e o horário?' com a conversa"]
-  B --> C["2 Normalização popular<br/>abreviações, erros, acentos, urgência"]
-  C --> D{"3 É pedido de<br/>lembrete ou agenda?"}
-  D -- "sim" --> D1["Proposta de evento<br/>cidadão confirma ou descarta"]
-  D -- "não" --> E{"4 Guardrail clínico<br/>regex + modelo ML"}
-  E -- "clínica" --> E1["Bloqueia e orienta<br/>UBS ou SAMU 192"]
-  E -- "administrativa" --> F{"5 Tem assunto de saúde<br/>ou serviço?"}
-  F -- "não" --> F1["Fora do tema:<br/>mensagem de não encontrei"]
-  F -- "sim" --> G["6 NLU<br/>região, persona, intenção"]
-  G --> H["7 Busca no ChromaDB<br/>vetor + filtro de região + reordenação"]
-  H --> I{"8 Resultado<br/>relevante?"}
-  I -- "não" --> I1["Tenta sem filtro e<br/>busca online restrita"]
-  I1 --> J{"Relevante?"}
-  J -- "não" --> J1["Não encontrei informação<br/>em urgência cita o SAMU 192"]
-  J -- "sim" --> K
-  I -- "sim" --> K["9 Llama 3.1 8B local<br/>só com os trechos oficiais"]
-  K --> L["10 Streaming NDJSON<br/>texto, fontes e atalhos"]
-  L --> M["Histórico salvo<br/>no SQLite"]
-</pre>
-  </figure>
+  <p class="sub">Cada mensagem passa por dez etapas. A maior parte é código determinístico: só três modelos entram (guardrail, MiniLM e o LLM), e o LLM só na etapa 8. Quatro saídas encerram a resposta antes, sem gastar o LLM.</p>
+  <figure class="fig">
+<div class="figscroll"><svg class="d" id="svg-fluxo" viewBox="0 0 1040 468" role="img" aria-label="Caminho de uma pergunta: dez etapas, quatro saídas antecipadas e o LLM só na etapa 8"><title>Caminho de uma pergunta: dez etapas, quatro saídas antecipadas e o LLM só na etapa 8</title><defs><marker id="svg-fluxo-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah" d="M0 0L10 5L0 10z"/></marker></defs><rect class="box ml" x="16" y="4" width="16" height="16" rx="4"/><text class="t tk" x="40" y="16.5">modelo de ML</text><rect class="box llm" x="149.0" y="4" width="16" height="16" rx="4"/><text class="t tk" x="173.0" y="16.5">LLM</text><rect class="box dec" x="221.25" y="4" width="16" height="16" rx="4"/><text class="t tk" x="245.25" y="16.5">decisão</text><rect class="box exit" x="320.5" y="4" width="16" height="16" rx="4"/><text class="t tk" x="344.5" y="16.5">saída antecipada</text><rect class="box plain" x="16" y="60" width="176" height="72" rx="10"/><text class="n" x="104.0" y="84.0" text-anchor="middle">1 · Contexto</text><text class="t" x="104.0" y="100.5" text-anchor="middle">resolve 'e o horário?'</text><text class="t" x="104.0" y="117.0" text-anchor="middle">normaliza a escrita</text><rect class="box dec" x="224" y="60" width="176" height="72" rx="10"/><text class="n" x="312.0" y="84.0" text-anchor="middle">2 · É agenda?</text><text class="t" x="312.0" y="100.5" text-anchor="middle">pedido de lembrete</text><text class="t" x="312.0" y="117.0" text-anchor="middle">ou consulta marcada</text><rect class="box ml" x="432" y="60" width="176" height="72" rx="10"/><text class="n" x="520.0" y="84.0" text-anchor="middle">3 · Guardrail</text><text class="t" x="520.0" y="100.5" text-anchor="middle">8 regex + regressão</text><text class="t" x="520.0" y="117.0" text-anchor="middle">logística (p ≥ 0,60)</text><rect class="box dec" x="640" y="60" width="176" height="72" rx="10"/><text class="n" x="728.0" y="84.0" text-anchor="middle">4 · É de saúde?</text><text class="t" x="728.0" y="100.5" text-anchor="middle">assunto de saúde ou</text><text class="t" x="728.0" y="117.0" text-anchor="middle">serviço do SUS-DF</text><rect class="box plain" x="848" y="60" width="176" height="72" rx="10"/><text class="n" x="936.0" y="84.0" text-anchor="middle">5 · NLU</text><text class="t" x="936.0" y="100.5" text-anchor="middle">região (33 RAs),</text><text class="t" x="936.0" y="117.0" text-anchor="middle">persona e intenção</text><rect class="box ml" x="848" y="272" width="176" height="72" rx="10"/><text class="n" x="936.0" y="296.0" text-anchor="middle">6 · Busca</text><text class="t" x="936.0" y="312.5" text-anchor="middle">vetor MiniLM no</text><text class="t" x="936.0" y="329.0" text-anchor="middle">ChromaDB + filtro RA</text><rect class="box dec" x="640" y="272" width="176" height="72" rx="10"/><text class="n" x="728.0" y="296.0" text-anchor="middle">7 · Relevante?</text><text class="t" x="728.0" y="312.5" text-anchor="middle">distância 0,35 / 0,65</text><text class="t" x="728.0" y="329.0" text-anchor="middle">/ 0,82 + termos</text><rect class="box llm" x="432" y="272" width="176" height="72" rx="10"/><text class="n" x="520.0" y="296.0" text-anchor="middle">8 · LLM</text><text class="t" x="520.0" y="312.5" text-anchor="middle">qwen2.5:3b, só com</text><text class="t" x="520.0" y="329.0" text-anchor="middle">os 3 trechos oficiais</text><rect class="box plain" x="224" y="272" width="176" height="72" rx="10"/><text class="n" x="312.0" y="296.0" text-anchor="middle">9 · Streaming</text><text class="t" x="312.0" y="312.5" text-anchor="middle">texto aos poucos,</text><text class="t" x="312.0" y="329.0" text-anchor="middle">fontes e atalhos</text><rect class="box plain" x="16" y="272" width="176" height="72" rx="10"/><text class="n" x="104.0" y="296.0" text-anchor="middle">10 · Histórico</text><text class="t" x="104.0" y="312.5" text-anchor="middle">conversa salva</text><text class="t" x="104.0" y="329.0" text-anchor="middle">no SQLite</text><path class="edge" d="M192 96.0H224" marker-end="url(#svg-fluxo-a)"/><path class="edge" d="M400 96.0H432" marker-end="url(#svg-fluxo-a)"/><path class="edge" d="M608 96.0H640" marker-end="url(#svg-fluxo-a)"/><path class="edge" d="M816 96.0H848" marker-end="url(#svg-fluxo-a)"/><text class="lbl" x="416.0" y="88.0" text-anchor="middle">não</text><text class="lbl" x="832.0" y="88.0" text-anchor="middle">sim</text><path class="edge" d="M312.0 132V172" marker-end="url(#svg-fluxo-a)"/><text class="lbl" x="320.0" y="156" text-anchor="start">sim</text><rect class="box exit" x="224" y="172" width="176" height="56" rx="10"/><text class="t" x="312.0" y="196.2" text-anchor="middle">propõe o evento;</text><text class="t" x="312.0" y="212.8" text-anchor="middle">cidadão confirma</text><path class="edge" d="M520.0 132V172" marker-end="url(#svg-fluxo-a)"/><text class="lbl" x="528.0" y="156" text-anchor="start">clínica</text><rect class="box exit" x="432" y="172" width="176" height="56" rx="10"/><text class="t" x="520.0" y="196.2" text-anchor="middle">bloqueia e orienta</text><text class="t" x="520.0" y="212.8" text-anchor="middle">UBS ou SAMU 192</text><path class="edge" d="M728.0 132V172" marker-end="url(#svg-fluxo-a)"/><text class="lbl" x="736.0" y="156" text-anchor="start">não</text><rect class="box exit" x="640" y="172" width="176" height="56" rx="10"/><text class="t" x="728.0" y="196.2" text-anchor="middle">responde que está</text><text class="t" x="728.0" y="212.8" text-anchor="middle">fora do tema</text><path class="edge" d="M936.0 132V272" marker-end="url(#svg-fluxo-a)"/><path class="edge" d="M848 308.0H816" marker-end="url(#svg-fluxo-a)"/><path class="edge" d="M640 308.0H608" marker-end="url(#svg-fluxo-a)"/><path class="edge" d="M432 308.0H400" marker-end="url(#svg-fluxo-a)"/><path class="edge" d="M224 308.0H192" marker-end="url(#svg-fluxo-a)"/><text class="lbl" x="624.0" y="300.0" text-anchor="middle">sim</text><path class="edge" d="M728.0 344V384" marker-end="url(#svg-fluxo-a)"/><text class="lbl" x="736.0" y="368" text-anchor="start">não</text><rect class="box exit" x="640" y="384" width="176" height="56" rx="10"/><text class="t" x="728.0" y="408.2" text-anchor="middle">diz que não encontrou,</text><text class="t" x="728.0" y="424.8" text-anchor="middle">sem inventar</text><path class="edge" d="M520.0 344V384" marker-end="url(#svg-fluxo-a)"/><text class="lbl" x="528.0" y="368" text-anchor="start">falhou</text><rect class="box exit" x="432" y="384" width="176" height="56" rx="10"/><text class="t" x="520.0" y="408.2" text-anchor="middle">devolve o trecho</text><text class="t" x="520.0" y="424.8" text-anchor="middle">oficial, sem LLM</text></svg></div>
+<figcaption>Leia da esquerda para a direita na linha de cima e da direita para a esquerda na de baixo. Entre a etapa 7 e o “não encontrei” existe uma busca online em portais oficiais; no deploy ela está desligada, porque os portais do GDF não respondem a servidores fora do Brasil.</figcaption>
+</figure>
   <div class="grid two">
     <article class="card">
       <h3>Por que nessa ordem?</h3>
-      <p>O guardrail vem antes da busca e do modelo para que um pedido clínico nunca chegue ao Llama. A normalização vem antes de tudo porque o embedding é sensível a abreviações e acentos: "cobra me mordeu" não tinha nada em comum com "animais peçonhentos" até a ponte de vocabulário existir.</p>
+      <p>O guardrail vem antes da busca e do modelo para que um pedido clínico nunca chegue ao LLM. A normalização vem antes de tudo porque o embedding é sensível a abreviações e acentos: "cobra me mordeu" não tinha nada em comum com "animais peçonhentos" até a ponte de vocabulário existir.</p>
     </article>
     <article class="card">
       <h3>Se algo falhar</h3>
-      <p>Sem o Ollama, a API devolve os trechos oficiais encontrados, sem texto gerado. Sem resposta relevante, o sistema diz que não encontrou, em vez de inventar. Se o modelo de guardrail não carregar, as regras de regex continuam bloqueando.</p>
+      <p>Sem o Ollama, ou se ele falhar no meio, a API devolve o trecho oficial encontrado, sem texto gerado. Sem resposta relevante, o sistema diz que não encontrou, em vez de inventar. Se o modelo de guardrail não carregar, as regras de regex continuam bloqueando.</p>
     </article>
   </div>
 
@@ -115,13 +96,13 @@ flowchart TD
 sequenceDiagram
   autonumber
   participant U as Navegador
-  participant N as Next.js
+  participant P as Caddy (HTTPS)
   participant F as FastAPI
   participant C as ChromaDB
-  participant O as Ollama Llama 3.1
-  U->>N: POST /api/chat/stream
-  N->>F: rewrite para 127.0.0.1:8000
-  F->>F: contextualiza, normaliza, guardrail, NLU
+  participant O as Ollama qwen2.5:3b
+  U->>P: POST /api/chat/stream
+  P->>F: encaminha /api/*
+  F->>F: contextualiza, guardrail, NLU, vetor MiniLM
   F->>C: consulta vetorial com filtro de região
   C-->>F: 3 trechos mais próximos
   F->>O: pergunta + trechos oficiais
@@ -136,7 +117,7 @@ sequenceDiagram
 
 <section id="arquitetura" class="wrap">
   <h2>Arquitetura</h2>
-  <p class="sub">Três camadas: interface, API e dados/IA. O navegador só fala com o Next.js, que repassa <code>/api/*</code> ao FastAPI.</p>
+  <p class="sub">Três camadas: interface, API e dados/IA. Em produção, o Caddy faz o HTTPS, entrega as telas do Next.js e encaminha <code>/api/*</code> ao FastAPI. Tudo sobe com Docker Compose.</p>
   <figure class="diagram">
 <pre class="mermaid">
 flowchart LR
@@ -151,14 +132,14 @@ flowchart LR
     R5["ingestion<br/>webhook protegido"]
   end
   subgraph DATA["Dados e IA"]
-    CH[("ChromaDB<br/>2.368 trechos")]
+    CH[("ChromaDB<br/>2.337 trechos")]
     SQ[("SQLite WAL<br/>cidadãos, agenda, histórico")]
     ML["MLflow<br/>guardrail champion"]
-    OL["Ollama<br/>Llama 3.1 8B"]
+    OL["Ollama<br/>qwen2.5:3b"]
     EM["MiniLM<br/>embeddings"]
   end
   SRC["Fontes oficiais<br/>saude.df.gov.br, dados.df.gov.br, gov.br"]
-  UI -->|"/api/*"| R1 & R2 & R3 & R4
+  UI -->|"/api/* via Caddy"| R1 & R2 & R3 & R4
   R1 --> CH
   R1 --> OL
   R1 --> ML
@@ -193,31 +174,15 @@ flowchart LR
 <section id="chromadb" class="wrap">
   <h2>Como o ChromaDB funciona</h2>
   <p class="sub">É o banco de busca por significado. Guarda cada trecho do corpus com um vetor de 384 números e devolve os mais próximos da pergunta. Não contém nenhum modelo treinado.</p>
-  <figure class="diagram">
-<pre class="mermaid">
-flowchart LR
-  subgraph IDX["Indexação, uma vez ou a cada atualização"]
-    A["Fontes<br/>txt, json, csv"] --> B["Divide em trechos<br/>com id e metadados"]
-    B --> C["MiniLM gera<br/>vetor de 384 números"]
-    C --> D[("Coleção persistente<br/>índice HNSW, cosseno")]
-  end
-  subgraph BUS["Busca, a cada pergunta"]
-    Q["Pergunta normalizada"] --> V["Vetor da pergunta"]
-    V --> F["Filtro por região<br/>até 40 candidatos"]
-    V --> G["Busca global<br/>pelo menos 300 candidatos"]
-    F --> RR["Reordena por regras lexicais<br/>nome exato da unidade"]
-    G --> RR
-    RR --> T["Top 3 trechos"]
-  end
-  D -.-> F
-  D -.-> G
-</pre>
-  </figure>
+  <figure class="fig">
+<div class="figscroll"><svg class="d" id="svg-chroma" viewBox="0 0 1040 352" role="img" aria-label="ChromaDB: indexação uma vez; busca a cada pergunta com filtro de região e reordenação"><title>ChromaDB: indexação uma vez; busca a cada pergunta com filtro de região e reordenação</title><defs><marker id="svg-chroma-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah" d="M0 0L10 5L0 10z"/></marker></defs><rect class="band" x="6" y="8" width="1028" height="128" rx="14"/><text class="hdr" x="20" y="30" text-anchor="start">INDEXAÇÃO · UMA VEZ OU A CADA ATUALIZAÇÃO DO CORPUS</text><rect class="box plain" x="20" y="44" width="230" height="76" rx="10"/><text class="n" x="135.0" y="70.0" text-anchor="middle">Fontes oficiais</text><text class="t" x="135.0" y="86.5" text-anchor="middle">txt, json e csv</text><text class="t" x="135.0" y="103.0" text-anchor="middle">da SES-DF</text><rect class="box plain" x="278" y="44" width="230" height="76" rx="10"/><text class="n" x="393.0" y="70.0" text-anchor="middle">Divide em trechos</text><text class="t" x="393.0" y="86.5" text-anchor="middle">até 900 caracteres, com</text><text class="t" x="393.0" y="103.0" text-anchor="middle">região, título e URL</text><rect class="box ml" x="536" y="44" width="230" height="76" rx="10"/><text class="n" x="651.0" y="70.0" text-anchor="middle">MiniLM gera o vetor</text><text class="t" x="651.0" y="86.5" text-anchor="middle">384 números por trecho</text><text class="t" x="651.0" y="103.0" text-anchor="middle">(pré-treinado, sem ajuste)</text><rect class="box plain" x="794" y="44" width="230" height="76" rx="10"/><text class="n" x="909.0" y="70.0" text-anchor="middle">Coleção persistente</text><text class="t" x="909.0" y="86.5" text-anchor="middle">índice HNSW, cosseno</text><text class="t" x="909.0" y="103.0" text-anchor="middle">2.337 trechos no deploy</text><path class="edge" d="M250 82H278" marker-end="url(#svg-chroma-a)"/><path class="edge" d="M508 82H536" marker-end="url(#svg-chroma-a)"/><path class="edge" d="M766 82H794" marker-end="url(#svg-chroma-a)"/><rect class="band" x="6" y="152" width="1028" height="192" rx="14"/><text class="hdr" x="20" y="174" text-anchor="start">BUSCA · A CADA PERGUNTA</text><rect class="box plain" x="20" y="224" width="176" height="76" rx="10"/><text class="n" x="108.0" y="250.0" text-anchor="middle">Pergunta</text><text class="t" x="108.0" y="266.5" text-anchor="middle">já normalizada e</text><text class="t" x="108.0" y="283.0" text-anchor="middle">com contexto</text><rect class="box ml" x="224" y="224" width="176" height="76" rx="10"/><text class="n" x="312.0" y="250.0" text-anchor="middle">Vetor da pergunta</text><text class="t" x="312.0" y="266.5" text-anchor="middle">mesmo MiniLM,</text><text class="t" x="312.0" y="283.0" text-anchor="middle">384 números</text><rect class="box plain" x="640" y="224" width="176" height="76" rx="10"/><text class="n" x="728.0" y="250.0" text-anchor="middle">Reordena</text><text class="t" x="728.0" y="266.5" text-anchor="middle">unidade e região exatas</text><text class="t" x="728.0" y="283.0" text-anchor="middle">e termos de saúde</text><rect class="box dec" x="848" y="224" width="176" height="76" rx="10"/><text class="n" x="936.0" y="250.0" text-anchor="middle">Top 3 + portão</text><text class="t" x="936.0" y="266.5" text-anchor="middle">relevante: vai ao LLM;</text><text class="t" x="936.0" y="283.0" text-anchor="middle">senão, não responde</text><rect class="box plain" x="432" y="188" width="176" height="56" rx="10"/><text class="n" x="520.0" y="212.2" text-anchor="middle">Filtro da região</text><text class="t" x="520.0" y="228.8" text-anchor="middle">até 40 candidatos</text><rect class="box plain" x="432" y="280" width="176" height="56" rx="10"/><text class="n" x="520.0" y="304.2" text-anchor="middle">Busca global</text><text class="t" x="520.0" y="320.8" text-anchor="middle">até 300 candidatos</text><path class="edge" d="M196 262H224" marker-end="url(#svg-chroma-a)"/><path class="edge" d="M400 254L432 216" marker-end="url(#svg-chroma-a)"/><path class="edge" d="M400 270L432 308" marker-end="url(#svg-chroma-a)"/><path class="edge" d="M608 216L640 254" marker-end="url(#svg-chroma-a)"/><path class="edge" d="M608 308L640 270" marker-end="url(#svg-chroma-a)"/><path class="edge" d="M816 262H848" marker-end="url(#svg-chroma-a)"/><path class="edge dot" d="M909.0 120V144H520.0V188" marker-end="url(#svg-chroma-a)"/><text class="lbl" x="917.0" y="140" text-anchor="start">consulta o índice</text></svg></div>
+<figcaption>A indexação roda uma vez (ou quando o corpus muda). A busca roda a cada pergunta e só entrega trechos ao LLM se passarem no portão de relevância.</figcaption>
+</figure>
   <div class="grid two">
     <article class="card"><h3>Distância e relevância</h3><p>A distância é de cosseno: 0 é idêntico. O trecho só vale se a distância for até 0,65 e houver termos de saúde em comum, ou se for até 0,35 (muito confiante). Fora disso, o sistema não responde.</p></article>
     <article class="card"><h3>Por que reordenar</h3><p>O vetor sozinho confunde "UBS 1" com "UBS 5" ou duas regiões de nome parecido. A reordenação sobe os trechos que contêm exatamente a unidade ou região citada.</p></article>
     <article class="card"><h3>Filtro de região</h3><p>A NLU detecta uma das 33 regiões administrativas e filtra por ela, aceitando também documentos gerais do DF. Se o filtro restringir demais, a busca refaz sem ele.</p></article>
-    <article class="card"><h3>Cache semântico</h3><p>Perguntas quase idênticas (distância até 0,06) reaproveitam a resposta por até uma hora. Cada ingestão nova invalida o cache.</p></article>
+    <article class="card"><h3>Cache semântico</h3><p>Perguntas quase idênticas (distância até 0,08) reaproveitam a resposta por até uma hora, e cada ingestão invalida o cache. Ele só vale no endpoint <code>/api/chat</code>; o chat em streaming, usado pelo site, não passa por ele.</p></article>
   </div>
 </section>
 
@@ -238,12 +203,19 @@ flowchart LR
     </article>
     <article class="card model">
       <span class="tag pre">pré-treinado</span>
-      <h3>Llama 3.1 8B</h3>
-      <p class="kv"><b>Execução</b> Ollama, local · temp 0,1 · ctx 4096</p>
-      <p>Escreve a resposta usando apenas os 3 trechos oficiais recuperados, em até 130 palavras. O prompt proíbe diagnóstico e prescrição. Nenhum dado de saúde sai do servidor.</p>
+      <h3>qwen2.5:3b (LLM)</h3>
+      <p class="kv"><b>Execução</b> Ollama, local · temp 0,1 · ctx 4096 · até 250 tokens</p>
+      <p>Escreve a resposta usando apenas os 3 trechos oficiais recuperados, em até 130 palavras. O prompt proíbe diagnóstico e prescrição. Nenhum dado de saúde sai do servidor. O projeto foi documentado com o Llama 3.1 8B; o deploy usa o qwen2.5:3b, escolhido por benchmark.</p>
     </article>
   </div>
   <p class="note">Além dos três modelos, há o <strong>normalizador popular</strong>: regras e listas de termos (não aprendidas) que traduzem a escrita do dia a dia para o vocabulário oficial. Foi ele o principal responsável pela melhora com linguagem informal.</p>
+
+  <h3 class="mt">Como cada modelo foi implementado</h3>
+  <p class="sub">Da origem dos dados até o uso em produção. Só o guardrail foi treinado pelo projeto; o MiniLM e o qwen2.5:3b são usados como vieram, sem ajuste fino.</p>
+  <figure class="fig">
+<div class="figscroll"><svg class="d" id="svg-modelos" viewBox="0 0 1040 486" role="img" aria-label="Como cada um dos três modelos foi implementado, dos dados até a produção"><title>Como cada um dos três modelos foi implementado, dos dados até a produção</title><defs><marker id="svg-modelos-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah" d="M0 0L10 5L0 10z"/></marker></defs><text class="hdr" x="221.0" y="20" text-anchor="middle">DADOS</text><text class="hdr" x="401.0" y="20" text-anchor="middle">PREPARAÇÃO</text><text class="hdr" x="581.0" y="20" text-anchor="middle">MODELO</text><text class="hdr" x="761.0" y="20" text-anchor="middle">AVALIAÇÃO E ESCOLHA</text><text class="hdr" x="941.0" y="20" text-anchor="middle">EM PRODUÇÃO</text><rect class="band" x="6" y="40" width="1028" height="136" rx="14"/><text class="n" x="20" y="86">Guardrail</text><text class="n" x="20" y="104">clínico</text><rect class="box ml" x="20" y="120" width="104" height="22" rx="11"/><text class="t tk" x="72" y="135.5" text-anchor="middle" style="font-size:11.5px">treinado por nós</text><rect class="box plain" x="140" y="50" width="162" height="116" rx="10"/><text class="n" x="221.0" y="79.5" text-anchor="middle">417 frases</text><text class="t" x="221.0" y="96.0" text-anchor="middle">283 originais +</text><text class="t" x="221.0" y="112.5" text-anchor="middle">134 populares</text><text class="t" x="221.0" y="129.0" text-anchor="middle">219 adm. · 198 clín.</text><text class="t" x="221.0" y="145.5" text-anchor="middle">escritas pela equipe</text><rect class="box plain" x="320" y="50" width="162" height="116" rx="10"/><text class="n" x="401.0" y="79.5" text-anchor="middle">Normaliza</text><text class="t" x="401.0" y="96.0" text-anchor="middle">igual à produção;</text><text class="t" x="401.0" y="112.5" text-anchor="middle">divisão estratificada</text><text class="t" x="401.0" y="129.0" text-anchor="middle">75% treino (312)</text><text class="t" x="401.0" y="145.5" text-anchor="middle">25% teste (105)</text><rect class="box ml" x="500" y="50" width="162" height="116" rx="10"/><text class="n" x="581.0" y="79.5" text-anchor="middle">TF-IDF + RL</text><text class="t" x="581.0" y="96.0" text-anchor="middle">de 1 a 2 palavras</text><text class="t" x="581.0" y="112.5" text-anchor="middle">regressão logística</text><text class="t" x="581.0" y="129.0" text-anchor="middle">balanceada</text><text class="t" x="581.0" y="145.5" text-anchor="middle">(scikit-learn)</text><rect class="box plain" x="680" y="50" width="162" height="116" rx="10"/><text class="n" x="761.0" y="79.5" text-anchor="middle">Teste + CV 5</text><text class="t" x="761.0" y="96.0" text-anchor="middle">promove se recall</text><text class="t" x="761.0" y="112.5" text-anchor="middle">clínico ≥ 0,95 e</text><text class="t" x="761.0" y="129.0" text-anchor="middle">F1 CV ≥ 0,85</text><text class="t" x="761.0" y="145.5" text-anchor="middle">→ alias champion</text><rect class="box plain" x="860" y="50" width="162" height="116" rx="10"/><text class="n" x="941.0" y="79.5" text-anchor="middle">Regex + ML</text><text class="t" x="941.0" y="96.0" text-anchor="middle">8 regex primeiro;</text><text class="t" x="941.0" y="112.5" text-anchor="middle">ML bloqueia se</text><text class="t" x="941.0" y="129.0" text-anchor="middle">p ≥ 0,60; sem MLflow,</text><text class="t" x="941.0" y="145.5" text-anchor="middle">usa o .pkl salvo</text><path class="edge" d="M302 108.0H320" marker-end="url(#svg-modelos-a)"/><path class="edge" d="M482 108.0H500" marker-end="url(#svg-modelos-a)"/><path class="edge" d="M662 108.0H680" marker-end="url(#svg-modelos-a)"/><path class="edge" d="M842 108.0H860" marker-end="url(#svg-modelos-a)"/><rect class="band" x="6" y="188" width="1028" height="136" rx="14"/><text class="n" x="20" y="234">Embeddings</text><text class="n" x="20" y="252">MiniLM</text><rect class="box ml" x="20" y="268" width="104" height="22" rx="11"/><text class="t tk" x="72" y="283.5" text-anchor="middle" style="font-size:11.5px">pré-treinado</text><rect class="box plain" x="140" y="198" width="162" height="116" rx="10"/><text class="n" x="221.0" y="227.5" text-anchor="middle">Corpus oficial</text><text class="t" x="221.0" y="244.0" text-anchor="middle">txt, json e csv</text><text class="t" x="221.0" y="260.5" text-anchor="middle">da SES-DF</text><text class="t" x="221.0" y="277.0" text-anchor="middle">(CORPUS/Arquivos</text><text class="t" x="221.0" y="293.5" text-anchor="middle">+ data/corpus)</text><rect class="box plain" x="320" y="198" width="162" height="116" rx="10"/><text class="n" x="401.0" y="235.8" text-anchor="middle">Divide em trechos</text><text class="t" x="401.0" y="252.2" text-anchor="middle">até 900 caracteres</text><text class="t" x="401.0" y="268.8" text-anchor="middle">+ região, título</text><text class="t" x="401.0" y="285.2" text-anchor="middle">e URL de origem</text><rect class="box ml" x="500" y="198" width="162" height="116" rx="10"/><text class="n" x="581.0" y="227.5" text-anchor="middle">MiniLM-L12</text><text class="t" x="581.0" y="244.0" text-anchor="middle">paraphrase-multi-</text><text class="t" x="581.0" y="260.5" text-anchor="middle">lingual, sem ajuste;</text><text class="t" x="581.0" y="277.0" text-anchor="middle">384 números por</text><text class="t" x="581.0" y="293.5" text-anchor="middle">trecho, no ChromaDB</text><rect class="box plain" x="680" y="198" width="162" height="116" rx="10"/><text class="n" x="761.0" y="227.5" text-anchor="middle">Busca honesta</text><text class="t" x="761.0" y="244.0" text-anchor="middle">recall@1/@3 e</text><text class="t" x="761.0" y="260.5" text-anchor="middle">vazamento fora do</text><text class="t" x="761.0" y="277.0" text-anchor="middle">tema; teste de 2</text><text class="t" x="761.0" y="293.5" text-anchor="middle">embeddings (6 perg.)</text><rect class="box plain" x="860" y="198" width="162" height="116" rx="10"/><text class="n" x="941.0" y="227.5" text-anchor="middle">Pergunta → vetor</text><text class="t" x="941.0" y="244.0" text-anchor="middle">filtro da RA (40)</text><text class="t" x="941.0" y="260.5" text-anchor="middle">+ global (300);</text><text class="t" x="941.0" y="277.0" text-anchor="middle">reordena; portão</text><text class="t" x="941.0" y="293.5" text-anchor="middle">0,35 / 0,65 / 0,82</text><path class="edge" d="M302 256.0H320" marker-end="url(#svg-modelos-a)"/><path class="edge" d="M482 256.0H500" marker-end="url(#svg-modelos-a)"/><path class="edge" d="M662 256.0H680" marker-end="url(#svg-modelos-a)"/><path class="edge" d="M842 256.0H860" marker-end="url(#svg-modelos-a)"/><rect class="band" x="6" y="336" width="1028" height="136" rx="14"/><text class="n" x="20" y="382">LLM</text><text class="n" x="20" y="400">qwen2.5:3b</text><rect class="box llm" x="20" y="416" width="104" height="22" rx="11"/><text class="t tk" x="72" y="431.5" text-anchor="middle" style="font-size:11.5px">pré-treinado</text><rect class="box plain" x="140" y="346" width="162" height="116" rx="10"/><text class="n" x="221.0" y="375.5" text-anchor="middle">Sem treino</text><text class="t" x="221.0" y="392.0" text-anchor="middle">prompt com 7 regras</text><text class="t" x="221.0" y="408.5" text-anchor="middle">+ até 3 trechos</text><text class="t" x="221.0" y="425.0" text-anchor="middle">+ 4 turnos</text><text class="t" x="221.0" y="441.5" text-anchor="middle">+ perfil</text><rect class="box plain" x="320" y="346" width="162" height="116" rx="10"/><text class="n" x="401.0" y="375.5" text-anchor="middle">Ollama no servidor</text><text class="t" x="401.0" y="392.0" text-anchor="middle">num_thread = vCPUs;</text><text class="t" x="401.0" y="408.5" text-anchor="middle">modelo sempre</text><text class="t" x="401.0" y="425.0" text-anchor="middle">carregado; timeout</text><text class="t" x="401.0" y="441.5" text-anchor="middle">de 120 s</text><rect class="box llm" x="500" y="346" width="162" height="116" rx="10"/><text class="n" x="581.0" y="375.5" text-anchor="middle">qwen2.5:3b</text><text class="t" x="581.0" y="392.0" text-anchor="middle">quantizado (Q4)</text><text class="t" x="581.0" y="408.5" text-anchor="middle">temperatura 0,1</text><text class="t" x="581.0" y="425.0" text-anchor="middle">contexto 4.096</text><text class="t" x="581.0" y="441.5" text-anchor="middle">até 250 tokens</text><rect class="box plain" x="680" y="346" width="162" height="116" rx="10"/><text class="n" x="761.0" y="375.5" text-anchor="middle">Benchmark</text><text class="t" x="761.0" y="392.0" text-anchor="middle">7 cenários:</text><text class="t" x="761.0" y="408.5" text-anchor="middle">fidelidade, latência;</text><text class="t" x="761.0" y="425.0" text-anchor="middle">teste em CPU;</text><text class="t" x="761.0" y="441.5" text-anchor="middle">3 modelos → qwen</text><rect class="box plain" x="860" y="346" width="162" height="116" rx="10"/><text class="n" x="941.0" y="375.5" text-anchor="middle">Streaming</text><text class="t" x="941.0" y="392.0" text-anchor="middle">1ª palavra em ~10 s</text><text class="t" x="941.0" y="408.5" text-anchor="middle">(4 vCPUs); se falhar,</text><text class="t" x="941.0" y="425.0" text-anchor="middle">devolve o trecho</text><text class="t" x="941.0" y="441.5" text-anchor="middle">oficial</text><path class="edge" d="M302 404.0H320" marker-end="url(#svg-modelos-a)"/><path class="edge" d="M482 404.0H500" marker-end="url(#svg-modelos-a)"/><path class="edge" d="M662 404.0H680" marker-end="url(#svg-modelos-a)"/><path class="edge" d="M842 404.0H860" marker-end="url(#svg-modelos-a)"/></svg></div>
+<figcaption>Em verde, os dois modelos de ML clássicos; em azul, o LLM. A coluna “Avaliação e escolha” é detalhada na seção <a href="#avaliacao">Métricas</a>.</figcaption>
+</figure>
 
   <h3 class="mt">Camada de linguagem popular</h3>
   <div class="tablewrap"><table>
@@ -264,20 +236,10 @@ flowchart LR
 <section id="treinamento" class="wrap">
   <h2>Como foi o treinamento</h2>
   <p class="sub">Só o guardrail clínico é treinado. O script é <code>ml/guardrails/train.py</code>.</p>
-  <figure class="diagram">
-<pre class="mermaid">
-flowchart TD
-  A["Dados<br/>283 frases originais<br/>+ 134 populares"] --> B["Normaliza cada frase<br/>como em produção"]
-  B --> C["Divisão estratificada<br/>75 por cento treino, 25 por cento teste"]
-  C --> D["Pipeline<br/>TF-IDF 1 a 2 gramas<br/>+ Regressão Logística balanceada"]
-  D --> E["Avaliação<br/>teste + validação cruzada 5 partes"]
-  E --> F["Registra no MLflow<br/>nova versão do modelo"]
-  F --> G{"Portão de promoção<br/>recall clínico no teste ≥ 0,95<br/>F1 CV ≥ campeão − 0,02 e ≥ 0,85"}
-  G -- "aprovado" --> H["Alias champion<br/>+ exporta .pkl de reserva"]
-  G -- "reprovado" --> I["Campeão antigo<br/>continua em uso"]
-  H --> J["Backend carrega<br/>models:/susana-guardrail@champion"]
-</pre>
-  </figure>
+  <figure class="fig">
+<div class="figscroll"><svg class="d" id="svg-treino" viewBox="0 0 1040 312" role="img" aria-label="Treinamento do guardrail: só vira champion se passar no portão de promoção"><title>Treinamento do guardrail: só vira champion se passar no portão de promoção</title><defs><marker id="svg-treino-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah" d="M0 0L10 5L0 10z"/></marker></defs><rect class="box plain" x="16" y="16" width="176" height="72" rx="10"/><text class="n" x="104.0" y="40.0" text-anchor="middle">Dados</text><text class="t" x="104.0" y="56.5" text-anchor="middle">283 originais + 134</text><text class="t" x="104.0" y="73.0" text-anchor="middle">populares = 417</text><rect class="box plain" x="224" y="16" width="176" height="72" rx="10"/><text class="n" x="312.0" y="40.0" text-anchor="middle">Normaliza</text><text class="t" x="312.0" y="56.5" text-anchor="middle">igual à produção</text><text class="t" x="312.0" y="73.0" text-anchor="middle">(abreviações, acentos)</text><rect class="box plain" x="432" y="16" width="176" height="72" rx="10"/><text class="n" x="520.0" y="40.0" text-anchor="middle">Divide 75/25</text><text class="t" x="520.0" y="56.5" text-anchor="middle">estratificado:</text><text class="t" x="520.0" y="73.0" text-anchor="middle">312 treino, 105 teste</text><rect class="box ml" x="640" y="16" width="176" height="72" rx="10"/><text class="n" x="728.0" y="40.0" text-anchor="middle">Treina</text><text class="t" x="728.0" y="56.5" text-anchor="middle">TF-IDF 1 a 2 gramas</text><text class="t" x="728.0" y="73.0" text-anchor="middle">+ regressão logística</text><rect class="box plain" x="848" y="16" width="176" height="72" rx="10"/><text class="n" x="936.0" y="40.0" text-anchor="middle">Avalia</text><text class="t" x="936.0" y="56.5" text-anchor="middle">no teste + validação</text><text class="t" x="936.0" y="73.0" text-anchor="middle">cruzada de 5 partes</text><path class="edge" d="M192 52.0H224" marker-end="url(#svg-treino-a)"/><path class="edge" d="M400 52.0H432" marker-end="url(#svg-treino-a)"/><path class="edge" d="M608 52.0H640" marker-end="url(#svg-treino-a)"/><path class="edge" d="M816 52.0H848" marker-end="url(#svg-treino-a)"/><path class="edge" d="M936.0 88V140" marker-end="url(#svg-treino-a)"/><rect class="box plain" x="848" y="140" width="176" height="72" rx="10"/><text class="n" x="936.0" y="164.0" text-anchor="middle">Registra no MLflow</text><text class="t" x="936.0" y="180.5" text-anchor="middle">nova versão de</text><text class="t" x="936.0" y="197.0" text-anchor="middle">susana-guardrail</text><rect class="box dec" x="640" y="140" width="176" height="72" rx="10"/><text class="n" x="728.0" y="164.0" text-anchor="middle">Passa no portão?</text><text class="t" x="728.0" y="180.5" text-anchor="middle">recall clín. ≥ 0,95 e</text><text class="t" x="728.0" y="197.0" text-anchor="middle">F1 CV ≥ campeão − 0,02</text><rect class="box ml" x="432" y="140" width="176" height="72" rx="10"/><text class="n" x="520.0" y="164.0" text-anchor="middle">Vira champion</text><text class="t" x="520.0" y="180.5" text-anchor="middle">alias no MLflow</text><text class="t" x="520.0" y="197.0" text-anchor="middle">+ .pkl de reserva</text><rect class="box plain" x="224" y="140" width="176" height="72" rx="10"/><text class="n" x="312.0" y="164.0" text-anchor="middle">Backend carrega</text><text class="t" x="312.0" y="180.5" text-anchor="middle">models:/susana-</text><text class="t" x="312.0" y="197.0" text-anchor="middle">guardrail@champion</text><path class="edge" d="M848 176.0H816" marker-end="url(#svg-treino-a)"/><path class="edge" d="M640 176.0H608" marker-end="url(#svg-treino-a)"/><text class="lbl" x="624.0" y="168.0" text-anchor="middle">sim</text><path class="edge" d="M432 176.0H400" marker-end="url(#svg-treino-a)"/><path class="edge" d="M728.0 212V248" marker-end="url(#svg-treino-a)"/><text class="lbl" x="736.0" y="234" text-anchor="start">não</text><rect class="box exit" x="640" y="248" width="176" height="52" rx="10"/><text class="t" x="728.0" y="270.2" text-anchor="middle">o campeão anterior</text><text class="t" x="728.0" y="286.8" text-anchor="middle">continua em uso</text><text class="t" x="16.0" y="250.0" text-anchor="start">O F1 de validação cruzada também</text><text class="t" x="16.0" y="266.5" text-anchor="start">precisa ser de pelo menos 0,85.</text><text class="t" x="16.0" y="283.0" text-anchor="start">Treino atual (v7): F1 0,97, recall 0,96.</text></svg></div>
+<figcaption>Cada treino vira uma versão no MLflow, mas só substitui o modelo em uso se passar no portão de promoção.</figcaption>
+</figure>
   <div class="tablewrap"><table>
     <thead><tr><th>Versão</th><th>Dados</th><th>Teste (acurácia)</th><th>Recall clínico</th><th>F1 validação cruzada</th></tr></thead>
     <tbody>
@@ -288,7 +250,63 @@ flowchart TD
   <p class="note">As duas versões usam conjuntos de teste diferentes, então os números não comparam diretamente. A v7 foi treinada com mais linguagem popular e é a primeira testada com frases desse tipo. Os dados foram escritos pela equipe, não coletados de cidadãos.</p>
 
   <h3 class="mt">O que não foi treinado</h3>
-  <p>O MiniLM e o Llama são usados como vieram, sem ajuste (<em>fine-tuning</em>). Em vez disso, o comportamento é controlado por recuperação de documentos, prompt restrito e o normalizador.</p>
+  <p>O MiniLM e o LLM (qwen2.5:3b no deploy) são usados como vieram, sem ajuste (<em>fine-tuning</em>). Em vez disso, o comportamento é controlado por recuperação de documentos, prompt restrito e o normalizador.</p>
+</section>
+
+<section id="avaliacao" class="wrap">
+  <h2>Métricas: como coletamos e o que observamos</h2>
+  <p class="sub">Cada parte tem um conjunto de avaliação congelado, um script que mede e um experimento no MLflow. A decisão (promover um modelo, mudar um limiar, trocar o LLM) só acontece depois de olhar os números. Os conjuntos são pequenos e escritos pela equipe: mostram que funciona nos casos testados, não estimam o uso real.</p>
+
+  <div class="grid three">
+    <article class="card big"><b>237</b><span>testes automatizados coletados pelo pytest</span></article>
+    <article class="card big"><b>100%</b><span>recall@1 no teste cego da busca (20 perguntas)</span></article>
+    <article class="card big"><b>2 de 15</b><span>perguntas fora do tema aceitas no teste (o portão pede no máximo 5%)</span></article>
+  </div>
+
+  <h3 class="mt">Como cada métrica é coletada</h3>
+  <figure class="fig">
+<div class="figscroll"><svg class="d" id="svg-metricas" viewBox="0 0 1040 600" role="img" aria-label="Como cada métrica é coletada: conjunto, script, métricas, experimento no MLflow e a decisão tomada"><title>Como cada métrica é coletada: conjunto, script, métricas, experimento no MLflow e a decisão tomada</title><defs><marker id="svg-metricas-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah" d="M0 0L10 5L0 10z"/></marker></defs><text class="hdr" x="114.0" y="22" text-anchor="middle">CONJUNTO</text><path class="edge" d="M206 17H234" marker-end="url(#svg-metricas-a)"/><text class="hdr" x="316.0" y="22" text-anchor="middle">SCRIPT</text><path class="edge" d="M398 17H426" marker-end="url(#svg-metricas-a)"/><text class="hdr" x="527.0" y="22" text-anchor="middle">O QUE MEDE</text><path class="edge" d="M628 17H656" marker-end="url(#svg-metricas-a)"/><text class="hdr" x="731.0" y="22" text-anchor="middle">ONDE FICA</text><path class="edge" d="M806 17H834" marker-end="url(#svg-metricas-a)"/><text class="hdr" x="926.0" y="22" text-anchor="middle">DECISÃO TOMADA</text><rect class="band" x="6" y="36" width="1028" height="74" rx="12"/><rect class="box plain" x="16" y="40" width="196" height="66" rx="10"/><text class="n" x="114.0" y="61.0" text-anchor="middle">Guardrail</text><text class="t" x="114.0" y="77.5" text-anchor="middle">417 frases: 105 de teste</text><text class="t" x="114.0" y="94.0" text-anchor="middle">+ validação cruzada 5x</text><rect class="box plain" x="228" y="40" width="176" height="66" rx="10"/><text class="n" x="316.0" y="61.0" text-anchor="middle">train.py</text><text class="t" x="316.0" y="77.5" text-anchor="middle">a cada novo</text><text class="t" x="316.0" y="94.0" text-anchor="middle">treino</text><rect class="box plain" x="420" y="40" width="214" height="66" rx="10"/><text class="t" x="527.0" y="61.0" text-anchor="middle">acurácia, precisão, F1,</text><text class="t" x="527.0" y="77.5" text-anchor="middle">recall clínico, AUC,</text><text class="t" x="527.0" y="94.0" text-anchor="middle">matriz de confusão</text><rect class="box hub" x="650" y="40" width="162" height="66" rx="10"/><text class="n" x="731.0" y="69.2" text-anchor="middle">susana-guardrails-</text><text class="t" x="731.0" y="85.8" text-anchor="middle">train</text><rect class="box ml" x="828" y="40" width="196" height="66" rx="10"/><text class="t" x="926.0" y="61.0" text-anchor="middle">promove o champion só</text><text class="t" x="926.0" y="77.5" text-anchor="middle">se recall clín. ≥ 0,95</text><text class="t" x="926.0" y="94.0" text-anchor="middle">e F1 CV ≥ 0,85</text><rect class="box plain" x="16" y="116" width="196" height="66" rx="10"/><text class="n" x="114.0" y="137.0" text-anchor="middle">Busca honesta</text><text class="t" x="114.0" y="153.5" text-anchor="middle">20 dev + 20 teste, mais</text><text class="t" x="114.0" y="170.0" text-anchor="middle">15 + 15 fora do tema</text><rect class="box plain" x="228" y="116" width="176" height="66" rx="10"/><text class="n" x="316.0" y="137.0" text-anchor="middle">eval_honest_</text><text class="t" x="316.0" y="153.5" text-anchor="middle">benchmark.py</text><text class="t" x="316.0" y="170.0" text-anchor="middle">dev calibra; teste cego</text><rect class="box plain" x="420" y="116" width="214" height="66" rx="10"/><text class="t" x="527.0" y="137.0" text-anchor="middle">recall@1 e @3, válidas</text><text class="t" x="527.0" y="153.5" text-anchor="middle">rejeitadas, fora do tema</text><text class="t" x="527.0" y="170.0" text-anchor="middle">aceitas, latência P95</text><rect class="box hub" x="650" y="116" width="162" height="66" rx="10"/><text class="n" x="731.0" y="145.2" text-anchor="middle">susana-retrieval-</text><text class="t" x="731.0" y="161.8" text-anchor="middle">honest-eval</text><rect class="box ml" x="828" y="116" width="196" height="66" rx="10"/><text class="t" x="926.0" y="137.0" text-anchor="middle">limiares 0,35 / 0,65 /</text><text class="t" x="926.0" y="153.5" text-anchor="middle">0,82; portão pede</text><text class="t" x="926.0" y="170.0" text-anchor="middle">vazamento ≤ 5%</text><rect class="band" x="6" y="188" width="1028" height="74" rx="12"/><rect class="box plain" x="16" y="192" width="196" height="66" rx="10"/><text class="n" x="114.0" y="213.0" text-anchor="middle">Linguagem popular</text><text class="t" x="114.0" y="229.5" text-anchor="middle">67 dev, 45 reserva,</text><text class="t" x="114.0" y="246.0" text-anchor="middle">36 cego (sem LLM)</text><rect class="box plain" x="228" y="192" width="176" height="66" rx="10"/><text class="n" x="316.0" y="213.0" text-anchor="middle">eval_colloquial.py</text><text class="t" x="316.0" y="229.5" text-anchor="middle">+ pytest com pisos</text><text class="t" x="316.0" y="246.0" text-anchor="middle">0,97 / 0,93 / 0,90</text><rect class="box plain" x="420" y="192" width="214" height="66" rx="10"/><text class="t" x="527.0" y="213.0" text-anchor="middle">acerto geral e por</text><text class="t" x="527.0" y="229.5" text-anchor="middle">categoria: responder,</text><text class="t" x="527.0" y="246.0" text-anchor="middle">bloquear ou recusar</text><rect class="box hub" x="650" y="192" width="162" height="66" rx="10"/><text class="n" x="731.0" y="221.2" text-anchor="middle">susana-colloquial-</text><text class="t" x="731.0" y="237.8" text-anchor="middle">battery</text><rect class="box ml" x="828" y="192" width="196" height="66" rx="10"/><text class="t" x="926.0" y="213.0" text-anchor="middle">regras do normalizador;</text><text class="t" x="926.0" y="229.5" text-anchor="middle">clínico e fora do tema</text><text class="t" x="926.0" y="246.0" text-anchor="middle">exigem 100%</text><rect class="box plain" x="16" y="268" width="196" height="66" rx="10"/><text class="n" x="114.0" y="289.0" text-anchor="middle">LLMs locais</text><text class="t" x="114.0" y="305.5" text-anchor="middle">7 cenários com</text><text class="t" x="114.0" y="322.0" text-anchor="middle">contexto fixo</text><rect class="box plain" x="228" y="268" width="176" height="66" rx="10"/><text class="n" x="316.0" y="289.0" text-anchor="middle">benchmark_llms.py</text><text class="t" x="316.0" y="305.5" text-anchor="middle">mesmo prompt de</text><text class="t" x="316.0" y="322.0" text-anchor="middle">produção</text><rect class="box plain" x="420" y="268" width="214" height="66" rx="10"/><text class="t" x="527.0" y="289.0" text-anchor="middle">fidelidade aos trechos,</text><text class="t" x="527.0" y="305.5" text-anchor="middle">latência, tokens/s</text><text class="t" x="527.0" y="322.0" text-anchor="middle">e erros</text><rect class="box hub" x="650" y="268" width="162" height="66" rx="10"/><text class="n" x="731.0" y="297.2" text-anchor="middle">susana-llm-</text><text class="t" x="731.0" y="313.8" text-anchor="middle">benchmark</text><rect class="box ml" x="828" y="268" width="196" height="66" rx="10"/><text class="t" x="926.0" y="289.0" text-anchor="middle">qwen2.5:3b no deploy:</text><text class="t" x="926.0" y="305.5" text-anchor="middle">fidelidade 0,84 em</text><text class="t" x="926.0" y="322.0" text-anchor="middle">1,5 s (GPU)</text><rect class="band" x="6" y="340" width="1028" height="74" rx="12"/><rect class="box plain" x="16" y="344" width="196" height="66" rx="10"/><text class="n" x="114.0" y="365.0" text-anchor="middle">Embeddings</text><text class="t" x="114.0" y="381.5" text-anchor="middle">6 perguntas,</text><text class="t" x="114.0" y="398.0" text-anchor="middle">2 modelos</text><rect class="box plain" x="228" y="344" width="176" height="66" rx="10"/><text class="n" x="316.0" y="373.2" text-anchor="middle">benchmark_</text><text class="t" x="316.0" y="389.8" text-anchor="middle">embeddings.py</text><rect class="box plain" x="420" y="344" width="214" height="66" rx="10"/><text class="t" x="527.0" y="373.2" text-anchor="middle">acerto no top 3</text><text class="t" x="527.0" y="389.8" text-anchor="middle">(hit rate)</text><rect class="box hub" x="650" y="344" width="162" height="66" rx="10"/><text class="n" x="731.0" y="373.2" text-anchor="middle">susana-embeddings-</text><text class="t" x="731.0" y="389.8" text-anchor="middle">benchmark</text><rect class="box ml" x="828" y="344" width="196" height="66" rx="10"/><text class="t" x="926.0" y="365.0" text-anchor="middle">manteve o multilíngue;</text><text class="t" x="926.0" y="381.5" text-anchor="middle">amostra pequena,</text><text class="t" x="926.0" y="398.0" text-anchor="middle">refazer com 67 perg.</text><rect class="box plain" x="16" y="420" width="196" height="66" rx="10"/><text class="n" x="114.0" y="441.0" text-anchor="middle">Cada consulta</text><text class="t" x="114.0" y="457.5" text-anchor="middle">uso real em</text><text class="t" x="114.0" y="474.0" text-anchor="middle">/api/chat (dev)</text><rect class="box plain" x="228" y="420" width="176" height="66" rx="10"/><text class="n" x="316.0" y="441.0" text-anchor="middle">pipeline.py</text><text class="t" x="316.0" y="457.5" text-anchor="middle">chamado em</text><text class="t" x="316.0" y="474.0" text-anchor="middle">cada consulta</text><rect class="box plain" x="420" y="420" width="214" height="66" rx="10"/><text class="t" x="527.0" y="441.0" text-anchor="middle">latência total e do</text><text class="t" x="527.0" y="457.5" text-anchor="middle">LLM, distância do</text><text class="t" x="527.0" y="474.0" text-anchor="middle">melhor trecho</text><rect class="box hub" x="650" y="420" width="162" height="66" rx="10"/><text class="n" x="731.0" y="449.2" text-anchor="middle">susana-rag</text><text class="t" x="731.0" y="465.8" text-anchor="middle">1 run por consulta</text><rect class="box ml" x="828" y="420" width="196" height="66" rx="10"/><text class="t" x="926.0" y="441.0" text-anchor="middle">desligado no deploy</text><text class="t" x="926.0" y="457.5" text-anchor="middle">para não encher</text><text class="t" x="926.0" y="474.0" text-anchor="middle">o disco</text><rect class="band" x="6" y="492" width="1028" height="74" rx="12"/><rect class="box plain" x="16" y="496" width="196" height="66" rx="10"/><text class="n" x="114.0" y="517.0" text-anchor="middle">Deploy na AWS</text><text class="t" x="114.0" y="533.5" text-anchor="middle">perguntas reais</text><text class="t" x="114.0" y="550.0" text-anchor="middle">pelo HTTPS</text><rect class="box plain" x="228" y="496" width="176" height="66" rx="10"/><text class="n" x="316.0" y="517.0" text-anchor="middle">cliente de streaming</text><text class="t" x="316.0" y="533.5" text-anchor="middle">+ docker stats</text><text class="t" x="316.0" y="550.0" text-anchor="middle">e free -h</text><rect class="box plain" x="420" y="496" width="214" height="66" rx="10"/><text class="t" x="527.0" y="517.0" text-anchor="middle">tempo até a 1ª palavra,</text><text class="t" x="527.0" y="533.5" text-anchor="middle">tempo total, RAM,</text><text class="t" x="527.0" y="550.0" text-anchor="middle">threads do Ollama</text><rect class="box hub" x="650" y="496" width="162" height="66" rx="10"/><text class="n" x="731.0" y="525.2" text-anchor="middle">registro manual</text><text class="t" x="731.0" y="541.8" text-anchor="middle">(fora do MLflow)</text><rect class="box ml" x="828" y="496" width="196" height="66" rx="10"/><text class="t" x="926.0" y="517.0" text-anchor="middle">4 vCPUs, modelo sempre</text><text class="t" x="926.0" y="533.5" text-anchor="middle">carregado, threads</text><text class="t" x="926.0" y="550.0" text-anchor="middle">= vCPUs</text></svg></div>
+<figcaption>Leitura por linha: o conjunto passa pelo script, que calcula as métricas e grava no experimento do MLflow (em laranja); a última coluna é a decisão que o número sustentou. Em verde, a decisão tomada.</figcaption>
+</figure>
+
+  <h3 class="mt">Como analisamos</h3>
+  <div class="grid two">
+    <article class="card"><h3>Partições congeladas</h3><p>Desenvolvimento e teste são arquivos separados e fixos em <code>data/eval</code>. Os limiares são ajustados olhando o desenvolvimento; o teste deve ser rodado como cego, uma vez por mudança.</p></article>
+    <article class="card"><h3>Três níveis de independência</h3><p>Na linguagem popular, o conjunto de desenvolvimento foi usado para criar as regras, a reserva foi vista depois do primeiro ajuste e o cego foi escrito depois do ajuste. Por isso a 1ª rodada é a estimativa mais honesta.</p></article>
+    <article class="card"><h3>Pisos contra regressão</h3><p>O pytest trava os resultados: 97%, 93% e 90% nas baterias, e 100% nos pedidos clínicos e fora do tema. Uma mudança que piore a segurança quebra o teste.</p></article>
+    <article class="card"><h3>Medição no deploy</h3><p>Em produção, medimos pela internet o tempo até a 1ª palavra e o total, com <code>docker stats</code> e <code>free -h</code> para memória. Foi isso que mostrou o Ollama usando 1 thread e levou à troca para 4 vCPUs.</p></article>
+  </div>
+
+  <h3 class="mt">O que observamos</h3>
+  <div class="charts">
+    <figure class="fig">
+<div class="figscroll"><svg class="d" id="svg-confusao" viewBox="0 0 500 300" role="img" aria-label="Matriz de confusão do guardrail no teste: 48 de 50 clínicas bloqueadas, 1 administrativa bloqueada por engano"><title>Matriz de confusão do guardrail no teste: 48 de 50 clínicas bloqueadas, 1 administrativa bloqueada por engano</title><defs><marker id="svg-confusao-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah" d="M0 0L10 5L0 10z"/></marker></defs><text class="hdr" x="300" y="22" text-anchor="middle">O MODELO DISSE</text><text class="t tk" x="210" y="46" text-anchor="middle">clínica (bloqueia)</text><text class="t tk" x="390" y="46" text-anchor="middle">administrativa (passa)</text><text class="hdr" x="22" y="170" text-anchor="middle" transform="rotate(-90 22 170)">ERA</text><text class="t tk" x="76" y="116" text-anchor="middle">clínica</text><text class="t" x="76" y="132" text-anchor="middle">(50)</text><text class="t tk" x="76" y="226" text-anchor="middle">administrativa</text><text class="t" x="76" y="242" text-anchor="middle">(55)</text><rect class="cell ok" x="128" y="58" width="168" height="100" rx="10"/><text class="big" x="212" y="112" text-anchor="middle">48</text><text class="t tk" x="212" y="136" text-anchor="middle">acertos: bloqueou</text><rect class="cell bad" x="304" y="58" width="168" height="100" rx="10"/><text class="big" x="388" y="112" text-anchor="middle">2</text><text class="t tk" x="388" y="136" text-anchor="middle">escaparam</text><rect class="cell bad" x="128" y="168" width="168" height="100" rx="10"/><text class="big" x="212" y="222" text-anchor="middle">1</text><text class="t tk" x="212" y="246" text-anchor="middle">bloqueio indevido</text><rect class="cell ok" x="304" y="168" width="168" height="100" rx="10"/><text class="big" x="388" y="222" text-anchor="middle">54</text><text class="t tk" x="388" y="246" text-anchor="middle">acertos: liberou</text><text class="t" x="300" y="292" text-anchor="middle">teste com 105 frases · recall clínico 0,96 · precisão 0,98 · F1 0,97</text></svg></div>
+<p><b>Guardrail (teste de 105 frases).</b> Errou 3: duas perguntas clínicas passaram e uma administrativa foi bloqueada. Para segurança, o número que importa é o recall clínico (0,96), por isso o portão exige pelo menos 0,95.</p>
+</figure>
+    <figure class="fig">
+<div class="figscroll"><svg class="d" id="svg-busca" viewBox="0 0 500 300" role="img" aria-label="Busca honesta em 23/10: desenvolvimento e teste"><title>Busca honesta em 23/10: desenvolvimento e teste</title><defs><marker id="svg-busca-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah" d="M0 0L10 5L0 10z"/></marker></defs><rect class="gbar a" x="44" y="6" width="14" height="14" rx="3"/><text class="t tk" x="64" y="17.5">desenvolvimento (calibra)</text><rect class="gbar b" x="254.75" y="6" width="14" height="14" rx="3"/><text class="t tk" x="274.75" y="17.5">teste (cego)</text><line class="gridl" x1="44" x2="488" y1="246.0" y2="246.0"/><text class="ax" x="38" y="250.0" text-anchor="end">0%</text><line class="gridl" x1="44" x2="488" y1="194.5" y2="194.5"/><text class="ax" x="38" y="198.5" text-anchor="end">25%</text><line class="gridl" x1="44" x2="488" y1="143.0" y2="143.0"/><text class="ax" x="38" y="147.0" text-anchor="end">50%</text><line class="gridl" x1="44" x2="488" y1="91.5" y2="91.5"/><text class="ax" x="38" y="95.5" text-anchor="end">75%</text><line class="gridl" x1="44" x2="488" y1="40.0" y2="40.0"/><text class="ax" x="38" y="44.0" text-anchor="end">100%</text><rect class="gbar a" x="67.5" y="60.6" width="30.0" height="185.4" rx="3"/><text class="val" x="82.5" y="55.6" text-anchor="middle">90%</text><rect class="gbar b" x="101.5" y="40.0" width="30.0" height="206.0" rx="3"/><text class="val" x="116.5" y="35.0" text-anchor="middle">100%</text><text class="t tk" x="99.5" y="264" text-anchor="middle">Recall@1</text><rect class="gbar a" x="178.5" y="50.3" width="30.0" height="195.7" rx="3"/><text class="val" x="193.5" y="45.3" text-anchor="middle">95%</text><rect class="gbar b" x="212.5" y="40.0" width="30.0" height="206.0" rx="3"/><text class="val" x="227.5" y="35.0" text-anchor="middle">100%</text><text class="t tk" x="210.5" y="264" text-anchor="middle">Recall@3</text><rect class="gbar a" x="289.5" y="225.4" width="30.0" height="20.6" rx="3"/><text class="val" x="304.5" y="220.4" text-anchor="middle">10%</text><rect class="gbar b" x="323.5" y="235.7" width="30.0" height="10.3" rx="3"/><text class="val" x="338.5" y="230.7" text-anchor="middle">5%</text><text class="t tk" x="321.5" y="264" text-anchor="middle">Válidas</text><text class="t tk" x="321.5" y="279" text-anchor="middle">rejeitadas</text><rect class="gbar a" x="400.5" y="246.0" width="30.0" height="0.0" rx="3"/><text class="val" x="415.5" y="241.0" text-anchor="middle">0%</text><rect class="gbar b" x="434.5" y="218.6" width="30.0" height="27.4" rx="3"/><text class="val" x="449.5" y="213.6" text-anchor="middle">13,3%</text><text class="t tk" x="432.5" y="264" text-anchor="middle">Fora do tema</text><text class="t tk" x="432.5" y="279" text-anchor="middle">aceitas</text><line class="axl" x1="44" x2="488" y1="246" y2="246"/></svg></div>
+<p><b>Busca honesta, 23/10, com os limiares de produção.</b> Acerta tudo no teste, mas aceita 2 de 15 perguntas fora do tema. “Cartório em Taguatinga” casou com o CAPS de Taguatinga a 0,29 de distância, abaixo do limiar de confiança (0,35). Em 12/10, com 1.948 trechos, nenhuma passava; com 2.368, passam 2. Ainda não isolamos a causa.</p>
+</figure>
+    <figure class="fig">
+<div class="figscroll"><svg class="d" id="svg-coloquial" viewBox="0 0 500 300" role="img" aria-label="Baterias de linguagem popular: acerto na 1ª rodada e hoje"><title>Baterias de linguagem popular: acerto na 1ª rodada e hoje</title><defs><marker id="svg-coloquial-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah" d="M0 0L10 5L0 10z"/></marker></defs><rect class="gbar a" x="44" y="6" width="14" height="14" rx="3"/><text class="t tk" x="64" y="17.5">1ª rodada, antes dos ajustes</text><rect class="gbar b" x="275.0" y="6" width="14" height="14" rx="3"/><text class="t tk" x="295.0" y="17.5">hoje (23/10)</text><line class="gridl" x1="44" x2="488" y1="246.0" y2="246.0"/><text class="ax" x="38" y="250.0" text-anchor="end">0%</text><line class="gridl" x1="44" x2="488" y1="194.5" y2="194.5"/><text class="ax" x="38" y="198.5" text-anchor="end">25%</text><line class="gridl" x1="44" x2="488" y1="143.0" y2="143.0"/><text class="ax" x="38" y="147.0" text-anchor="end">50%</text><line class="gridl" x1="44" x2="488" y1="91.5" y2="91.5"/><text class="ax" x="38" y="95.5" text-anchor="end">75%</text><line class="gridl" x1="44" x2="488" y1="40.0" y2="40.0"/><text class="ax" x="38" y="44.0" text-anchor="end">100%</text><rect class="gbar a" x="86.0" y="95.4" width="30.0" height="150.6" rx="3"/><text class="val" x="101.0" y="90.4" text-anchor="middle">73,1%</text><rect class="gbar b" x="120.0" y="40.0" width="30.0" height="206.0" rx="3"/><text class="val" x="135.0" y="35.0" text-anchor="middle">100%</text><text class="t tk" x="118.0" y="264" text-anchor="middle">Desenvolvimento</text><text class="t tk" x="118.0" y="279" text-anchor="middle">67 perguntas</text><rect class="gbar a" x="234.0" y="62.9" width="30.0" height="183.1" rx="3"/><text class="val" x="249.0" y="57.9" text-anchor="middle">88,9%</text><rect class="gbar b" x="268.0" y="44.5" width="30.0" height="201.5" rx="3"/><text class="val" x="283.0" y="39.5" text-anchor="middle">97,8%</text><text class="t tk" x="266.0" y="264" text-anchor="middle">Reserva</text><text class="t tk" x="266.0" y="279" text-anchor="middle">45 perguntas</text><rect class="gbar a" x="382.0" y="74.4" width="30.0" height="171.6" rx="3"/><text class="val" x="397.0" y="69.4" text-anchor="middle">83,3%</text><rect class="gbar b" x="416.0" y="45.8" width="30.0" height="200.2" rx="3"/><text class="val" x="431.0" y="40.8" text-anchor="middle">97,2%</text><text class="t tk" x="414.0" y="264" text-anchor="middle">Cego</text><text class="t tk" x="414.0" y="279" text-anchor="middle">36 perguntas</text><line class="axl" x1="44" x2="488" y1="246" y2="246"/></svg></div>
+<p><b>Linguagem popular.</b> A normalização por regras levou o cego de 83% para 97%. Como as falhas vistas foram corrigidas, os valores de hoje não são independentes; a 1ª rodada foi registrada pela equipe e não tem execução no MLflow. Hoje falham “preciso d consulta c ginecologista” e “oq faz o consultorio na rua?”.</p>
+</figure>
+    <figure class="fig">
+<div class="figscroll"><svg class="d" id="svg-deploy" viewBox="0 0 500 300" role="img" aria-label="Latência no deploy: 2 vCPUs contra 4 vCPUs"><title>Latência no deploy: 2 vCPUs contra 4 vCPUs</title><defs><marker id="svg-deploy-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah" d="M0 0L10 5L0 10z"/></marker></defs><rect class="gbar a" x="44" y="6" width="14" height="14" rx="3"/><text class="t tk" x="64" y="17.5">2 vCPUs (m7i-flex.large)</text><rect class="gbar b" x="248.0" y="6" width="14" height="14" rx="3"/><text class="t tk" x="268.0" y="17.5">4 vCPUs (m7i.xlarge)</text><line class="gridl" x1="44" x2="488" y1="246.0" y2="246.0"/><text class="ax" x="38" y="250.0" text-anchor="end">0 s</text><line class="gridl" x1="44" x2="488" y1="177.3" y2="177.3"/><text class="ax" x="38" y="181.3" text-anchor="end">25 s</text><line class="gridl" x1="44" x2="488" y1="108.7" y2="108.7"/><text class="ax" x="38" y="112.7" text-anchor="end">50 s</text><line class="gridl" x1="44" x2="488" y1="40.0" y2="40.0"/><text class="ax" x="38" y="44.0" text-anchor="end">75 s</text><rect class="gbar a" x="67.5" y="182.3" width="30.0" height="63.7" rx="3"/><text class="val" x="82.5" y="177.3" text-anchor="middle">23,2 s</text><rect class="gbar b" x="101.5" y="218.8" width="30.0" height="27.2" rx="3"/><text class="val" x="116.5" y="213.8" text-anchor="middle">9,9 s</text><text class="t tk" x="99.5" y="264" text-anchor="middle">Vacina</text><text class="t tk" x="99.5" y="279" text-anchor="middle">1ª palavra</text><rect class="gbar a" x="178.5" y="59.5" width="30.0" height="186.5" rx="3"/><text class="val" x="193.5" y="54.5" text-anchor="middle">67,9 s</text><rect class="gbar b" x="212.5" y="153.7" width="30.0" height="92.3" rx="3"/><text class="val" x="227.5" y="148.7" text-anchor="middle">33,6 s</text><text class="t tk" x="210.5" y="264" text-anchor="middle">Vacina</text><text class="t tk" x="210.5" y="279" text-anchor="middle">total</text><rect class="gbar a" x="289.5" y="174.3" width="30.0" height="71.7" rx="3"/><text class="val" x="304.5" y="169.3" text-anchor="middle">26,1 s</text><rect class="gbar b" x="323.5" y="216.6" width="30.0" height="29.4" rx="3"/><text class="val" x="338.5" y="211.6" text-anchor="middle">10,7 s</text><text class="t tk" x="321.5" y="264" text-anchor="middle">UPA</text><text class="t tk" x="321.5" y="279" text-anchor="middle">1ª palavra</text><rect class="gbar a" x="400.5" y="140.5" width="30.0" height="105.5" rx="3"/><text class="val" x="415.5" y="135.5" text-anchor="middle">38,4 s</text><rect class="gbar b" x="434.5" y="197.4" width="30.0" height="48.6" rx="3"/><text class="val" x="449.5" y="192.4" text-anchor="middle">17,7 s</text><text class="t tk" x="432.5" y="264" text-anchor="middle">UPA</text><text class="t tk" x="432.5" y="279" text-anchor="middle">total</text><line class="axl" x1="44" x2="488" y1="246" y2="246"/></svg></div>
+<p><b>Deploy na AWS, medido pela internet.</b> “Vacina” é “onde tomo vacina da gripe em Ceilândia?” e “UPA” é “qual o endereço da UPA de Samambaia?”. O LLM roda em CPU e o tempo vai quase todo em ler o prompt: dobrar as vCPUs cortou mais da metade do tempo até a 1ª palavra. Bloqueios do guardrail respondem em 0,8 s, sem passar pelo LLM.</p>
+</figure>
+  </div>
+
+  <h3 class="mt">Limitações conhecidas</h3>
+  <ul class="limits">
+    <li>Os dados são estáticos: a SUSANNA não sabe se uma unidade está aberta hoje.</li>
+    <li>A normalização popular é feita por regras e listas; uma gíria nova pode não ser entendida.</li>
+    <li>Os conjuntos de teste são pequenos e escritos pela equipe, então não representam o uso real por cidadãos.</li>
+    <li>Quando o corpus tem pouco material (por exemplo, mordedura de cachorro), o LLM pode misturar temas.</li>
+    <li>As respostas às vezes começam com um pedido de desculpas sobre "orientações médicas", efeito do prompt de segurança.</li>
+    <li>Ainda não há baseline simples (busca por palavras-chave, só regex, LLM sem os trechos) para provar quanto cada camada acrescenta.</li>
+    <li>A qualidade do texto do LLM é medida por palavras-chave em 7 cenários; erros de sentido, como um nome de remédio escrito errado, passam.</li>
+  </ul>
 </section>
 
 <section id="mlflow" class="wrap">
@@ -298,27 +316,26 @@ flowchart TD
     <thead><tr><th>Experimento</th><th>Execuções</th><th>O que mede</th></tr></thead>
     <tbody>
       <tr><td><code>susana-guardrails-train</code></td><td>7</td><td>Acurácia, precisão, recall clínico, F1, ROC-AUC, matriz de confusão e validação cruzada de cada versão.</td></tr>
-      <tr><td><code>susana-retrieval-honest-eval</code></td><td>7</td><td>Recall@1 e @3, perguntas válidas rejeitadas, perguntas fora do tema aceitas e latência P50/P95 da busca.</td></tr>
+      <tr><td><code>susana-retrieval-honest-eval</code></td><td>8</td><td>Recall@1 e @3, perguntas válidas rejeitadas, perguntas fora do tema aceitas e latência P50/P95 da busca.</td></tr>
       <tr><td><code>susana-colloquial-battery</code></td><td>4</td><td>Acerto das baterias de linguagem popular, por categoria.</td></tr>
-      <tr><td><code>susana-llm-benchmark</code></td><td>6</td><td>Comparação de 6 LLMs locais: latência, tokens por segundo, fundamentação e erros.</td></tr>
+      <tr><td><code>susana-llm-benchmark</code></td><td>10</td><td>Comparação de LLMs locais em duas rodadas (06/10 e 23/10): latência, tokens por segundo, fundamentação e erros.</td></tr>
       <tr><td><code>susana-embeddings-benchmark</code></td><td>4</td><td>Taxa de acerto no top 3 de dois modelos de embedding.</td></tr>
-      <tr><td><code>susana-rag</code></td><td>362</td><td>Uma execução por consulta: latência total, latência do LLM e distância do melhor trecho.</td></tr>
+      <tr><td><code>susana-rag</code></td><td>384</td><td>Uma execução por consulta: latência total, latência do LLM e distância do melhor trecho.</td></tr>
     </tbody>
   </table></div>
 
   <h3 class="mt">Comparação de LLMs locais</h3>
   <div class="tablewrap"><table>
-    <thead><tr><th>Modelo</th><th>Latência média</th><th>Tokens/s</th><th>Fundamentação</th></tr></thead>
+    <thead><tr><th>Modelo</th><th>Fundamentação 06/10</th><th>Fundamentação 23/10</th><th>Latência 23/10 (GPU do Mac)</th><th>1ª palavra só em CPU, 2 threads</th></tr></thead>
     <tbody>
-      <tr class="pick"><td><b>llama3.1 · escolhido</b></td><td>1,64 s</td><td>31,3</td><td>1,00</td></tr>
-      <tr><td>phi3.5</td><td>2,28 s</td><td>58,0</td><td>1,00</td></tr>
-      <tr><td>qwen2.5:3b</td><td>0,72 s</td><td>42,1</td><td>0,94</td></tr>
-      <tr><td>qwen2.5:7b</td><td>1,21 s</td><td>25,8</td><td>0,94</td></tr>
-      <tr><td>mistral</td><td>1,26 s</td><td>24,8</td><td>0,94</td></tr>
-      <tr><td>gemma2</td><td>1,71 s</td><td>19,2</td><td>0,94</td></tr>
+      <tr class="pick"><td><b>qwen2.5:3b · deploy</b></td><td>0,94</td><td>0,84</td><td>1,5 s</td><td>11,6 s</td></tr>
+      <tr><td>llama3.1:8b · documentado</td><td>1,00</td><td>0,80</td><td>4,4 s</td><td>27,7 s</td></tr>
+      <tr><td>llama3.2:3b</td><td>—</td><td>0,73</td><td>5,7 s</td><td>12,5 s</td></tr>
+      <tr><td>phi3.5</td><td>1,00</td><td>—</td><td>—</td><td>—</td></tr>
+      <tr><td>qwen2.5:7b, mistral, gemma2</td><td>0,94</td><td>—</td><td>—</td><td>—</td></tr>
     </tbody>
   </table></div>
-  <p class="note">Benchmark pequeno (7 perguntas de teste), medido na máquina de desenvolvimento. "Fundamentação" é a fração de respostas apoiadas nos trechos fornecidos. Indica uma ordem de grandeza, não uma classificação definitiva.</p>
+  <p class="note">Mesmo script e mesmos 7 cenários nas duas rodadas, e o mesmo modelo mudou de nota (llama3.1: 1,00 para 0,80). Com 7 perguntas, um acerto a mais ou a menos move muito o resultado: é uma indicação, não um ranking. No deploy pesou a velocidade em CPU, onde o qwen2.5:3b foi 2,4 vezes mais rápido que o llama3.1:8b até a 1ª palavra.</p>
 
   <h3 class="mt">Como abrir o MLflow</h3>
 <pre class="code"><code>cd susana_rag_backend
@@ -351,7 +368,7 @@ flowchart LR
 
   <h3 class="mt">Decisões de arquitetura registradas</h3>
   <div class="grid two">
-    <article class="card"><h3>ADR-1 · LLM local</h3><p>Ollama com Llama 3.1 8B, para manter a soberania dos dados da SES-DF e a conformidade com a LGPD.</p></article>
+    <article class="card"><h3>ADR-1 · LLM local</h3><p>LLM rodando no próprio servidor via Ollama (Llama 3.1 8B no projeto, qwen2.5:3b no deploy), para manter a soberania dos dados da SES-DF e a conformidade com a LGPD.</p></article>
     <article class="card"><h3>ADR-2 · Guardrail de ML</h3><p>Classificador no lugar de só regex, que é fácil de burlar. Falha do guardrail resulta em bloqueio (fail-closed).</p></article>
     <article class="card"><h3>ADR-5 · Upsert por URL</h3><p>A indexação deixou de apagar blocos que não estão na carga atual; atualiza e remove de forma cirúrgica por URL.</p></article>
     <article class="card"><h3>ADR-8 · Webhook fechado</h3><p>Chave secreta obrigatória e lista fechada de domínios oficiais; o resto é rejeitado antes de chegar ao processador.</p></article>
@@ -359,34 +376,6 @@ flowchart LR
   <p class="note">Exemplo de cenário da especificação: dez requisições simultâneas com o mesmo documento devem resultar em exatamente uma indexação com sucesso e nove ignoradas como duplicadas.</p>
 </section>
 
-<section id="avaliacao" class="wrap">
-  <h2>Avaliação e testes</h2>
-  <div class="grid three">
-    <article class="card big"><b>237</b><span>testes automatizados do backend passando</span></article>
-    <article class="card big"><b>20/20</b><span>perguntas formais respondidas, nos conjuntos dev e teste</span></article>
-    <article class="card big"><b>0/15</b><span>perguntas fora do tema aceitas, nos dois conjuntos</span></article>
-  </div>
-
-  <h3 class="mt">Baterias de linguagem popular</h3>
-  <div class="tablewrap"><table>
-    <thead><tr><th>Conjunto</th><th>Perguntas</th><th>1ª rodada, antes dos ajustes</th><th>Depois dos ajustes</th></tr></thead>
-    <tbody>
-      <tr><td>Desenvolvimento</td><td>67</td><td>73,1%</td><td>100% <small>(usado para criar as regras)</small></td></tr>
-      <tr><td>Reserva</td><td>45</td><td>88,9%</td><td>97,8%</td></tr>
-      <tr><td>Cego</td><td>36</td><td>83,3%</td><td>97,2%</td></tr>
-    </tbody>
-  </table></div>
-  <p class="note"><strong>Leia com cuidado:</strong> corrigi as falhas vistas nos conjuntos de reserva e cego, então os valores finais deixaram de ser independentes. A estimativa honesta é a da primeira rodada. Cada conjunto cobre abreviações, urgência, gírias, erros de digitação, perguntas encadeadas, pedidos clínicos (devem ser bloqueados) e perguntas fora do tema (devem ser recusadas).</p>
-
-  <h3 class="mt">Limitações conhecidas</h3>
-  <ul class="limits">
-    <li>Os dados são estáticos: a SUSANNA não sabe se uma unidade está aberta hoje.</li>
-    <li>A normalização popular é feita por regras e listas; uma gíria nova pode não ser entendida.</li>
-    <li>Os conjuntos de teste são pequenos e escritos pela equipe, então não representam o uso real por cidadãos.</li>
-    <li>Quando o corpus tem pouco material (por exemplo, mordedura de cachorro), o Llama pode misturar temas.</li>
-    <li>As respostas às vezes começam com um pedido de desculpas sobre "orientações médicas", efeito do prompt de segurança.</li>
-  </ul>
-</section>
 
 <section id="api" class="wrap">
   <h2>API e como executar</h2>
@@ -422,7 +411,7 @@ npm install &amp;&amp; npm run dev
 
 # Testes
 cd ../susana_rag_backend &amp;&amp; pytest tests/</code></pre>
-  <p>Para demonstrações, o script <code>scripts/demo_local.sh</code> sobe backend, site compilado e um túnel HTTPS temporário. O guia de implantação na Oracle Cloud está em <code>docs/GUIA_DEPLOY_ORACLE_CLOUD.md</code>.</p>
+  <p>Para demonstrações, o script <code>scripts/demo_local.sh</code> sobe backend, site compilado e um túnel HTTPS temporário. Para a nuvem, <code>scripts/deploy_aws.sh</code> sobe tudo numa EC2 da AWS com Docker Compose e HTTPS (é o deploy atual), e <code>docs/GUIA_DEPLOY_ORACLE_CLOUD.md</code> descreve a Oracle Cloud.</p>
 </section>
 
 <section id="faq" class="wrap">
@@ -449,8 +438,8 @@ cd ../susana_rag_backend &amp;&amp; pytest tests/</code></pre>
   <div class="wrap">SUSANNA · SUS Digital · A assistente informa serviços e fontes oficiais e não substitui atendimento médico. Em emergência, ligue 192 (SAMU).</div>
 </footer>
 
-<script src="faq.js"></script>
+<script src="faq.js?v=20261023"></script>
 <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
-<script src="app.js"></script>
+<script src="app.js?v=20261023"></script>
 </body>
 </html>
