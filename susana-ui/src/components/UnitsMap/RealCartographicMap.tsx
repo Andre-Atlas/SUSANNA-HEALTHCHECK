@@ -224,13 +224,22 @@ export default function RealCartographicMap({
         setCurrentZoom(map.getZoom());
       });
 
+      // A aba nasce escondida (display: none) e o Leaflet mede o contêiner como 0x0,
+      // carregando só um tile. Recalcula o tamanho sempre que o contêiner aparece ou muda.
+      resizeObserver = new ResizeObserver(() => {
+        if (mapInstanceRef.current === map) map.invalidateSize();
+      });
+      resizeObserver.observe(mapContainerRef.current);
+
       setIsMapReady(true);
     }
 
+    let resizeObserver: ResizeObserver | null = null;
     initLeaflet();
 
     return () => {
       isMounted = false;
+      resizeObserver?.disconnect();
       if (mapInstanceRef.current) {
         mapInstanceRef.current.remove();
         mapInstanceRef.current = null;
