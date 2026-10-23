@@ -87,7 +87,7 @@ if [ ! -f .env ]; then
   umask 077
   cat > .env <<ENVEOF
 DOMAIN=${DOMAIN}
-OLLAMA_MODEL=${OLLAMA_MODEL:-llama3.2:3b}
+OLLAMA_MODEL=${OLLAMA_MODEL:-qwen2.5:3b}
 INGESTION_API_KEY=$(openssl rand -hex 32)
 CORS_ORIGINS=${CORS}
 LLM_TIMEOUT_S=${LLM_TIMEOUT_S:-120}
@@ -102,7 +102,7 @@ fi
 env_val() { grep -E "^$1=" .env | tail -n1 | cut -d= -f2- || true; }
 DOMAIN_ENV=$(env_val DOMAIN)
 MODEL=$(env_val OLLAMA_MODEL)
-MODEL=${MODEL:-llama3.2:3b}
+MODEL=${MODEL:-qwen2.5:3b}
 
 # 5. Build e subida
 echo -e "\n${YELLOW}[5/6] Build e subida dos contêineres...${NC}"
@@ -114,6 +114,13 @@ for _ in $(seq 1 30); do
   sleep 2
 done
 docker compose exec -T ollama ollama pull "$MODEL"
+
+# Aquecimento com uma geração real: em CPU a 1ª requisição após carregar o modelo
+# leva ~13 s até o 1º token (as seguintes, ~2–3 s). O warm_up() do backend usa
+# prompt vazio e não cobre isso; com OLLAMA_KEEP_ALIVE=-1 o modelo fica carregado.
+echo -e "${YELLOW}Aquecendo o modelo ${MODEL} (geração de teste)...${NC}"
+docker compose exec -T ollama ollama run "$MODEL" "Responda apenas: ok" > /dev/null \
+  || echo -e "${YELLOW}[AVISO] Aquecimento do modelo falhou; a 1ª requisição será mais lenta.${NC}"
 
 # 6. Saúde
 echo -e "\n${YELLOW}[6/6] Aguardando backend ficar healthy (até ~10 min)...${NC}"
