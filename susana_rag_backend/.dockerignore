@@ -9,3 +9,9 @@ tests/
 .git/
 .gitignore
 README.md
+*.db
+**/*.db
+data/chroma_db/
+mlruns/
+mlflow.db
+.env

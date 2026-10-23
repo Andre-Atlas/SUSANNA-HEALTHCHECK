@@ -14,6 +14,13 @@ sentence-transformers>=5.0.0
 pypdf>=5.0.0
 beautifulsoup4>=4.12.0
 
+# Guardrail ML (versões fixas: devem bater com as que geraram data/guardrail_model.pkl)
+scikit-learn==1.6.1
+joblib==1.5.3
+
+# Ingestão agendada (app/ingestion/scheduler.py lê sources.yaml)
+pyyaml>=6.0
+
 # MLOps
 mlflow>=3.0.0
 dvc>=3.50.0

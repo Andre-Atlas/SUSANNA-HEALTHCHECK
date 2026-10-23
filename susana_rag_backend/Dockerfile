@@ -15,7 +15,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # Instala dependências Python em camada com cache
 COPY requirements.txt .
+# torch CPU-only primeiro: evita que o pip baixe as wheels CUDA (~GBs) em x86_64
 RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cpu && \
     pip install --no-cache-dir -r requirements.txt
 
 # Pré-download do modelo SentenceTransformers durante o build da imagem

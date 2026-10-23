@@ -1,4 +1,16 @@
 services:
+  ollama:
+    image: ollama/ollama
+    container_name: susana-ollama
+    restart: unless-stopped
+    environment:
+      - OLLAMA_KEEP_ALIVE=-1
+      - OLLAMA_NUM_PARALLEL=1
+    volumes:
+      - ollama_models:/root/.ollama
+    expose:
+      - "11434"
+
   backend:
     build:
       context: ./susana_rag_backend
@@ -10,25 +22,28 @@ services:
       - CORS_ORIGINS=${CORS_ORIGINS:-*}
       - CHROMA_DIR=/app/data/chroma_db
       - APP_DB_PATH=/app/data/db/susana_app.db
-      - INGESTION_API_KEY=${INGESTION_API_KEY:-susana-docker-local-key-2026}
+      - INGESTION_API_KEY=${INGESTION_API_KEY:?defina INGESTION_API_KEY no .env}
       - RELEVANCE_CONFIDENT_THRESHOLD=${RELEVANCE_CONFIDENT_THRESHOLD:-0.35}
       - ONLINE_SEARCH_ENABLED=${ONLINE_SEARCH_ENABLED:-true}
-      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+      - OLLAMA_BASE_URL=http://ollama:11434
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-llama3.2:3b}
+      - LLM_TIMEOUT_S=${LLM_TIMEOUT_S:-120}
+      - LLM_NUM_PREDICT=${LLM_NUM_PREDICT:-250}
+      - MLFLOW_LOG_REQUESTS=false
     volumes:
       - susana_chroma_data:/app/data/chroma_db
       - susana_app_data:/app/data/db
-    ports:
-      - "${API_PORT:-8000}:8000"
+      - ./CORPUS/Arquivos:/CORPUS/Arquivos:ro
     expose:
       - "8000"
+    depends_on:
+      - ollama
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 30s
       timeout: 5s
       retries: 3
-      start_period: 20s
+      start_period: 300s
 
   frontend:
     build:
@@ -44,8 +59,6 @@ services:
     depends_on:
       backend:
         condition: service_healthy
-    ports:
-      - "${WEB_PORT:-3000}:3000"
     expose:
       - "3000"
     healthcheck:
@@ -59,6 +72,8 @@ services:
     image: caddy:2-alpine
     container_name: susana-proxy
     restart: unless-stopped
+    environment:
+      - DOMAIN=${DOMAIN:-}
     ports:
       - "80:80"
       - "443:443"
@@ -71,6 +86,8 @@ services:
       - backend
 
 volumes:
+  ollama_models:
+    name: ollama_models
   susana_chroma_data:
     name: susana_chroma_data
   susana_app_data:
