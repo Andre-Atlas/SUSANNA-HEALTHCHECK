@@ -115,11 +115,20 @@ for _ in $(seq 1 30); do
 done
 docker compose exec -T ollama ollama pull "$MODEL"
 
+# Modelo de execução com num_thread = vCPUs. Em instâncias com hyperthreading o Ollama
+# detecta só os núcleos físicos (1 thread numa m7i-flex.large); com 2 threads a geração
+# ficou ~20% mais rápida. O backend usa este nome (OLLAMA_RUNTIME_MODEL no compose).
+RUNTIME_MODEL=$(env_val OLLAMA_RUNTIME_MODEL)
+RUNTIME_MODEL=${RUNTIME_MODEL:-susana-llm}
+THREADS=$(nproc)
+echo -e "${YELLOW}Criando ${RUNTIME_MODEL} (${MODEL}, num_thread=${THREADS})...${NC}"
+docker compose exec -T ollama sh -c "printf 'FROM %s\nPARAMETER num_thread %s\n' '$MODEL' '$THREADS' > /tmp/Modelfile && ollama create '$RUNTIME_MODEL' -f /tmp/Modelfile"
+
 # Aquecimento com uma geração real: em CPU a 1ª requisição após carregar o modelo
-# leva ~13 s até o 1º token (as seguintes, ~2–3 s). O warm_up() do backend usa
-# prompt vazio e não cobre isso; com OLLAMA_KEEP_ALIVE=-1 o modelo fica carregado.
-echo -e "${YELLOW}Aquecendo o modelo ${MODEL} (geração de teste)...${NC}"
-docker compose exec -T ollama ollama run "$MODEL" "Responda apenas: ok" > /dev/null \
+# é bem mais lenta que as seguintes. O warm_up() do backend usa prompt vazio e não
+# cobre isso; o backend mantém o modelo carregado (LLM_KEEP_ALIVE no compose).
+echo -e "${YELLOW}Aquecendo o modelo ${RUNTIME_MODEL} (geração de teste)...${NC}"
+docker compose exec -T ollama ollama run --keepalive 720h "$RUNTIME_MODEL" "Responda apenas: ok" > /dev/null \
   || echo -e "${YELLOW}[AVISO] Aquecimento do modelo falhou; a 1ª requisição será mais lenta.${NC}"
 
 # 6. Saúde

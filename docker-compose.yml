@@ -26,7 +26,11 @@ services:
       - RELEVANCE_CONFIDENT_THRESHOLD=${RELEVANCE_CONFIDENT_THRESHOLD:-0.35}
       - ONLINE_SEARCH_ENABLED=${ONLINE_SEARCH_ENABLED:-true}
       - OLLAMA_BASE_URL=http://ollama:11434
-      - OLLAMA_MODEL=${OLLAMA_MODEL:-qwen2.5:3b}
+      # Modelo criado pelo deploy_aws.sh a partir de OLLAMA_MODEL, com num_thread = vCPUs
+      - OLLAMA_MODEL=${OLLAMA_RUNTIME_MODEL:-susana-llm}
+      # O backend envia keep_alive em cada pedido, e isso sobrepõe o OLLAMA_KEEP_ALIVE do serviço
+      # (padrão do app: 30m). 720h mantém o modelo carregado durante todo o deploy.
+      - LLM_KEEP_ALIVE=${LLM_KEEP_ALIVE:-720h}
       - LLM_TIMEOUT_S=${LLM_TIMEOUT_S:-120}
       - LLM_NUM_PREDICT=${LLM_NUM_PREDICT:-250}
       - MLFLOW_LOG_REQUESTS=false
@@ -62,7 +66,7 @@ services:
     expose:
       - "3000"
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/"]
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:3000/"]
       interval: 30s
       timeout: 5s
       retries: 3
