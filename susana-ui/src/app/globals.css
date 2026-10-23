@@ -590,7 +590,7 @@ body {
 
 #A .app {
   display: grid;
-  grid-template-columns: 230px 1fr;
+  grid-template-columns: 230px minmax(0, 1fr);
   gap: 20px;
   padding: 20px;
   min-height: 100vh;
@@ -645,6 +645,7 @@ body {
 #A main {
   max-width: 1000px;
   width: 100%;
+  min-width: 0;
 }
 
 #A section {
@@ -1104,7 +1105,7 @@ body {
 
 @media (max-width: 800px) {
   #A .app {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     padding: 12px 12px 90px;
   }
   #A aside {
