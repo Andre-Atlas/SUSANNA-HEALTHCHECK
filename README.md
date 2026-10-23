@@ -2,6 +2,10 @@
 > **Plataforma Unificada de Inteligência em Saúde Pública para o Distrito Federal**  
 > *RAG Semântico · NLU em Português · Governança Clínica · 33 Regiões Administrativas · Liquid Glassmorphism*
 
+> **Acesse**
+> - 🟢 **Demo ao vivo:** [app.44.220.16.157.nip.io](https://app.44.220.16.157.nip.io). Temporária: no ar até 02/11/2026, numa EC2 da AWS com Ollama (`qwen2.5:3b`) em CPU. A primeira palavra da resposta leva cerca de 10 s.
+> - 📄 **Página do projeto e vídeo:** [andre-atlas.github.io/SUSANNA-HEALTHCHECK](https://andre-atlas.github.io/SUSANNA-HEALTHCHECK/)
+
 ![Tela inicial do SUS Digital com a assistente Suzanna](docs/images/image.png)
 
 ---

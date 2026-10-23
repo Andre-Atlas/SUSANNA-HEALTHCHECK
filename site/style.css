@@ -32,6 +32,10 @@ code{font:0.88em ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--b4
 h1{margin:0 0 16px;font-size:clamp(30px,5vw,50px);line-height:1.1;font-weight:700;letter-spacing:-.03em;max-width:820px}
 h1 em{font-style:normal;color:var(--b2)}
 .lead{max-width:720px;color:var(--mut);font-size:18px;margin:0 0 26px}
+.demo{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;margin:0 0 22px}
+.demo-btn{display:inline-block;padding:12px 22px;border-radius:16px;background:linear-gradient(150deg,var(--b3),var(--b1));color:#fff;font-weight:600;text-decoration:none;box-shadow:var(--shadow)}
+.demo-btn:hover{filter:brightness(1.08)}
+.demo span{font-size:14px;color:var(--mut);max-width:440px}
 .ask{display:flex;gap:10px;max-width:760px}
 .ask input{flex:1;min-width:0;padding:15px 18px;border-radius:16px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;box-shadow:var(--shadow)}
 .ask input:focus{outline:none;border-color:var(--b2);box-shadow:0 0 0 4px color-mix(in srgb,var(--b2) 20%,transparent)}
