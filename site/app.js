@@ -73,6 +73,28 @@
     links.forEach(function (a) { var s = document.querySelector(a.getAttribute("href")); if (s) io.observe(s); });
   }
 
+  // ampliar diagramas e gráficos em tela cheia (útil na apresentação)
+  var lb = document.createElement("dialog");
+  lb.id = "lightbox";
+  lb.innerHTML = '<button type="button" class="zoom close">Fechar ✕</button><div class="lbbody"></div>';
+  document.body.appendChild(lb);
+  var lbBody = lb.querySelector(".lbbody");
+  lb.querySelector(".close").addEventListener("click", function () { lb.close(); });
+  lb.addEventListener("click", function (e) { if (e.target === lb) lb.close(); });
+  [].forEach.call(document.querySelectorAll("figure.fig, figure.diagram"), function (fig) {
+    var b = document.createElement("button");
+    b.type = "button"; b.className = "zoom"; b.textContent = "⤢ Ampliar";
+    b.setAttribute("aria-label", "Ampliar a figura em tela cheia");
+    b.addEventListener("click", function () {
+      var svg = fig.querySelector("svg");
+      if (!svg || typeof lb.showModal !== "function") return;
+      lbBody.innerHTML = "";
+      lbBody.appendChild(svg.cloneNode(true));
+      lb.showModal();
+    });
+    fig.appendChild(b);
+  });
+
   // diagramas
   function fallback() {
     [].forEach.call(document.querySelectorAll("pre.mermaid"), function (p) {
